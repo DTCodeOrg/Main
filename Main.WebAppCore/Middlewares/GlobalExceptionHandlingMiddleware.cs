@@ -4,16 +4,15 @@ using Main.Infrastructure.CrosscuttingHelperServices;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text.Json;
-using ILogger = Serilog.ILogger;
 
 namespace Main.WebAppCore.Middleware;
 
 public class GlobalExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger _logger;
+    private readonly Microsoft.Extensions.Logging.ILogger < ExceptionLoggingService > _logger;
 
-    public GlobalExceptionHandlingMiddleware (RequestDelegate next,ILogger logger)
+    public GlobalExceptionHandlingMiddleware (RequestDelegate next,Microsoft.Extensions.Logging.ILogger<ExceptionLoggingService> logger)
     {
         _next = next;
         _logger = logger;

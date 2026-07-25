@@ -1,11 +1,12 @@
 {
-  "$schema": "https://schemastore.org",
+  "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "YourProjectName": {
+    "http": {
       "commandName": "Project",
+      "dotnetRunMessages": true,
       "launchBrowser": false,
-      "launchUrl": "",
-      "applicationUrl": "http://127.0.0.1:5000",
+      "launchUrl": "Home/Index",
+      "applicationUrl": "http://127.0.0.1:5000", // 👈 Make sure this port matches what Nginx calls!
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

@@ -17,8 +17,18 @@ internal class Program
         // --- 1. Logging & Configuration ---
         _ = builder.Host.UseSerilog ();
         _ = builder.AddSerilogConfiguration ();
+
+        // 1. Keeps your existing Serilog interface binding active
         _ = builder.Services.AddSingleton<Serilog.ILogger> (Serilog.Log.Logger);
+
+        // 2. FIX: Adds the missing standard Microsoft generic logger factories
+        _ = builder.Services.AddLogging (loggingBuilder =>
+        {
+            _ = loggingBuilder.AddSerilog (dispose: true);
+        });
+
         _ = builder.Services.AddExceptionLogging (builder.Configuration);
+
 
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
             .Get<MyConfigSettings> () ?? new MyConfigSettings ();
@@ -64,35 +74,40 @@ internal class Program
         var app = builder.Build();
 
         // --- 6. HTTP Request Pipeline Execution Order ---
-        // CRITICAL FOR NGINX: Translates Nginx reverse-proxy network metadata into 
+
+        // 1. FIRST: Safely read Nginx proxy headers
+        var forwardedHeadersOptions = new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                       ForwardedHeaders.XForwardedHost |
+                       ForwardedHeaders.XForwardedProto
+        };
+
+        // Explicitly permit local Nginx loopback traffic without throwing exceptions
+        forwardedHeadersOptions.KnownNetworks.Add (new Microsoft.AspNetCore.HttpOverrides.IPNetwork (System.Net.IPAddress.IPv6Loopback,0));
+        forwardedHeadersOptions.KnownNetworks.Add (new Microsoft.AspNetCore.HttpOverrides.IPNetwork (System.Net.IPAddress.Loopback,0));
+
+        _ = app.UseForwardedHeaders (forwardedHeadersOptions);
+
+
+        // 2. SECOND: Process routing-related middlewares
         if ( app.Environment.IsDevelopment () )
         {
             _ = app.UseMigrationsEndPoint ();
         }
-        else
-        {
-            // _ = app.UseExceptionHandler ("/Home/Error");
-            //_ = app.UseHsts ();
-        }
 
         _ = app.UseGlobalExceptionHandling ();
-        _ = app.UseHttpsRedirection ();
         _ = app.UseStatusCodePages ();
         _ = app.UseWebOptimizer ();
 
-        // 1. Configure the app to look for NGINX proxy headers
-        _ = app.UseForwardedHeaders (new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto
-
-        });
-
-        // CRITICAL: Tenant Resolution must run BEFORE Routing so path-rewriting modifies the route endpoints safely
+        // 3. THIRD: Resolve tenancy using the freshly parsed proxy Host header
         _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
+        // 4. FOURTH: Safe to handle HTTPS, Routing, and Static Assets
+        _ = app.UseHttpsRedirection (); // Now safely reads X-Forwarded-Proto
         _ = app.UseStaticFiles ();
-
         _ = app.UseRouting ();
+
 
         _ = app.UseCors ();
 

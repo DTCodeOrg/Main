@@ -21,6 +21,22 @@ public class TenancyService: ITenancyService
         set;
     }
 
+    public async Task<TenantDisplayDataModel> FindHostAsync (string hostName)
+    {
+        var tenant = await _tenantRepository.FindHostAsync (hostName);
+
+        TenantDisplayDataModel tenantDataModel =
+                new(
+                    tenant.TenantId,
+                    tenant.Name,
+                    tenant.HostName,
+                    tenant.Store,
+                    tenant.SecretKey);
+
+
+        return tenantDataModel;
+    }
+
     public TenantDisplayDataModel? CurrentTenant
     {
         get; set;

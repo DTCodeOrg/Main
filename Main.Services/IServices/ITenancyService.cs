@@ -15,4 +15,6 @@ public interface ITenancyService
     }
 
     Task<TenantDisplayDataModel?> FindTenantAsync (string? hostName);
+
+    Task<TenantDisplayDataModel> FindHostAsync (string hostName);
 }

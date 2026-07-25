@@ -1,6 +1,7 @@
 using Domain.Model;
 using Main.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace Main.Infrastructure.CrosscuttingHelperServices;
@@ -9,12 +10,12 @@ public class ExceptionLoggingService: IExceptionLoggingService
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly ITenantSetter _tenantSetter;
-    private readonly ILogger _logger;
+    private readonly ILogger<ExceptionLoggingService> _logger;
 
     public ExceptionLoggingService (
         ApplicationDbContext dbContext,
         ITenantSetter tenantSetter,
-        ILogger logger)
+        ILogger<ExceptionLoggingService> logger)
     {
         _dbContext = dbContext;
         _tenantSetter = tenantSetter;
@@ -38,7 +39,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
         try
         {
             // Log to Serilog (file)
-            _logger.Error (
+            _logger.LogError (
                 exception,
                 "Exception occurred - ErrorCode: {ErrorCode}, StatusCode: {StatusCode}, UserId: {UserId}, Source: {Source}",
                 errorCode,
@@ -102,7 +103,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
         catch ( Exception ex )
         {
             // Log failure to Serilog
-            _logger.Fatal (
+            Log.Fatal (
                 ex,
                 "Failed to log exception to database - Original Exception: {OriginalException}",
                 exception.Message);
@@ -183,7 +184,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
             _ = _dbContext.ExceptionLogs.Update (exceptionLog);
             _ = await _dbContext.SaveChangesAsync ();
 
-            _logger.Information (
+            _logger.LogInformation (
                 "Exception resolved - ExceptionId: {ExceptionId}, ErrorCode: {ErrorCode}",
                 exceptionId,
                 exceptionLog.ErrorCode);

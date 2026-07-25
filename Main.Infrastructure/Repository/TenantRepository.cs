@@ -36,6 +36,16 @@ public class TenantRepository: ITenantRepository
               && string.Equals (tenant.HostName,host));
     }
 
+    public async Task<Tenant> FindHostAsync (string hostName)
+    {
+        var tenantHost = await _context.Tenants
+            .IgnoreQueryFilters ()
+            .FirstOrDefaultAsync<Tenant>
+             ( a=> a.HostName.ToLower() == hostName.ToString ()  );
+
+        return tenantHost!;
+    }
+
     public async Task<Tenant?> GetTenantByIdAsync (Guid tenantId)
     {
         Tenant? tenant = await _context.Tenants.FirstOrDefaultAsync (tenant => tenant.MyTenantId == tenantId);

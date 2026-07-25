@@ -1,5 +1,6 @@
 ﻿using DataTransferModel;
 using Main.Infrastructure;
+using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -15,14 +16,17 @@ public static class TenantResolutionExtensions
         ITenantSetter tenantSetter,
         ITenancyService tenancyService,
         IMemoryCache memoryCache,
-        string rootDomain)
+        string rootDomain,
+        ILogger<ExceptionLoggingService> logger)
     {
         var rawHost = context.Request.Host.Value;
-
-        string? tenantHost = context.ResolveFromSubdomain(rawHost)
-                            ?? context.ResolveFromDomain(rawHost);
+        //logger.LogWarning (context.Request.Host.Host.ToString ());
+        //logger.LogWarning (rawHost.ToString ());
+        string? tenantHost = //context.ResolveFromSubdomain(rawHost)
+                           // ?? 
+                            context.ResolveFromDomain(rawHost);
         //ReutePathExtensions.ResolveFromPath(context, tenantPath);
-
+        /// logger.LogWarning (tenantHost + "Not fonud");
         if ( !string.IsNullOrEmpty (tenantHost) )
         {
             TenantDisplayDataModel? tenantDisplayDataModel =
@@ -37,13 +41,17 @@ public static class TenantResolutionExtensions
                 // 2. OPTIONAL: Set how long this tenant data stays in memory
                 _ =  entry.SetAbsoluteExpiration(TimeSpan.FromHours(1)) ;
 
-                return await tenancyService.FindTenantAsync(tenantHost);
+                return await tenancyService.FindHostAsync (tenantHost);
             });
+
+            logger.LogWarning (tenantDisplayDataModel != null ? tenantDisplayDataModel.MyTenantId.ToString () : "Id Not Found");
 
             if ( tenantDisplayDataModel != null )
             {
                 SetTenantSetter (tenantSetter,tenantDisplayDataModel);
                 context.Request.Headers[TenantHeaderKey] = tenantSetter.CurrentTenantId.ToString ();
+
+                logger.LogWarning (tenantSetter.CurrentTenantId.ToString ());
                 return true;
             }
         }
@@ -78,14 +86,16 @@ public static class TenantResolutionExtensions
     {
         string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
 
-        segments = RemoveResevedWord (segments!.Length > 0 ? segments! : null);
+        //segments = RemoveResevedWord (segments!.Length > 0 ? segments! : null);
 
-        if ( segments!.Length > 1 )
+        // FIX: Change '> 1' to '> 0' because your tenant key might be the only segment left
+        if ( segments != null && segments.Length > 0 )
         {
-            return segments[0];
+            return segments[0]; // This will now successfully return "finearts"
         }
 
         return "";
+
     }
 
     private static string[]? RemoveResevedWord (string[]? segments)

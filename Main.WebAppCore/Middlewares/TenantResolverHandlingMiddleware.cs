@@ -22,10 +22,11 @@ public class TenantResolverHandlingMiddleware
     ITenantSetter tenantSetter,
     ITenancyService tenancyService,
     IMemoryCache memoryCache,
-    ITokenService tokenService)
+    ITokenService tokenService,
+    ILogger<ExceptionLoggingService> logger)
     {
 
-        bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,rootDomain);
+        bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,rootDomain,logger);
 
         await _next (context);
     }
