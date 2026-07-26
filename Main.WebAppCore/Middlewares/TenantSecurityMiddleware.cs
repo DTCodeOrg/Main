@@ -3,10 +3,6 @@ using Main.Infrastructure;
 
 namespace Main.WebAppCore.Middleware;
 
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Threading.Tasks;
-
 public class TenantSecurityMiddleware
 {
     private readonly RequestDelegate _next;

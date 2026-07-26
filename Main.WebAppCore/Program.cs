@@ -1,10 +1,10 @@
 using Main.Infrastructure;
 using Main.Services;
-using Main.WebAppCore.ActionFilters;
 using Main.WebAppCore.DependentServices;
 using Main.WebAppCore.DepententServices;
 using Main.WebAppCore.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Options;
 using ResourceLibrary.Resources;
 using Serilog;
 
@@ -42,15 +42,31 @@ internal class Program
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
-        _ = builder.Services.AddSessionMemoryCache (builder.Configuration);
+        _ = builder.Services.AddMemoryCache (options =>
+        {
+            options.SizeLimit = 1024; // This cache can hold a maximum of 1024 abstract size units
+            options.CompactionPercentage = 0.25; // Evict 25% of elements if capacity is hit
+            options.ExpirationScanFrequency = TimeSpan.FromMinutes (5); // Periodically check for dead elements
+        });
+
+        // Inject Options Setup Patches
+        _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionsSetup> ();
+        // Inside Program.cs, mirror your isolation architecture for Sessions
+        _ = builder.Services.AddSession (options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.IdleTimeout = TimeSpan.FromMinutes (20); // Keep session lifecycles tight
+        });
+        // Create a custom configure patch for Session Options to match your tenant domains
+        _ = builder.Services.AddTransient<IConfigureOptions<SessionOptions>,TenantSessionOptionsSetup> ();
+        // Enable Core Antiforgery and Session Foundations
+        _ = builder.Services.AddAntiforgery ();
+
+
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
-
-        // --- 3. Antiforgery & Security Setup ---
-        _ = builder.Services.AddAntiforgery (options =>
-        {
-            options.HeaderName = "X-XSRF-TOKEN";
-        });
 
         _ = builder.Services.AddAuthorizations (builder.Configuration);
         _ = builder.Services.AddAuthentication (builder.Configuration);
@@ -62,12 +78,12 @@ internal class Program
         });
 
         // --- 5. Unified Controller Routing Registration ---
-        _ = builder.Services.AddControllersWithViews (options =>
-        {
-            // Injecting the dynamic tenant anti-forgery validation filter safely
-            options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof
-            (TenantAntiforgeryFilter)));
-        });
+        //_ = builder.Services.AddControllersWithViews (options =>
+        //{
+        //    // Injecting the dynamic tenant anti-forgery validation filter safely
+        //    options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof
+        //    (TenantAntiforgeryFilter)));
+        //});
 
         var app = builder.Build();
 

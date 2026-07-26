@@ -1,3 +1,57 @@
+SameSiteMode.Lax is a browser cookie security setting that controls whether a cookie is sent along with requests originating from external (third-party) websites. [1, 2, 3] 
+It acts as a shield against Cross-Site Request Forgery (CSRF) attacks while ensuring your users experience smooth navigation when clicking links from outside your app. [4, 5, 6] 
+Here is exactly how Lax behaves and why it is the perfect choice for your multi-tenant setup:
+## 1. How SameSiteMode.Lax Protects Your App
+The SameSite attribute tells the browser when it is allowed to attach your tenant cookies (.AspNetCore.Antiforgery.{Id} and .Session.{Id}) to an HTTP request. Lax enforces two strict rules: [7, 8] 
+
+* Blocked on Cross-Site Submissions (The Security Shield): If a user is on a completely different website (like malicious-site.com) and that site attempts to send a hidden POST, PUT, or DELETE request via a form or JavaScript to https://finearts.test, the browser refuses to attach your cookies. Because the cookies are missing, your .NET pipeline immediately blocks the request. [9] 
+* Allowed on Safe Cross-Site Links (The User Experience): If a user is checking their email or on a social media site and clicks a standard link (<a href="https://finearts.test">), the browser will attach your cookies because it is a safe GET request. The user arrives at your site already logged in and their session context loads instantly. [10, 11, 12, 13] 
+
+------------------------------
+## 2. Why Lax is Essential for Your Subdomains
+To understand why Lax is the right choice, look at how it compares to the other two options in a multi-tenant environment:
+## Strict Mode (SameSiteMode.Strict) — Too Aggressive [14] 
+If you used Strict, the browser would never send your cookies if the request originated from outside your exact domain. [15] 
+
+* The Breakage: If a user clicks a link from their email to open https://finearts.test, the browser will strip your session and authentication cookies entirely because the click came from an external site. The user would arrive at your site looking logged out, or their layout would crash because the backend cannot find their active tenant session on that first click. [16, 17] 
+
+## None Mode (SameSiteMode.None) — Dangerous
+If you used None, the browser would attach your cookies to every single request, even if a malicious third-party site generated the submission. This leaves your app entirely vulnerable to CSRF attacks unless you build heavy custom validation layers. [18, 19] 
+------------------------------
+## Summary of Lax behavior in your Multi-Tenant system
+
+| Action | Request Source | Destination | HTTP Method | Are Cookies Sent? |
+|---|---|---|---|---|
+| Clicking an internal link | finearts.test | finearts.test/create | GET | Yes (Internal) |
+| Submitting an internal form | finearts.test | finearts.test/save | POST | Yes (Internal) |
+| Clicking an external link | google.com or email | finearts.test | GET | Yes (Safe navigation) |
+| Malicious hidden exploit | attacker.com | finearts.test/delete | POST | NO (Blocked by Lax) |
+
+By choosing SameSiteMode.Lax, you get robust protection against malicious outside attacks, clean separation between different tenant domains, and a flawless multi-tab experience for users navigating your site. [20] 
+Now that your cookies are secured with Lax, are you ready to implement the C# controller endpoints to save your temporary uploaded images into this isolated session container?
+
+[1] [https://next-intl.dev](https://next-intl.dev/docs/routing/configuration)
+[2] [https://supertokens.com](https://supertokens.com/docs/post-authentication/session-management/security)
+[3] [https://clerk.com](https://clerk.com/articles/nextjs-session-management-solving-nextauth-persistence-issues)
+[4] [https://blog.mozilla.org](https://blog.mozilla.org/security/2018/04/24/same-site-cookies-in-firefox-60/)
+[5] [https://htmx.org](https://htmx.org/essays/web-security-basics-with-htmx/)
+[6] [https://theproductguy.in](https://theproductguy.in/blogs/cookie-security-guide/)
+[7] [https://www.testmuai.com](https://www.testmuai.com/learning-hub/samesite-cookie-attribute/)
+[8] [https://cheatsheetseries.owasp.org](https://cheatsheetseries.owasp.org/cheatsheets/Symfony_Cheat_Sheet.html)
+[9] [https://dev.lucee.org](https://dev.lucee.org/t/update-to-tomcat-9-0-33-broken-cookies/6854)
+[10] [https://thecopenhagenbook.com](https://thecopenhagenbook.com/csrf)
+[11] [https://medium.com](https://medium.com/@rramgattie/samesite-and-subdomains-08870bbdd62c)
+[12] [https://medium.com](https://medium.com/@abhishekjainindore24/claude-3-claude-md-42b76b6895ff)
+[13] [https://dilshankelsen.com](https://dilshankelsen.com/what-is-cross-site-request-forgery/)
+[14] [https://cookie-script.com](https://cookie-script.com/documentation/samesite-cookie-attribute-explained)
+[15] [https://cookie-script.com](https://cookie-script.com/documentation/samesite-cookie-attribute-explained)
+[16] [https://medium.com](https://medium.com/@rramgattie/samesite-and-subdomains-08870bbdd62c)
+[17] [https://alembic.com.au](https://alembic.com.au/blog/subdomain-based-multi-tenancy-in-phoenix)
+[18] [https://portswigger.net](https://portswigger.net/web-security/csrf/bypassing-samesite-restrictions)
+[19] [https://kinsta.com](https://kinsta.com/blog/csrf-attack/)
+[20] [https://github.com](https://github.com/keycloak/keycloak/issues/19886)
+
+
 Yes, you can build a custom Antiforgery middleware to handle this exact lifecycle. Writing custom middleware is highly recommended when implementing strict, non-standard behaviors like dropping the cookie immediately after verification, rotating it per request, and issuing an isolated JWT token. [1] 
 
 Because you are writing a dedicated middleware class, you will completely bypass .UseAntiforgery() and handle token generation and validation manually using standard encryption tools.

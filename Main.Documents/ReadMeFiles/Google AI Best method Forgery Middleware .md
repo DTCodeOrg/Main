@@ -1,3 +1,28 @@
+In this exact context, the word "Locked" means the browser restricts that cookie strictly to that specific domain or subdomain name listed in the URL bar.
+It acts as a security isolation barrier for both domains/subdomains and browser tabs. [1] 
+Here is the exact breakdown of how that "lock" behaves across your application:
+## 1. Isolated by Domain / Subdomain (The Primary Lock)
+If a user has two different tenants open in different tabs:
+
+* Tab 1 URL: https://finearts.test → context.Request.Host.Host becomes finearts.test. The cookie name becomes .AspNetCore.Antiforgery.101 and its domain is locked to finearts.test.
+* Tab 2 URL: https://music.test → context.Request.Host.Host becomes music.test. The cookie name becomes .AspNetCore.Antiforgery.102 and its domain is locked to music.test. [2] 
+
+Because of this lock, the browser physically prevents Tab 2 from reading, modifying, or even seeing Tab 1's cookies. They are completely blind to each other.
+## 2. Shared safely by Same-Tenant Tabs (Multi-Tab Protection)
+If a user opens multiple tabs for the same tenant (e.g., Tab 1 is finearts.test/home and Tab 2 is finearts.test/artwork/create):
+
+* Both pages evaluate to the exact same host: finearts.test.
+* Because they match the lock, both tabs share the exact same Antiforgery master cookie.
+
+As we discussed earlier, since the native .NET 8.0 master cookie is stateless and reusable across concurrent requests, Tab 1 and Tab 2 can perform actions simultaneously without breaking each other's sessions.
+## Summary
+options.Cookie.Domain = context!.Request.Host.Host; ensures that cookies are shared globally across tabs of the same subdomain, but locked tight against tabs running different subdomains.
+Would you like to proceed with writing the Controller logic to handle the multi-stage image upload pipeline using this newly locked session configuration?
+
+[1] [https://infosecwriteups.com](https://infosecwriteups.com/cookie-attributes-more-than-just-name-value-a95591be6fba)
+[2] [https://docs.coveo.com](https://docs.coveo.com/en/1542/)
+
+
 Your current method of resolving the tenant using HttpContext.Request.Host is 100% correct and exactly how it should be done. There is absolutely nothing wrong with your approach. [1] 
 When I wrote "locking paths and cookies strictly to the domain parsed from Nginx," I was describing exactly what your code already does. It means that instead of using a generic, fixed domain configuration, your application looks at the actual hostname forwarded by Nginx (which you extract using HttpContext.Request.Host) and dynamically configures the browser cookie to match it.
 Here is a breakdown of why your approach is correct, what that phrase means in practice, and how to verify your setup.
@@ -82,7 +107,9 @@ http {
 Create these two setup classes in your .NET project. They dynamically configure Antiforgery and Session options per request, locking paths and cookies strictly to the domain parsed from Nginx.
 ## 2.1: TenantAntiforgeryOptionsSetup.cs
 
-using Microsoft.AspNetCore.Antiforgery;using Microsoft.AspNetCore.Authentication.Cookies;using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 public class TenantAntiforgeryOptionsSetup : IConfigureOptions<AntiforgeryOptions>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
