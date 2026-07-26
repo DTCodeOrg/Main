@@ -52,8 +52,6 @@ internal class Program
             options.HeaderName = "X-XSRF-TOKEN";
         });
 
-        _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryCookieOptions> ();
-
         _ = builder.Services.AddAuthorizations (builder.Configuration);
         _ = builder.Services.AddAuthentication (builder.Configuration);
 
@@ -122,13 +120,19 @@ internal class Program
         _ = app.UseAuthorization ();
 
         // CRITICAL: Runs after Identity sets up User context, allowing you to validate user claims against active tenant contexts
-        //  _ = app.UseMiddleware<TenantSecurityMiddleware> ();
+        _ = app.UseMiddleware<TenantSecurityMiddleware> ();
 
         // --- 8. Endpoint Mappings ---
         _ = app.MapControllers ();
+
         _ = app.MapControllerRoute (
             name: "MyArea",
             pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+        // FIX: Matches: https://finearts.test -> Home/Index
+        _ = app.MapControllerRoute (
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
 
         await app.RunAsync ();
     }

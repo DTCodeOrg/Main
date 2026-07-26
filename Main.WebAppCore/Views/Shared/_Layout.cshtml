@@ -1,4 +1,10 @@
-﻿<!doctype html>
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    // This safely triggers your filter's core setup logic matching the current active tab domain
+    var tokens = Antiforgery.GetAndStoreTokens(Context);
+}
+
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -30,7 +36,9 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-    
+     <!-- Universal metadata handles for all your downstream fetch/AJAX modules -->
+    <meta name="X-XSRF-TOKEN" content="@tokens.RequestToken" />
+    <meta name="X-Tenant-Cookie-Name" content=".TenantAuth.XSRF.@_tenantSetter.CurrentTenantId" />
 
     @RenderSection( "Styles",required: false )
 
@@ -38,7 +46,7 @@
 
 <body>
     <!-- Render this EXACTLY ONCE here for the entire application -->
-    @* @Html.AntiForgeryToken() *@
+    @Html.AntiForgeryToken()
 
     <span id="pick"></span>
 

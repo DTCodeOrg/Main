@@ -21,24 +21,19 @@ public static class AuthorizationExtensions
      string role,int minutes,int days)
     {
         // 2. Create your tokens after successful sign-in
-        var accessJwt =  tokenService.GenerateAccessToken
-        (userId,resolvedTenantId,minutes);
-
+        var accessJwt = tokenService.GenerateAccessToken(userId, resolvedTenantId, minutes);
         var refreshTokenStr = tokenService.GenerateRefreshToken();
 
         // 3. COOKIE 1: Save the short-lived Access JWT (Expires in 15 minutes)
-        context.Response.Cookies.Append ($".App.AccessToken.{resolvedTenantId}",
+        context.Response.Cookies.Append ($"..App.AccessToken.{resolvedTenantId}",
         accessJwt.ToString () ?? "",
         new CookieOptions
         {
-            HttpOnly = true,
-            // Protects against XSS attacks stealing your JWT
-            Secure = true,
-            // Mandates HTTPS through Nginx
+            HttpOnly = true,   // Protects against XSS attacks stealing your JWT
+            Secure = true,     // Mandates HTTPS through Nginx
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UtcNow.AddMinutes (15),
-            Path = "/"
-            // Accessible by all pages in your app
+            Path = "/"         // Accessible by all pages in your app
         });
 
         // 4. COOKIE 2: Save the long-lived Refresh Token (Expires in 7 days)
@@ -48,8 +43,10 @@ public static class AuthorizationExtensions
             Secure = true,
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UtcNow.AddDays (7),
-            Path = "/account/refresh-token" // Locked down specifically to your refresh endpoint
+            // FIX: Changed path from "/account/refresh-token" to match your working endpoint route exactly
+            Path = "/refresh-token"
         });
+
     }
 
     public static void AddUserClaims

@@ -44,7 +44,6 @@ public class AuthController: BaseController
 
     // Registration Flow 2: User submits the registration form.
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Registration (RegistrationViewModel registrationViewModel)
     {
         if ( ModelState.IsValid )
@@ -112,6 +111,8 @@ public class AuthController: BaseController
         return View ();
     }
 
+
+
     // Login Flow 1: login page
     public IActionResult Login ()
     {
@@ -121,82 +122,77 @@ public class AuthController: BaseController
 
     // Login Flow: login form submit (1. authentication, 2. authorization (jwt token)
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login (LoginViewModel loginDisplayViewModel)
     {
-        var that = this!;
-        string email =  loginDisplayViewModel?.Email ?? string.Empty;
-
-        if ( ModelState.IsValid )
+        // 1. Guard Clause against completely empty payloads
+        if ( loginDisplayViewModel == null )
         {
-            loginDisplayViewModel!.Message = "Invalid login attempt. Please check your credentials and try again.";
+            ModelState.AddModelError (string.Empty,"Invalid login attempt form payload.");
+            return View (new LoginViewModel ());
+        }
+
+        var that = this!;
+        string email = loginDisplayViewModel?.Email ?? string.Empty;
+
+        // 2. FIX: Validate form structural rules first (Required fields, Email format, etc.)
+        if ( !ModelState.IsValid )
+        {
+            // If they left fields blank, return the view with automatic validation span messages
             return View ("Login",loginDisplayViewModel);
         }
 
-        // (1. Authentication)
+        // 3. (1. Authentication Setup)
         Guid resolvedTenantId = _tenantSetter.CurrentTenantId;
-        ApplicationUserDataModel? applicationIdentityUserDataModel
-        = await _userAccountService.GetApplicationUser(email, resolvedTenantId!);
+        var applicationIdentityUserDataModel
+        = await _userAccountService.GetApplicationUser(email, resolvedTenantId);
 
-        // Validation: email verified, user exists (2. Authentication)
-        if ( await AuthentiicationExtensions.InvalidApplicationUser (_userAccountService,applicationIdentityUserDataModel,
-        loginDisplayViewModel!,resolvedTenantId) )
+        // 4. Validation: User existence and email confirmation rules
+        if ( await AuthentiicationExtensions.InvalidApplicationUser (_userAccountService,applicationIdentityUserDataModel,loginDisplayViewModel!,resolvedTenantId) )
         {
-            bool emailConfirm  = loginDisplayViewModel?.EmailConfirmed ?? true;
+            bool emailConfirm = loginDisplayViewModel?.EmailConfirmed ?? true;
             if ( !emailConfirm )
             {
-                await EmailExtensions.SendVerifyEmail
-                (( IUrlHelper ) that,_userAccountService,
-                _emailService,email,HttpContext);
+                await EmailExtensions.SendVerifyEmail (( IUrlHelper ) that,_userAccountService,_emailService,email,HttpContext);
             }
 
-            // Can not login: validationfailed (2.Authentication)
             return View ("Login",loginDisplayViewModel);
         }
 
-        // User login  (3. Authentication)
-        bool result =
-                await AuthentiicationExtensions.PasswordSignInAsync
-                    ( _userAccountService,
-                    applicationIdentityUserDataModel!.UserName!,
-                    loginDisplayViewModel!.Password,
-                    isPersistent: false,
-                    lockoutOnFailure: false );
+        // 5. User password submission check
+        bool result = await AuthentiicationExtensions.PasswordSignInAsync (
+        _userAccountService,
+        applicationIdentityUserDataModel!.UserName!,
+        loginDisplayViewModel!.Password,
+        isPersistent: false,
+        lockoutOnFailure: false
+    );
 
-        // Login successful (4. Authentication, ended)
+        // 6. Login successful workflow execution
         if ( result )
         {
+            // Get tenant specific role
+            string tenantRole = await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, resolvedTenantId);
 
-            // Get tenant specific role (1. Authhorization, start)
-            string tenantRole =  await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, resolvedTenantId);
+            // Append safe Isolated JWT Identity Header
+            AuthorizationExtensions.AddTenantIsolatedHeaderToken (HttpContext,_tokenService,applicationIdentityUserDataModel.Id,resolvedTenantId,tenantRole.ToString (),15,7);
 
-            // Auth Jwt Token (5. Authentication)
-            AuthorizationExtensions.AddTenantIsolatedHeaderToken
-            (HttpContext,_tokenService,applicationIdentityUserDataModel.Id,
-            resolvedTenantId,tenantRole.ToString (),15,7);
+            string formatedTenantRole = $"{applicationIdentityUserDataModel.Id}:{resolvedTenantId}:{tenantRole}";
 
-            // Formated tenant role  (3. Authhorization)
-            string formatedTenantRole =
-            $"{applicationIdentityUserDataModel.Id}:{resolvedTenantId}:{tenantRole
-            .ToString ()}";
+            // Commit claims tracking properties directly to HttpContext
+            AuthorizationExtensions.AddUserClaims (HttpContext,applicationIdentityUserDataModel.Id,resolvedTenantId,formatedTenantRole,applicationIdentityUserDataModel.UserName!,applicationIdentityUserDataModel.Email!);
 
-            // HttpContext Responce UserClaims (4. Authhorization)
-            AuthorizationExtensions.AddUserClaims
-            (HttpContext,applicationIdentityUserDataModel.Id,
-            resolvedTenantId,formatedTenantRole,
-            applicationIdentityUserDataModel!.UserName!,
-            applicationIdentityUserDataModel?.Email!);
-
-            // Successful login, redirect to home page or dashboard
+            // Route directly to your newly fixed root index endpoint
             return RedirectToAction ("Index","Home");
         }
 
-        // Do not reveal if the password is incorrect or the account is locked, show a generic error message
-        return View (loginDisplayViewModel);
+        // 7. FIX: If password verification failed, assign the bad credential warning here at the end
+        loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
+        return View ("Login",loginDisplayViewModel);
     }
 
 
-    // Logout Flow: User clicks the logout button, which triggers the Logout action that signs the user out and redirects to the home page
+
+    [HttpPost] // Highly recommended to use POST for logout to prevent pre-fetching browser logs
     public async Task<IActionResult> Logout ()
     {
         await _userAccountService.SignOutAsync ();
@@ -212,14 +208,14 @@ public class AuthController: BaseController
 
         // 2. Erase both token cookies from the browser
         Response.Cookies.Delete ($".App.AccessToken.{tenantId}",new CookieOptions { Path = "/" });
-        Response.Cookies.Delete ($".App.RefreshToken.{tenantId}",new CookieOptions { Path = "/account/refresh-token" });
 
-        // 3. Clear your custom tenant session state and default antiforgery structures
-        Response.Cookies.Delete ($".AspNetCore.Antiforgery.{tenantId}",new CookieOptions { Path = "/" });
+        // FIX: Aligned path value to match your actual "/refresh-token" route layout
+        Response.Cookies.Delete ($".App.RefreshToken.{tenantId}",new CookieOptions { Path = "/refresh-token" });
+
+        // 3. Clear your custom tenant session state
         HttpContext.Session.Clear ();
 
         // 4. CLIENT-SIDE: Signal modern browsers to wipe all local origins data
-        // Clears local storage, session storage, and HTTP cache
         Response.Headers.Append ("Clear-Site-Data","\"cache\", \"storage\"");
 
         // 5. CLIENT-SIDE: Instruct proxy (Nginx) and browser to never cache this response
@@ -227,14 +223,15 @@ public class AuthController: BaseController
         Response.Headers.Append ("Pragma","no-cache");
         Response.Headers.Append ("Expires","0");
 
-        // 6. CLIENT-SIDE: Explicitly wipe cookies via expiration headers
-        // Deletes the dynamically suffixed multi-tenant antiforgery cookie
-        var antiforgeryCookieName = $".AspNetCore.Antiforgery.{tenantId}";
-        Response.Cookies.Delete (antiforgeryCookieName,new CookieOptions
+
+        // 6. CLIENT-SIDE: Explicitly wipe your real multi-tenant antiforgery cookie via correct naming convention
+        // FIX: Changed name prefix from ".AspNetCore.Antiforgery" to match your active "TenantAntiforgeryFilter" cookie
+        var tenantXsrfCookieName = $".TenantAuth.XSRF.{tenantId}";
+        Response.Cookies.Delete (tenantXsrfCookieName,new CookieOptions
         {
             Path = "/",
             Secure = true,
-            HttpOnly = true
+            HttpOnly = false // Must match the original creation flags from your filter
         });
 
         // 7. Deletes standard ASP.NET Identity and Session cookies if they exist
@@ -242,8 +239,10 @@ public class AuthController: BaseController
         Response.Cookies.Delete (".AspNetCore.Session",new CookieOptions { Path = "/" });
 
         // 8. Redirect to login
-        return RedirectToAction ("Login","Account");
+        // FIX: Changed target controller from "Account" to your actual working "Auth" controller
+        return RedirectToAction ("Login","Auth");
     }
+
 
 
 
@@ -260,7 +259,7 @@ public class AuthController: BaseController
 
     // Password Reset Flow (2): User submits email address to receive password reset link.
     [HttpPost]
-    [ValidateAntiForgeryToken]
+
     public async Task<IActionResult> ResetEmail (ForgotPasswordViewModel forgotPasswordViewModel)
     {
         if ( !ModelState.IsValid )
@@ -379,7 +378,7 @@ public class AuthController: BaseController
 
     // Change Password Flow - (2): User submits the change password form 
     [HttpPost]
-    [ValidateAntiForgeryToken]
+
     public async Task<IActionResult> ChangePassword (ChangePasswordViewModel changePasswordViewModel)
     {
 

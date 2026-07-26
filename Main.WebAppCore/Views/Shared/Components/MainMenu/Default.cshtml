@@ -2,13 +2,13 @@
 {
     <span>
         @SharedLocalizer["LabelHi"]
-        <a id="ancorSignin_Account"
-           href="@Url.Action( "Login","Auth" )">
-            @SharedLocalizer["LoginSignin"]
-        </a>
+
+        <a id="ancorSignin_Account" href="@Url.Action("Login", "Auth", new { area = "" })">@SharedLocalizer["LoginSignin"]</a>
+        
         /
+
         <a id="ancorSignup_Account"
-           href="@Url.Action( "Registration","Auth" )">
+           href="@Url.Action( "Registration","Auth" ,new { area = "" })">
             @SharedLocalizer["Register"]
         </a>
     </span>
