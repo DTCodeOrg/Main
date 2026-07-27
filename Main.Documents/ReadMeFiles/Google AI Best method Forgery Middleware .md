@@ -8,6 +8,7 @@ If a user has two different tenants open in different tabs:
 * Tab 2 URL: https://music.test → context.Request.Host.Host becomes music.test. The cookie name becomes .AspNetCore.Antiforgery.102 and its domain is locked to music.test. [2] 
 
 Because of this lock, the browser physically prevents Tab 2 from reading, modifying, or even seeing Tab 1's cookies. They are completely blind to each other.
+
 ## 2. Shared safely by Same-Tenant Tabs (Multi-Tab Protection)
 If a user opens multiple tabs for the same tenant (e.g., Tab 1 is finearts.test/home and Tab 2 is finearts.test/artwork/create):
 
@@ -55,8 +56,10 @@ If a user has finearts.test open in Tab 1 and music.test open in Tab 2:
 Your existing resolution code is perfect. Just ensure that inside your TenantAntiforgeryOptionsSetup and TenantSessionOptionsSetup classes, you pull the domain directly from that resolved request context:
 
 // Correct configuration mapping inside your Options Setup classes
-options.Cookie.Domain = context.Request.Host.Host; // Yields "finearts.test" dynamically
-options.Cookie.Path = "/"; // Ensures it works across all controller actions under this domain
+options.Cookie.Domain = context.Request.Host.Host; 
+// Yields "finearts.test" dynamically
+options.Cookie.Path = "/"; 
+// Ensures it works across all controller actions under this domain
 
 By relying on HttpContext.Request.Host, your code adapts to whatever domain Nginx forwards to it, making it secure and fully compatible with your multi-tab setup.
 Now that the architecture configuration is clarified, would you like to review how to implement the code that pulls the temporary byte array images back from your isolated session storage to show the base64 preview on the frontend?
@@ -143,7 +146,8 @@ public class TenantAntiforgeryOptionsSetup : IConfigureOptions<AntiforgeryOption
 
 ## 2.2: TenantSessionOptionsSetup.cs
 
-using Microsoft.AspNetCore.Authentication.Cookies;using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 public class TenantSessionOptionsSetup : IConfigureOptions<SessionOptions>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;

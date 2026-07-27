@@ -1,5 +1,6 @@
 ﻿using Main.Infrastructure;
 using Microsoft.Extensions.Options;
+
 namespace Main.WebAppCore.Middleware;
 
 public class TenantSessionOptionsSetup: IConfigureOptions<SessionOptions>
@@ -18,10 +19,15 @@ public class TenantSessionOptionsSetup: IConfigureOptions<SessionOptions>
 
         if ( tenantSetter?.CurrentTenantId != null )
         {
-            // Lock session identity explicitly to the isolated tenant domain
-            options.Cookie.Name = $".Session.{tenantSetter.CurrentTenantId}";
-            options.Cookie.Domain = context.Request.Host.Host;
+            var tenantId = tenantSetter.CurrentTenantId.ToString ();
+
+            options.Cookie.Name = $".Session.{tenantId}";
+            options.Cookie.Domain = context!.Request.Host.Host;
             options.Cookie.Path = "/";
+            options.Cookie.HttpOnly = true; // Protects temporary images in session from JS theft
+            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.IdleTimeout = TimeSpan.FromMinutes (30); // Clean session memory after 30 mins
         }
     }
 }

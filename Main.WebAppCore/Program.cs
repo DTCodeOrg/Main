@@ -35,6 +35,7 @@ internal class Program
 
         // --- 2. Core Infrastructure & DI Services ---
         _ = builder.Services.AddHttpContextAccessor ();
+        _ = builder.Services.AddDistributedMemoryCache ();
         _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
 
@@ -42,15 +43,8 @@ internal class Program
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
-        _ = builder.Services.AddMemoryCache (options =>
-        {
-            options.SizeLimit = 1024; // This cache can hold a maximum of 1024 abstract size units
-            options.CompactionPercentage = 0.25; // Evict 25% of elements if capacity is hit
-            options.ExpirationScanFrequency = TimeSpan.FromMinutes (5); // Periodically check for dead elements
-        });
 
-        // Inject Options Setup Patches
-        _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionsSetup> ();
+
         // Inside Program.cs, mirror your isolation architecture for Sessions
         _ = builder.Services.AddSession (options =>
         {
@@ -59,11 +53,12 @@ internal class Program
             options.Cookie.SameSite = SameSiteMode.Lax;
             options.IdleTimeout = TimeSpan.FromMinutes (20); // Keep session lifecycles tight
         });
-        // Create a custom configure patch for Session Options to match your tenant domains
         _ = builder.Services.AddTransient<IConfigureOptions<SessionOptions>,TenantSessionOptionsSetup> ();
+
+        // Inject Options Setup Patches
+        _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionsSetup> ();
         // Enable Core Antiforgery and Session Foundations
         _ = builder.Services.AddAntiforgery ();
-
 
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
@@ -77,13 +72,11 @@ internal class Program
             _ = pipeline.CompileLessFiles ();
         });
 
-        // --- 5. Unified Controller Routing Registration ---
-        //_ = builder.Services.AddControllersWithViews (options =>
-        //{
-        //    // Injecting the dynamic tenant anti-forgery validation filter safely
-        //    options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof
-        //    (TenantAntiforgeryFilter)));
-        //});
+        // Instead, find where you register services (near the top) and update it to this:
+        _ = builder.Services.AddControllers (options =>
+        {
+            options.Filters.Add (new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute ());
+        });
 
         var app = builder.Build();
 
@@ -111,7 +104,9 @@ internal class Program
         }
 
         _ = app.UseGlobalExceptionHandling ();
+
         _ = app.UseStatusCodePages ();
+
         _ = app.UseWebOptimizer ();
 
         // 3. THIRD: Resolve tenancy using the freshly parsed proxy Host header
@@ -119,20 +114,24 @@ internal class Program
 
         // 4. FOURTH: Safe to handle HTTPS, Routing, and Static Assets
         _ = app.UseHttpsRedirection (); // Now safely reads X-Forwarded-Proto
+
         _ = app.UseStaticFiles ();
+
         _ = app.UseRouting ();
 
-
         _ = app.UseCors ();
-
-        _ = app.UseSession ();
 
         _ = app.UseResponseCaching ();
 
         _ = app.UseCustomLocalization ();
 
+        _ = app.UseSession ();          // 6. Mount isolated session data bucket
+
+        _ = app.UseAntiforgery ();      // 7. Execute Synchronizer Token Pattern validation
+
         // --- 7. Authentication & Tenant Authorization Defenses ---
         _ = app.UseAuthentication ();
+
         _ = app.UseAuthorization ();
 
         // CRITICAL: Runs after Identity sets up User context, allowing you to validate user claims against active tenant contexts

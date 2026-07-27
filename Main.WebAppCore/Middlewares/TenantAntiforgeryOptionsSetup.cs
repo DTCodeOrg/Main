@@ -20,9 +20,9 @@ public class TenantAntiforgeryOptionsSetup: IConfigureOptions<AntiforgeryOptions
 
         if ( tenantSetter?.CurrentTenantId != null )
         {
-            var tenantName = tenantSetter.CurrentTenantId; // e.g., "finearts"
+            var tenantId = tenantSetter.CurrentTenantId.ToString(); // e.g., "finearts"
 
-            options.Cookie.Name = $".AspNetCore.Antiforgery.{tenantName}";
+            options.Cookie.Name = $".AspNetCore.Antiforgery.{tenantId}";
             options.Cookie.Domain = context!.Request.Host.Host; // Locked to "finearts.test"
             options.Cookie.Path = "/";
             options.HeaderName = "X-XSRF-TOKEN";
