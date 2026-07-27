@@ -134,53 +134,60 @@ public class AuthController: BaseController
         var that = this!;
         string email = loginDisplayViewModel?.Email ?? string.Empty;
 
-        // 2. FIX: Validate form structural rules first (Required fields, Email format, etc.)
+        // 1.2. FIX: Validate form structural rules first (Required fields, Email format, etc.)
         if ( !ModelState.IsValid )
         {
             // If they left fields blank, return the view with automatic validation span messages
             return View ("Login",loginDisplayViewModel);
         }
 
-        // 3. (1. Authentication Setup)
-        Guid resolvedTenantId = _tenantSetter.CurrentTenantId;
+        // 2 Application User needed for User Id
+        ApplicationUserDataModel? applicationUser = await _userAccountService.GetApplicationUser (loginDisplayViewModel?.Email!);
 
-        var applicationIdentityUserDataModel
-        = await _userAccountService.GetApplicationUser(email, resolvedTenantId);
+        // 3. Validation: User existence and email confirmation rules
+        bool result = await EmailExtensions.IsEmailConfirmed (_userAccountService,loginDisplayViewModel?.Email!);
 
-        // 4. Validation: User existence and email confirmation rules
-        if ( await AuthentiicationExtensions.InvalidApplicationUser (_userAccountService,applicationIdentityUserDataModel,loginDisplayViewModel!,resolvedTenantId) )
+        if ( !result )
         {
-            bool emailConfirm = loginDisplayViewModel?.EmailConfirmed ?? true;
-            if ( !emailConfirm )
-            {
-                await EmailExtensions.SendVerifyEmail (( IUrlHelper ) that,_userAccountService,_emailService,email,HttpContext);
-            }
+            loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
+
+            await EmailExtensions.SendVerifyEmail (( IUrlHelper ) that,_userAccountService,_emailService,email,HttpContext);
 
             return View ("Login",loginDisplayViewModel);
         }
 
-        // 5. User password submission check
-        bool result = await AuthentiicationExtensions.PasswordSignInAsync (
-        _userAccountService,
-        applicationIdentityUserDataModel!.UserName!,
-        loginDisplayViewModel!.Password,
-        isPersistent: false,
-        lockoutOnFailure: false
-    );
+        // 4. User password submission check
+        _ = await AuthentiicationExtensions.PasswordSignInAsync (
+                                        _userAccountService,
+                                        applicationUser!.UserName!,
+                                        loginDisplayViewModel!.Password,
+                                        isPersistent: false,
+                                        lockoutOnFailure: false
+                                        );
 
-        // 6. Login successful workflow execution
+        // 5. Login successful workflow execution
         if ( result )
         {
-            // Get tenant specific role
+            // 1 Authorization Setup for resolved tenant
+            Guid resolvedTenantId = _tenantSetter.CurrentTenantId;
+
+            // 2. Get tenant specific role (find for user)
             string tenantRole = await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, resolvedTenantId);
 
-            // Append safe Isolated JWT Identity Header
-            AuthorizationExtensions.AddTenantIsolatedHeaderToken (HttpContext,_tokenService,applicationIdentityUserDataModel.Id,resolvedTenantId,tenantRole.ToString (),15,7);
+            // 4. Append safe Isolated JWT Identity Header
+            AuthorizationExtensions.AddTenantIsolatedHeaderToken
+                (HttpContext,_tokenService,
+                applicationUser.Id.ToString (),
+                resolvedTenantId,tenantRole.ToString (),
+                15,7);
 
-            string formatedTenantRole = $"{applicationIdentityUserDataModel.Id}:{resolvedTenantId}:{tenantRole}";
+            string formatedTenantRole = $"{applicationUser.Id}:{resolvedTenantId}:{tenantRole}";
 
             // Commit claims tracking properties directly to HttpContext
-            AuthorizationExtensions.AddUserClaims (HttpContext,applicationIdentityUserDataModel.Id,resolvedTenantId,formatedTenantRole,applicationIdentityUserDataModel.UserName!,applicationIdentityUserDataModel.Email!);
+            AuthorizationExtensions.AddUserClaims (HttpContext,applicationUser.Id.ToString (),
+                resolvedTenantId,formatedTenantRole,
+                applicationUser.UserName!,
+                applicationUser.Email!);
 
             // Route directly to your newly fixed root index endpoint
             return RedirectToAction ("Index","Home");
@@ -260,7 +267,6 @@ public class AuthController: BaseController
 
     // Password Reset Flow (2): User submits email address to receive password reset link.
     [HttpPost]
-
     public async Task<IActionResult> ResetEmail (ForgotPasswordViewModel forgotPasswordViewModel)
     {
         if ( !ModelState.IsValid )

@@ -48,7 +48,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
     public async Task<ApplicationUser?> FindByEmailAsync (string email)
     {
         ApplicationUser?  applicationUser
-            = await _userManager.FindByEmailAsync ( email );
+            = await _userManager.FindByEmailAsync ( email.ToString() );
 
         return applicationUser;
     }

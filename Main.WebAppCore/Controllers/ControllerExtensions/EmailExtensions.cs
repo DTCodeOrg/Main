@@ -35,9 +35,9 @@ public static class EmailExtensions
         return result;
     }
 
-    public static async Task<bool> IsEmailConfirmed (IAccountService accountService,string email)
+    public static async Task<bool> IsEmailConfirmed (IAccountService accountService,string? email)
     {
-        bool result = await accountService.IsEmailConfirmedAsync (email);
+        bool result = await accountService.IsEmailConfirmedAsync (email ?? "");
 
         return result;
     }

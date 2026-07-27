@@ -21,11 +21,11 @@ public static class AuthorizationExtensions
      string role,int minutes,int days)
     {
         // 2. Create your tokens after successful sign-in
-        var accessJwt = tokenService.GenerateAccessToken(userId, resolvedTenantId, minutes);
+        var accessJwt = tokenService.GenerateAccessToken(userId.ToString(), resolvedTenantId, minutes);
         var refreshTokenStr = tokenService.GenerateRefreshToken();
 
         // 3. COOKIE 1: Save the short-lived Access JWT (Expires in 15 minutes)
-        context.Response.Cookies.Append ($"..App.AccessToken.{resolvedTenantId}",
+        context.Response.Cookies.Append ($".App.AccessToken.{resolvedTenantId}",
         accessJwt.ToString () ?? "",
         new CookieOptions
         {
@@ -55,7 +55,7 @@ public static class AuthorizationExtensions
     {
         List<Claim> listUserClaims =
         [
-            new Claim (ClaimTypes.NameIdentifier,userId),
+            new Claim (ClaimTypes.NameIdentifier,userId.ToString()),
             new Claim (ClaimTypes.Role,"User"),
             new Claim ("TenantId",resolvedTenantId.ToString()),
             new Claim("TenantRole",formatedTenantRole),
