@@ -465,17 +465,17 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         // For each tenant create 3 users seed
         var testUsersConfigurationSeed = new[]
         {
-            new { UserId = UserId2.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.admin@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Admin", TenantRoleId = 1},
+            new { UserId = UserId2.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.admin@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Admin", TenantRoleId = 1, EmailConfirmed = true },
 
-            new { UserId = UserId3.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.content@test.com", MyTenantId = tenant1.TenantId , TenantRole = "ContentManager", TenantRoleId = 2 },
+            new { UserId = UserId3.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.content@test.com", MyTenantId = tenant1.TenantId , TenantRole = "ContentManager", TenantRoleId = 2, EmailConfirmed = true },
 
-            new { UserId = UserId4.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.member@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Member", TenantRoleId = 3 },
+            new { UserId = UserId4.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.member@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Member", TenantRoleId = 3, EmailConfirmed = true },
 
-            new { UserId = UserId5.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.admin@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "Admin", TenantRoleId = 4 },
+            new { UserId = UserId5.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.admin@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "Admin", TenantRoleId = 4, EmailConfirmed = true },
 
-            new { UserId = UserId6.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.content@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "ContentManager", TenantRoleId = 5 },
+            new { UserId = UserId6.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.content@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "ContentManager", TenantRoleId = 5, EmailConfirmed = true },
 
-            new { UserId = UserId7.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.member@test.com", MyTenantId = tenant2.TenantId , TenantRole = "Member", TenantRoleId = 6 }
+            new { UserId = UserId7.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.member@test.com", MyTenantId = tenant2.TenantId , TenantRole = "Member", TenantRoleId = 6, EmailConfirmed = true }
         };
 
         // Create Tenant Users 
