@@ -148,7 +148,6 @@ public class AuthController: BaseController
             return View (new LoginViewModel ());
         }
 
-        var that = this;
         string email = loginDisplayViewModel?.Email ?? string.Empty;
 
         // 1.2. FIX: Validate form structural rules first (Required fields, Email format, etc.)
@@ -163,9 +162,10 @@ public class AuthController: BaseController
 
         // 3. Validation: User existence and email confirmation rules
         bool result = await IsEmailConfirmed (email);
-
+        var that = this!;
         if ( !result )
         {
+
             await SendVerifyEmail (( IUrlHelper ) that,email,HttpContext);
 
             return View (new LoginViewModel ());

@@ -62,6 +62,7 @@ public class BaseEntity: RootBaseEntity, IMustHaveTenant
         get;
         set;
     }
+
     public Guid MyTenantId
     {
         get;
