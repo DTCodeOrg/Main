@@ -31,7 +31,7 @@ public interface IAccountService
     Task<bool> IsEmailConfirmedAsync (string email);
 
     Task<bool> PasswordSignInAsync
-    (string userName,string password,bool isPersistent,bool lockoutOnFailure);
+    (string email,string password,bool isPersistent,bool lockoutOnFailure);
 
     Task SignOutAsync ();
 

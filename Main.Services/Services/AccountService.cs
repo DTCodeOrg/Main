@@ -244,9 +244,9 @@ public class AccountService: IAccountService
     }
 
     public async Task<bool> PasswordSignInAsync
-    (string userName,string password,bool isPersistent,bool lockoutOnFailure)
+    (string email,string password,bool isPersistent,bool lockoutOnFailure)
     {
-        var result = await _userRepository.PasswordSignInAsync (userName,password,isPersistent,lockoutOnFailure);
+        var result = await _userRepository.PasswordSignInAsync (email,password,isPersistent,lockoutOnFailure);
 
         return result;
     }

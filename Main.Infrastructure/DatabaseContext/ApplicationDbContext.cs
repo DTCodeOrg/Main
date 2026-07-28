@@ -306,12 +306,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     private void TenantGlobalQueryFilter (ModelBuilder builder)
     {
         // Example: Access the live property when saving data
-        _logger.LogWarning ("Saving data for Tenant Id: " + ResolvedTenantId.ToString ());
-
-        // This automatically filters every query on ApplicationUser 
-        // to ONLY return users belonging to the active tenant
-        _ = builder.Entity<ApplicationUser> ()
-            .HasQueryFilter (u => u.TenantUsers.Any (tu => tu.MyTenantId == ResolvedTenantId));
+        _logger.LogWarning ("Query data for Tenant Id: " + ResolvedTenantId.ToString ());
 
         _ = builder.Entity<Tenant> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 

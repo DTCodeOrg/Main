@@ -19,13 +19,15 @@ public class AuthController: BaseController
     private readonly IAccountService _userAccountService;
     private readonly IEmailSenderService _emailService;
     private readonly ITokenService _tokenService;
+    private readonly ILogger<ExceptionLoggingService>  _logger;
 
     public AuthController (
         IAccountService userAccountService,
         ITenantContext userContext,
         IEmailSenderService emailService,
         ITenantSetter tenantSetter,
-        ITokenService tokenService
+        ITokenService tokenService,
+        ILogger<ExceptionLoggingService> logger
        )
     {
         _userAccountService = userAccountService;
@@ -33,6 +35,7 @@ public class AuthController: BaseController
         _emailService = emailService;
         _tenantSetter = tenantSetter;
         _tokenService = tokenService;
+        _logger = logger;
     }
 
     // Registration Flow 1: User accesses the registration page
@@ -166,10 +169,17 @@ public class AuthController: BaseController
         // 2 Application User needed for User Id
         ApplicationUserDataModel? applicationUser = await _userAccountService.GetApplicationUser (email);
 
+
+        _logger.LogWarning ("Appli User Email:" + applicationUser?.Email!);
+
+        _logger.LogWarning ("Appli User Id:" + applicationUser?.Id!);
+
+        _logger.LogWarning ("Appli Tenant Id:" + applicationUser?.MyTenantId!);
+
         // 3. Validation: User existence and email confirmation rules
         bool result = await IsEmailConfirmed (email);
+        _logger.LogWarning ("Email Confirmed: " + result + "...");
 
-        _ = this!;
         if ( !result )
         {
 
@@ -178,8 +188,14 @@ public class AuthController: BaseController
             return View (new LoginViewModel ());
         }
 
+
+
         // 4. User password submission check
-        bool signinresult = await _userAccountService.PasswordSignInAsync (applicationUser?.UserName!,loginDisplayViewModel?.Password!,isPersistent: false, lockoutOnFailure: false);
+        bool signinresult = await _userAccountService.PasswordSignInAsync (applicationUser?.Email!,loginDisplayViewModel?.Password!,isPersistent: false, lockoutOnFailure: false);
+
+        // 3. Validation: User existence and email confirmation rules
+
+        _logger.LogWarning ("Signin Success: " + signinresult + "...");
 
         // 5. Login successful workflow execution
         if ( signinresult )
