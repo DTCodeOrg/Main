@@ -19,6 +19,28 @@ public class AccountService: IAccountService
         _tenantUserRepository = tenantUserRepository;
     }
 
+    public async Task<ApplicationUserDataModel?> GetApplicationUser
+    (string? email)
+    {
+        ApplicationUser? applicationUser
+        = await _userRepository.FindByEmailAsync ( email ?? "" );
+
+        if ( applicationUser == null )
+        {
+            return null;
+        }
+
+        ApplicationUserDataModel? applicationUserDataModel
+        = new ()
+        {
+            Id = applicationUser?.Id!,
+            UserName = applicationUser?.UserName,
+            Email = applicationUser?.Email
+        };
+
+        return applicationUserDataModel;
+    }
+
     public async Task<IdentityResult> CreateApplicationUserAccount (UserAccountDataModel userAccountDataModel)
     {
         ApplicationUser userIdentityEntity = CreateApplicationUser(userAccountDataModel);
@@ -95,7 +117,8 @@ public class AccountService: IAccountService
             Id = applicationUser?.Id!,
             UserName = applicationUser?.UserName,
             Email = applicationUser?.Email,
-            MyTenantId = tenantUser.MyTenantId
+            MyTenantId = tenantUser.MyTenantId ,
+
         };
 
         return applicationUserDataModel;
@@ -221,9 +244,9 @@ public class AccountService: IAccountService
     }
 
     public async Task<bool> PasswordSignInAsync
-    (string userName,string password,bool isPersistent,bool lockoutOnFailure)
+    (string email,string password,bool isPersistent,bool lockoutOnFailure)
     {
-        var result = await _userRepository.PasswordSignInAsync (userName,password,isPersistent,lockoutOnFailure);
+        var result = await _userRepository.PasswordSignInAsync (email,password,isPersistent,lockoutOnFailure);
 
         return result;
     }

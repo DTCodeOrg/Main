@@ -1,10 +1,10 @@
 using Main.Infrastructure;
 using Main.Services;
-using Main.WebAppCore.ActionFilters;
 using Main.WebAppCore.DependentServices;
 using Main.WebAppCore.DepententServices;
 using Main.WebAppCore.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Options;
 using ResourceLibrary.Resources;
 using Serilog;
 
@@ -35,6 +35,7 @@ internal class Program
 
         // --- 2. Core Infrastructure & DI Services ---
         _ = builder.Services.AddHttpContextAccessor ();
+        _ = builder.Services.AddDistributedMemoryCache ();
         _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
 
@@ -42,17 +43,25 @@ internal class Program
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
-        _ = builder.Services.AddSessionMemoryCache (builder.Configuration);
+
+
+        // Inside Program.cs, mirror your isolation architecture for Sessions
+        _ = builder.Services.AddSession (options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.IdleTimeout = TimeSpan.FromMinutes (20); // Keep session lifecycles tight
+        });
+        _ = builder.Services.AddTransient<IConfigureOptions<SessionOptions>,TenantSessionOptionsSetup> ();
+
+        // Inject Options Setup Patches
+        _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionsSetup> ();
+        // Enable Core Antiforgery and Session Foundations
+        _ = builder.Services.AddAntiforgery ();
+
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
-
-        // --- 3. Antiforgery & Security Setup ---
-        _ = builder.Services.AddAntiforgery (options =>
-        {
-            options.HeaderName = "X-XSRF-TOKEN";
-        });
-
-        _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryCookieOptions> ();
 
         _ = builder.Services.AddAuthorizations (builder.Configuration);
         _ = builder.Services.AddAuthentication (builder.Configuration);
@@ -63,12 +72,10 @@ internal class Program
             _ = pipeline.CompileLessFiles ();
         });
 
-        // --- 5. Unified Controller Routing Registration ---
-        _ = builder.Services.AddControllersWithViews (options =>
+        // Instead, find where you register services (near the top) and update it to this:
+        _ = builder.Services.AddControllers (options =>
         {
-            // Injecting the dynamic tenant anti-forgery validation filter safely
-            options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof
-            (TenantAntiforgeryFilter)));
+            options.Filters.Add (new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute ());
         });
 
         var app = builder.Build();
@@ -97,7 +104,9 @@ internal class Program
         }
 
         _ = app.UseGlobalExceptionHandling ();
+
         _ = app.UseStatusCodePages ();
+
         _ = app.UseWebOptimizer ();
 
         // 3. THIRD: Resolve tenancy using the freshly parsed proxy Host header
@@ -105,30 +114,40 @@ internal class Program
 
         // 4. FOURTH: Safe to handle HTTPS, Routing, and Static Assets
         _ = app.UseHttpsRedirection (); // Now safely reads X-Forwarded-Proto
+
         _ = app.UseStaticFiles ();
+
         _ = app.UseRouting ();
 
-
         _ = app.UseCors ();
-
-        _ = app.UseSession ();
 
         _ = app.UseResponseCaching ();
 
         _ = app.UseCustomLocalization ();
 
+        _ = app.UseSession ();          // 6. Mount isolated session data bucket
+
+        _ = app.UseAntiforgery ();      // 7. Execute Synchronizer Token Pattern validation
+
         // --- 7. Authentication & Tenant Authorization Defenses ---
         _ = app.UseAuthentication ();
+
         _ = app.UseAuthorization ();
 
         // CRITICAL: Runs after Identity sets up User context, allowing you to validate user claims against active tenant contexts
-        //  _ = app.UseMiddleware<TenantSecurityMiddleware> ();
+        _ = app.UseMiddleware<TenantSecurityMiddleware> ();
 
         // --- 8. Endpoint Mappings ---
         _ = app.MapControllers ();
+
         _ = app.MapControllerRoute (
             name: "MyArea",
             pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+        // FIX: Matches: https://finearts.test -> Home/Index
+        _ = app.MapControllerRoute (
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
 
         await app.RunAsync ();
     }

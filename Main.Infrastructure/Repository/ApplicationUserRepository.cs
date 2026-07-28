@@ -1,8 +1,10 @@
 ﻿using Domain.Model;
+using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace Main.Repository;
@@ -12,13 +14,16 @@ public class ApplicationUserRepository: IApplicationUserRepository
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<ExceptionLoggingService>  _logger;
 
     public ApplicationUserRepository (UserManager<ApplicationUser> userManager,
-    SignInManager<ApplicationUser> signInManager,ApplicationDbContext context)
+    SignInManager<ApplicationUser> signInManager,ApplicationDbContext context,
+    ILogger<ExceptionLoggingService> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _context = context;
+        _logger = logger;
     }
 
     public async Task<bool> AddToRoleAsync (string email,string roleName)
@@ -48,7 +53,10 @@ public class ApplicationUserRepository: IApplicationUserRepository
     public async Task<ApplicationUser?> FindByEmailAsync (string email)
     {
         ApplicationUser?  applicationUser
-            = await _userManager.FindByEmailAsync ( email );
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
+
+        _logger.LogWarning ("Repo Email:" + applicationUser?.Email!);
 
         return applicationUser;
     }
@@ -56,14 +64,19 @@ public class ApplicationUserRepository: IApplicationUserRepository
     public async Task<ApplicationUser?> FindByNameIdAsync (string id)
     {
         ApplicationUser?  applicationUser
-            = await _userManager.FindByIdAsync ( id );
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Id == id.ToString() );
+
+        _logger.LogWarning ("Repo Email (by id):" + applicationUser?.Email!);
 
         return applicationUser;
     }
 
-    public async Task<bool> PasswordSignInAsync (string userName,string password,bool isPersistent,bool lockoutFailure)
+    public async Task<bool> PasswordSignInAsync (string email,string password,bool isPersistent,bool lockoutFailure)
     {
-        ApplicationUser? applicationUser = _context.ApplicationUsers.FirstOrDefault<ApplicationUser> (a => a.UserName == userName);
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
 
         if ( applicationUser == null )
@@ -77,10 +90,13 @@ public class ApplicationUserRepository: IApplicationUserRepository
             isPersistent,
             lockoutOnFailure: lockoutFailure);
 
+        _logger.LogWarning ("Repo signin resut (by eail..):" + result);
+
         if ( result.Succeeded )
         {
             return true;
         }
+
 
         return false;
     }
@@ -95,7 +111,9 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<bool> ChangePasswordAsync (string email,string password,string rePassword)
     {
-        ApplicationUser?  applicationUser = await _userManager.FindByEmailAsync ( email );
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
         if ( applicationUser == null )
         {
@@ -109,7 +127,9 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<string?> GenerateEmailConfirmationTokenAsync (string email)
     {
-        ApplicationUser?  applicationUser = await _userManager.FindByEmailAsync ( email );
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
         if ( applicationUser == null )
         {
@@ -123,7 +143,9 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<bool> ConfirmEmailAsync (string email,string token)
     {
-        ApplicationUser?  applicationUser = await _userManager.FindByEmailAsync ( email );
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
         if ( applicationUser == null )
         {
@@ -137,14 +159,16 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<List<string>> GetRolesAsync (string email)
     {
-        ApplicationUser? user = await FindByEmailAsync(email);
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
-        if ( user == null )
+        if ( applicationUser == null )
         {
             return new List<string> ();
         }
 
-        var roles = await _userManager.GetRolesAsync (user);
+        var roles = await _userManager.GetRolesAsync (applicationUser);
 
         if ( roles == null )
         {
@@ -164,23 +188,27 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<string> GetTenantRolesAsync (string email,Guid tenantId)
     {
-        ApplicationUser? user = await FindByEmailAsync(email);
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
-        if ( user == null )
+        if ( applicationUser == null )
         {
             return "";
         }
 
         TenantUser? userTenants =
         await _context.TenantUsers.FirstOrDefaultAsync<TenantUser>
-        (a => a.MyTenantId == tenantId && a.UserId == user.Id);
+        (a => a.MyTenantId == tenantId && a.UserId == applicationUser.Id);
 
         return userTenants == null ? "" : userTenants.TenantRole;
     }
 
     public async Task<bool> SetLockoutEndDateAsync (string email)
     {
-        ApplicationUser?  applicationUser = await _userManager.FindByEmailAsync (email);
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
         if ( applicationUser == null )
         {
@@ -194,7 +222,9 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<bool> ResetAccessFailedCountAsync (string email)
     {
-        ApplicationUser? applicationUser = await _userManager.FindByEmailAsync (email);
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
         if ( applicationUser == null )
         {
@@ -209,18 +239,20 @@ public class ApplicationUserRepository: IApplicationUserRepository
     public async Task<List<ApplicationUser>?> ApplicationUsers ()
     {
 
-        List<ApplicationUser> identityUsers = await _userManager.Users.ToListAsync<ApplicationUser>();
+        List<ApplicationUser> identityUsers = await _context.ApplicationUsers.ToListAsync<ApplicationUser>();
 
         return identityUsers.ToList ();
     }
 
     public async Task<bool> IsEmailConfirmedAsync (string email)
     {
-        ApplicationUser? user = await _userManager.FindByEmailAsync (email);
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
-        if ( user != null )
+        if ( applicationUser != null )
         {
-            var result = await _userManager.IsEmailConfirmedAsync (user);
+            bool result = applicationUser.EmailConfirmed;
             return result;
         }
 
@@ -229,11 +261,13 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task AddClaimAsync (string email,Claim claimType)
     {
-        ApplicationUser? user = await _userManager.FindByEmailAsync (email);
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
-        if ( user != null )
+        if ( applicationUser != null )
         {
-            _ = await _userManager.AddClaimAsync (user,claimType);
+            _ = await _userManager.AddClaimAsync (applicationUser,claimType);
         }
     }
 
@@ -244,11 +278,13 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<string> GeneratePasswordResetTokenAsync (string email)
     {
-        ApplicationUser? user = await _userManager.FindByEmailAsync (email);
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
-        if ( user != null )
+        if ( applicationUser != null )
         {
-            string result = await _userManager.GeneratePasswordResetTokenAsync(user);
+            string result = await _userManager.GeneratePasswordResetTokenAsync(applicationUser);
             return result;
         }
 
@@ -257,11 +293,13 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<bool> ResetPasswordAsync (string email,string token,string confirmPassword)
     {
-        ApplicationUser? user = await _userManager.FindByEmailAsync (email);
+        ApplicationUser?  applicationUser
+            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            (a => a.Email == email.ToString() );
 
-        if ( user != null )
+        if ( applicationUser != null )
         {
-            _ = await _userManager.ResetPasswordAsync (user,token,confirmPassword);
+            _ = await _userManager.ResetPasswordAsync (applicationUser,token,confirmPassword);
             return true;
         }
 

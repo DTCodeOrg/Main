@@ -1,4 +1,6 @@
-﻿<!doctype html>
+﻿
+
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -30,15 +32,18 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-    
+    <!-- 1. Inject Antiforgery Service and embed safe payload into Page Metadata -->
+    @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+    @{
+        var tokens = Antiforgery.GetAndStoreTokens(Context);
+    }
+    <meta name="xsrf-token" content="@tokens.RequestToken" />
 
     @RenderSection( "Styles",required: false )
 
 </head>
 
 <body>
-    <!-- Render this EXACTLY ONCE here for the entire application -->
-    @* @Html.AntiForgeryToken() *@
 
     <span id="pick"></span>
 

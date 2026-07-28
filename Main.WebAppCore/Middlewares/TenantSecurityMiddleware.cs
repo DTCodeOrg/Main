@@ -14,29 +14,26 @@ public class TenantSecurityMiddleware
 
     public async Task InvokeAsync (HttpContext context,ITenantSetter tenantSetter)
     {
-        // Only run this check if the user is successfully authenticated
+        // Only run this validation boundary check if the user is successfully logged in
         if ( context.User.Identity?.IsAuthenticated == true )
         {
-            // 1. Get the TenantId embedded securely inside the user's login session
+            // 1. Get the TenantId embedded securely inside the user's identity claims matrix
             var userTenantId = context.User.FindFirst("TenantId")?.Value;
 
-            // 2. Get the TenantId that matches the current browser URL
-            var resolvedTenantId = tenantSetter.CurrentTenantId;
+            // 2. Get the TenantId matching the active browser Nginx proxy URL mapping
+            var resolvedTenantId = tenantSetter.CurrentTenantId.ToString();
 
-            // 3. ENFORCE ISOLATION: Reject if they don't match
-            if ( string.Equals (userTenantId,resolvedTenantId.ToString (),StringComparison.OrdinalIgnoreCase) )
+            // 3. FIX: ENFORCE ISOLATION (Blocks requests where the claim DOES NOT match the current route domain)
+            if ( string.IsNullOrEmpty (userTenantId) || !string.Equals (userTenantId,resolvedTenantId,StringComparison.OrdinalIgnoreCase) )
             {
-                // Sign out or short-circuit with a 403 Forbidden page
+                // Set status code to 403 Forbidden
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                context.Response.ContentType = "text/plain";
+
                 await context.Response.WriteAsync ("Access Denied: You do not belong to this tenant space.");
-
-
-
-                return; // Stop the request pipeline immediately
+                return; // Short-circuit and stop the request pipeline immediately
             }
         }
-
-        /// ArgumentNullException.ThrowIfNull (tenantSetter);
 
         await _next (context);
     }

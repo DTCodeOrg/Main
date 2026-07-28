@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Serilog;
 
 namespace Main.WebAppCore.ActionFilters;
 
@@ -19,78 +20,71 @@ public class TenantAntiforgeryFilter: IAsyncActionFilter
     {
         var httpContext = context.HttpContext;
 
-        // 1. Resolve current tenant ID from request headers map
-        if ( !httpContext.Request.Headers.TryGetValue (TenantHeaderKey,out var tenantId) || string.IsNullOrEmpty (tenantId) )
-        {
-            tenantId = "Default";
-        }
+        // 1. Fetch the tenant cleanly from your DI service (hydrated by your resolver middleware)
+        string activeTenantId = _tenantSetter.CurrentTenantId.ToString();
+        string tenantCookieName = $"{BaseCookieName}.{activeTenantId}";
 
-        string tenantCookieName = $"{BaseCookieName}.{tenantId}";
-
-        // 2. Handle safe HTTP GET requests (Generate & Drop Tenant Cookie)
+        // 2. GET Requests: Generate token and append the suffixed cookie
         if ( HttpMethods.IsGet (httpContext.Request.Method) )
         {
-            var tokens = _antiforgery.GetAndStoreTokens(httpContext);
+            var tokens = _antiforgery.GetTokenSet(httpContext);
 
-            // Write tenant-suffixed cookie to response headers
             httpContext.Response.Cookies.Append (tenantCookieName,tokens.CookieToken!,new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Path = "/"
+                Path = "/" // Always keep path global; isolation happens via name suffix
             });
 
             _ = await next ();
             return;
         }
 
-        // 3. Backup the original cookie header state before modifying it
-        string originalCookieHeader = httpContext.Request.Headers.Cookie.ToString();
+        // 3. POST/PUT Requests: Extract and swap the parsed feature collection
+        var cookiesFeature = httpContext.Features.Get<IRequestCookiesFeature>();
+        var originalCookiesCollection = cookiesFeature?.Cookies ?? httpContext.Request.Cookies;
 
-        // 4. Modify the context layout strictly for validation processing
-        if ( httpContext.Request.Cookies.TryGetValue (tenantCookieName,out var tokenValue) )
-        {
-            // Force overwrite the cookie header to match standard layout expected by EF Core/ASP.NET Core
-            httpContext.Request.Headers.Cookie = $"{BaseCookieName}={tokenValue}";
-        }
+        _ = originalCookiesCollection.TryGetValue (tenantCookieName,out var tenantCookieValue);
 
         try
         {
-            // 5. Execute validation engine using the temporary morphed cookie layout
-            await _antiforgery.ValidateRequestAsync (httpContext);
-
-            Log.Information ("Antiforgery token successfully verified for Tenant: {TenantId}",tenantId);
-        }
-        catch ( AntiforgeryValidationException ex )
-        {
-            // Log security breach using global Serilog static class instance
-            Log.Warning (ex,"Antiforgery security validation token failed for Tenant: {TenantId}",tenantId);
-
-            context.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.HttpContext.Response.ContentType = "application/json";
-            await context.HttpContext.Response.WriteAsJsonAsync (new
+            if ( !string.IsNullOrEmpty (tenantCookieValue) )
             {
-                Error = "Security validation failed. Missing or invalid token layout."
-            });
+                var tempCookies = originalCookiesCollection.ToDictionary(k => k.Key, k => k.Value);
 
-            return; // Short-circuit execution path
+                // Swap the tenant value into the default configuration position
+                tempCookies[BaseCookieName] = tenantCookieValue;
+
+                var customCookiesFeature = new RequestCookiesFeature(httpContext.Features)
+                {
+                    Cookies = new RequestCookieCollection(tempCookies)
+                };
+                httpContext.Features.Set<IRequestCookiesFeature> (customCookiesFeature);
+            }
+
+            // Validate natively using the swapped layout
+            await _antiforgery.ValidateRequestAsync (httpContext);
+        }
+        catch ( AntiforgeryValidationException )
+        {
+            context.Result = new BadRequestObjectResult (new
+            {
+                Error = "Security validation failed."
+            });
+            return;
         }
         finally
         {
-            // 6. RESTORE PREVIOUS COOKIE ENVIRONMENT 
-            // This block always runs whether validation succeeds or fails!
-            if ( !string.IsNullOrEmpty (originalCookieHeader) )
+            // 4. Restore state back to original
+            var restoreFeature = new RequestCookiesFeature(httpContext.Features)
             {
-                httpContext.Request.Headers.Cookie = originalCookieHeader;
-            }
-            else
-            {
-                _ = httpContext.Request.Headers.Remove ("Cookie");
-            }
+                Cookies = originalCookiesCollection
+            };
+            httpContext.Features.Set<IRequestCookiesFeature> (restoreFeature);
         }
 
-        // 7. Proceed into target controller action seamlessly with original context intact
         _ = await next ();
     }
+
 }

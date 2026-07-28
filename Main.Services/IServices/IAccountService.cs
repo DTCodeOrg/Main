@@ -6,6 +6,8 @@ namespace Main.Services;
 
 public interface IAccountService
 {
+    Task<ApplicationUserDataModel?> GetApplicationUser
+    (string? email);
     Task<IdentityResult> CreateApplicationUserAccount (UserAccountDataModel userAccountDataModel);
 
     Task<ApplicationUserDataModel?> GetApplicationUser (string email,Guid tenantId);
@@ -29,7 +31,7 @@ public interface IAccountService
     Task<bool> IsEmailConfirmedAsync (string email);
 
     Task<bool> PasswordSignInAsync
-    (string userName,string password,bool isPersistent,bool lockoutOnFailure);
+    (string email,string password,bool isPersistent,bool lockoutOnFailure);
 
     Task SignOutAsync ();
 

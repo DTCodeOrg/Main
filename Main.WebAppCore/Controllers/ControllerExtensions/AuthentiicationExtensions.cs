@@ -11,12 +11,6 @@ public static class AuthentiicationExtensions
     ApplicationUserDataModel? applicationIdentityUserDataModel,
     LoginViewModel loginDisplayViewModel,Guid resolvedTenantId)
     {
-        if ( applicationIdentityUserDataModel == null )
-        {
-            loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
-
-            return true;
-        }
 
 
         if ( applicationIdentityUserDataModel?.MyTenantId.ToString () != resolvedTenantId.ToString () )
@@ -24,19 +18,6 @@ public static class AuthentiicationExtensions
             loginDisplayViewModel.Message = "Invalid login attempt. Please, check your email if you have any account in this website.";
 
             return true;
-        }
-
-        if ( !await EmailExtensions.IsEmailConfirmed (accountService,loginDisplayViewModel) )
-        {
-            loginDisplayViewModel.Message = "Invalid login attempt. Please, check your email if you have any account in this website.";
-
-            loginDisplayViewModel.EmailConfirmed = false;
-
-            return true;
-        }
-        else
-        {
-            loginDisplayViewModel.EmailConfirmed = true;
         }
 
         return false;

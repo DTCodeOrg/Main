@@ -23,7 +23,7 @@ namespace Main.WebAppCore.Controllers
         public async Task<IActionResult> Refresh ()
         {
             var tenantId = _tenantSetter.CurrentTenantId;
-            var cookieName = $".App.RefreshToken.{tenantId.ToString()}";
+            var cookieName = $".App.RefreshToken.{tenantId}";
 
             // Extract token from the secure cookie
             if ( !Request.Cookies.TryGetValue (cookieName,out var currentRefreshToken) )
@@ -35,14 +35,14 @@ namespace Main.WebAppCore.Controllers
             {
                 // Execute the service logic
                 var tokenResult = await _tokenService.RotateRefreshTokenAsync
-                    (currentRefreshToken, tenantId!,_tenantContext.ApplicationUserId);
+            (currentRefreshToken, tenantId, _tenantContext.ApplicationUserId);
 
                 if ( tokenResult == null )
                 {
                     return Unauthorized ("Invalid or expired token.");
                 }
 
-                // 3. COOKIE 1: Save the short-lived Access JWT (Expires in 15 minutes)
+                // 1. COOKIE 1: Save the short-lived Access JWT (Expires in 15 minutes)
                 Response.Cookies.Append ($".App.AccessToken.{tenantId}",
                 tokenResult.AccessToken.ToString () ?? "",
                 new CookieOptions
@@ -54,14 +54,15 @@ namespace Main.WebAppCore.Controllers
                     Path = "/"         // Accessible by all pages in your app
                 });
 
-                // 4. COOKIE 2: Save the long-lived Refresh Token (Expires in 7 days)
+                // 2. COOKIE 2: Save the long-lived Refresh Token (Expires in 7 days)
                 Response.Cookies.Append ($".App.RefreshToken.{tenantId}",tokenResult.RefreshToken,new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTimeOffset.UtcNow.AddDays (7),
-                    Path = "/account/refresh-token"// Locked down specifically to your refresh endpoint
+                    // FIX: Aligned path value to match your actual [HttpPost("refresh-token")] route
+                    Path = "/refresh-token"
                 });
 
                 // Return the fresh access JWT in the JSON payload
@@ -77,5 +78,6 @@ namespace Main.WebAppCore.Controllers
                 return Unauthorized (ex.Message);
             }
         }
+
     }
 }

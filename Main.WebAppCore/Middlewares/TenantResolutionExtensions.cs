@@ -20,8 +20,8 @@ public static class TenantResolutionExtensions
         ILogger<ExceptionLoggingService> logger)
     {
         var rawHost = context.Request.Host.Value;
-        //logger.LogWarning (context.Request.Host.Host.ToString ());
-        //logger.LogWarning (rawHost.ToString ());
+        logger.LogWarning (context.Request.Host.Host.ToString ());
+        logger.LogWarning (rawHost.ToString ());
         string? tenantHost = //context.ResolveFromSubdomain(rawHost)
                            // ?? 
                             context.ResolveFromDomain(rawHost);

@@ -1,16 +1,20 @@
 ﻿using Domain.Model;
 using Main.Common;
+using Main.Infrastructure.CrosscuttingHelperServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Data;
 
 namespace Main.Infrastructure.DatabaseContext;
 
 public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 {
-    public readonly Guid resolvedTenantId;
-    public readonly ITenantContext _tenantContext;
+    // 1. Store the interface instance, NOT the raw Guid value
+    private readonly ITenantSetter _tenantSetter;
+    private readonly ITenantContext _tenantContext;
+    private readonly ILogger<ExceptionLoggingService> _logger;
 
     public static readonly Guid[] guidArray = new[]
     {
@@ -39,11 +43,14 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     }
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,
-    ITenantSetter tenantSetter,ITenantContext tenantContext) : base (options)
+    ITenantSetter tenantSetter,ITenantContext tenantContext,ILogger<ExceptionLoggingService> logger) : base (options)
     {
-        resolvedTenantId = tenantSetter.CurrentTenantId;
-
+        // Save the reference to the scoped service
+        _tenantSetter = tenantSetter;
         _tenantContext = tenantContext;
+        _logger = logger;
+
+        logger.LogWarning ("Constructor Resolved Tenant Id: " + _tenantSetter.CurrentTenantId.ToString ());
     }
 
     public DbSet<ApplicationUser> ApplicationUsers
@@ -136,6 +143,9 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         get; set;
     }
 
+    // 2. Create a dynamic property that always fetches the live value
+    public Guid ResolvedTenantId => _tenantSetter.CurrentTenantId;
+
     protected override void OnModelCreating (ModelBuilder builder)
     {
         base.OnModelCreating (builder);
@@ -155,12 +165,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
                 NormalizedName = "USER"
             }
         );
-
-        // 2. SEED USERS NEXT
-        // Make sure your seeded IdentityUser entities have IDs matching:
-        // "00000002-0000-0000-0000-000000000000" through "00000008-0000-0000-0000-000000000000"
-
-
 
         FluentApiConfiguration (builder);
 
@@ -301,46 +305,44 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     // Initially, the CurrentTenantId is set in the TenantMiddleware, which is executed before the DbContext is created.
     private void TenantGlobalQueryFilter (ModelBuilder builder)
     {
-        string currentTenant = resolvedTenantId.ToString();
+        // Example: Access the live property when saving data
+        _logger.LogWarning ("Query data for Tenant Id: " + ResolvedTenantId.ToString ());
 
-        Guid myTenantId = new(currentTenant);
+        _ = builder.Entity<Tenant> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<Tenant> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<TenantUser> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<TenantUser> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<TenantInvitation> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<TenantInvitation> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<Product> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<Product> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<ProductImageFile> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<ProductImageFile> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<ProductComment> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<ProductComment> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<AdminPost> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<AdminPost> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<AdminImageFile> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<AdminImageFile> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<AdminPostComment> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<AdminPostComment> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<Post> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<Post> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<Panel> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<Panel> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<Page> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<Page> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<AValue> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<AValue> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<ExceptionLog> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<ExceptionLog> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
-
-        _ = builder.Entity<UserRefreshToken> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+        _ = builder.Entity<UserRefreshToken> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
     }
 
     // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes for (entries with added, modified and deleted sattus)
     private void ApplyBaseDataTenantId ()
     {
-        string  currentTenant = resolvedTenantId.ToString ();
-        Guid?  myTenantId = (Guid?)resolvedTenantId;
+        Guid?  myTenantId = (Guid?) ResolvedTenantId;
 
         BaseDataModel createDataModel = _tenantContext.GetCreateBaseDataModel ();
         BaseDataModel updateDataModel = _tenantContext.GetUpdateBaseDataModel ();
@@ -377,12 +379,18 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         ApplyBaseDataTenantId ();
 
+        // Example: Access the live property when saving data
+        _logger.LogWarning ("Saving data for Tenant Id: " + ResolvedTenantId.ToString ());
+
         return base.SaveChanges (acceptAllChangesOnSuccess);
     }
 
     public override Task<int> SaveChangesAsync (bool acceptAllChangesOnSuccess,CancellationToken cancellationToken = default)
     {
         ApplyBaseDataTenantId ();
+
+        // Example: Access the live property when saving data
+        _logger.LogWarning ("Saving data for Tenant Id: " + ResolvedTenantId.ToString ());
 
         return base.SaveChangesAsync (acceptAllChangesOnSuccess,cancellationToken);
     }
@@ -465,17 +473,17 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         // For each tenant create 3 users seed
         var testUsersConfigurationSeed = new[]
         {
-            new { UserId = UserId2.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.admin@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Admin", TenantRoleId = 1},
+            new { UserId = UserId2.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.admin@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Admin", TenantRoleId = 1, EmailConfirmed = true },
 
-            new { UserId = UserId3.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.content@test.com", MyTenantId = tenant1.TenantId , TenantRole = "ContentManager", TenantRoleId = 2 },
+            new { UserId = UserId3.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.content@test.com", MyTenantId = tenant1.TenantId , TenantRole = "ContentManager", TenantRoleId = 2, EmailConfirmed = true },
 
-            new { UserId = UserId4.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.member@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Member", TenantRoleId = 3 },
+            new { UserId = UserId4.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.member@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Member", TenantRoleId = 3, EmailConfirmed = true },
 
-            new { UserId = UserId5.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.admin@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "Admin", TenantRoleId = 4 },
+            new { UserId = UserId5.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.admin@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "Admin", TenantRoleId = 4, EmailConfirmed = true },
 
-            new { UserId = UserId6.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.content@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "ContentManager", TenantRoleId = 5 },
+            new { UserId = UserId6.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.content@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "ContentManager", TenantRoleId = 5, EmailConfirmed = true },
 
-            new { UserId = UserId7.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.member@test.com", MyTenantId = tenant2.TenantId , TenantRole = "Member", TenantRoleId = 6 }
+            new { UserId = UserId7.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.member@test.com", MyTenantId = tenant2.TenantId , TenantRole = "Member", TenantRoleId = 6, EmailConfirmed = true }
         };
 
         // Create Tenant Users 
