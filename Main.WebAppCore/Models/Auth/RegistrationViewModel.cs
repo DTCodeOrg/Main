@@ -52,7 +52,7 @@ public class RegistrationViewModel: BaseViewModel
 
     [Required (ErrorMessageResourceName = "ClientNameRequired",ErrorMessageResourceType = typeof (SharedResource))]
     [Display (Name = "ClientName",Prompt = "ClientNamePlaceholder",ResourceType = typeof (SharedResource))]
-    public string ClientName
+    public string? ClientName
     {
         get; set;
     }
