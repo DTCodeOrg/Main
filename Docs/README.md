@@ -1,3 +1,152 @@
+# Nginx (Localhost with Custom Domains)
+Nginx is a reverse proxy for a web server, which can listen to both http and https protocols and terminate the https secure certificate and forward to a Kristel server running a .NET Web Application.  
+
+Ngixn is listening to standard port 80 for http and 443 for https.  
+
+In this Nginx Config script, of the nginx, the test is done in the local windows environment. The browser sends the request to the host file in the laptop host file. If the request (domain) to the host file is not present, it forwards browser request to the local internet service provider's DNS server.  
+
+**Host File: hosts (open with note pad)** 
+
+**Location: C:\Windows\System32\drivers\etc**  
+
+**Multi-tenant Local Development Domains (Host File)** 
+
+**127.0.0.1 finearts.test**  
+
+**127.0.0.1 lifestyles.test**  
+
+**127.0.0.1 localhost** 
+
+**127.0.0.1 app.internal** 
+
+The host in the local machine is configured with two domains. It is then forwarded to the nginx web server. In the Nginx server config, it knows the browser hosts (in Nginx config), and it strips the certificate, then forwards to .NET 8.0 web application pipeline.  
+
+.NET Krestel Server is listening to the port: 5000 and with http://127.0.0.1:5000. The communication between Nginx and .NET Krestel server is using http protocol. 
+
+**Exe File Location:** D:\nginx-1.31.3\
+
+**File Name: nginx.conf** 
+
+**Location: D:\nginx-1.31.3\conf** 
+
+You can keep the folder in any drive. For making the path short, in the root of any drive is good to go. The following are the contents of the Nginx configuration file. 
+
+**#Global configurations (Must be at the top)** 
+
+worker_processes 1; 
+
+events { worker_connections 1024; } 
+
+**#The parent HTTP context block** 
+
+http { 
+
+**#Expand global buffer limits to prevent Cookie Bloat crashes** 
+ 
+client_header_buffer_size 8k; 
+large_client_header_buffers 4 32k; 
+include       mime.types; 
+default_type  application/octet-stream; 
+sendfile        on; 
+keepalive_timeout  65; 
+ 
+**#Redirect all HTTP traffic to HTTPS automatically** 
+ 
+server {    
+
+ listen       80; 
+ 
+   server_name  localhost finearts.test lifestyles.test app.imternal; 
+   
+   return 301 https://$host$request_uri; 
+} 
+ 
+**#Secure local HTTPS server block** 
+ 
+server { 
+
+   listen       443 ssl; 
+   
+   server_name    localhost finearts.test lifestyles.test app.imternal; 
+ 
+ 
+  **#Paths to your mkcert local SSL certificates** 
+ 
+   ssl_certificate      ssl/localhost+3.pem; 
+   
+   ssl_certificate_key  ssl/localhost+3-key.pem; 
+ 
+   **#Recommended local development SSL settings** 
+ 
+   ssl_protocols        TLSv1.2 TLSv1.3; 
+   
+   ssl_ciphers          HIGH:!aNULL:!MD5; 
+ 
+**#Allow image binary uploads up to 15MB** 
+ 
+client_max_body_size 15M; 
+    
+location / { 
+
+        
+   **#Route traffic to your local .NET application** 
+
+ 
+       proxy_pass         http: //127.0.0.1: 5000; 
+       proxy_http_version 1.1; 
+
+ 
+   **#Stream large image file payloads directly without disk-caching in Nginx** 
+ 
+   proxy_request_buffering off; 
+   
+   proxy_buffering off; 
+ 
+   **#Forward original protocol metadata down to .NET**    
+   
+   **#Forward headers so .NET reads the multi-tenant host context accurately** 
+
+ 
+       proxy_set_header   Host $host; 
+       proxy_set_header X-Real-IP $remote_addr; 
+ 
+       proxy_set_header   X-Forwarded-Host $host; 
+       proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for; 
+       proxy_set_header   X-Forwarded-Proto $scheme; 
+
+        
+       **#WebSocket and connection persistence headers** 
+ 
+       proxy_set_header   Upgrade $http_upgrade; 
+       proxy_set_header   Connection "upgrade"; 
+       proxy_cache_bypass $http_upgrade; 
+   } 
+} 
+} 
+
+# PowerShell Commands (Nginx): 
+
+cd D:\nginx-1.31.3\conf 
+
+Start-Process .\nginx.exe\ 
+
+Start-Process -FilePath "D:\nginx-1.31.3\nginx.exe" -ArgumentList "-s reload" -NoNewWindow –Wait 
+
+.\nginx.exe -s stop 
+
+# PowerShell Commands (Create Certificate): 
+
+(D:\nginx-1.31.3\conf\ssl) 
+
+mkdir ssl 
+
+cd ssl 
+
+.\mkcert.exe localhost finearts.test lifestyles.test 
+
+<img width="558" height="253" alt="certificate" src="https://github.com/user-attachments/assets/f7e6c960-78c6-4e3b-a771-aa001b58300d" />
+
+
 # 🏬🛍️Shopping Mall Web App (Multi-Tenant SaaS)
 
 **We are developing a multi-tenant stores web application. A store is called tenant ⇄ A tenant is a store. (vice versa)** 
