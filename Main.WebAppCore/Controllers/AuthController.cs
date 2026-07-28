@@ -69,8 +69,7 @@ public class AuthController: BaseController
 
             if ( result.Succeeded )
             {
-                await SendVerifyEmail
-                (( IUrlHelper ) that,email,HttpContext);
+                await SendVerifyEmail (email,HttpContext);
 
                 return RedirectToAction ("VerifyEmailSent");
             }
@@ -84,17 +83,24 @@ public class AuthController: BaseController
     }
 
     public async Task SendVerifyEmail
-    (IUrlHelper urlHelper,string? email,HttpContext context)
+    (string? email,HttpContext context)
     {
         string localEmail = email ??  string.Empty ;
         string emailVerifyToken = await _userAccountService.GetEmailVerifyToken (localEmail);
 
-        string verifyLink = UrlExtensions.GenerateUrlLink
-        ( urlHelper, localEmail ,emailVerifyToken,"VerifyLink","Auth",context);
+        string? verifyLink = Url.Action(
+            action: "VerifyLink",
+            controller: "Auth",
+            values: new
+            {
+                Email = email, Token = emailVerifyToken
+            },
+            protocol: Request.Scheme
+        );
 
         var verifyEmailDataModel = new VerifyDataModel ()
         {
-            Email = localEmail , VerifyLink = verifyLink
+            Email = localEmail , VerifyLink = verifyLink!
         };
 
         await _emailService.SendEmailVerificationAsync (verifyEmailDataModel);
@@ -162,11 +168,12 @@ public class AuthController: BaseController
 
         // 3. Validation: User existence and email confirmation rules
         bool result = await IsEmailConfirmed (email);
-        var that = this!;
+
+        _ = this!;
         if ( !result )
         {
 
-            await SendVerifyEmail (( IUrlHelper ) that,email,HttpContext);
+            await SendVerifyEmail (email,HttpContext);
 
             return View (new LoginViewModel ());
         }

@@ -38,9 +38,9 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         new Guid(15, 0, 0, new byte[8])
     };
 
-    //public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options)
-    //{
-    //}
+    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options)
+    {
+    }
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,
     ITenantSetter tenantSetter,ITenantContext tenantContext,ILogger<ExceptionLoggingService> logger) : base (options)
