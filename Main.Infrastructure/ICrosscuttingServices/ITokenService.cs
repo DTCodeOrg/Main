@@ -7,7 +7,7 @@ namespace Main.Infrastructure.CrosscuttingHelperServices;
 public interface ITokenService
 {
     Task<string> GenerateAccessToken
-    (string userId,Guid tenantId,string formatedTenantRole,string userRole,string userName,string email,int expiryInMinutes,int days);
+    (string userId,Guid tenantId,string formatedTenantRole,string userRole,string userName,string email,int expiryInMinutes);
 
     string GenerateRefreshToken ();
 
@@ -17,5 +17,5 @@ public interface ITokenService
 
     Task<bool> RevokeUserRefreshTokensAsync (string userId,Guid tenantId);
 
-    Task<TokenResponseModel> RotateRefreshTokenAsync (string currentToken,Guid tenantId,string userId,string formatedTenantRole,string userRole,string userName,string email,int expiryInMinutes,int days);
+    Task<TokenResult> RotateRefreshTokenAsync (string token,Guid tenantId,int accessExpiryMinutes,int refreshExpiryDays);
 }

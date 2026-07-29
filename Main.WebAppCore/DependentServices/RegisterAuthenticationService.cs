@@ -21,7 +21,9 @@ public static class RegisterAuthenticationService
                 // Your standard key validation rules go here...
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = false,
-                ValidateAudience = false
+                ValidateAudience = false,
+                // Map the role string to the built-in identity engine
+                RoleClaimType = "UserRole"
             };
             options.Events = new JwtBearerEvents
             {

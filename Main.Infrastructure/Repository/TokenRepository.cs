@@ -14,6 +14,14 @@ public class TokenRepository: ITokenRepository
         _context = context;
     }
 
+    public async Task<UserRefreshToken?> GetRefreshTokens (string token,Guid tenantId)
+    {
+        var storedTokenRecord = await _context.UserRefreshTokens
+        .FirstOrDefaultAsync(t => t.Token == token && t.MyTenantId == tenantId);
+
+        return storedTokenRecord;
+    }
+
     public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId)
     {
         var activeTokens = await _context.UserRefreshTokens.Where

@@ -236,12 +236,20 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return result.Succeeded == true;
     }
 
-    public async Task<List<ApplicationUser>?> ApplicationUsers ()
+    public async Task<ApplicationUser?> ApplicationUsers (string userId)
     {
+        ApplicationUser? user = await _context.ApplicationUsers.IgnoreQueryFilters<ApplicationUser>()
+        .FirstAsync<ApplicationUser>(a => a.Id == userId);
 
-        List<ApplicationUser> identityUsers = await _context.ApplicationUsers.ToListAsync<ApplicationUser>();
+        return user;
+    }
 
-        return identityUsers.ToList ();
+    public async Task<List<ApplicationUser?>> ApplicationUsers ()
+    {
+        List<ApplicationUser?> userList = await _context.ApplicationUsers.IgnoreQueryFilters<ApplicationUser>()
+        .ToListAsync<ApplicationUser?>();
+
+        return userList;
     }
 
     public async Task<bool> IsEmailConfirmedAsync (string email)

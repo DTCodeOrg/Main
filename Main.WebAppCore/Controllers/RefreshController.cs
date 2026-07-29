@@ -21,55 +21,45 @@ namespace Main.WebAppCore.Controllers
         [HttpPost ("refresh-token")]
         public async Task<IActionResult> Refresh ()
         {
-            var cookieName = $".App.RefreshToken.{_tenantSetter.CurrentTenantId}";
+            var currentTenantId = _tenantSetter.CurrentTenantId;
+            var cookieName = $".App.RefreshToken.{currentTenantId}";
 
-            // Extract token from the secure cookie
-            if ( !Request.Cookies.TryGetValue (cookieName,out var currentRefreshToken) )
+            // 1. Extract raw refresh token from the cookie securely
+            if ( !Request.Cookies.TryGetValue (cookieName,out var currentRefreshToken) || string.IsNullOrEmpty (currentRefreshToken) )
             {
                 return Unauthorized ("Missing token.");
             }
 
             try
             {
-                // Execute the service logic
-                var tokenResult =
-                    await _tokenService.RotateRefreshTokenAsync
-                        (currentRefreshToken ?? "", _tenantSetter.CurrentTenantId,
-                        _tenantContext.ApplicationUserId,
-                        _tenantContext.GetCurrentTenantRole() ?? "",
-                        _tenantContext.User?.FindFirst("UserRole")?.Value ?? "",
-                        _tenantContext.User?.FindFirst("UserName")?.Value ?? "",
-                        _tenantContext.User?.FindFirst("Email")?.Value ?? "",15,7);
+                // 2. Clear application contextual metadata; pass only token and tenant to the service
+                var tokenResult = await _tokenService.RotateRefreshTokenAsync(currentRefreshToken, currentTenantId, 15, 7);
 
                 if ( tokenResult == null )
                 {
                     return Unauthorized ("Invalid or expired token.");
                 }
 
-                // 1. COOKIE 1: Save the short-lived Access JWT (Expires in 15 minutes)
-                Response.Cookies.Append ($".App.AccessToken.{_tenantSetter.CurrentTenantId}",
-                tokenResult.AccessToken.ToString () ?? "",
-                new CookieOptions
+                // 3. Drop Cookie 1: Fresh Short-Lived Access JWT
+                Response.Cookies.Append ($".App.AccessToken.{currentTenantId}",tokenResult.AccessToken,new CookieOptions
                 {
-                    HttpOnly = true,   // Protects against XSS attacks stealing your JWT
-                    Secure = true,     // Mandates HTTPS through Nginx
+                    HttpOnly = true,
+                    Secure = true,
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTimeOffset.UtcNow.AddMinutes (15),
-                    Path = "/"         // Accessible by all pages in your app
+                    Path = "/"
                 });
 
-                // 2. COOKIE 2: Save the long-lived Refresh Token (Expires in 7 days)
-                Response.Cookies.Append ($".App.RefreshToken.{_tenantSetter.CurrentTenantId}",tokenResult.RefreshToken,new CookieOptions
+                // 4. Drop Cookie 2: Rolled Long-Lived Refresh Token String
+                Response.Cookies.Append ($".App.RefreshToken.{currentTenantId}",tokenResult.RefreshToken,new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTimeOffset.UtcNow.AddDays (7),
-                    // FIX: Aligned path value to match your actual [HttpPost("refresh-token")] route
-                    Path = "/refresh-token"
+                    Path = "/refresh-token" // Path validation matches routing correctly
                 });
 
-                // Return the fresh access JWT in the JSON payload
                 return Ok (new
                 {
                     token = tokenResult.AccessToken
@@ -77,8 +67,8 @@ namespace Main.WebAppCore.Controllers
             }
             catch ( SecurityException ex )
             {
-                // Clear cookies immediately on breach detection
-                Response.Cookies.Delete (cookieName);
+                // Clear old/compromised cookie on reuse anomalies or theft detections
+                Response.Cookies.Delete (cookieName,new CookieOptions { Path = "/refresh-token" });
                 return Unauthorized (ex.Message);
             }
         }

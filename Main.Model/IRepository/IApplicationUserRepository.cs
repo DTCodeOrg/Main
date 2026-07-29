@@ -4,6 +4,10 @@ namespace Main.IRepository;
 
 public interface IApplicationUserRepository
 {
+    Task<List<ApplicationUser?>> ApplicationUsers ();
+
+    Task<ApplicationUser?> ApplicationUsers (string userId);
+
     Task<bool> AddToRoleAsync (string email,string roleName);
 
     Task<bool> AddToTenantRoleAsync (string email,Guid tenantId,string roleName);
@@ -29,8 +33,6 @@ public interface IApplicationUserRepository
     Task<bool> ResetAccessFailedCountAsync (string email);
 
     Task<bool> SetLockoutEndDateAsync (string email);
-
-    Task<List<ApplicationUser>?> ApplicationUsers ();
 
     Task<bool> IsEmailConfirmedAsync (string email);
 
