@@ -26,28 +26,31 @@ public class TokenService: ITokenService
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey (_signingKey),
             ValidateIssuer = false,
-            //ValidIssuer = config["Jwt:Issuer"],
             ValidateAudience = false,
-            //ValidAudience = config["Jwt:Audience"],
             ValidateLifetime = false,
             ClockSkew = TimeSpan.Zero
         };
     }
 
     public async Task<string> GenerateAccessToken
-    (string userId,Guid tenantId,int expiryInMinutes)
+    (string userId,Guid tenantId,string formatedTenantRole,string userRole,string userName,string email,int expiryInMinutes,int days)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, userId),
-            new("TenantId", tenantId.ToString())
+            new(ClaimTypes.NameIdentifier,userId),
+            new(ClaimTypes.Role,"User"),
+            new("TenantId",tenantId.ToString()),
+            new("TenantRole",formatedTenantRole),
+            new("UserRole",userRole),
+            new("UserName",userName),
+            new("Email",email)
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(claims),
+            Subject = new ClaimsIdentity(claims, "JwtCookie"),
             Expires = DateTime.UtcNow.AddMinutes(expiryInMinutes),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_signingKey), SecurityAlgorithms.HmacSha256Signature)
         };
@@ -61,7 +64,6 @@ public class TokenService: ITokenService
 
     public string GenerateRefreshToken () =>
         Convert.ToBase64String (RandomNumberGenerator.GetBytes (62));
-
 
 
     public async Task<bool> RevokeUserRefreshTokensAsync (string userId,Guid tenantId)
@@ -91,7 +93,7 @@ public class TokenService: ITokenService
         }
     }
 
-    public async Task<TokenResponseModel> RotateRefreshTokenAsync (string currentToken,Guid tenantId,string userId)
+    public async Task<TokenResponseModel> RotateRefreshTokenAsync (string currentToken,Guid tenantId,string userId,string formatedTenantRole,string userRole,string userName,string email,int expiryInMinutes,int days)
     {
         UserRefreshToken? savedToken = await _tokenRepository.GetSavedRefreshTokenAsync(currentToken,tenantId);
 
@@ -103,6 +105,7 @@ public class TokenService: ITokenService
         if ( savedToken.IsRevoked )
         {
             _ = await _tokenRepository.RevokeAllUserTokensAsync (userId,tenantId);
+
             throw new SecurityException ("Refresh token reuse detected! Compromise suspected. All sessions revoked.");
         }
 
@@ -122,7 +125,8 @@ public class TokenService: ITokenService
 
         bool result = await _tokenRepository.SaveRotateRefreshTokenAsync(newAccessJwtStr.ToString()?? "", userId,tenantId);
 
-        var newAccessJwt = await GenerateAccessToken(userId, tenantId, 20);
+
+        var newAccessJwt = await GenerateAccessToken(userId, tenantId,formatedTenantRole,userRole,userName,email, expiryInMinutes,days);
 
         TokenResponseModel tokenResponseModel = new(result)
         {

@@ -195,31 +195,48 @@ public class AuthController: BaseController
 
         // 3. Validation: User existence and email confirmation rules
 
-        _logger.LogWarning ("Signin Success: " + signinresult + "...");
+        _logger.LogWarning ("Signin Result (true/false): " + signinresult + "...");
 
         // 5. Login successful workflow execution
         if ( signinresult )
         {
-            // 1 Authorization Setup for resolved tenant
-            Guid resolvedTenantId = _tenantSetter.CurrentTenantId;
+
+            _logger.LogWarning ("Signin Success: (Tenannt Id) " + _tenantSetter.CurrentTenantId.ToString () + "...");
 
             // 2. Get tenant specific role (find for user)
-            string tenantRole = await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, resolvedTenantId);
+            string tenantRole = await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, _tenantSetter.CurrentTenantId);
+
+            string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{_tenantSetter.CurrentTenantId}:{tenantRole}";
+
+            _logger.LogWarning ("Tenant Role: " + tenantRole + "...");
 
             // 4. Append safe Isolated JWT Identity Header
-            AuthorizationExtensions.AddTenantIsolatedHeaderToken
-                (HttpContext,_tokenService,
-                applicationUser?.Id ?? "",
-                resolvedTenantId,tenantRole.ToString (),
+            _ = AuthorizationExtensions.AddTenantIsolatedHeaderToken
+                (HttpContext,
+                _tokenService,
+                applicationUser?.Id
+                ?? "",
+                _tenantSetter.CurrentTenantId,
+                tenantRole.ToString (),
+                formatedTenantRole,
+                applicationUser?.UserName ?? "",
+                applicationUser?.Email ?? "",
                 15,7);
 
-            string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{resolvedTenantId}:{tenantRole}";
+            _logger.LogWarning ("Signin Success (formatted tenant role): " + formatedTenantRole + "...");
 
             // Commit claims tracking properties directly to HttpContext
-            AuthorizationExtensions.AddUserClaims (HttpContext,applicationUser?.Id ?? "",
-                resolvedTenantId,formatedTenantRole,
-                applicationUser?.UserName ?? "",
-                applicationUser?.Email ?? "");
+            AuthorizationExtensions.AddUserClaims (HttpContext,
+                        applicationUser?.Id ?? "",
+                        _tenantSetter.CurrentTenantId,
+                        formatedTenantRole,
+                        applicationUser?.UserName ?? "",
+                        applicationUser?.Email ?? "",
+                        tenantRole);
+
+
+            _logger.LogWarning ("Claims Success  (User Name): " + applicationUser?.UserName + "...");
+
 
             // Route directly to your newly fixed root index endpoint
             return RedirectToAction ("Index","Home");
@@ -269,7 +286,7 @@ public class AuthController: BaseController
 
         // 6. CLIENT-SIDE: Explicitly wipe your real multi-tenant antiforgery cookie via correct naming convention
         // FIX: Changed name prefix from ".AspNetCore.Antiforgery" to match your active "TenantAntiforgeryFilter" cookie
-        var tenantXsrfCookieName = $".TenantAuth.XSRF.{tenantId}";
+        var tenantXsrfCookieName = $".AspNetCore.Antiforgery.{tenantId}";
         Response.Cookies.Delete (tenantXsrfCookieName,new CookieOptions
         {
             Path = "/",

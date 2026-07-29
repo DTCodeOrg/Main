@@ -19,7 +19,6 @@ public static class RegisterAuthenticationService
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 // Your standard key validation rules go here...
-
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = false,
                 ValidateAudience = false
@@ -34,13 +33,11 @@ public static class RegisterAuthenticationService
 
                     // 2. Retrieve the tenant ID that your middleware already resolved
 
-                    var tenantId = tenantSetter.CurrentTenantId;
-
-                    if ( !string.IsNullOrEmpty (tenantId.ToString ()) )
+                    if ( !string.IsNullOrEmpty (tenantSetter.CurrentTenantId.ToString ()) )
                     {
                         // 3. Build your custom dynamic multi-tenant cookie name string
 
-                        var cookieName = $".App.AccessToken.{tenantId}";
+                        var cookieName = $".App.AccessToken.{tenantSetter.CurrentTenantId.ToString()}";
 
                         // 4. Extract token payload from browser cookie
 
@@ -54,7 +51,6 @@ public static class RegisterAuthenticationService
                 }
             };
         });
-
 
         return services;
     }

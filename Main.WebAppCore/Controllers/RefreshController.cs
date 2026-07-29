@@ -5,7 +5,6 @@ using System.Security;
 
 namespace Main.WebAppCore.Controllers
 {
-
     public class RefreshController: BaseController
     {
         public readonly ITenantSetter _tenantSetter;
@@ -22,8 +21,7 @@ namespace Main.WebAppCore.Controllers
         [HttpPost ("refresh-token")]
         public async Task<IActionResult> Refresh ()
         {
-            var tenantId = _tenantSetter.CurrentTenantId;
-            var cookieName = $".App.RefreshToken.{tenantId}";
+            var cookieName = $".App.RefreshToken.{_tenantSetter.CurrentTenantId}";
 
             // Extract token from the secure cookie
             if ( !Request.Cookies.TryGetValue (cookieName,out var currentRefreshToken) )
@@ -34,8 +32,14 @@ namespace Main.WebAppCore.Controllers
             try
             {
                 // Execute the service logic
-                var tokenResult = await _tokenService.RotateRefreshTokenAsync
-            (currentRefreshToken, tenantId, _tenantContext.ApplicationUserId);
+                var tokenResult =
+                    await _tokenService.RotateRefreshTokenAsync
+                        (currentRefreshToken ?? "", _tenantSetter.CurrentTenantId,
+                        _tenantContext.ApplicationUserId,
+                        _tenantContext.GetCurrentTenantRole() ?? "",
+                        _tenantContext.User?.FindFirst("UserRole")?.Value ?? "",
+                        _tenantContext.User?.FindFirst("UserName")?.Value ?? "",
+                        _tenantContext.User?.FindFirst("Email")?.Value ?? "",15,7);
 
                 if ( tokenResult == null )
                 {
@@ -43,7 +47,7 @@ namespace Main.WebAppCore.Controllers
                 }
 
                 // 1. COOKIE 1: Save the short-lived Access JWT (Expires in 15 minutes)
-                Response.Cookies.Append ($".App.AccessToken.{tenantId}",
+                Response.Cookies.Append ($".App.AccessToken.{_tenantSetter.CurrentTenantId}",
                 tokenResult.AccessToken.ToString () ?? "",
                 new CookieOptions
                 {
@@ -55,7 +59,7 @@ namespace Main.WebAppCore.Controllers
                 });
 
                 // 2. COOKIE 2: Save the long-lived Refresh Token (Expires in 7 days)
-                Response.Cookies.Append ($".App.RefreshToken.{tenantId}",tokenResult.RefreshToken,new CookieOptions
+                Response.Cookies.Append ($".App.RefreshToken.{_tenantSetter.CurrentTenantId}",tokenResult.RefreshToken,new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
