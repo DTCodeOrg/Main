@@ -18,44 +18,35 @@ public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
     {
         var user = context.User;
 
-        var tokenTenantId = user.FindFirst("tenant_id")?.Value;
-        var resolvedTenantId = _tenantSetter.CurrentTenantId;
-        var loggedUserId = user?.FindFirst
-        (ClaimTypes.NameIdentifier)?.Value ?? "";
-
-        if ( tokenTenantId == resolvedTenantId.ToString () &&
-        context.User.IsInRole ("User") )
-        {
-            // Validate "IdentityId:TenantId:RoleName" claim after Login success
-            var expectedClaimValue =
-            $"{loggedUserId}:{resolvedTenantId}:{requirement.AllowedRole}";
-
-            bool result = false;
-
-            context.User.Claims.ToList ()
-            .ForEach (tenantClaim =>
-            {
-                if ( tenantClaim.Type == "TenantRole" &&
-                tenantClaim.Value == expectedClaimValue )
-                {
-                    result = true;
-                }
-                else
-                {
-                    result = false;
-                }
-            });
-
-            if ( result )
-            {
-                context.Succeed (requirement);
-                return Task.CompletedTask;
-            }
-        }
-        else if ( context.User.IsInRole ("GlobalAdmin") )
+        // 1. Check for Global Admin override immediately to bypass tenant validation restrictions
+        if ( user.IsInRole ("GlobalAdmin") )
         {
             context.Succeed (requirement);
             return Task.CompletedTask;
+        }
+
+        // 2. FIX: Align string key casing exactly with your "TenantId" JWT configuration payload
+        var tokenTenantId = user.FindFirst("TenantId")?.Value;
+        var resolvedTenantId = _tenantSetter.CurrentTenantId.ToString();
+        var loggedUserId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        // 3. Early exit if the incoming request tenant context doesn't match the token payload
+        if ( string.IsNullOrEmpty (tokenTenantId) ||
+            !tokenTenantId.Equals (resolvedTenantId,StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrEmpty (loggedUserId) )
+        {
+            return Task.CompletedTask; // Fails safely
+        }
+
+        // 4. Construct the expected composite evaluation string
+        var expectedClaimValue = $"{loggedUserId}:{resolvedTenantId}:{requirement.AllowedRole}";
+
+        // 5. FIX: Use a clean LINQ .Any() lookup to evaluate the claim collection accurately
+        bool hasValidTenantRole = user.HasClaim(c => c.Type == "TenantRole" && c.Value == expectedClaimValue);
+
+        if ( hasValidTenantRole && user.IsInRole ("User") )
+        {
+            context.Succeed (requirement);
         }
 
         return Task.CompletedTask;

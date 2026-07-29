@@ -23,7 +23,8 @@ public static class RegisterAuthenticationService
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 // Map the role string to the built-in identity engine
-                RoleClaimType = "UserRole"
+                RoleClaimType = "UserRole",
+                NameClaimType = "UserName"
             };
             options.Events = new JwtBearerEvents
             {
