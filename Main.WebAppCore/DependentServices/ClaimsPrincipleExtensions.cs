@@ -30,4 +30,9 @@ public static class ClaimsPrincipalExtensions
         // Instantly scan the claims array for a match
         return user.HasClaim (c => c.Type == "TenantRole" && c.Value == expectedClaimValue);
     }
+
+    public static string? GetUserId (this ClaimsPrincipal user)
+    {
+        return user.FindFirst (ClaimTypes.NameIdentifier)?.Value;
+    }
 }

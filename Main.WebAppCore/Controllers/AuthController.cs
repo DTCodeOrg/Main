@@ -225,16 +225,6 @@ public class AuthController: BaseController
 
             _logger.LogWarning ("Signin Success (formatted tenant role): " + formatedTenantRole + "...");
 
-            //// Commit claims tracking properties directly to HttpContext
-            //AuthorizationExtensions.AddUserClaims (HttpContext,
-            //            applicationUser?.Id ?? "",
-            //            _tenantSetter.CurrentTenantId,
-            //            formatedTenantRole,
-            //            applicationUser?.UserName ?? "",
-            //            applicationUser?.Email ?? "",
-            //            tenantRole);
-
-
             _logger.LogWarning ("Claims Success  (User Name): " + applicationUser?.UserName + "...");
 
 

@@ -84,19 +84,15 @@ public class ApplicationUserRepository: IApplicationUserRepository
             return false;
         }
 
-        var result = await _signInManager.PasswordSignInAsync (
-            applicationUser!,
-            password,
-            isPersistent,
-            lockoutOnFailure: lockoutFailure);
+        // This verifies credentials without dropping the default .AspNetCore.Identity.Application cookie
+        var result  = await _userManager.CheckPasswordAsync (applicationUser,password!);
 
-        _logger.LogWarning ("Repo signin resut (by eail..):" + result);
+        _logger.LogWarning ("Repo signin resut (by email..):" + result);
 
-        if ( result.Succeeded )
+        if ( result )
         {
             return true;
         }
-
 
         return false;
     }

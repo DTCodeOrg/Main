@@ -46,13 +46,7 @@ internal class Program
 
 
         // Inside Program.cs, mirror your isolation architecture for Sessions
-        _ = builder.Services.AddSession (options =>
-        {
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            options.Cookie.SameSite = SameSiteMode.Lax;
-            options.IdleTimeout = TimeSpan.FromMinutes (20); // Keep session lifecycles tight
-        });
+        _ = builder.Services.AddSession (); // Register base foundation first
         _ = builder.Services.AddTransient<IConfigureOptions<SessionOptions>,TenantSessionOptionsSetup> ();
 
         // Inject Options Setup Patches

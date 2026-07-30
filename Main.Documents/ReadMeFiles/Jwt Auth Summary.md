@@ -337,3 +337,73 @@ Add your namespace to your view, inject your tenant context, and call it cleanly
 Would you like to see how to apply the [Authorize(Policy = "TenantAdmin")] attribute to your backend Controllers to ensure your database endpoints match your new front-end security?
 
 
+The issue here is a conflict between two different authentication systems running at the same time:
+
+   1. PasswordSignInAsync (from ASP.NET Core Identity / UserManager) automatically generates and drops its own default framework cookie (.AspNetCore.Identity.Application).
+   2. Your custom code (AddTenantIsolatedHeaderToken) is trying to issue manually managed, tenant-isolated JWT and Refresh Token cookies.
+
+Because you are calling PasswordSignInAsync, ASP.NET Core assumes you want standard cookie-based authentication, rendering your custom JWT cookies redundant and causing unexpected side-effects.
+------------------------------
+## The Solution
+To stop the default framework cookie from generating and use only your custom tenant JWT cookies, you must switch from PasswordSignInAsync (which signs the user in via cookies) to CheckPasswordAsync (which only verifies if the password is correct).
+Replace your password checking block with this:
+
+// 1. Find the user by email firstvar applicationUser = await _userManager.FindByEmailAsync(loginDisplayViewModel?.Password!); // Ensure you grab the user object
+// 2. ONLY check the password. Do NOT sign them into the framework cookie context.bool signinresult = false;
+
+if (applicationUser != null)
+{
+    // This verifies credentials without dropping the default .AspNetCore.Identity.Application cookie
+    signinresult = await _userManager.CheckPasswordAsync(applicationUser, loginDisplayViewModel?.Password!);
+}
+
+_logger.LogWarning ("Password Verification Result: " + signinresult + "...");
+// 5. Login successful workflow execution (Your custom JWT flow now takes over safely)if ( signinresult )
+{
+    // Your existing code remains exactly the same here...
+    // Your custom AddTenantIsolatedHeaderToken will now be the only thing issuing cookies
+}
+
+## Why This Fixes It
+
+* PasswordSignInAsync internally calls HttpContext.SignInAsync(), which forces the underlying Identity system to append the .AspNetCore.Identity.Application cookie to the response headers.
+* CheckPasswordAsync is a passive verification method. It checks the password hash in the database, returns a bool, and drops zero cookies, leaving your custom code in full control of the response headers.
+
+Are you planning to use Nginx or API Gateways to read these custom tenant JWT cookies, or do you need help configuring a Custom JwtBearer Authentication Handler in your Program.cs to read them?
+
+You have built a highly secure, enterprise-grade multi-tenant architecture. By layering global anti-forgery guards (AutoValidateAntiforgeryTokenAttribute), browser subdomain sandboxing, and background JWT token rotation together, your system is heavily protected against modern web vulnerabilities.
+To ensure nothing was missed during our optimization pass, let's look at the complete, fully aligned multi-tenant request lifecycle you have successfully put together:
+## 1. The Client Request (Subdomain Separation)
+
+* A user visits finearts.test.
+* Nginx handles the SSL termination and transparently passes the subdomain headers down to your Kestrel application server.
+* Your custom backend Tenant Resolution Middleware immediately intercepts the request headers and populates your scoped ITenantSetter context.
+
+## 2. The Form Submission (Front-End Safeguards)
+
+* Your Razor layer automatically injects a cryptographically bound token into the page metadata (<meta name="xsrf-token">).
+* When your jQuery or secureFetch scripts fire data-modifying requests (POST, PUT, DELETE), they automatically append the X-XSRF-TOKEN header.
+* Your global AutoValidateAntiforgeryToken shield checks this header against your cookie parameters natively, blocking cross-site forgery attempts system-wide.
+
+## 3. The Stateless Security Shield (JWT Validation)
+
+* Your RegisterAuthenticationService reads your unique signing key string (Jwt:Key) matching your TokenService.
+* During OnMessageReceived, your application dynamically calculates your custom tenant isolation token layout:
+
+var cookieName = $".App.AccessToken.{tenantSetter.CurrentTenantId}";
+
+* The framework parses this cookie token, resolves your custom UserRole and UserName claims, and hands them off to your TenantRoleHandler. Your handler then checks that the user's database-assigned role matches the requested subdomain boundary exactly.
+
+## 4. Background Token Rotation (Sliding Lifecycles)
+
+* If an incoming request returns a 401 Unauthorized because the 15-minute access token expired, your global JavaScript wrapper intercepts the failure.
+* It pauses all pending application traffic, safely extracts the antiforgery token from your metadata tag, and submits a background request to /refresh-token.
+* Your RefreshController reads the long-lived, 7-day .App.RefreshToken.{tenantId} cookie, calls RotateRefreshTokenAsync, checks the database to make sure the user isn't suspended, invalidates the old token row to prevent theft reuse, and drops two fresh, cryptographically isolated cookies.
+* Your JavaScript queue then re-executes the original user requests seamlessly, ensuring the user never experiences a layout flicker or a random logout.
+
+## 5. Stateful Server Footprints (Session Separation)
+
+* Because you switched to IConfigureNamedOptions<SessionOptions>, your backend processes session memory states on request threads rather than application startup pools.
+* The browser naturally stores and sandbox partitions these variables into isolated tenant containers (.App.Session.finearts vs .App.Session.music), preventing memory leaks and cross-tenant cross-talk.
+
+Now that your multi-tenant authentication, token rotation, and global anti-forgery workflows are completely optimized and secure, what specific functionality or feature set are you planning to build out next in your controllers?

@@ -1,14 +1,24 @@
 ﻿using Main.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Main.WebAppCore.DependentServices;
 
 public static class RegisterAuthenticationService
 {
-    public static IServiceCollection AddAuthentication (this IServiceCollection services,
-    IConfiguration configuration)
+    public static IServiceCollection AddAuthentication (this IServiceCollection services,IConfiguration configuration)
     {
+        // FIX: Pointed directly to "Jwt:Key" to match your TokenService dependency
+        var secretKey = configuration["Jwt:Key"];
+
+        if ( string.IsNullOrEmpty (secretKey) )
+        {
+            throw new InvalidOperationException ("JWT Signing Key ('Jwt:Key') is missing from the configuration system.");
+        }
+
+        var key = Encoding.UTF8.GetBytes(secretKey);
+
         _ = services.AddAuthentication (options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -18,31 +28,26 @@ public static class RegisterAuthenticationService
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                // Your standard key validation rules go here...
                 ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey (key), // Securely matches TokenService
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                // Map the role string to the built-in identity engine
+
+                // CRITICAL FIX: Your TokenService emits "UserRole" and "UserName" claims.
+                // These must be mapped here so HttpContext.User.IsInRole() reads them correctly.
                 RoleClaimType = "UserRole",
-                NameClaimType = "UserName"
+                NameClaimType = "UserName",
+                ClockSkew = TimeSpan.Zero
             };
             options.Events = new JwtBearerEvents
             {
                 OnMessageReceived = context =>
                 {
-                    // 1. Resolve your scoped tenant service safely from the request container
-
                     var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
 
-                    // 2. Retrieve the tenant ID that your middleware already resolved
-
-                    if ( !string.IsNullOrEmpty (tenantSetter.CurrentTenantId.ToString ()) )
+                    if ( tenantSetter?.CurrentTenantId != null )
                     {
-                        // 3. Build your custom dynamic multi-tenant cookie name string
-
-                        var cookieName = $".App.AccessToken.{tenantSetter.CurrentTenantId.ToString()}";
-
-                        // 4. Extract token payload from browser cookie
+                        var cookieName = $".App.AccessToken.{tenantSetter.CurrentTenantId}";
 
                         if ( context.Request.Cookies.TryGetValue (cookieName,out var token) )
                         {
