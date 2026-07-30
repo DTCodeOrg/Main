@@ -12,7 +12,7 @@ using WebAppCore.ViewModel.Extensions;
 namespace Main.WebAppCore;
 
 [Area ("AdminContent")]
-[Authorize (Roles = "Admin")]
+[Authorize (Policy = "TenantAdmin")]
 public class ManageAdminPostController: BaseController
 {
     private readonly IAdminPostService _adminPostService;
@@ -57,7 +57,7 @@ public class ManageAdminPostController: BaseController
     }
 
 
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<ActionResult> Index ()
     {
         try
@@ -76,7 +76,7 @@ public class ManageAdminPostController: BaseController
     }
 
     [HttpGet]
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public IActionResult NewContent ()
     {
         try
@@ -99,7 +99,7 @@ public class ManageAdminPostController: BaseController
 
     [HttpPost]
     [AutoValidateAntiforgeryToken]
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<IActionResult> SaveContent (AdminPostViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -138,7 +138,7 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpGet]
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<ActionResult> Edit (int id)
     {
         try
@@ -168,7 +168,7 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpPost]
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit (AdminPostViewModel collection)
     {
@@ -207,7 +207,7 @@ public class ManageAdminPostController: BaseController
     }
 
 
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<ActionResult> Details (int id)
     {
         try
@@ -232,7 +232,7 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpPost]
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public JsonResult UploadImage (IFormFile file)
     {
         if ( file != null && file.Length > 0 )
@@ -299,7 +299,7 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpGet]
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public PartialViewResult LoadImage ()
     {
         try
@@ -323,7 +323,7 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpDelete]
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<JsonResult> ImageRemove (int id,int postId)
     {
         try
@@ -351,7 +351,7 @@ public class ManageAdminPostController: BaseController
     }
 
 
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<ActionResult> Delete (int id)
     {
         try
@@ -373,7 +373,7 @@ public class ManageAdminPostController: BaseController
     }
 
 
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<ActionResult> DeleteContent (int id,int fakeId)
     {
         try

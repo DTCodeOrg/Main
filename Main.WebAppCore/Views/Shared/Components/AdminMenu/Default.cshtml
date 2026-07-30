@@ -1,6 +1,10 @@
-﻿@{
-    
-    if(User.IsInRole("Admin")) {
+﻿@using Main.WebAppCore.DependentServices;
+@inject ITenantSetter TenantContext
+
+@{
+
+if (User.IsInTenantRole(TenantContext.CurrentTenantId.ToString(), "Admin"))
+{
         <div class="dropdown">
             <a class="dropdown-toggle text-truncate"
                 data-toggle="dropdown"

@@ -87,7 +87,8 @@ public class TenantRoleHandler : AuthorizationHandler<TenantRoleRequirement>
 Because you registered these policies in your services container, you can now use them uniformly across your entire application footprint.
 ## 1. In Your API / Page Controllers (Pipeline Security)
 
-[Authorize(Policy = "TenantAdmin")]public class SettingsController : Controller
+[Authorize(Policy = "TenantAdmin")]
+public class SettingsController : Controller
 {
     public IActionResult Index() => View();
 }
@@ -265,10 +266,13 @@ Stick completely to using the AuthorizationService approach we just verified for
 }
 
 By doing this, you let your backend TenantRoleHandler do the heavy lifting of pulling out the loggedUserId, the resolvedTenantId, and matching it against the requirement. Your front-end Razor views remain perfectly clean, readable, and secure.
+
 Now that this is clear, would you like to see how to add an [Authorize(Policy = "TenantAdmin")] attribute to your backend controller classes to ensure your database endpoints are just as secure as your visual layout menus?
 
 Because you have embedded new("UserRole", userRole) inside your JWT and configured RoleClaimType = "UserRole" in your TokenValidationParameters, you actually CAN use User.IsInRole(), but only for specific roles.
+
 Here is exactly what will work and what will fail with User.IsInRole() in this configuration:
+
 ## 🟩 What WILL work with User.IsInRole()
 You can use User.IsInRole() for your global role and your raw unformatted user role:
 
@@ -276,6 +280,7 @@ You can use User.IsInRole() for your global role and your raw unformatted user r
    * Why: You have new(ClaimTypes.Role, "User") in your claims list. The framework always checks the standard ClaimTypes.Role by default.
    2. User.IsInRole("Admin") (or whatever string is stored in your userRole variable) ➡️ Returns true
    * Why: You configured RoleClaimType = "UserRole". The framework will look at your new("UserRole", userRole) claim and match the exact string value.
+   
    
 ## 🟥 What WILL NOT work with User.IsInRole()
 
