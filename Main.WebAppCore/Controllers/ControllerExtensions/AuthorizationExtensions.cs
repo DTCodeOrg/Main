@@ -1,6 +1,5 @@
 ﻿using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Services;
-using System.Security.Claims;
 
 namespace Main.WebAppCore.Controllers.Extensions;
 
@@ -50,28 +49,6 @@ public static class AuthorizationExtensions
             // FIX: Changed path from "/account/refresh-token" to match your working endpoint route exactly
             Path = "/refresh-token"
         });
-
-    }
-
-    public static void AddUserClaims
-    (HttpContext context,string userId,Guid resolvedTenantId,
-    string formatedTenantRole,string userName,string email,string userRole)
-    {
-        List<Claim> listUserClaims =
-        [
-            new Claim (ClaimTypes.NameIdentifier,userId.ToString()),
-            new Claim (ClaimTypes.Role,"User"),
-            new Claim ("TenantId",resolvedTenantId.ToString()),
-            new Claim("TenantRole",formatedTenantRole),
-            new Claim("UserRole",userRole),
-            new Claim ("UserName",userName),
-            new Claim ("Email",email)
-        ];
-
-        // FIX: Pass an authentication type string ("JwtCookie") to the constructor
-        ClaimsIdentity claimsIdentity = new(listUserClaims, "JwtCookie");
-
-        context.User.AddIdentity (claimsIdentity);
 
     }
 }
