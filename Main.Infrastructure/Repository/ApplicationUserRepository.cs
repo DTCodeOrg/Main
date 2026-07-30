@@ -84,19 +84,15 @@ public class ApplicationUserRepository: IApplicationUserRepository
             return false;
         }
 
-        var result = await _signInManager.PasswordSignInAsync (
-            applicationUser!,
-            password,
-            isPersistent,
-            lockoutOnFailure: lockoutFailure);
+        // This verifies credentials without dropping the default .AspNetCore.Identity.Application cookie
+        var result  = await _userManager.CheckPasswordAsync (applicationUser,password!);
 
-        _logger.LogWarning ("Repo signin resut (by eail..):" + result);
+        _logger.LogWarning ("Repo signin resut (by email..):" + result);
 
-        if ( result.Succeeded )
+        if ( result )
         {
             return true;
         }
-
 
         return false;
     }
@@ -236,12 +232,20 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return result.Succeeded == true;
     }
 
-    public async Task<List<ApplicationUser>?> ApplicationUsers ()
+    public async Task<ApplicationUser?> ApplicationUsers (string userId)
     {
+        ApplicationUser? user = await _context.ApplicationUsers.IgnoreQueryFilters<ApplicationUser>()
+        .FirstAsync<ApplicationUser>(a => a.Id == userId);
 
-        List<ApplicationUser> identityUsers = await _context.ApplicationUsers.ToListAsync<ApplicationUser>();
+        return user;
+    }
 
-        return identityUsers.ToList ();
+    public async Task<List<ApplicationUser?>> ApplicationUsers ()
+    {
+        List<ApplicationUser?> userList = await _context.ApplicationUsers.IgnoreQueryFilters<ApplicationUser>()
+        .ToListAsync<ApplicationUser?>();
+
+        return userList;
     }
 
     public async Task<bool> IsEmailConfirmedAsync (string email)

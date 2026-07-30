@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Main.WebAppCore.DependentServices;
+namespace Main.WebAppCore.DepententServices;
 
 public class TenantRoleRequirement: IAuthorizationRequirement
 {

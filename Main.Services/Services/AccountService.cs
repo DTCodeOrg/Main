@@ -222,14 +222,14 @@ public class AccountService: IAccountService
 
     public async Task<List<ApplicationUserDataModel>?> Users ()
     {
-        List<ApplicationUser>? identityUsers =
-            await _userRepository.ApplicationUsers ();
+        List<ApplicationUser?>? identityUsers =
+            await _userRepository.ApplicationUsers();
 
-        List<ApplicationUserDataModel>? identityUserDataModel = identityUsers?.Select(u => new ApplicationUserDataModel
+        var identityUserDataModel = identityUsers?.Select(u => new ApplicationUserDataModel
         {
-            Id = u.Id,
-            UserName = u.UserName,
-            LockoutEnd = u.LockoutEnd
+            Id = u?.Id!,
+            UserName = u?.UserName!,
+            LockoutEnd = u?.LockoutEnd!
         }).ToList<ApplicationUserDataModel>();
 
         return identityUserDataModel;

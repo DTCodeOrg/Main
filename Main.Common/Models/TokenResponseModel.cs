@@ -1,8 +1,8 @@
 ﻿namespace Main.Common;
 
-public class TokenResponseModel
+public class TokenResult
 {
-    public TokenResponseModel (bool valid)
+    public TokenResult (bool valid)
     {
         IsSuccess = valid;
     }

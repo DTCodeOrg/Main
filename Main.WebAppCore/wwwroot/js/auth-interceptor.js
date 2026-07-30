@@ -13,66 +13,80 @@ const processQueue = (error, success = false) => {
     failedQueue = [];
 };
 
-// Intercept all global jQuery AJAX completions
-$.ajaxSetup({
-    statusCode: {
-        401: function (xhr, textStatus, errorThrown) {
-            // Keep track of the original AJAX settings that just failed
-            const originalSettings = this;
+// ==========================================
+// 1. FIXED JQUERY INTERCEPTOR (Using ajaxError)
+// ==========================================
+$(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
+    // Safety 1: If the request that failed WAS the refresh token itself, DO NOT retry. Boot user.
+    if (ajaxSettings.url === '/refresh-token') {
+        return; 
+    }
 
-            // If we are already in the middle of refreshing, queue this request
-            if (isRefreshing) {
-                return new Promise((resolve, reject) => {
-                    failedQueue.push({ resolve, reject });
-                }).then(() => {
-                    return $.ajax(originalSettings);
-                }).catch((err) => {
-                    return Promise.reject(err);
-                });
-            }
+    if (jqXHR.status === 401) {
+        const deferred = $.Deferred();
 
-            isRefreshing = true;
-
-            // Grab the verification token safely from any input, or use an empty string fallback
-            const antiForgeryValue = $('input[name="__RequestVerificationToken"]').val() || "";
-
-            // Make a hidden POST request to your Auth/Refresh token endpoint
-            return $.ajax({
-                url: '/refresh-token',
-                type: 'POST',
-                headers: {
-                    // FIX: Ensures the background refresh passes your custom tenant validation filter
-                    "X-XSRF-TOKEN": antiForgeryValue 
+        if (isRefreshing) {
+            failedQueue.push({
+                resolve: () => {
+                    $.ajax(ajaxSettings).done(deferred.resolve).fail(deferred.reject);
+                },
+                reject: (err) => {
+                    deferred.reject(err);
                 }
-            }).then(function (response) {
-                isRefreshing = false;
-                processQueue(null, true);
-
-                // Retry the original AJAX call that failed now that cookies are updated
-                return $.ajax(originalSettings);
-
-            }).fail(function (refreshXhr) {
-                isRefreshing = false;
-                processQueue(refreshXhr, false);
-
-                console.warn("Refresh token expired or revoked. Redirecting to login.");
-                // FIX: Aligned redirect path from '/account/login' to '/Auth/Login'
-                window.location.href = '/Auth/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
             });
+            return deferred.promise();
         }
+
+        isRefreshing = true;
+
+        // FIX: Extracting from your actual Razor meta tag structure
+        const antiForgeryValue = $('meta[name="xsrf-token"]').attr('content') || "";
+
+        $.ajax({
+            url: '/refresh-token',
+            type: 'POST',
+            headers: {
+                "X-XSRF-TOKEN": antiForgeryValue 
+            }
+        }).then(function () {
+            isRefreshing = false;
+            processQueue(null, true);
+
+            // Re-execute original call and resolve the wrapper deferred tracking
+            $.ajax(ajaxSettings).done(deferred.resolve).fail(deferred.reject);
+
+        }).fail(function (refreshXhr) {
+            isRefreshing = false;
+            processQueue(refreshXhr, false);
+
+            console.warn("Refresh token expired. Redirecting to login.");
+            window.location.href = '/Auth/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+        });
+
+        return deferred.promise();
     }
 });
 
-// Native Fetch Override Wrapper Setup
+// ==========================================
+// 2. FIXED NATIVE FETCH OVERRIDE WRAPPER
+// ==========================================
 const originalFetch = window.fetch;
 
 window.fetch = async (resource, config = {}) => {
-    // Standardize config objects safely to prevent property reading errors
     config.headers = config.headers || {};
+    
+    // Normalize string URLs or Request objects to safely check the path
+    const requestUrl = typeof resource === 'string' ? resource : resource.url;
     
     let response = await originalFetch(resource, config);
 
-    // If the short-lived access cookie expired, intercept the 401
+    // If a 401 happens, but it came from the refresh endpoint itself, break out immediately
+    if (response.status === 401 && requestUrl.includes('/refresh-token')) {
+        console.warn("Refresh token expired on fetch invocation. Redirecting.");
+        window.location.href = '/Auth/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+        return response;
+    }
+
     if (response.status === 401) {
 
         if (isRefreshing) {
@@ -85,15 +99,12 @@ window.fetch = async (resource, config = {}) => {
         isRefreshing = true;
 
         try {
-            // Grab token parameter value safely
-            const tokenVal = document.querySelector('input[name="__RequestVerificationToken"]')?.value || "";
+            // FIX: Grab safely from the correct meta tag configuration
+            const tokenVal = document.querySelector('meta[name="xsrf-token"]')?.getAttribute('content') || "";
 
-            // Run background token rotation
             const refreshResponse = await originalFetch('/refresh-token', {
                 method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    // FIX: Changed header name to match your backend filter layout configuration
                     "X-XSRF-TOKEN": tokenVal 
                 }
             });
@@ -102,19 +113,15 @@ window.fetch = async (resource, config = {}) => {
                 isRefreshing = false;
                 processQueue(null, true);
 
-                // Retry original request with the fresh cookie set
                 return originalFetch(resource, config);
             }
         } catch (err) {
-            // Network or server failure handling
             console.error("Background token rotation exception caught", err);
         }
 
-        // Failure: Clear state and boot user out
         isRefreshing = false;
         processQueue(new Error("Refresh failed"), false);
 
-        // FIX: Aligned redirect path from '/account/login' to '/Auth/Login'
         window.location.href = '/Auth/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
     }
 

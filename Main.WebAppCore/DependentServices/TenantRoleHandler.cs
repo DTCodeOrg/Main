@@ -1,7 +1,5 @@
 ﻿using Main.Infrastructure;
-using Main.WebAppCore.DependentServices;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 
 namespace Main.WebAppCore.DepententServices;
 
@@ -9,6 +7,7 @@ public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
 {
     private readonly ITenantSetter _tenantSetter;
 
+    // You can safely inject your scoped tenant resolver here
     public TenantRoleHandler (ITenantSetter tenantSetter)
     {
         _tenantSetter = tenantSetter;
@@ -16,46 +15,22 @@ public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
 
     protected override Task HandleRequirementAsync (AuthorizationHandlerContext context,TenantRoleRequirement requirement)
     {
-        var user = context.User;
+        // 1. READ FROM JWT: Extract tenant ownership from the validated JWT claims
+        var tokenTenantId = context.User.FindFirst("TenantId")?.Value;
 
-        var tokenTenantId = user.FindFirst("tenant_id")?.Value;
-        var resolvedTenantId = _tenantSetter.CurrentTenantId;
-        var loggedUserId = user?.FindFirst
-        (ClaimTypes.NameIdentifier)?.Value ?? "";
+        // 2. READ FROM JWT: Extract role from your custom UserRole claim key
+        var tokenUserRole = context.User.FindFirst("UserRole")?.Value;
 
-        if ( tokenTenantId == resolvedTenantId.ToString () &&
-        context.User.IsInRole ("User") )
+        // 3. READ FROM REQUEST CONTEXT: Get the current active tenant requested by the URL
+        var currentTenantId = _tenantSetter.CurrentTenantId.ToString();
+
+        // 4. CROSS-CHECK EVERYTHING: Secure validation logic
+        if ( !string.IsNullOrEmpty (tokenTenantId) &&
+            tokenTenantId.Equals (currentTenantId,StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrEmpty (tokenUserRole) &&
+            tokenUserRole.Equals (requirement.AllowedRole,StringComparison.OrdinalIgnoreCase) )
         {
-            // Validate "IdentityId:TenantId:RoleName" claim after Login success
-            var expectedClaimValue =
-            $"{loggedUserId}:{resolvedTenantId}:{requirement.AllowedRole}";
-
-            bool result = false;
-
-            context.User.Claims.ToList ()
-            .ForEach (tenantClaim =>
-            {
-                if ( tenantClaim.Type == "TenantRole" &&
-                tenantClaim.Value == expectedClaimValue )
-                {
-                    result = true;
-                }
-                else
-                {
-                    result = false;
-                }
-            });
-
-            if ( result )
-            {
-                context.Succeed (requirement);
-                return Task.CompletedTask;
-            }
-        }
-        else if ( context.User.IsInRole ("GlobalAdmin") )
-        {
-            context.Succeed (requirement);
-            return Task.CompletedTask;
+            context.Succeed (requirement); // Access granted!
         }
 
         return Task.CompletedTask;

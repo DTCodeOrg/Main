@@ -16,52 +16,73 @@ public class TokenService: ITokenService
     private readonly TokenValidationParameters _validationParameters;
     private readonly byte[] _signingKey;
     private readonly ITokenRepository _tokenRepository;
+    private readonly IApplicationUserRepository _applicationUserRepository;
+    private readonly ITenantUserRepository _tenantUserRepository;
 
-    public TokenService (IConfiguration config,ITokenRepository tokenRepository)
+    public TokenService (IConfiguration config,ITokenRepository tokenRepository,
+        IApplicationUserRepository applicationUserRepository,
+        ITenantUserRepository tenantUserRepository)
     {
         _tokenRepository = tokenRepository;
         _signingKey = Encoding.UTF8.GetBytes (config["Jwt:Key"]!);
+        _applicationUserRepository = applicationUserRepository;
+        _tenantUserRepository = tenantUserRepository;
+
         _validationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey (_signingKey),
             ValidateIssuer = false,
-            //ValidIssuer = config["Jwt:Issuer"],
             ValidateAudience = false,
-            //ValidAudience = config["Jwt:Audience"],
             ValidateLifetime = false,
             ClockSkew = TimeSpan.Zero
         };
     }
 
-    public async Task<string> GenerateAccessToken
-    (string userId,Guid tenantId,int expiryInMinutes)
+    public async Task<string> GenerateAccessToken (
+    string userId,
+    Guid tenantId,
+    string formattedTenantRole,
+    string userRole,
+    string userName,
+    string email,
+    int expiryInMinutes)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
+        // 1. Maintain a clean payload claims array 
         var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, userId),
-            new("TenantId", tenantId.ToString())
-        };
+    {
+        new(ClaimTypes.NameIdentifier, userId),
+        new(ClaimTypes.Role, "User"), // Global fallback role mapping
+        new("TenantId", tenantId.ToString()),
+        new("TenantRole", formattedTenantRole),
+        new("UserRole", userRole),
+        new("UserName", userName),
+        new("Email", email)
+    };
+
+        // 2. FIX: Do NOT pass an authentication type string here for JWT generation
+        var claimsIdentity = new ClaimsIdentity(claims);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(claims),
+            Subject = claimsIdentity,
             Expires = DateTime.UtcNow.AddMinutes(expiryInMinutes),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_signingKey), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(
+            new SymmetricSecurityKey(_signingKey),
+            SecurityAlgorithms.HmacSha256Signature)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
-        _ = await SaveRefreshToken (userId,tenantId,token.ToString () ?? "");
-
+        // 3. REMOVED: SaveRefreshToken is completely deleted from here.
+        // The encrypted string is written and passed back cleanly to your Sign-In flow.
         return tokenHandler.WriteToken (token);
     }
 
     public string GenerateRefreshToken () =>
         Convert.ToBase64String (RandomNumberGenerator.GetBytes (62));
-
 
 
     public async Task<bool> RevokeUserRefreshTokensAsync (string userId,Guid tenantId)
@@ -91,45 +112,53 @@ public class TokenService: ITokenService
         }
     }
 
-    public async Task<TokenResponseModel> RotateRefreshTokenAsync (string currentToken,Guid tenantId,string userId)
+    public async Task<TokenResult> RotateRefreshTokenAsync (string token,Guid tenantId,int accessExpiryMinutes,int refreshExpiryDays)
     {
-        UserRefreshToken? savedToken = await _tokenRepository.GetSavedRefreshTokenAsync(currentToken,tenantId);
+        // 1. Fetch token record from DB/Redis by its raw token string and matching tenant context
+        UserRefreshToken? storedTokenRecord = await _tokenRepository.GetRefreshTokens (token,tenantId);
 
-        if ( savedToken == null )
+        // 2. Fetch the actual User record from your data tier to ensure their account is still active
+        var user = await _applicationUserRepository.ApplicationUsers (storedTokenRecord!.UserId);
+
+        if ( user == null )
         {
-            return new TokenResponseModel (false);
+            throw new SecurityException ("User account associated with this token is suspended.");
         }
 
-        if ( savedToken.IsRevoked )
+
+
+        if ( storedTokenRecord == null || storedTokenRecord.IsRevoked )
         {
-            _ = await _tokenRepository.RevokeAllUserTokensAsync (userId,tenantId);
-            throw new SecurityException ("Refresh token reuse detected! Compromise suspected. All sessions revoked.");
+
+            _ = await _tokenRepository.RevokeAllUserTokensAsync (user.Id,tenantId);
+
+            throw new SecurityException ("Invalid, expired, or revoked refresh token session.");
         }
 
-        if ( savedToken.ExpiresAt <= DateTime.UtcNow )
+        // 3. Fetch user roles dynamically from DB mapping
+        var userRole = "User";
+
+        var tenantRole = await _tenantUserRepository.GetByUserIdAsync(user.Id, tenantId);
+
+        string formattedTenantRole = $"{user.Id}:{tenantId}:{tenantRole}";
+
+        // 4. Generate clean tokens using real database state
+        var newAccessToken = await GenerateAccessToken(user.Id, tenantId, formattedTenantRole, userRole, user.UserName!, user.Email!, accessExpiryMinutes);
+
+        var newRefreshTokenStr = GenerateRefreshToken();
+
+        // 5. Invalidate old token record (Rotate/Replace for security)
+        storedTokenRecord.IsRevoked = true;
+
+        _ = await _tokenRepository.UpdateTokenAsync (storedTokenRecord);
+
+        // 6. Save the new replacement token down to database
+        _ = await SaveRefreshToken (user.Id,tenantId,newRefreshTokenStr);
+
+        return new TokenResult (true)
         {
-            return new TokenResponseModel (false);
-        }
-
-        var newAccessJwtStr = GenerateRefreshToken ();
-
-        if ( savedToken != null )
-        {
-            savedToken.IsRevoked = true;
-            savedToken.ReplacedByToken = newAccessJwtStr.ToString ();
-            _ = await _tokenRepository.UpdateTokenAsync (savedToken);
-        }
-
-        bool result = await _tokenRepository.SaveRotateRefreshTokenAsync(newAccessJwtStr.ToString()?? "", userId,tenantId);
-
-        var newAccessJwt = await GenerateAccessToken(userId, tenantId, 20);
-
-        TokenResponseModel tokenResponseModel = new(result)
-        {
-            AccessToken =  newAccessJwt,
-            RefreshToken =  newAccessJwtStr.ToString()?? ""
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshTokenStr
         };
-
-        return tokenResponseModel;
     }
 }

@@ -195,31 +195,38 @@ public class AuthController: BaseController
 
         // 3. Validation: User existence and email confirmation rules
 
-        _logger.LogWarning ("Signin Success: " + signinresult + "...");
+        _logger.LogWarning ("Signin Result (true/false): " + signinresult + "...");
 
         // 5. Login successful workflow execution
         if ( signinresult )
         {
-            // 1 Authorization Setup for resolved tenant
-            Guid resolvedTenantId = _tenantSetter.CurrentTenantId;
+
+            _logger.LogWarning ("Signin Success: (Tenannt Id) " + _tenantSetter.CurrentTenantId.ToString () + "...");
 
             // 2. Get tenant specific role (find for user)
-            string tenantRole = await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, resolvedTenantId);
+            string tenantRole = await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, _tenantSetter.CurrentTenantId);
+
+            string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{_tenantSetter.CurrentTenantId}:{tenantRole}";
+
+            _logger.LogWarning ("Tenant Role: " + tenantRole + "...");
 
             // 4. Append safe Isolated JWT Identity Header
-            AuthorizationExtensions.AddTenantIsolatedHeaderToken
-                (HttpContext,_tokenService,
-                applicationUser?.Id ?? "",
-                resolvedTenantId,tenantRole.ToString (),
+            _ = AuthorizationExtensions.AddTenantIsolatedHeaderToken
+                (HttpContext,
+                _tokenService,
+                applicationUser?.Id
+                ?? "",
+                _tenantSetter.CurrentTenantId,
+                tenantRole.ToString (),
+                formatedTenantRole,
+                applicationUser?.UserName ?? "",
+                applicationUser?.Email ?? "",
                 15,7);
 
-            string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{resolvedTenantId}:{tenantRole}";
+            _logger.LogWarning ("Signin Success (formatted tenant role): " + formatedTenantRole + "...");
 
-            // Commit claims tracking properties directly to HttpContext
-            AuthorizationExtensions.AddUserClaims (HttpContext,applicationUser?.Id ?? "",
-                resolvedTenantId,formatedTenantRole,
-                applicationUser?.UserName ?? "",
-                applicationUser?.Email ?? "");
+            _logger.LogWarning ("Claims Success  (User Name): " + applicationUser?.UserName + "...");
+
 
             // Route directly to your newly fixed root index endpoint
             return RedirectToAction ("Index","Home");
@@ -235,57 +242,60 @@ public class AuthController: BaseController
         return result;
     }
 
-    [HttpPost] // Highly recommended to use POST for logout to prevent pre-fetching browser logs
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout ()
     {
-        await _userAccountService.SignOutAsync ();
-
+        // Resolve your tenant ID string cleanly from your active setter dependency
+        var currentTenantId = _tenantSetter.CurrentTenantId.ToString();
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        var tenantId = _tenantSetter.CurrentTenantId;
 
-        // 1. Invalidate long-lived token on the backend server database
         if ( !string.IsNullOrEmpty (userId) )
         {
-            _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,tenantId);
+            // 1. Server-Side: Invalidate their refresh tokens in the database
+            _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,_tenantSetter.CurrentTenantId);
         }
 
-        // 2. Erase both token cookies from the browser
-        Response.Cookies.Delete ($".App.AccessToken.{tenantId}",new CookieOptions { Path = "/" });
-
-        // FIX: Aligned path value to match your actual "/refresh-token" route layout
-        Response.Cookies.Delete ($".App.RefreshToken.{tenantId}",new CookieOptions { Path = "/refresh-token" });
-
-        // 3. Clear your custom tenant session state
+        // 2. Server-Side: Clear your custom tenant session memory footprints
         HttpContext.Session.Clear ();
 
-        // 4. CLIENT-SIDE: Signal modern browsers to wipe all local origins data
+        // 3. Cookies: Clear custom multi-tenant JWT cookies
+        Response.Cookies.Delete ($".App.AccessToken.{currentTenantId}",new CookieOptions
+        {
+            Path = "/",Secure = true,SameSite = SameSiteMode.Strict,HttpOnly = true
+        });
+
+        Response.Cookies.Delete ($".App.RefreshToken.{currentTenantId}",new CookieOptions
+        {
+            Path = "/refresh-token",Secure = true,SameSite = SameSiteMode.Strict,HttpOnly = true
+        });
+
+        // 4. Cookies: Explicitly wipe your multi-tenant antiforgery cookie
+        // FIX: Changed HttpOnly to true and matched Lax mode to ensure the browser processes the deletion header
+        Response.Cookies.Delete ($".AspNetCore.Antiforgery.{currentTenantId}",new CookieOptions
+        {
+            Path = "/",
+            Secure = true,
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax
+        });
+
+        // 5. Cookies: Safe fallback cleanup for framework defaults if they accidentally exist
+        Response.Cookies.Delete (".AspNetCore.Identity.Application",new CookieOptions { Path = "/" });
+        Response.Cookies.Delete (".AspNetCore.Session",new CookieOptions { Path = "/" });
+        Response.Cookies.Delete ($".Session.{currentTenantId}",new CookieOptions { Path = "/" }); // Clears your custom session name
+
+        // 6. Client-Side: FIX - Correct lowercase directive strings to wipe local cache and DB storage
         Response.Headers.Append ("Clear-Site-Data","\"cache\", \"storage\"");
 
-        // 5. CLIENT-SIDE: Instruct proxy (Nginx) and browser to never cache this response
+        // 7. Client-Side: Instruct Nginx proxy and browser history to never cache back-button state
         Response.Headers.Append ("Cache-Control","no-cache, no-store, must-revalidate");
         Response.Headers.Append ("Pragma","no-cache");
         Response.Headers.Append ("Expires","0");
 
-
-        // 6. CLIENT-SIDE: Explicitly wipe your real multi-tenant antiforgery cookie via correct naming convention
-        // FIX: Changed name prefix from ".AspNetCore.Antiforgery" to match your active "TenantAntiforgeryFilter" cookie
-        var tenantXsrfCookieName = $".TenantAuth.XSRF.{tenantId}";
-        Response.Cookies.Delete (tenantXsrfCookieName,new CookieOptions
-        {
-            Path = "/",
-            Secure = true,
-            HttpOnly = false // Must match the original creation flags from your filter
-        });
-
-        // 7. Deletes standard ASP.NET Identity and Session cookies if they exist
-        Response.Cookies.Delete (".AspNetCore.Identity.Application",new CookieOptions { Path = "/" });
-        Response.Cookies.Delete (".AspNetCore.Session",new CookieOptions { Path = "/" });
-
         // 8. Redirect to login
-        // FIX: Changed target controller from "Account" to your actual working "Auth" controller
         return RedirectToAction ("Login","Auth");
     }
-
 
 
 

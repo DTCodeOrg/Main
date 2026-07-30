@@ -15,34 +15,38 @@ public static class AuthorizationExtensions
         return tenantRole;
     }
 
-    public static void AddTenantIsolatedHeaderToken
+    public static async Task AddTenantIsolatedHeaderToken
     (HttpContext context,ITokenService tokenService,
      string userId,Guid resolvedTenantId,
-     string role,int minutes,int days)
+     string role,string formatedTenantRole,string userName,string email,int minutes,int days)
     {
         // 2. Create your tokens after successful sign-in
-        var accessJwt = tokenService.GenerateAccessToken(userId.ToString(), resolvedTenantId, minutes);
+        var accessJwt = await tokenService.GenerateAccessToken(userId,resolvedTenantId,formatedTenantRole,role,userName,email,minutes);
+
         var refreshTokenStr = tokenService.GenerateRefreshToken();
 
+        // 3. Save the Refresh Token string securely to your database or cache
+        _ = await tokenService.SaveRefreshToken (userId,resolvedTenantId,refreshTokenStr);
+
         // 3. COOKIE 1: Save the short-lived Access JWT (Expires in 15 minutes)
-        context.Response.Cookies.Append ($".App.AccessToken.{resolvedTenantId}",
+        context.Response.Cookies.Append ($".App.AccessToken.{resolvedTenantId.ToString ()}",
         accessJwt.ToString () ?? "",
         new CookieOptions
         {
             HttpOnly = true,   // Protects against XSS attacks stealing your JWT
             Secure = true,     // Mandates HTTPS through Nginx
             SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddMinutes (15),
+            Expires = DateTimeOffset.UtcNow.AddMinutes (minutes),
             Path = "/"         // Accessible by all pages in your app
         });
 
         // 4. COOKIE 2: Save the long-lived Refresh Token (Expires in 7 days)
-        context.Response.Cookies.Append ($".App.RefreshToken.{resolvedTenantId}",refreshTokenStr,new CookieOptions
+        context.Response.Cookies.Append ($".App.RefreshToken.{resolvedTenantId.ToString ()}",refreshTokenStr,new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddDays (7),
+            Expires = DateTimeOffset.UtcNow.AddDays (days),
             // FIX: Changed path from "/account/refresh-token" to match your working endpoint route exactly
             Path = "/refresh-token"
         });
@@ -51,7 +55,7 @@ public static class AuthorizationExtensions
 
     public static void AddUserClaims
     (HttpContext context,string userId,Guid resolvedTenantId,
-    string formatedTenantRole,string userName,string email)
+    string formatedTenantRole,string userName,string email,string userRole)
     {
         List<Claim> listUserClaims =
         [
@@ -59,12 +63,15 @@ public static class AuthorizationExtensions
             new Claim (ClaimTypes.Role,"User"),
             new Claim ("TenantId",resolvedTenantId.ToString()),
             new Claim("TenantRole",formatedTenantRole),
-            new Claim ("UserName", userName),
+            new Claim("UserRole",userRole),
+            new Claim ("UserName",userName),
             new Claim ("Email",email)
         ];
 
-        ClaimsIdentity claimsIdentity = new(listUserClaims);
+        // FIX: Pass an authentication type string ("JwtCookie") to the constructor
+        ClaimsIdentity claimsIdentity = new(listUserClaims, "JwtCookie");
 
         context.User.AddIdentity (claimsIdentity);
+
     }
 }

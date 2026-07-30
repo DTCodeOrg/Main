@@ -1,19 +1,19 @@
-﻿@if ( User != null && User.Identity != null && User.Identity.IsAuthenticated )
-{
-    // Evaluate the policy on the current user
-    var isTenantAdmin = await AuthorizationService.AuthorizeAsync(User, "TenantAdmin");
+﻿@using Main.WebAppCore.DependentServices;
+@inject ITenantSetter TenantContext
 
-    @if ( isTenantAdmin.Succeeded )
-    {
+@{
+
+if (User.IsInTenantRole(TenantContext.CurrentTenantId.ToString(), "Admin"))
+{
         <div class="dropdown">
             <a class="dropdown-toggle text-truncate"
                 data-toggle="dropdown"
                 role="button"
                 aria-haspopup="true"
-                data-userid="@Model.UserID"
+                data-userid="@User.GetUserId()"
                 data-bs-toggle="dropdown">
                 <i class="fa fa-user fa-1x"></i>
-                <span>@User.Identity.Name</span>
+                <span>@User.Identity?.Name</span>
                 <span class="caret"></span>
             </a>
                     
