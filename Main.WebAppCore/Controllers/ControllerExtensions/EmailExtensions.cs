@@ -2,7 +2,6 @@
 using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Services;
 using Microsoft.AspNetCore.Mvc;
-using WebAppCore.ViewModel;
 
 namespace Main.WebAppCore.Controllers.Extensions;
 
@@ -25,14 +24,6 @@ public static class EmailExtensions
         };
 
         await emailService.SendEmailVerificationAsync (verifyEmailDataModel);
-    }
-
-    // User email confirmed?
-    public static async Task<bool> IsEmailConfirmed (IAccountService accountService,LoginViewModel loginDisplayViewModel)
-    {
-        bool result = await accountService.IsEmailConfirmedAsync (loginDisplayViewModel.Email);
-
-        return result;
     }
 
     public static async Task<bool> IsEmailConfirmed (IAccountService accountService,string? email)

@@ -42,10 +42,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="ActionFilters\AntiforgeryActionFilter.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ContainerPort Include="8080" />
 	</ItemGroup>
 
@@ -72,7 +68,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ActionFilters\" />
 	  <Folder Include="wwwroot\lib\Images\Home\English\" />
 	</ItemGroup>
 
