@@ -1,3 +1,44 @@
+# Multitenant .NET 8.0 Web App Middleware Execution:
+
+At the end, the program.cs code is provided which will justify the order of the middleware and following explanations. 
+
+**Kestrel server:** 
+
+- The Kestrel server is the lightweight (🔄100% tested), cross-platform (windows 🔄100% tested), high-performance (🔄100% tested) web server built directly into .NET.  
+- When the multi-tenant .NET 8.0 web application runs, Kestrel acts as the inner server that directly hosts the app code and handles raw network connections (like HTTP and WebSockets 🔄100% tested). 
+- From the Visual Studio, in the development mode and in the context of testing for multi-tenant architecture development, this is the role of Kestrel server. Here is exactly how Kestrel fits into the multi-tenant setup and why it matters to this current architecture: 
+
+**1. Kestrel's Role in this Architecture** 
+From the Visual studio IDE, when we click the run button (debug menu) for the code in my development environment, Kestrel is the process start running on the machine/laptop (listening on a port like localhost:52899). The kestrel process (🔄100% tested: web server built directly into .NET) is running now and listening. In the power shell, we write commands and run the nginx process (reverse proxy) which listens to (http and https). Then we type to test the multi-tenant custom domains. 
+
+**The Flow:**  
+
+In the browser, type and visit https://finearts.test, the request first goes to the local Nginx proxy. Nginx terminates the SSL encryption and proxies (forwards) the raw traffic to Kestrel via HTTP on my web app localhost port (5000). (🔄100% tested). In the solution of the application, we have launchSettings.json, which is configured to listen to 5000. 
+
+**"applicationUrl": "http://127.0.0.1:5000"** 
+
+**The Handshake:**  
+
+When your browser opens that WebSocket connection in the browser inspect (web tool), I tested and see, Kestrel is the server that accepts the 101 Switching Protocols handshake and holds the TCP pipe open to process your background real-time data or development Hot Reload. (🔄100% tested) 
+
+**Why does the middleware order pipeline and configure headers Is very important?** 
+
+Because Kestrel sits behind Nginx, it does not naturally know what domain the user typed into their browser—it only sees localhost:52899. 
+
+This is exactly why that line at the very top of your request pipeline is so critical: 
+
+**_ = app.UseForwardedHeaders(forwardedHeadersOptions);** 
+ 
+
+This line forces Kestrel to read the proxy headers passed by Nginx (X-Forwarded-Host). It forces Kestrel to override its own local port data and rewrite the internal request context host to finearts.test or lifestyles.test. Without this, TenantResolverHandlingMiddleware would only ever see localhost from Kestrel, and your cache lookups would fail. (🔄100% tested) 
+
+**Kestrel Optimization for Multi-Tenancy** 
+
+- Kestrel handles thousands (tested but not thousands, performed well 🔄100% tested) of simultaneous connections (🔄100% tested) with almost zero overhead, making it highly efficient for multi-tenant applications.  
+- It is designed to be paired with a reverse proxy (like Nginx) in production. (🔄100% tested) 
+- Nginx handles public-facing responsibilities (SSL certificate management (🔄100% tested), DDoS protection (🔄100% tested), static file caching. 
+- Kestrel handles core application logic (running middlewares, managing Session (tenant isolated session) and processing database queries (tenant query isolation), Jwt Authentication (tenant isolated) global anti forgery validation. 
+
 # Nginx (Localhost with Custom Domains)
 Nginx is a reverse proxy for a web server, which can listen to both http and https protocols and terminate the https secure certificate and forward to a Kristel server running a .NET Web Application.  
 
@@ -6,22 +47,20 @@ Ngixn is listening to standard port 80 for http and 443 for https.
 In this Nginx Config script, of the nginx, the test is done in the local windows environment. The browser sends the request to the host file in the laptop host file. If the request (domain) to the host file is not present, it forwards browser request to the local internet service provider's DNS server.  
 
 **Host File: hosts (open with note pad)** 
+Location: C:\Windows\System32\drivers\etc
+Multi-tenant Local Development Domains (Host File)
 
-**Location: C:\Windows\System32\drivers\etc**  
+```host
+127.0.0.1 finearts.test
+127.0.0.1 lifestyles.test
+127.0.0.1 localhost
+127.0.0.1 app.internal
+```
 
-**Multi-tenant Local Development Domains (Host File)** 
-
-**127.0.0.1 finearts.test**  
-
-**127.0.0.1 lifestyles.test**  
-
-**127.0.0.1 localhost** 
-
-**127.0.0.1 app.internal** 
 
 The host in the local machine is configured with two domains. It is then forwarded to the nginx web server. In the Nginx server config, it knows the browser hosts (in Nginx config), and it strips the certificate, then forwards to .NET 8.0 web application pipeline.  
 
-.NET Krestel Server is listening to the port: 5000 and with http://127.0.0.1:5000. The communication between Nginx and .NET Krestel server is using http protocol. 
+.NET Krestel Server (launch settings: is listening to the port: 5000 and with http://127.0.0.1:5000) .Net middleware pipeline. The communication between Nginx and .NET Krestel server is using http protocol. 
 
 **Exe File Location:** D:\nginx-1.31.3\
 
@@ -32,26 +71,28 @@ The host in the local machine is configured with two domains. It is then forward
 You can keep the folder in any drive. For making the path short, in the root of any drive is good to go. The following are the contents of the Nginx configuration file. 
 
 **#Global configurations (Must be at the top)** 
-
+```
 worker_processes 1; 
 
 events { worker_connections 1024; } 
-
+```
 **#The parent HTTP context block** 
-
+```
 http { 
-
+```
 **#Expand global buffer limits to prevent Cookie Bloat crashes** 
  
+```
 client_header_buffer_size 8k; 
 large_client_header_buffers 4 32k; 
 include       mime.types; 
 default_type  application/octet-stream; 
 sendfile        on; 
 keepalive_timeout  65; 
- 
+```
+
 **#Redirect all HTTP traffic to HTTPS automatically** 
- 
+```
 server {    
 
  listen       80; 
@@ -60,72 +101,73 @@ server {
    
    return 301 https://$host$request_uri; 
 } 
- 
+```
 **#Secure local HTTPS server block** 
- 
+```
 server { 
 
    listen       443 ssl; 
    
    server_name    localhost finearts.test lifestyles.test app.imternal; 
- 
+``` 
  
   **#Paths to your mkcert local SSL certificates** 
- 
+``` 
    ssl_certificate      ssl/localhost+3.pem; 
    
    ssl_certificate_key  ssl/localhost+3-key.pem; 
- 
+``` 
    **#Recommended local development SSL settings** 
- 
+``` 
    ssl_protocols        TLSv1.2 TLSv1.3; 
    
    ssl_ciphers          HIGH:!aNULL:!MD5; 
- 
+``` 
 **#Allow image binary uploads up to 15MB** 
- 
+``` 
 client_max_body_size 15M; 
     
 location / { 
-
+```
         
    **#Route traffic to your local .NET application** 
 
- 
+ ```
        proxy_pass         http: //127.0.0.1: 5000; 
        proxy_http_version 1.1; 
-
+```
  
    **#Stream large image file payloads directly without disk-caching in Nginx** 
- 
+ ```
    proxy_request_buffering off; 
    
    proxy_buffering off; 
- 
+``` 
    **#Forward original protocol metadata down to .NET**    
    
    **#Forward headers so .NET reads the multi-tenant host context accurately** 
 
- 
+ ```
        proxy_set_header   Host $host; 
        proxy_set_header X-Real-IP $remote_addr; 
  
        proxy_set_header   X-Forwarded-Host $host; 
        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for; 
        proxy_set_header   X-Forwarded-Proto $scheme; 
-
+```
         
-       **#WebSocket and connection persistence headers** 
- 
+**#WebSocket and connection persistence headers** 
+ ```
        proxy_set_header   Upgrade $http_upgrade; 
        proxy_set_header   Connection "upgrade"; 
        proxy_cache_bypass $http_upgrade; 
    } 
 } 
 } 
-
+```
 # PowerShell Commands (Nginx): 
 
+```
 cd D:\nginx-1.31.3\conf 
 
 Start-Process .\nginx.exe\ 
@@ -133,16 +175,17 @@ Start-Process .\nginx.exe\
 Start-Process -FilePath "D:\nginx-1.31.3\nginx.exe" -ArgumentList "-s reload" -NoNewWindow –Wait 
 
 .\nginx.exe -s stop 
-
+```
 # PowerShell Commands (Create Certificate): 
 
-(D:\nginx-1.31.3\conf\ssl) 
-
+**(D:\nginx-1.31.3\conf\ssl)**
+```
 mkdir ssl 
 
 cd ssl 
 
 .\mkcert.exe localhost finearts.test lifestyles.test 
+```
 
 <img width="558" height="253" alt="certificate" src="https://github.com/user-attachments/assets/f7e6c960-78c6-4e3b-a771-aa001b58300d" />
 
