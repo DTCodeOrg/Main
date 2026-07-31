@@ -90,6 +90,9 @@ internal class Program
 
         _ = app.UseForwardedHeaders (forwardedHeadersOptions);
 
+        // 3. THIRD: Resolve tenancy using the freshly parsed proxy Host header
+        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
+
 
         // 2. SECOND: Process routing-related middlewares
         if ( app.Environment.IsDevelopment () )
@@ -103,15 +106,13 @@ internal class Program
 
         _ = app.UseWebOptimizer ();
 
-        // 3. THIRD: Resolve tenancy using the freshly parsed proxy Host header
-        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
         // 4. FOURTH: Safe to handle HTTPS, Routing, and Static Assets
         _ = app.UseHttpsRedirection (); // Now safely reads X-Forwarded-Proto
 
         _ = app.UseStaticFiles ();
 
-        _ = app.UseRouting ();
+        _ = app.UseRouting (); // Identifies which controller/action handles the request
 
         _ = app.UseCors ();
 
@@ -119,14 +120,14 @@ internal class Program
 
         _ = app.UseCustomLocalization ();
 
-        _ = app.UseSession ();          // 6. Mount isolated session data bucket
+        // MOVE AUTHENTICATION HERE (Right after Routing has determined the target destination)
+        _ = app.UseAuthentication ();   // Resolves User context, claims identities, and JWT/Cookie states
 
-        _ = app.UseAntiforgery ();      // 7. Execute Synchronizer Token Pattern validation
+        _ = app.UseAuthorization ();    // Validates basic access permissions
 
-        // --- 7. Authentication & Tenant Authorization Defenses ---
-        _ = app.UseAuthentication ();
+        _ = app.UseSession ();          // 6. Mount isolated session data bucket (Now fully aware of User identity)
 
-        _ = app.UseAuthorization ();
+        _ = app.UseAntiforgery ();      // 7. Execute Antiforgery validation (Can now accurately check User identity tokens)
 
         // CRITICAL: Runs after Identity sets up User context, allowing you to validate user claims against active tenant contexts
         _ = app.UseMiddleware<TenantSecurityMiddleware> ();

@@ -24,20 +24,31 @@ public class TokenRepository: ITokenRepository
 
     public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId)
     {
-        var activeTokens = await _context.UserRefreshTokens.Where
-        (t => t.UserId == userId && t.MyTenantId == tenantId
-        && !t.IsRevoked).ToListAsync();
+        // 1. Fetch only the tokens that aren't already revoked to save processing power
+        var activeTokens = await _context.UserRefreshTokens
+        .Where(t => t.UserId == userId && t.MyTenantId == tenantId && !t.IsRevoked)
+        .ToListAsync();
 
+        // 2. Return true early if there is nothing to update anyway
+        if ( !activeTokens.Any () )
+        {
+            return true;
+        }
+
+        // 3. Mutate the tracked entities directly
         foreach ( var token in activeTokens )
         {
             token.IsRevoked = true;
-            _ = _context.UserRefreshTokens.Update (token);
+            // REMOVED: _context.UserRefreshTokens.Update(token);
+            // EF Core automatically tracks this mutation because the entity was loaded via _context
         }
 
-        int result = await _context.SaveChangesAsync ();
+        // 4. Commit changes safely
+        int result = await _context.SaveChangesAsync();
 
         return result > 0;
     }
+
 
     public async Task<UserRefreshToken?> GetSavedRefreshTokenAsync (string userId,Guid tenantId)
     {

@@ -20,19 +20,20 @@ public class TenantSecurityMiddleware
             // 1. Get the TenantId embedded securely inside the user's identity claims matrix
             var userTenantId = context.User.FindFirst("TenantId")?.Value;
 
-            // 2. Get the TenantId matching the active browser Nginx proxy URL mapping
+            // 2. Get the TenantId matching the active browser proxy URL mapping safely
             var resolvedTenantId = tenantSetter.CurrentTenantId.ToString();
 
-            // 3. FIX: ENFORCE ISOLATION (Blocks requests where the claim DOES NOT match the current route domain)
-            if ( string.IsNullOrEmpty (userTenantId) || !string.Equals (userTenantId,resolvedTenantId,StringComparison.OrdinalIgnoreCase) )
+            // 3. ENFORCE ISOLATION
+            if ( string.IsNullOrEmpty (userTenantId) ||
+                string.IsNullOrEmpty (resolvedTenantId) ||
+                !string.Equals (userTenantId,resolvedTenantId,StringComparison.OrdinalIgnoreCase) )
             {
-                // Set status code to 403 Forbidden
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 context.Response.ContentType = "text/plain";
-
                 await context.Response.WriteAsync ("Access Denied: You do not belong to this tenant space.");
-                return; // Short-circuit and stop the request pipeline immediately
+                return;
             }
+
         }
 
         await _next (context);

@@ -243,59 +243,55 @@ public class AuthController: BaseController
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout ()
     {
-        // Resolve your tenant ID string cleanly from your active setter dependency
         var currentTenantId = _tenantSetter.CurrentTenantId.ToString();
+
+        // Explicitly grab the ClaimTypes.NameIdentifier
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-        if ( !string.IsNullOrEmpty (userId) )
+        // 1. Server-Side: Attempt database revocation safely
+        if ( !string.IsNullOrEmpty (userId) && !string.IsNullOrEmpty (_tenantSetter.CurrentTenantId.ToString ()) )
         {
-            // 1. Server-Side: Invalidate their refresh tokens in the database
-            _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,_tenantSetter.CurrentTenantId);
+            try
+            {
+                // Wrap in try-catch so a database crash can NEVER block browser cookie deletion
+                _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,_tenantSetter.CurrentTenantId);
+            }
+            catch ( Exception ex )
+            {
+                _logger.LogWarning (ex,"Failed to revoke tokens in DB");
+                // Log your error here (e.g., _logger.LogError(ex, "Failed to revoke tokens in DB"));
+                // DO NOT THROW. Let the code proceed to clean the browser.
+            }
         }
 
-        // 2. Server-Side: Clear your custom tenant session memory footprints
+        // 2. Server-Side: Clear session footprints
         HttpContext.Session.Clear ();
 
-        // 3. Cookies: Clear custom multi-tenant JWT cookies
-        Response.Cookies.Delete ($".App.AccessToken.{currentTenantId}",new CookieOptions
+        // 3. Browser-Side: Clean up cookies regardless of DB success
+        if ( !string.IsNullOrEmpty (currentTenantId) )
         {
-            Path = "/",Secure = true,SameSite = SameSiteMode.Strict,HttpOnly = true
-        });
+            // Path MUST match exactly where they were appended
+            Response.Cookies.Delete ($".App.AccessToken.{currentTenantId}",new CookieOptions { Path = "/" });
+            Response.Cookies.Delete ($".App.RefreshToken.{currentTenantId}",new CookieOptions { Path = "/refresh-token" });
+            Response.Cookies.Delete ($".AspNetCore.Antiforgery.{currentTenantId}",new CookieOptions { Path = "/" });
+            Response.Cookies.Delete ($".Session.{currentTenantId}",new CookieOptions { Path = "/" });
+        }
 
-        Response.Cookies.Delete ($".App.RefreshToken.{currentTenantId}",new CookieOptions
-        {
-            Path = "/refresh-token",Secure = true,SameSite = SameSiteMode.Strict,HttpOnly = true
-        });
-
-        // 4. Cookies: Explicitly wipe your multi-tenant antiforgery cookie
-        // FIX: Changed HttpOnly to true and matched Lax mode to ensure the browser processes the deletion header
-        Response.Cookies.Delete ($".AspNetCore.Antiforgery.{currentTenantId}",new CookieOptions
-        {
-            Path = "/",
-            Secure = true,
-            HttpOnly = true,
-            SameSite = SameSiteMode.Lax
-        });
-
-        // 5. Cookies: Safe fallback cleanup for framework defaults if they accidentally exist
-        Response.Cookies.Delete (".AspNetCore.Identity.Application",new CookieOptions { Path = "/" });
+        // Clear universal fallbacks
         Response.Cookies.Delete (".AspNetCore.Session",new CookieOptions { Path = "/" });
-        Response.Cookies.Delete ($".Session.{currentTenantId}",new CookieOptions { Path = "/" }); // Clears your custom session name
 
-        // 6. Client-Side: FIX - Correct lowercase directive strings to wipe local cache and DB storage
+        // 4. Force browser cache eviction and Storage Wipe
         Response.Headers.Append ("Clear-Site-Data","\"cache\", \"storage\"");
-
-        // 7. Client-Side: Instruct Nginx proxy and browser history to never cache back-button state
         Response.Headers.Append ("Cache-Control","no-cache, no-store, must-revalidate");
         Response.Headers.Append ("Pragma","no-cache");
         Response.Headers.Append ("Expires","0");
 
-        // 8. Redirect to login
+        // 5. Hard redirect to login screen
         return RedirectToAction ("Login","Auth");
     }
+
 
 
 
