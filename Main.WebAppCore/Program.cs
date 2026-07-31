@@ -90,6 +90,9 @@ internal class Program
 
         _ = app.UseForwardedHeaders (forwardedHeadersOptions);
 
+        // 3. THIRD: Resolve tenancy using the freshly parsed proxy Host header
+        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
+
 
         // 2. SECOND: Process routing-related middlewares
         if ( app.Environment.IsDevelopment () )
@@ -103,8 +106,6 @@ internal class Program
 
         _ = app.UseWebOptimizer ();
 
-        // 3. THIRD: Resolve tenancy using the freshly parsed proxy Host header
-        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
         // 4. FOURTH: Safe to handle HTTPS, Routing, and Static Assets
         _ = app.UseHttpsRedirection (); // Now safely reads X-Forwarded-Proto
@@ -121,6 +122,7 @@ internal class Program
 
         // MOVE AUTHENTICATION HERE (Right after Routing has determined the target destination)
         _ = app.UseAuthentication ();   // Resolves User context, claims identities, and JWT/Cookie states
+
         _ = app.UseAuthorization ();    // Validates basic access permissions
 
         _ = app.UseSession ();          // 6. Mount isolated session data bucket (Now fully aware of User identity)

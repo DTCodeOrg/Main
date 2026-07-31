@@ -20,40 +20,40 @@
 
     <script>
         
-        var commentUrl = '@Url.Action("AddComments", "Home")';
+        // var commentUrl = '@Url.Action("AddComments", "Home")';
 
         $(function () {
             
-            $('[data-manage-post="collapse"]').collapse(
-            {
-                parent: "#accordion",
-                toggle: true
-            });
+            // $('[data-manage-post="collapse"]').collapse(
+            // {
+            //     parent: "#accordion",
+            //     toggle: true
+            // });
 
-            $(document).on("click", "#btnComment", function () 
-            {
-                var that = this;
-                var $comment = $("#Comment");
-                var commentText = $comment.val();
-                var postID = $(that).data("id");
-                if (commentText != "" && commentText != undefined && commentText != null) {
-                    $.ajax({
-                        url: commentUrl + '?comment=' + commentText + '&postID=' + postID,
-                        type: 'GET',
-                        cache: false,
-                        success: function (todayDate) {
-                            $("#noComment").remove();
-                            $(".comment-list").prepend('<li>' +
-                                '<p class="comment">' + commentText + '</p>' +
-                                '<p class="date">' + todayDate + '</p>' +
-                                '</li>');
-                            $comment.val("");
-                        },
-                        error: function () {
-                        }
-                    });
-                }
-            });
+            // $(document).on("click", "#btnComment", function () 
+            // {
+            //     var that = this;
+            //     var $comment = $("#Comment");
+            //     var commentText = $comment.val();
+            //     var postID = $(that).data("id");
+            //     if (commentText != "" && commentText != undefined && commentText != null) {
+            //         $.ajax({
+            //             url: commentUrl + '?comment=' + commentText + '&postID=' + postID,
+            //             type: 'GET',
+            //             cache: false,
+            //             success: function (todayDate) {
+            //                 $("#noComment").remove();
+            //                 $(".comment-list").prepend('<li>' +
+            //                     '<p class="comment">' + commentText + '</p>' +
+            //                     '<p class="date">' + todayDate + '</p>' +
+            //                     '</li>');
+            //                 $comment.val("");
+            //             },
+            //             error: function () {
+            //             }
+            //         });
+            //     }
+            // });
 
             //loadHomeData();
 
