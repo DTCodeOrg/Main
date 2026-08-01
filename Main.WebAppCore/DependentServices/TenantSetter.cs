@@ -5,6 +5,7 @@ namespace Main.WebAppCore.DependentServices;
 
 public class TenantSetter: ITenantSetter
 {
+
     public Guid CurrentTenantId
     {
         get; set;

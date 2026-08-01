@@ -10,7 +10,7 @@ public static class TenantResolutionExtensions
 {
     private const string TenantHeaderKey = "X-Tenant-ID";
 
-    public static async Task<bool> TryResolveTenantAsync (
+    public static async Task<Guid> TryResolveTenantAsync (
         this HttpContext context,
         ITenantContext tenantContext,
         ITenantSetter tenantSetter,
@@ -19,12 +19,14 @@ public static class TenantResolutionExtensions
         string rootDomain,
         ILogger<ExceptionLoggingService> logger)
     {
-        var rawHost = context.Request.Host.Value;
+        // 1. Grab the host string directly from the browser's incoming request headers
+        string host = context.Request.Host.Host; // e.g., "finearts.test"   
+
         logger.LogWarning (context.Request.Host.Host.ToString ());
-        logger.LogWarning (rawHost.ToString ());
+        logger.LogWarning (host.ToString ());
         string? tenantHost = //context.ResolveFromSubdomain(rawHost)
                            // ?? 
-                            context.ResolveFromDomain(rawHost);
+                            context.ResolveFromDomain(host);
         //ReutePathExtensions.ResolveFromPath(context, tenantPath);
         /// logger.LogWarning (tenantHost + "Not fonud");
         if ( !string.IsNullOrEmpty (tenantHost) )
@@ -52,12 +54,12 @@ public static class TenantResolutionExtensions
                 context.Request.Headers[TenantHeaderKey] = tenantSetter.CurrentTenantId.ToString ();
 
                 logger.LogWarning (tenantSetter.CurrentTenantId.ToString ());
-                return true;
+                return tenantSetter.CurrentTenantId;
             }
         }
 
         //context.Response.Redirect (rootDomain);
-        return false;
+        return Guid.Empty;
     }
 
     private static void SetTenantSetter (ITenantSetter tenantSetter,TenantDisplayDataModel tenantDisplayDataModel)

@@ -26,7 +26,17 @@ public class TenantResolverHandlingMiddleware
     ILogger<ExceptionLoggingService> logger)
     {
 
-        bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,rootDomain,logger);
+
+
+        Guid resolvedTenantId = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,rootDomain,logger);
+
+
+        // 3. CRITICAL: Store it in HttpContext.Items so it lives for the entire lifecycle of this single request
+        context.Items["ResolvedTenantId"] = resolvedTenantId;
+
+        // 4. Log the output via your infrastructure tracing tool right away to verify it worked
+        // This resolves the exact line mismatch you saw earlier!
+        Serilog.Log.Warning ("TenantResolutionMiddleware resolved host '{Host}' to Tenant ID: {TenantId}",context.Request.Host.Host,resolvedTenantId);
 
         await _next (context);
     }

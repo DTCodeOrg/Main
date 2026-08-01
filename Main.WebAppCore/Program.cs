@@ -116,7 +116,9 @@ internal class Program
 
         _ = app.UseCors ();
 
-        _ = app.UseResponseCaching ();
+        // 4. CACHING LAYER (Must come AFTER security so it knows who is asking)
+        // Always prefer OutputCache over legacy ResponseCaching for SaaS apps
+        _ = app.UseOutputCache ();
 
         _ = app.UseCustomLocalization ();
 
