@@ -14,6 +14,12 @@ internal class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        // --- 2. Core Infrastructure & DI Services ---
+        _ = builder.Services.AddHttpContextAccessor ();
+        _ = builder.Services.AddDistributedMemoryCache ();
+        _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
+        _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
+
         // --- 1. Logging & Configuration ---
         _ = builder.Host.UseSerilog ();
         _ = builder.AddSerilogConfiguration ();
@@ -33,11 +39,7 @@ internal class Program
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
             .Get<MyConfigSettings> () ?? new MyConfigSettings ();
 
-        // --- 2. Core Infrastructure & DI Services ---
-        _ = builder.Services.AddHttpContextAccessor ();
-        _ = builder.Services.AddDistributedMemoryCache ();
-        _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
-        _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
+
 
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();

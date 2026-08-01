@@ -24,81 +24,68 @@ public static class RegisterAuthenticationService
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
-        .AddJwtBearer (options =>
+.AddJwtBearer (options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey (key),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero,
+
+        // Ensure these matching property labels completely reflect what is emitted inside your token generator service payload claims
+        RoleClaimType = "UserRole",
+        NameClaimType = "UserName"
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = async context =>
         {
-            options.TokenValidationParameters = new TokenValidationParameters
+            // 1. Resolve your active scoped tenant setting container instance on this execution thread
+            var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
+            var tenantId = tenantSetter.CurrentTenantId;
+
+            // 2. Build the exact dynamic string names matching your login endpoint configurations
+            var accessCookieName = $".App.AccessToken.{tenantId}";
+            var refreshCookieName = $".App.RefreshToken.{tenantId}";
+
+            // 3. Attempt to authenticate the incoming thread with the Access Token cookie first
+            if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) && !string.IsNullOrEmpty (accessToken) )
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey (key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                RoleClaimType = "UserRole",
-                NameClaimType = "UserName",
-                ClockSkew = TimeSpan.Zero
-            };
-            options.Events = new JwtBearerEvents
+                context.Token = accessToken;
+            }
+            else
             {
-                OnMessageReceived = async context =>
+                // 4. Access Token is dead or missing! Process your secure database refresh token chain instead
+                if ( context.Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
                 {
-                    try
+                    var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
+                    var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken, tenantId, 15, 7);
+
+                    if ( rotationResult != null )
                     {
-                        var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
-                        var tenantId = tenantSetter.CurrentTenantId;
-
-                        var accessCookieName = $".App.AccessToken.{tenantId}";
-                        var refreshCookieName = $".App.RefreshToken.{tenantId}";
-
-                        // 1. Try to authenticate with the existing Access Token
-                        if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) && !string.IsNullOrEmpty (accessToken) )
+                        // Drop the brand-new rotated cookie tokens into the response headers
+                        context.HttpContext.Response.Cookies.Append (accessCookieName,rotationResult.AccessToken,new CookieOptions
                         {
-                            context.Token = accessToken;
-                        }
-                        else
+                            HttpOnly = true,Secure = true,SameSite = SameSiteMode.Strict,Expires = DateTimeOffset.UtcNow.AddMinutes (15),Path = "/"
+                        });
+
+                        context.HttpContext.Response.Cookies.Append (refreshCookieName,rotationResult.RefreshToken,new CookieOptions
                         {
-                            // 2. Access token is missing/expired. Try the Refresh Token
-                            if ( context.Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
-                            {
-                                var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
-                                var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken, tenantId, 15, 7);
+                            HttpOnly = true,Secure = true,SameSite = SameSiteMode.Strict,Expires = DateTimeOffset.UtcNow.AddDays (7),Path = "/"
+                        });
 
-                                if ( rotationResult != null )
-                                {
-                                    // 3. Drop the fresh Access Token Cookie
-                                    context.HttpContext.Response.Cookies.Append (accessCookieName,rotationResult.AccessToken,new CookieOptions
-                                    {
-                                        HttpOnly = true,
-                                        Secure = true,
-                                        SameSite = SameSiteMode.Strict,
-                                        Expires = DateTimeOffset.UtcNow.AddMinutes (15),
-                                        Path = "/"
-                                    });
-
-                                    // CRITICAL FIX: Changed Path from "/refresh-token" to "/"
-                                    // This ensures the browser sends the refresh token on ANY page load when access token is dead.
-                                    context.HttpContext.Response.Cookies.Append (refreshCookieName,rotationResult.RefreshToken,new CookieOptions
-                                    {
-                                        HttpOnly = true,
-                                        Secure = true,
-                                        SameSite = SameSiteMode.Strict,
-                                        Expires = DateTimeOffset.UtcNow.AddDays (7),
-                                        Path = "/"
-                                    });
-
-                                    // 4. Authenticate this current request instantly
-                                    context.Token = rotationResult.AccessToken;
-                                }
-                            }
-                        }
-                    }
-                    catch ( Exception ex )
-                    {
-                        // Fail-safe: Log error and let request drop through as Anonymous instead of throwing a 500 error
-                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
-                        logger.LogError (ex,"Error executing silent token rotation middleware.");
+                        // Instantly authorize the current request with the newly issued access key
+                        context.Token = rotationResult.AccessToken;
                     }
                 }
-            };
-        });
+            }
+        }
+    };
+});
+
 
         return services;
     }

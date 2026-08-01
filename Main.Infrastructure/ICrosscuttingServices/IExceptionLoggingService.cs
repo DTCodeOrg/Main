@@ -6,6 +6,7 @@ public interface IExceptionLoggingService
 {
 
     Task LogExceptionAsync (
+        ITenantSetter tenantSetter,
         Exception exception,
         string errorCode,
         int statusCode,

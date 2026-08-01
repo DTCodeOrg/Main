@@ -49,8 +49,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         _tenantSetter = tenantSetter;
         _tenantContext = tenantContext;
         _logger = logger;
-
-        logger.LogWarning ("Constructor Resolved Tenant Id: " + _tenantSetter.CurrentTenantId.ToString ());
     }
 
     public DbSet<ApplicationUser> ApplicationUsers
@@ -176,7 +174,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     private void FluentApiConfiguration (ModelBuilder builder)
 
     {
-
         _ = builder.Entity<Tenant> ()
        .HasOne (t => t.EmaiSmtp)
        .WithOne (e => e.Tenant)
@@ -294,8 +291,10 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<ExceptionLog> ()
           .HasIndex (ut => ut.MyTenantId);
 
+        // FIX: Creates a highly optimized composite index tracking both tenant and token
         _ = builder.Entity<UserRefreshToken> ()
-          .HasIndex (ut => ut.MyTenantId);
+            .HasIndex (ut => new { ut.MyTenantId,ut.Token })
+            .IsUnique (); // Ensure no duplicate active tokens can exist inside the same tenant footprint
 
         _ = builder.Entity<EmailOutboxMessage> ()
           .HasIndex (ut => ut.MyTenantId);
@@ -394,6 +393,9 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
         return base.SaveChangesAsync (acceptAllChangesOnSuccess,cancellationToken);
     }
+
+
+
 
     public void SeedData (ModelBuilder builder)
     {

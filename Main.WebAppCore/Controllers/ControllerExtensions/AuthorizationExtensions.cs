@@ -46,8 +46,7 @@ public static class AuthorizationExtensions
             Secure = true,
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UtcNow.AddDays (days),
-            // FIX: Changed path from "/account/refresh-token" to match your working endpoint route exactly
-            Path = "/refresh-token"
+            Path = "/"
         });
 
     }

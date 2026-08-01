@@ -66,6 +66,7 @@ public class GlobalExceptionHandlingMiddleware
         {
             // Log exception to database and file
             await exceptionLoggingService.LogExceptionAsync (
+                tenantSetter,
                 exception: exception,
                 errorCode: errorCode,
                 statusCode: statusCode,

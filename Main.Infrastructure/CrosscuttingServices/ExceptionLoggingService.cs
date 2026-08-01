@@ -9,20 +9,18 @@ namespace Main.Infrastructure.CrosscuttingHelperServices;
 public class ExceptionLoggingService: IExceptionLoggingService
 {
     private readonly ApplicationDbContext _dbContext;
-    private readonly ITenantSetter _tenantSetter;
     private readonly ILogger<ExceptionLoggingService> _logger;
 
     public ExceptionLoggingService (
         ApplicationDbContext dbContext,
-        ITenantSetter tenantSetter,
         ILogger<ExceptionLoggingService> logger)
     {
         _dbContext = dbContext;
-        _tenantSetter = tenantSetter;
         _logger = logger;
     }
 
     public async Task LogExceptionAsync (
+        ITenantSetter tenantSetter,
         Exception exception,
         string errorCode,
         int statusCode,
