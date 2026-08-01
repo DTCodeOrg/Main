@@ -1,7 +1,6 @@
 ﻿using DataTransferModel;
 using Main.Common;
 using Main.Infrastructure;
-using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -20,38 +19,33 @@ public class TenantResolverHandlingMiddleware
 
     public async Task InvokeAsync (
     HttpContext context,
-    ITenantContext tenantContext,
-    ITenantSetter tenantSetter,
+    ITenantSetter tenantSetter, // This object reference must NEVER be overwritten via "="
     ITenancyService tenancyService,
     IMemoryCache memoryCache,
-    ITokenService tokenService,
-    ILogger<ExceptionLoggingService> logger)
+    ILogger<TenantResolverHandlingMiddleware> logger)
     {
+        // 1. Resolve tenant context data into a separate variable payload reference
+        TenantDisplayDataModel? resolvedTenant = await TenantResolutionExtensions.TryResolveTenantAsync (
+        context, tenancyService, memoryCache, logger
+    );
 
+        if ( resolvedTenant != null )
+        {
+            // 2. CRITICAL: Mutate the properties of the container-managed instance directly
+            tenantSetter.CurrentTenantId = resolvedTenant?.MyTenantId ?? Guid.Empty;
+            tenantSetter.TenantName = resolvedTenant?.Name ?? string.Empty;
+            tenantSetter.TenantStore = resolvedTenant?.StoreType ?? StoreType.FineArts;
+        }
+        else
+        {
+            // Handle unresolvable host domains gracefully
+            tenantSetter.CurrentTenantId = Guid.Empty;
+        }
 
-
-        var tenantDisplayDataModel = await TenantResolutionExtensions.TryResolveTenantAsync (context,tenantContext,tenantSetter,tenancyService,memoryCache,rootDomain,logger);
-
-
-        // 3. CRITICAL: Store it in HttpContext.Items so it lives for the entire lifecycle of this single request
-        context.Items["ResolvedTenantId"] = tenantDisplayDataModel?.MyTenantId;
-
-        // 4. Log the output via your infrastructure tracing tool right away to verify it worked
-        // This resolves the exact line mismatch you saw earlier!
-        Serilog.Log.Warning ("TenantResolutionMiddleware resolved host '{Host}' to Tenant ID: {TenantId}",context.Request.Host.Host,tenantDisplayDataModel?.MyTenantId);
-
-        SetTenantSetter (tenantSetter,tenantDisplayDataModel);
-
-        context.Request.Headers[TenantHeaderKey] = tenantDisplayDataModel?.MyTenantId.ToString () ?? string.Empty;
+        // 3. Log using the value directly attached to your tracked DI framework layer
+        Serilog.Log.Warning ("TenantResolutionMiddleware resolved host '{Host}' to Tenant ID: {TenantId}",context.Request.Host.Host,tenantSetter.CurrentTenantId);
 
         await _next (context);
-    }
-
-    private void SetTenantSetter (ITenantSetter tenantSetter,TenantDisplayDataModel? tenantDisplayDataModel)
-    {
-        tenantSetter.CurrentTenantId = tenantDisplayDataModel?.MyTenantId ?? Guid.Empty;
-        tenantSetter.TenantStore = tenantDisplayDataModel?.StoreType ?? StoreType.FineArts;
-        tenantSetter.TenantName = tenantDisplayDataModel?.Name ?? string.Empty;
     }
 }
 
