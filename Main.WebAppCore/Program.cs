@@ -47,10 +47,12 @@ internal class Program
 
         // Inside Program.cs, mirror your isolation architecture for Sessions
         _ = builder.Services.AddSession (); // Register base foundation first
+
         _ = builder.Services.AddTransient<IConfigureOptions<SessionOptions>,TenantSessionOptionsSetup> ();
 
         // Inject Options Setup Patches
         _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionsSetup> ();
+
         // Enable Core Antiforgery and Session Foundations
         _ = builder.Services.AddAntiforgery ();
 
@@ -60,17 +62,23 @@ internal class Program
         _ = builder.Services.AddAuthorizations (builder.Configuration);
         _ = builder.Services.AddAuthentication (builder.Configuration);
 
+
         // --- 4. Web Optimization ---
         _ = builder.Services.AddWebOptimizer (pipeline =>
         {
             _ = pipeline.CompileLessFiles ();
         });
 
+
         // Instead, find where you register services (near the top) and update it to this:
         _ = builder.Services.AddControllers (options =>
         {
             options.Filters.Add (new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute ());
         });
+
+        // register output caching services
+        _ = builder.Services.AddOutputCache ();
+
 
         var app = builder.Build();
 
@@ -116,16 +124,16 @@ internal class Program
 
         _ = app.UseCors ();
 
-        // 4. CACHING LAYER (Must come AFTER security so it knows who is asking)
-        // Always prefer OutputCache over legacy ResponseCaching for SaaS apps
-        _ = app.UseOutputCache ();
-
         _ = app.UseCustomLocalization ();
 
         // MOVE AUTHENTICATION HERE (Right after Routing has determined the target destination)
         _ = app.UseAuthentication ();   // Resolves User context, claims identities, and JWT/Cookie states
 
         _ = app.UseAuthorization ();    // Validates basic access permissions
+
+        // 4. CACHING LAYER (Must come AFTER security so it knows who is asking)
+        // Always prefer OutputCache over legacy ResponseCaching for SaaS apps
+        _ = app.UseOutputCache ();
 
         _ = app.UseSession ();          // 6. Mount isolated session data bucket (Now fully aware of User identity)
 
