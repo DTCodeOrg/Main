@@ -4,7 +4,7 @@ namespace Main.IRepository;
 
 public interface ITokenRepository
 {
-    Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId,string userId);
+    Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId);
 
     Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId);
 

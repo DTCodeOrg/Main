@@ -14,7 +14,7 @@ public class TokenRepository: ITokenRepository
         _context = context;
     }
 
-    public async Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId,string userId)
+    public async Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId)
     {
         // 1. Find the token in the database
         var savedRefreshToken = await _context.UserRefreshTokens
@@ -29,7 +29,7 @@ public class TokenRepository: ITokenRepository
         if ( savedRefreshToken.IsRevoked )
         {
             // Malicious actor or leaked token! Revoke all tokens descending from or belonging to this user
-            _ = await LogoutRevokeUserRefreshTokensAsync (userId,tenantId);
+            _ = await LogoutRevokeUserRefreshTokensAsync (savedRefreshToken.UserId,tenantId);
 
             throw new UnauthorizedAccessException ("Compromised token detected. All sessions revoked.");
         }

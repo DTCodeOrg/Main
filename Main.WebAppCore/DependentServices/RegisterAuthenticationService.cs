@@ -1,4 +1,5 @@
 ﻿using Main.Infrastructure;
+using Main.Infrastructure.CrosscuttingHelperServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -9,7 +10,6 @@ public static class RegisterAuthenticationService
 {
     public static IServiceCollection AddAuthentication (this IServiceCollection services,IConfiguration configuration)
     {
-        // FIX: Pointed directly to "Jwt:Key" to match your TokenService dependency
         var secretKey = configuration["Jwt:Key"];
 
         if ( string.IsNullOrEmpty (secretKey) )
@@ -29,37 +29,78 @@ public static class RegisterAuthenticationService
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey (key), // Securely matches TokenService
+                IssuerSigningKey = new SymmetricSecurityKey (key),
                 ValidateIssuer = false,
                 ValidateAudience = false,
-
-                // CRITICAL FIX: Your TokenService emits "UserRole" and "UserName" claims.
-                // These must be mapped here so HttpContext.User.IsInRole() reads them correctly.
                 RoleClaimType = "UserRole",
                 NameClaimType = "UserName",
                 ClockSkew = TimeSpan.Zero
             };
             options.Events = new JwtBearerEvents
             {
-                OnMessageReceived = context =>
+                OnMessageReceived = async context =>
                 {
-                    var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
-
-                    if ( tenantSetter?.CurrentTenantId != null )
+                    try
                     {
-                        var cookieName = $".App.AccessToken.{tenantSetter.CurrentTenantId}";
+                        var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
+                        var tenantId = tenantSetter.CurrentTenantId;
 
-                        if ( context.Request.Cookies.TryGetValue (cookieName,out var token) )
+                        var accessCookieName = $".App.AccessToken.{tenantId}";
+                        var refreshCookieName = $".App.RefreshToken.{tenantId}";
+
+                        // 1. Try to authenticate with the existing Access Token
+                        if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) && !string.IsNullOrEmpty (accessToken) )
                         {
-                            context.Token = token;
+                            context.Token = accessToken;
+                        }
+                        else
+                        {
+                            // 2. Access token is missing/expired. Try the Refresh Token
+                            if ( context.Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
+                            {
+                                var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
+                                var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken, tenantId, 15, 7);
+
+                                if ( rotationResult != null )
+                                {
+                                    // 3. Drop the fresh Access Token Cookie
+                                    context.HttpContext.Response.Cookies.Append (accessCookieName,rotationResult.AccessToken,new CookieOptions
+                                    {
+                                        HttpOnly = true,
+                                        Secure = true,
+                                        SameSite = SameSiteMode.Strict,
+                                        Expires = DateTimeOffset.UtcNow.AddMinutes (15),
+                                        Path = "/"
+                                    });
+
+                                    // CRITICAL FIX: Changed Path from "/refresh-token" to "/"
+                                    // This ensures the browser sends the refresh token on ANY page load when access token is dead.
+                                    context.HttpContext.Response.Cookies.Append (refreshCookieName,rotationResult.RefreshToken,new CookieOptions
+                                    {
+                                        HttpOnly = true,
+                                        Secure = true,
+                                        SameSite = SameSiteMode.Strict,
+                                        Expires = DateTimeOffset.UtcNow.AddDays (7),
+                                        Path = "/"
+                                    });
+
+                                    // 4. Authenticate this current request instantly
+                                    context.Token = rotationResult.AccessToken;
+                                }
+                            }
                         }
                     }
-
-                    return Task.CompletedTask;
+                    catch ( Exception ex )
+                    {
+                        // Fail-safe: Log error and let request drop through as Anonymous instead of throwing a 500 error
+                        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerEvents>>();
+                        logger.LogError (ex,"Error executing silent token rotation middleware.");
+                    }
                 }
             };
         });
 
         return services;
     }
+
 }

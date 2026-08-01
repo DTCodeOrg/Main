@@ -111,13 +111,15 @@ public class TokenService: ITokenService
         }
     }
 
-    public async Task<TokenResult> RotateRefreshTokenAsync (string token,Guid tenantId,string userId,int accessExpiryMinutes,int refreshExpiryDays)
+    public async Task<TokenResult> RotateRefreshTokenAsync (string token,Guid tenantId,int accessExpiryMinutes,int refreshExpiryDays)
     {
-        // 1. Fetch the actual User record from your data tier to ensure their account is still active
-        ApplicationUser? user = await _applicationUserRepository.ApplicationUsers (userId);
 
-        // 2. Fetch token record from DB/Redis by its raw token string and matching tenant context
-        UserRefreshToken savedRefreshToken = await _tokenRepository.GetRefreshTokens  ( token, tenantId, userId);
+
+        // 1. Fetch token record from DB/Redis by its raw token string and matching tenant context
+        UserRefreshToken savedRefreshToken = await _tokenRepository.GetRefreshTokens  ( token, tenantId);
+
+        // 2. Fetch the actual User record from your data tier to ensure their account is still active
+        ApplicationUser? user = await _applicationUserRepository.ApplicationUsers (savedRefreshToken.UserId);
 
 
         // 2. Get tenant specific role (find for user)
@@ -128,13 +130,13 @@ public class TokenService: ITokenService
         string formatedTenantRole = $"{savedRefreshToken.UserId ?? ""}:{tenantId}:{tenantRole}";
 
         // 3. Generate new pair
-        var newAccessToken = GenerateAccessToken(savedRefreshToken.UserId, tenantId, formatedTenantRole, tenantRole, user?.UserName!, user?.Email!, accessExpiryMinutes);
+        var newAccessToken = GenerateAccessToken(savedRefreshToken.UserId!, tenantId, formatedTenantRole, tenantRole, user?.UserName!, user?.Email!, accessExpiryMinutes);
 
         var newRefreshTokenString = GenerateRefreshToken();
 
-        _ = await _tokenRepository.RotateRefreshTokenAsync (savedRefreshToken,newAccessToken,newRefreshTokenString);
+        var result = await _tokenRepository.RotateRefreshTokenAsync (savedRefreshToken,newAccessToken,newRefreshTokenString);
 
-        return new TokenResult (true)
+        return new TokenResult (result)
         {
             AccessToken = newAccessToken?.ToString () ?? "",
             RefreshToken = newRefreshTokenString
