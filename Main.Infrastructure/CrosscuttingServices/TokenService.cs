@@ -4,7 +4,6 @@ using Main.IRepository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -112,53 +111,33 @@ public class TokenService: ITokenService
         }
     }
 
-    public async Task<TokenResult> RotateRefreshTokenAsync (string token,Guid tenantId,int accessExpiryMinutes,int refreshExpiryDays)
+    public async Task<TokenResult> RotateRefreshTokenAsync (string token,Guid tenantId,string userId,int accessExpiryMinutes,int refreshExpiryDays)
     {
-        // 1. Fetch token record from DB/Redis by its raw token string and matching tenant context
-        UserRefreshToken? storedTokenRecord = await _tokenRepository.GetRefreshTokens (token,tenantId);
+        // 1. Fetch the actual User record from your data tier to ensure their account is still active
+        ApplicationUser? user = await _applicationUserRepository.ApplicationUsers (userId);
 
-        // 2. Fetch the actual User record from your data tier to ensure their account is still active
-        var user = await _applicationUserRepository.ApplicationUsers (storedTokenRecord!.UserId);
-
-        if ( user == null )
-        {
-            throw new SecurityException ("User account associated with this token is suspended.");
-        }
+        // 2. Fetch token record from DB/Redis by its raw token string and matching tenant context
+        UserRefreshToken savedRefreshToken = await _tokenRepository.GetRefreshTokens  ( token, tenantId, userId);
 
 
+        // 2. Get tenant specific role (find for user)
+        TenantUser? tenantUser = await _tenantUserRepository.GetByUserIdAsync(savedRefreshToken.UserId, tenantId);
 
-        if ( storedTokenRecord == null || storedTokenRecord.IsRevoked )
-        {
+        string tenantRole = tenantUser?.TenantRole!;
 
-            _ = await _tokenRepository.RevokeAllUserTokensAsync (user.Id,tenantId);
+        string formatedTenantRole = $"{savedRefreshToken.UserId ?? ""}:{tenantId}:{tenantRole}";
 
-            throw new SecurityException ("Invalid, expired, or revoked refresh token session.");
-        }
+        // 3. Generate new pair
+        var newAccessToken = GenerateAccessToken(savedRefreshToken.UserId, tenantId, formatedTenantRole, tenantRole, user?.UserName!, user?.Email!, accessExpiryMinutes);
 
-        // 3. Fetch user roles dynamically from DB mapping
-        var userRole = "User";
+        var newRefreshTokenString = GenerateRefreshToken();
 
-        var tenantRole = await _tenantUserRepository.GetByUserIdAsync(user.Id, tenantId);
-
-        string formattedTenantRole = $"{user.Id}:{tenantId}:{tenantRole}";
-
-        // 4. Generate clean tokens using real database state
-        var newAccessToken = await GenerateAccessToken(user.Id, tenantId, formattedTenantRole, userRole, user.UserName!, user.Email!, accessExpiryMinutes);
-
-        var newRefreshTokenStr = GenerateRefreshToken();
-
-        // 5. Invalidate old token record (Rotate/Replace for security)
-        storedTokenRecord.IsRevoked = true;
-
-        _ = await _tokenRepository.UpdateTokenAsync (storedTokenRecord);
-
-        // 6. Save the new replacement token down to database
-        _ = await SaveRefreshToken (user.Id,tenantId,newRefreshTokenStr);
+        _ = await _tokenRepository.RotateRefreshTokenAsync (savedRefreshToken,newAccessToken,newRefreshTokenString);
 
         return new TokenResult (true)
         {
-            AccessToken = newAccessToken,
-            RefreshToken = newRefreshTokenStr
+            AccessToken = newAccessToken?.ToString () ?? "",
+            RefreshToken = newRefreshTokenString
         };
     }
 }

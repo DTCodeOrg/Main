@@ -4,7 +4,7 @@ namespace Main.IRepository;
 
 public interface ITokenRepository
 {
-    Task<UserRefreshToken?> GetRefreshTokens (string token,Guid tenantId);
+    Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId,string userId);
 
     Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId);
 
@@ -14,7 +14,7 @@ public interface ITokenRepository
 
     Task<bool> RevokeAllUserTokensAsync (string userId,Guid tenantId);
 
-    Task<bool> SaveRotateRefreshTokenAsync (string token,string userId,Guid tenantId);
-
     Task<bool> SaveTokenAsync (string userId,Guid tenantId,string token);
+
+    Task<bool> RotateRefreshTokenAsync (UserRefreshToken savedRefreshToken,Task<string> newAccessToken,string newRefreshTokenString);
 }
