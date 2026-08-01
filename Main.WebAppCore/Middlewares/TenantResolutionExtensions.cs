@@ -8,9 +8,7 @@ namespace Main.WebAppCore.Middleware;
 
 public static class TenantResolutionExtensions
 {
-    private const string TenantHeaderKey = "X-Tenant-ID";
-
-    public static async Task<Guid> TryResolveTenantAsync (
+    public static async Task<TenantDisplayDataModel?> TryResolveTenantAsync (
         this HttpContext context,
         ITenantContext tenantContext,
         ITenantSetter tenantSetter,
@@ -50,24 +48,17 @@ public static class TenantResolutionExtensions
 
             if ( tenantDisplayDataModel != null )
             {
-                SetTenantSetter (tenantSetter,tenantDisplayDataModel);
-                context.Request.Headers[TenantHeaderKey] = tenantSetter.CurrentTenantId.ToString ();
 
                 logger.LogWarning (tenantSetter.CurrentTenantId.ToString ());
-                return tenantSetter.CurrentTenantId;
+                return tenantDisplayDataModel;
             }
         }
 
         //context.Response.Redirect (rootDomain);
-        return Guid.Empty;
+        return null;
     }
 
-    private static void SetTenantSetter (ITenantSetter tenantSetter,TenantDisplayDataModel tenantDisplayDataModel)
-    {
-        tenantSetter.CurrentTenantId = tenantDisplayDataModel.MyTenantId;
-        tenantSetter.TenantStore = tenantDisplayDataModel.StoreType;
-        tenantSetter.TenantName = tenantDisplayDataModel.Name;
-    }
+
 
     private static string ResolveFromSubdomain (this HttpContext context,string host)
     {
