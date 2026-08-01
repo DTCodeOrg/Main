@@ -16,7 +16,7 @@ internal class Program
 
         // --- 2. Core Infrastructure & DI Services ---
         _ = builder.Services.AddHttpContextAccessor ();
-        _ = builder.Services.AddDistributedMemoryCache ();
+        _ = builder.Services.AddMemoryCache ();
         _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
 

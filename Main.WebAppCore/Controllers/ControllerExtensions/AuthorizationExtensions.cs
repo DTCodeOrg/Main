@@ -34,17 +34,19 @@ public static class AuthorizationExtensions
         {
             HttpOnly = true,   // Protects against XSS attacks stealing your JWT
             Secure = true,     // Mandates HTTPS through Nginx
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTimeOffset.UtcNow.AddMinutes (minutes),
-            Path = "/"         // Accessible by all pages in your app
+            Domain = context!.Request.Host.Host,
+            Path = "/",
+            SameSite = SameSiteMode.Lax,
+            Expires = DateTimeOffset.UtcNow.AddMinutes (minutes)
         });
 
         // 4. COOKIE 2: Save the long-lived Refresh Token (Expires in 7 days)
         context.Response.Cookies.Append ($".App.RefreshToken.{resolvedTenantId.ToString ()}",refreshTokenStr,new CookieOptions
         {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            HttpOnly = true,                 // Protects against XSS attacks stealing your refresh token
+            Secure = true,                   // Mandates HTTPS through Nginx
+            SameSite = SameSiteMode.Lax,     // <-- CHANGED: Allows cookie handling during cross-domain redirects
+            Domain = context!.Request.Host.Host, // <-- ADDED: Binds the cookie dynamically to the current tenant domain
             Expires = DateTimeOffset.UtcNow.AddDays (days),
             Path = "/"
         });

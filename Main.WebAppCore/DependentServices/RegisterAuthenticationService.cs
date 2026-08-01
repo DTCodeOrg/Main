@@ -70,12 +70,22 @@ public static class RegisterAuthenticationService
                         // Drop the brand-new rotated cookie tokens into the response headers
                         context.HttpContext.Response.Cookies.Append (accessCookieName,rotationResult.AccessToken,new CookieOptions
                         {
-                            HttpOnly = true,Secure = true,SameSite = SameSiteMode.Strict,Expires = DateTimeOffset.UtcNow.AddMinutes (15),Path = "/"
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Lax,
+                            Expires = DateTimeOffset.UtcNow.AddMinutes (15),
+                            Domain = context.HttpContext.Request.Host.Host,
+                            Path = "/"
                         });
 
                         context.HttpContext.Response.Cookies.Append (refreshCookieName,rotationResult.RefreshToken,new CookieOptions
                         {
-                            HttpOnly = true,Secure = true,SameSite = SameSiteMode.Strict,Expires = DateTimeOffset.UtcNow.AddDays (7),Path = "/"
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTimeOffset.UtcNow.AddDays (7),
+                            Domain = context.HttpContext.Request.Host.Host,
+                            Path = "/"
                         });
 
                         // Instantly authorize the current request with the newly issued access key
