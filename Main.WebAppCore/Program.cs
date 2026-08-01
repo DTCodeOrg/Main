@@ -24,10 +24,8 @@ internal class Program
         _ = builder.Host.UseSerilog ();
         _ = builder.AddSerilogConfiguration ();
 
-        // 1. Keeps your existing Serilog interface binding active
+        // Standard Microsoft generic logger factories configuration
         _ = builder.Services.AddSingleton<Serilog.ILogger> (Serilog.Log.Logger);
-
-        // 2. FIX: Adds the missing standard Microsoft generic logger factories
         _ = builder.Services.AddLogging (loggingBuilder =>
         {
             _ = loggingBuilder.AddSerilog (dispose: true);
@@ -35,27 +33,18 @@ internal class Program
 
         _ = builder.Services.AddExceptionLogging (builder.Configuration);
 
-
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
             .Get<MyConfigSettings> () ?? new MyConfigSettings ();
-
-
 
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
 
-
-        // Inside Program.cs, mirror your isolation architecture for Sessions
-        _ = builder.Services.AddSession (); // Register base foundation first
-
+        // Session & Options Setups Foundations
+        _ = builder.Services.AddSession ();
         _ = builder.Services.AddTransient<IConfigureOptions<SessionOptions>,TenantSessionOptionsSetup> ();
-
-        // Inject Options Setup Patches
         _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionsSetup> ();
-
-        // Enable Core Antiforgery and Session Foundations
         _ = builder.Services.AddAntiforgery ();
 
         _ = builder.Services.AddEmailService (builder.Configuration);
@@ -64,84 +53,71 @@ internal class Program
         _ = builder.Services.AddAuthorizations (builder.Configuration);
         _ = builder.Services.AddAuthentication (builder.Configuration);
 
-
-        // --- 4. Web Optimization ---
         _ = builder.Services.AddWebOptimizer (pipeline =>
         {
             _ = pipeline.CompileLessFiles ();
         });
 
-
-        // Instead, find where you register services (near the top) and update it to this:
         _ = builder.Services.AddControllers (options =>
         {
             options.Filters.Add (new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute ());
         });
 
-        // register output caching services
         _ = builder.Services.AddOutputCache ();
-
 
         var app = builder.Build();
 
-        // --- 6. HTTP Request Pipeline Execution Order ---
+        // =========================================================================
+        // --- 6. HTTP REQUEST PIPELINE EXECUTION ORDER (FIXED & OPTIMISED) ---
+        // =========================================================================
 
-        // 1. FIRST: Safely read Nginx proxy headers
+        // 1. Core Proxy Headers Mapping
         var forwardedHeadersOptions = new ForwardedHeadersOptions
         {
             ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                       ForwardedHeaders.XForwardedHost |
-                       ForwardedHeaders.XForwardedProto
+                               ForwardedHeaders.XForwardedHost |
+                               ForwardedHeaders.XForwardedProto
         };
-
-        // Explicitly permit local Nginx loopback traffic without throwing exceptions
         forwardedHeadersOptions.KnownNetworks.Add (new Microsoft.AspNetCore.HttpOverrides.IPNetwork (System.Net.IPAddress.IPv6Loopback,0));
         forwardedHeadersOptions.KnownNetworks.Add (new Microsoft.AspNetCore.HttpOverrides.IPNetwork (System.Net.IPAddress.Loopback,0));
-
         _ = app.UseForwardedHeaders (forwardedHeadersOptions);
 
-        // 3. THIRD: Resolve tenancy using the freshly parsed proxy Host header
-        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
-
-
-        // 2. SECOND: Process routing-related middlewares
+        // 2. Base Diagnostic & Exception Layers
         if ( app.Environment.IsDevelopment () )
         {
+            _ = app.UseDeveloperExceptionPage (); // Added base developer view for clean stack traces
             _ = app.UseMigrationsEndPoint ();
         }
-
-        _ = app.UseGlobalExceptionHandling ();
+        else
+        {
+            _ = app.UseGlobalExceptionHandling ();
+        }
 
         _ = app.UseStatusCodePages ();
+        _ = app.UseHttpsRedirection (); // Enforce encryption immediately after error tracking boundaries
 
+        // 3. Static Assets Optimization Compiler
         _ = app.UseWebOptimizer ();
-
-
-        // 4. FOURTH: Safe to handle HTTPS, Routing, and Static Assets
-        _ = app.UseHttpsRedirection (); // Now safely reads X-Forwarded-Proto
-
         _ = app.UseStaticFiles ();
 
-        _ = app.UseRouting (); // Identifies which controller/action handles the request
-
+        // 4. Multi-Tenant Boundary Identification Routing
+        _ = app.UseRouting ();
+        _ = app.UseCustomLocalization ();
         _ = app.UseCors ();
 
-        _ = app.UseCustomLocalization ();
+        // 5. CRITICAL FIX: Tenancy MUST be evaluated immediately before Authentication runs
+        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
-        // MOVE AUTHENTICATION HERE (Right after Routing has determined the target destination)
-        _ = app.UseAuthentication ();   // Resolves User context, claims identities, and JWT/Cookie states
+        // 6. Security Authentication Matrix
+        _ = app.UseAuthentication ();
+        _ = app.UseAuthorization ();
 
-        _ = app.UseAuthorization ();    // Validates basic access permissions
-
-        // 4. CACHING LAYER (Must come AFTER security so it knows who is asking)
-        // Always prefer OutputCache over legacy ResponseCaching for SaaS apps
+        // 7. Data Storage & Output Optimization Pools
         _ = app.UseOutputCache ();
+        _ = app.UseSession ();
+        _ = app.UseAntiforgery ();
 
-        _ = app.UseSession ();          // 6. Mount isolated session data bucket (Now fully aware of User identity)
-
-        _ = app.UseAntiforgery ();      // 7. Execute Antiforgery validation (Can now accurately check User identity tokens)
-
-        // CRITICAL: Runs after Identity sets up User context, allowing you to validate user claims against active tenant contexts
+        // 8. Custom Domain Context Validation Rules
         _ = app.UseMiddleware<TenantSecurityMiddleware> ();
 
         // --- 8. Endpoint Mappings ---
@@ -151,7 +127,6 @@ internal class Program
             name: "MyArea",
             pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-        // FIX: Matches: https://finearts.test -> Home/Index
         _ = app.MapControllerRoute (
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");

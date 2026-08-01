@@ -229,7 +229,11 @@ public class AuthController: BaseController
 
 
             // Route directly to your newly fixed root index endpoint
-            return RedirectToAction ("Index","Home");
+            return RedirectToAction ("Index","Home",new
+            {
+                area = ""
+            });
+
         }
 
         return View ("Login",loginDisplayViewModel);
