@@ -18,7 +18,7 @@ public static class ClaimsPrincipalExtensions
             return true;
         }
 
-        var loggedUserId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var loggedUserId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
         if ( string.IsNullOrEmpty (loggedUserId) )
         {
             return false;
@@ -33,6 +33,6 @@ public static class ClaimsPrincipalExtensions
 
     public static string? GetUserId (this ClaimsPrincipal user)
     {
-        return user.FindFirst (ClaimTypes.NameIdentifier)?.Value;
+        return user.FindFirst (ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
     }
 }

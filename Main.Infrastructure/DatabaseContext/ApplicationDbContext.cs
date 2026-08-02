@@ -291,10 +291,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<ExceptionLog> ()
           .HasIndex (ut => ut.MyTenantId);
 
-        // FIX: Creates a highly optimized composite index tracking both tenant and token
-        _ = builder.Entity<UserRefreshToken> ()
-            .HasIndex (ut => new { ut.MyTenantId,ut.Token })
-            .IsUnique (); // Ensure no duplicate active tokens can exist inside the same tenant footprint
 
         _ = builder.Entity<EmailOutboxMessage> ()
           .HasIndex (ut => ut.MyTenantId);

@@ -78,9 +78,17 @@ internal class Program
                                ForwardedHeaders.XForwardedHost |
                                ForwardedHeaders.XForwardedProto
         };
+        // CRITICAL FIX:  Allow all forwarded host domains to be parsed by the application
+        forwardedHeadersOptions.AllowedHosts.Clear (); // Clears restrictions so 'finearts.test', etc. are trusted
+
+        // Allow your proxy to trust requests originating from local loopbacks
         forwardedHeadersOptions.KnownNetworks.Add (new Microsoft.AspNetCore.HttpOverrides.IPNetwork (System.Net.IPAddress.IPv6Loopback,0));
         forwardedHeadersOptions.KnownNetworks.Add (new Microsoft.AspNetCore.HttpOverrides.IPNetwork (System.Net.IPAddress.Loopback,0));
+
         _ = app.UseForwardedHeaders (forwardedHeadersOptions);
+
+        // 5. CRITICAL FIX: Tenancy MUST be evaluated immediately before Authentication runs
+        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
         // 2. Base Diagnostic & Exception Layers
         if ( app.Environment.IsDevelopment () )
@@ -105,8 +113,7 @@ internal class Program
         _ = app.UseCustomLocalization ();
         _ = app.UseCors ();
 
-        // 5. CRITICAL FIX: Tenancy MUST be evaluated immediately before Authentication runs
-        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
+
 
         // 6. Security Authentication Matrix
         _ = app.UseAuthentication ();
