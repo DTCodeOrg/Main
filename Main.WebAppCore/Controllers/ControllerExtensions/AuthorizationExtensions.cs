@@ -24,6 +24,8 @@ public static class AuthorizationExtensions
 
         var refreshTokenStr = tokenService.GenerateRefreshToken();
 
+        // 1. Fetch token record from DB/Redis by its raw token string and matching tenant context
+
         // 3. Save the Refresh Token string securely to your database or cache
         _ = await tokenService.SaveRefreshToken (userId,resolvedTenantId,refreshTokenStr);
 

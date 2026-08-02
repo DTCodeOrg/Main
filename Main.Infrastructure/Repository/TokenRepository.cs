@@ -17,7 +17,7 @@ public class TokenRepository: ITokenRepository
     public async Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId)
     {
         // 1. Find the token in the database
-        var savedRefreshToken = await _context.UserRefreshTokens
+        var savedRefreshToken = await _context.UserRefreshTokens.IgnoreQueryFilters()
         .FirstOrDefaultAsync(t => t.Token == token);
 
         if ( savedRefreshToken == null )
@@ -101,6 +101,14 @@ public class TokenRepository: ITokenRepository
 
     public async Task<bool> SaveTokenAsync (string userId,Guid tenantId,string token)
     {
+        var savedRefreshToken = await _context.UserRefreshTokens.IgnoreQueryFilters()
+        .FirstOrDefaultAsync(t => t.Token == token);
+
+        if ( savedRefreshToken != null )
+        {
+            savedRefreshToken.IsRevoked = true;
+        }
+
         UserRefreshToken newRefreshToken = new ()
         {
             Id = Guid.NewGuid(),
