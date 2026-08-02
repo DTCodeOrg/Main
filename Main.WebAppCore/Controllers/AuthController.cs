@@ -273,18 +273,31 @@ public class AuthController: BaseController
         // 2. Server-Side: Clear session footprints
         HttpContext.Session.Clear ();
 
+
+        // Grab the current host header to target the exact client domain (e.g., ".finearts.test")
+        // If you appended cookies with a leading dot, add it here too: $".{HttpContext.Request.Host.Host}"
+        string currentDomain = HttpContext.Request.Host.Host;
+
+        var deletionOptions = new CookieOptions
+        {
+            Path = "/",
+            Domain = currentDomain, // CRITICAL: Must match the cookie's domain exactly
+            Secure = true,          // Match your creation configuration
+            HttpOnly = true
+        };
+
         // 3. Browser-Side: Clean up cookies regardless of DB success
         if ( !string.IsNullOrEmpty (currentTenantId) )
         {
             // Path MUST match exactly where they were appended
-            Response.Cookies.Delete ($".App.AccessToken.{currentTenantId}",new CookieOptions { Path = "/" });
-            Response.Cookies.Delete ($".App.RefreshToken.{currentTenantId}",new CookieOptions { Path = "/" });
-            Response.Cookies.Delete ($".AspNetCore.Antiforgery.{currentTenantId}",new CookieOptions { Path = "/" });
-            Response.Cookies.Delete ($".Session.{currentTenantId}",new CookieOptions { Path = "/" });
+            Response.Cookies.Delete ($".App.AccessToken.{currentTenantId}",deletionOptions);
+            Response.Cookies.Delete ($".App.RefreshToken.{currentTenantId}",deletionOptions);
+            Response.Cookies.Delete ($".AspNetCore.Antiforgery.{currentTenantId}",deletionOptions);
+            Response.Cookies.Delete ($".Session.{currentTenantId}",deletionOptions);
         }
 
-        // Clear universal fallbacks
-        Response.Cookies.Delete (".AspNetCore.Session",new CookieOptions { Path = "/" });
+        // Clear fallback cookies using the exact same domain options
+        Response.Cookies.Delete (".AspNetCore.Session",deletionOptions);
 
         // 4. Force browser cache eviction and Storage Wipe
         Response.Headers.Append ("Clear-Site-Data","\"cache\", \"storage\"");
