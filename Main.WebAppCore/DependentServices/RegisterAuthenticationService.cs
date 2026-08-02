@@ -82,7 +82,7 @@ public static class RegisterAuthenticationService
                         {
                             HttpOnly = true,
                             Secure = true,
-                            SameSite = SameSiteMode.Strict,
+                            SameSite = SameSiteMode.Lax,
                             Expires = DateTimeOffset.UtcNow.AddDays (7),
                             Domain = context.HttpContext.Request.Host.Host,
                             Path = "/"
