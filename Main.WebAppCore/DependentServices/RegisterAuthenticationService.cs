@@ -1,5 +1,5 @@
 ﻿using Main.Infrastructure;
-using Main.Infrastructure.CrosscuttingHelperServices;
+using Main.Infrastructure.ICrosscuttingServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;

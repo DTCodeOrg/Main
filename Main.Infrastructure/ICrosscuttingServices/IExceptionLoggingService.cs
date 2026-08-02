@@ -1,6 +1,6 @@
 ﻿using Domain.Model;
 
-namespace Main.Infrastructure.CrosscuttingHelperServices;
+namespace Main.Infrastructure.ICrosscuttingServices;
 
 public interface IExceptionLoggingService
 {

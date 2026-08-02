@@ -1,6 +1,7 @@
 ﻿using Domain.Model;
 using FluentEmail.Core;
 using Main.Common;
+using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
 using Microsoft.AspNetCore.Identity.UI.Services;
 

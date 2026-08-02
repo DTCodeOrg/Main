@@ -17,7 +17,7 @@ public class TokenRepository: ITokenRepository
     public async Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId)
     {
         // 1. Find the token in the database
-        var savedRefreshToken = await _context.UserRefreshTokens.IgnoreQueryFilters()
+        var savedRefreshToken = await _context.UserRefreshTokens
         .FirstOrDefaultAsync(t => t.Token == token);
 
         if ( savedRefreshToken == null )
@@ -41,7 +41,7 @@ public class TokenRepository: ITokenRepository
     public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId)
     {
         // 1. Fetch only the tokens that aren't already revoked to save processing power
-        var activeTokens = await _context.UserRefreshTokens.IgnoreQueryFilters()
+        var activeTokens = await _context.UserRefreshTokens
         .Where(t => t.UserId == userId && t.MyTenantId == tenantId && !t.IsRevoked)
         .ToListAsync();
 
@@ -52,7 +52,7 @@ public class TokenRepository: ITokenRepository
         }
 
         // 3. Mutate the tracked entities directly
-        foreach ( var token in activeTokens.ToList () )
+        foreach ( var token in activeTokens )
         {
             token.IsRevoked = true;
             // REMOVED: _context.UserRefreshTokens.Update(token);
@@ -69,7 +69,7 @@ public class TokenRepository: ITokenRepository
     public async Task<UserRefreshToken?> GetSavedRefreshTokenAsync (string userId,Guid tenantId)
     {
         UserRefreshToken? userRefreshToken =
-        await _context.UserRefreshTokens.IgnoreQueryFilters().FirstOrDefaultAsync<UserRefreshToken>
+        await _context.UserRefreshTokens.FirstOrDefaultAsync<UserRefreshToken>
         (a => a.UserId == userId && a.MyTenantId == tenantId);
 
         return userRefreshToken;
@@ -85,7 +85,7 @@ public class TokenRepository: ITokenRepository
 
     public async Task<bool> RevokeAllUserTokensAsync (string userId,Guid tenantId)
     {
-        var allUserTokens = await _context.UserRefreshTokens.IgnoreQueryFilters()
+        var allUserTokens = await _context.UserRefreshTokens
         .Where(t => t.UserId == userId && t.MyTenantId == tenantId && !t.IsRevoked)
         .ToListAsync();
 
@@ -101,8 +101,8 @@ public class TokenRepository: ITokenRepository
 
     public async Task<bool> SaveTokenAsync (string userId,Guid tenantId,string token)
     {
-        var savedRefreshToken = await _context.UserRefreshTokens.IgnoreQueryFilters()
-        .FirstOrDefaultAsync(t => t.Token == token);
+        var savedRefreshToken = await _context.UserRefreshTokens
+        .FirstOrDefaultAsync(t => t.MyTenantId == tenantId && t.UserId == userId && !t.IsRevoked);
 
         if ( savedRefreshToken != null )
         {
@@ -113,11 +113,11 @@ public class TokenRepository: ITokenRepository
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            MyTenantId = tenantId,
             Token = token,
             CreatedAt = DateTime.UtcNow,
             ExpiresAt = DateTime.UtcNow.AddDays(7), // Rolling expiration
-            IsRevoked = false
+            IsRevoked = false,
+            MyTenantId = tenantId
         };
 
         _ = _context.UserRefreshTokens.Add (newRefreshToken);

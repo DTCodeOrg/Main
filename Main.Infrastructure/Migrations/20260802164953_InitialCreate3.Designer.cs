@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Main.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260802094927_InitialCreate3")]
+    [Migration("20260802164953_InitialCreate3")]
     partial class InitialCreate3
     {
         /// <inheritdoc />
@@ -350,13 +350,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000002-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e77a89f3-5657-489d-ab9a-3c3f1bef0d5f",
+                            ConcurrencyStamp = "0c63aa70-9af5-44e0-aa6c-6ac627473b56",
                             Email = "admin@system.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEDGdFAW6Bj1HYzNC0bFXFYhK7t0ii+KF3URcWyteF+WY0+BnmLFDjCmmzWlKToSg+A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAeaasTdNLWVTLh9lV1KpLqRHQmzLlD4qjORAtiMspMY7ibqquXw5Ore384jzuDzeQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a08907d4-f145-4ba4-8ba8-232e5d68f51e",
+                            SecurityStamp = "72d5cc85-9e55-42f1-a1cb-ab138cf79112",
                             TwoFactorEnabled = false,
                             UserName = "admin@system.com"
                         },
@@ -364,13 +364,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000003-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "047404f7-c893-4dbe-9cc2-2edd00c3f9c8",
+                            ConcurrencyStamp = "24ced90b-8be2-42d2-aba2-ac71da754fce",
                             Email = "tenant1.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAELddlAi+ng1vZlcAb6XzFReJUdBeaLntJU/vkzJqowCGYjzayUkCd7GSqq7oTASl1A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELcmiY5zESFHAyA7mxlPBVY/BldqK3KUgNhWvV35KRTxeLJtZXClPZUXC690BL+Dmg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a4e4fd60-0e68-4ce5-be98-ef93749fa114",
+                            SecurityStamp = "5cb07087-ca39-4670-9811-254504ab23b1",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.admin@test.com"
                         },
@@ -378,13 +378,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000004-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f7b8df92-b5c2-4dee-935d-c6c56824a33f",
+                            ConcurrencyStamp = "21088b06-7c85-4ec7-bf76-c908033c12d2",
                             Email = "tenant1.content@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAECRBrWEnpB8gmgOLJ6XI7I/8QwJjV0hCaelSUYM5PKYL/qurWnm9p0E9s1v+ld4kjw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHqd9/Vxl472sEnLuWsBFMX26M3Oeaha09kq3KsDsuxH0dEI5a0aA0p92EO42kPwQw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "66889a08-e58c-4529-9465-b090246e6f05",
+                            SecurityStamp = "a701399c-4d3d-4f37-98d1-01655689faab",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.content@test.com"
                         },
@@ -392,13 +392,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000005-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2e1e64b0-63d7-4a19-a47a-3b5214ef9cfa",
+                            ConcurrencyStamp = "627450a8-6f1e-47d7-a117-eaa78645e668",
                             Email = "tenant1.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAELiInnZAH/6Zo+4fKx1U6RSU6/xp6Ojl1iXMIVgdWTvwIbbL+FZ2a5MPOuIMHgYB0g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOYbAlIAWVM1uKQ8Xt5Ge0vX7oKWGoc38jKn6cp2rjWbQT+FYFiU2mNYhX9DgZGupQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "17e6e005-d57a-40f2-94ce-275049482849",
+                            SecurityStamp = "9fd935d2-7671-4b22-9abb-35c9ab65155e",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.member@test.com"
                         },
@@ -406,13 +406,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000006-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "85f45b7f-e017-4732-9dc0-1e83f5b045b7",
+                            ConcurrencyStamp = "46c386f8-e61e-4344-b4b3-1c00df836089",
                             Email = "tenant2.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEJsGDN3M6DdHjKcrBSjoGjSY8NS7pm/MXTeFyewGgXJljMUKaqTLYWo9dpJJZwkNNw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA9zPykUbE6uLt2ru0ZhTDULwQ9u2Lr0vxvn26MoMvNEcrUEMDL73tQLo4iNIAxubA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "057e3561-c0bd-4377-8e1a-d33bb99cf38d",
+                            SecurityStamp = "0ec14528-f8b7-4b8a-8f31-909bf9131b30",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.admin@test.com"
                         },
@@ -420,13 +420,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000007-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b1985f6a-4e08-4ab9-9c57-2f38a29d6a5f",
+                            ConcurrencyStamp = "b160df0c-ff2e-495d-acfc-6ddc7af688e7",
                             Email = "tenant2.content@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAED3YMZFIEPqmcpw71lk16FZPf5fkaiwLSOi+kfBs1CemKRdVvN87BQrNX6LCsksCkA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIwXd1Ize0JhD51ZcnmjcD2tA0OEB1ANfddsbiRT0ddGm/Fon+SJd4sB8vh+XiXDog==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "dbf2f8d5-77b8-4be1-abfa-d4d3d72cdcd0",
+                            SecurityStamp = "f2c14a36-659e-4658-adf0-dbc9f50ccc7c",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.content@test.com"
                         },
@@ -434,13 +434,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000008-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8a67c8c5-1b70-4d55-bf9b-02b5a697bf44",
+                            ConcurrencyStamp = "8d63eecc-4cf8-43a4-b61f-42ed1b68f6bf",
                             Email = "tenant2.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEAcqboTyazO3HE78fSJ0ax/UAVLVpyWZZrd1OfG3RQZ/XLVyqNG9W3wGul/C4lfb5g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENmoQBGRNvCAhzWiK/eEZBjnlFDCMN2K4a8esAtfDcgLvuEXjjh1gutsWQcVcBfTAA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5e543f27-366d-4dfc-a943-3dfcdcf7caf0",
+                            SecurityStamp = "99fc0292-1f2c-4532-9a88-7324617300f5",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.member@test.com"
                         });

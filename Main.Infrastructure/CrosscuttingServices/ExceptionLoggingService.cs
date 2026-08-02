@@ -1,5 +1,6 @@
 using Domain.Model;
 using Main.Infrastructure.DatabaseContext;
+using Main.Infrastructure.ICrosscuttingServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Serilog;

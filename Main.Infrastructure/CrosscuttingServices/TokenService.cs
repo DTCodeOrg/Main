@@ -1,5 +1,6 @@
 ﻿using Domain.Model;
 using Main.Common;
+using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -61,8 +62,8 @@ public class TokenService: ITokenService
         new("Email", email)
     };
 
-        // 2. FIX: Do NOT pass an authentication type string here for JWT generation
-        var claimsIdentity = new ClaimsIdentity(claims);
+
+        var claimsIdentity = new ClaimsIdentity(claims, "Jwt");
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

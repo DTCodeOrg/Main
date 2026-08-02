@@ -1,4 +1,4 @@
-﻿using Main.Infrastructure.CrosscuttingHelperServices;
+﻿using Main.Infrastructure.ICrosscuttingServices;
 using Main.Services;
 
 namespace Main.WebAppCore.Controllers.Extensions;
