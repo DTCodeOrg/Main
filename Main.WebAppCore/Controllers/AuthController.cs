@@ -252,7 +252,7 @@ public class AuthController: BaseController
         var currentTenantId = _tenantSetter.CurrentTenantId.ToString();
 
         // Explicitly grab the ClaimTypes.NameIdentifier
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
         // 1. Server-Side: Attempt database revocation safely
         if ( !string.IsNullOrEmpty (userId) && !string.IsNullOrEmpty (_tenantSetter.CurrentTenantId.ToString ()) )
@@ -278,7 +278,7 @@ public class AuthController: BaseController
         {
             // Path MUST match exactly where they were appended
             Response.Cookies.Delete ($".App.AccessToken.{currentTenantId}",new CookieOptions { Path = "/" });
-            Response.Cookies.Delete ($".App.RefreshToken.{currentTenantId}",new CookieOptions { Path = "/refresh-token" });
+            Response.Cookies.Delete ($".App.RefreshToken.{currentTenantId}",new CookieOptions { Path = "/" });
             Response.Cookies.Delete ($".AspNetCore.Antiforgery.{currentTenantId}",new CookieOptions { Path = "/" });
             Response.Cookies.Delete ($".Session.{currentTenantId}",new CookieOptions { Path = "/" });
         }
