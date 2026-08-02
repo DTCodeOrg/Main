@@ -331,7 +331,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
         _ = builder.Entity<ExceptionLog> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
 
-        _ = builder.Entity<UserRefreshToken> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
     }
 
     // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes for (entries with added, modified and deleted sattus)
