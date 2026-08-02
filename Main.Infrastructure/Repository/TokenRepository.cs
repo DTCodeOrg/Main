@@ -41,18 +41,18 @@ public class TokenRepository: ITokenRepository
     public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId)
     {
         // 1. Fetch only the tokens that aren't already revoked to save processing power
-        var activeTokens = await _context.UserRefreshTokens
+        var activeTokens = await _context.UserRefreshTokens.IgnoreQueryFilters()
         .Where(t => t.UserId == userId && t.MyTenantId == tenantId && !t.IsRevoked)
         .ToListAsync();
 
         // 2. Return true early if there is nothing to update anyway
-        if ( !activeTokens.Any () )
+        if ( activeTokens == null || !activeTokens.Any () )
         {
             return true;
         }
 
         // 3. Mutate the tracked entities directly
-        foreach ( var token in activeTokens )
+        foreach ( var token in activeTokens.ToList () )
         {
             token.IsRevoked = true;
             // REMOVED: _context.UserRefreshTokens.Update(token);
@@ -69,7 +69,7 @@ public class TokenRepository: ITokenRepository
     public async Task<UserRefreshToken?> GetSavedRefreshTokenAsync (string userId,Guid tenantId)
     {
         UserRefreshToken? userRefreshToken =
-        await _context.UserRefreshTokens.FirstOrDefaultAsync<UserRefreshToken>
+        await _context.UserRefreshTokens.IgnoreQueryFilters().FirstOrDefaultAsync<UserRefreshToken>
         (a => a.UserId == userId && a.MyTenantId == tenantId);
 
         return userRefreshToken;
@@ -85,7 +85,7 @@ public class TokenRepository: ITokenRepository
 
     public async Task<bool> RevokeAllUserTokensAsync (string userId,Guid tenantId)
     {
-        var allUserTokens = await _context.UserRefreshTokens
+        var allUserTokens = await _context.UserRefreshTokens.IgnoreQueryFilters()
         .Where(t => t.UserId == userId && t.MyTenantId == tenantId && !t.IsRevoked)
         .ToListAsync();
 
