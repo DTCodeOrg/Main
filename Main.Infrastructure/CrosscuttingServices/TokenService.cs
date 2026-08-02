@@ -92,6 +92,7 @@ public class TokenService: ITokenService
 
     public async Task<bool> SaveRefreshToken (string userId,Guid tenantId,string token)
     {
+        _ = await _tokenRepository.LogoutRevokeUserRefreshTokensAsync (userId,tenantId);
         bool result = await _tokenRepository.SaveTokenAsync(userId,tenantId,token);
         return result;
     }
