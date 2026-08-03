@@ -1,7 +1,9 @@
 ﻿using Main.Infrastructure;
 using Main.Infrastructure.ICrosscuttingServices;
+using Main.WebAppCore.Controllers.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 namespace Main.WebAppCore.DependentServices;
@@ -10,14 +12,6 @@ public static class RegisterAuthenticationService
 {
     public static IServiceCollection AddAuthentication (this IServiceCollection services,IConfiguration configuration)
     {
-        var secretKey = configuration["Jwt:Key"];
-
-        if ( string.IsNullOrEmpty (secretKey) )
-        {
-            throw new InvalidOperationException ("JWT Signing Key ('Jwt:Key') is missing from the configuration system.");
-        }
-
-        var key = Encoding.UTF8.GetBytes(secretKey);
 
         _ = services.AddAuthentication (options =>
         {
@@ -25,77 +19,77 @@ public static class RegisterAuthenticationService
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         })
-.AddJwtBearer (options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey (key),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ClockSkew = TimeSpan.Zero,
-
-        // Ensure these matching property labels completely reflect what is emitted inside your token generator service payload claims
-        RoleClaimType = "UserRole",
-        NameClaimType = "UserName"
-    };
-
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = async context =>
+        .AddJwtBearer ("Bearer",options =>
         {
-            // 1. Resolve your active scoped tenant setting container instance on this execution thread
-            var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
-            var tenantId = tenantSetter.CurrentTenantId;
-
-            // 2. Build the exact dynamic string names matching your login endpoint configurations
-            var accessCookieName = $".App.AccessToken.{tenantId}";
-            var refreshCookieName = $".App.RefreshToken.{tenantId}";
-
-            // 3. Attempt to authenticate the incoming thread with the Access Token cookie first
-            if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) && !string.IsNullOrEmpty (accessToken) )
+            options.Authority = null;  // No external authority; self-validating
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                context.Token = accessToken;
-            }
-            else
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey (
+                    Encoding.UTF8.GetBytes (configuration["Jwt:Key"]!)
+                ),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                // Ensure these matching property labels completely reflect what is emitted inside your token generator service payload claims
+                RoleClaimType = "UserRole",
+                NameClaimType = "UserName"
+            };
+
+            options.Events = new JwtBearerEvents
             {
-                // 4. Access Token is dead or missing! Process your secure database refresh token chain instead
-                if ( context.Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
+                OnMessageReceived = async context =>
                 {
-                    var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
-                    var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken, tenantId, 15, 7);
+                    var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
+                    var tenantId = tenantSetter.CurrentTenantId;
 
-                    if ( rotationResult != null )
+                    var accessCookieName = $".App.AccessToken.{tenantId}";
+                    var refreshCookieName = $".App.RefreshToken.{tenantId}";
+
+                    // 1. Check if a valid Access Token exists
+                    if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) && !string.IsNullOrEmpty (accessToken) )
                     {
-                        // Drop the brand-new rotated cookie tokens into the response headers
-                        context.HttpContext.Response.Cookies.Append (accessCookieName,rotationResult.AccessToken,new CookieOptions
-                        {
-                            HttpOnly = true,
-                            Secure = true,
-                            SameSite = SameSiteMode.Lax,
-                            Expires = DateTimeOffset.UtcNow.AddMinutes (15),
-                            Domain = context.HttpContext.Request.Host.Host,
-                            Path = "/"
-                        });
+                        var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
 
-                        context.HttpContext.Response.Cookies.Append (refreshCookieName,rotationResult.RefreshToken,new CookieOptions
+                        // Validate the token cryptographically and check its lifetime bounds
+                        var principal = tokenService.ValidateAndDecryptToken(accessToken, out var validatedToken);
+                        if ( principal != null && validatedToken != null && validatedToken.ValidTo > DateTime.UtcNow )
                         {
-                            HttpOnly = true,
-                            Secure = true,
-                            SameSite = SameSiteMode.Lax,
-                            Expires = DateTimeOffset.UtcNow.AddDays (7),
-                            Domain = context.HttpContext.Request.Host.Host,
-                            Path = "/"
-                        });
+                            context.Token = accessToken;
+                            return; // Access token is alive and well, break out early
+                        }
+                    }
 
-                        // Instantly authorize the current request with the newly issued access key
-                        context.Token = rotationResult.AccessToken;
+                    // 2. Access Token failed/expired. Fallback immediately to secure Refresh Token rotation
+                    if ( context.Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
+                    {
+                        var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
+                        var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken, tenantId, 15, 7);
+
+                        if ( rotationResult != null )
+                        {
+                            // Write the fresh, rotated cookies straight to the response payload
+                            await AuthorizationExtensions.AddTenantIsolatedHeaderToken (
+                                context.HttpContext,tokenService,
+                                context.HttpContext.User.FindFirst (ClaimTypes.NameIdentifier)?.Value ?? "",
+                                tenantId,
+                                context.HttpContext.User.FindFirst ("UserRole")?.Value ?? "",
+                                context.HttpContext.User.FindFirst ("TenantRole")?.Value ?? "",
+                                context.HttpContext.User.FindFirst ("UserName")?.Value ?? "",
+                                context.HttpContext.User.FindFirst ("Email")?.Value ?? "",
+                                15,7
+                            );
+
+                            context.Token = rotationResult.AccessToken;
+                        }
                     }
                 }
-            }
-        }
-    };
-});
+            };
+
+
+
+        });
 
 
         return services;

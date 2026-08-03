@@ -26,7 +26,7 @@ public class TenantAntiforgeryOptionsSetup: IConfigureOptions<AntiforgeryOptions
             options.Cookie.Domain = context!.Request.Host.Host; // Locked to "finearts.test"
             options.Cookie.Path = "/";
             options.HeaderName = "X-XSRF-TOKEN";
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // Adapts to Nginx proto
+            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             options.Cookie.SameSite = SameSiteMode.Lax; // Multi-tab and cross-tab navigation safe
 
         }

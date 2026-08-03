@@ -37,7 +37,6 @@ public class TokenRepository: ITokenRepository
         return savedRefreshToken;
     }
 
-
     public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId)
     {
         // 1. Fetch only the tokens that aren't already revoked to save processing power
@@ -101,23 +100,14 @@ public class TokenRepository: ITokenRepository
 
     public async Task<bool> SaveTokenAsync (string userId,Guid tenantId,string token)
     {
-        var savedRefreshToken = await _context.UserRefreshTokens
-        .FirstOrDefaultAsync(t => t.MyTenantId == tenantId && t.UserId == userId && !t.IsRevoked);
-
-        if ( savedRefreshToken != null )
-        {
-            savedRefreshToken.IsRevoked = true;
-        }
-
         UserRefreshToken newRefreshToken = new ()
         {
             Id = Guid.NewGuid(),
             UserId = userId,
             Token = token,
             CreatedAt = DateTime.UtcNow,
-            ExpiresAt = DateTime.UtcNow.AddDays(7), // Rolling expiration
-            IsRevoked = false,
-            MyTenantId = tenantId
+            ExpiresAt = DateTime.UtcNow.AddDays(7),
+            IsRevoked = false
         };
 
         _ = _context.UserRefreshTokens.Add (newRefreshToken);
@@ -126,14 +116,13 @@ public class TokenRepository: ITokenRepository
         return result > 0;
     }
 
-    public async Task<bool> RotateRefreshTokenAsync (UserRefreshToken savedRefreshToken,Task<string> newAccessToken,string newRefreshTokenString)
+    public async Task<bool> RotateRefreshTokenAsync (UserRefreshToken savedRefreshToken,string newAccessToken,string newRefreshTokenString)
     {
-        // 4. Update the old token in the chain
         savedRefreshToken.IsRevoked = true;
         savedRefreshToken.ReplacedByToken = newRefreshTokenString;
         savedRefreshToken.ModifiedDate = DateTime.UtcNow;
 
-        // 5. Insert the new child token into the chain
+        // Insert the new child token into the chain
         var newRefreshTokenEntity = new UserRefreshToken
         {
             Id = Guid.NewGuid(),
@@ -146,8 +135,7 @@ public class TokenRepository: ITokenRepository
         };
 
         _ = _context.UserRefreshTokens.Add (newRefreshTokenEntity);
-        var result = await _context.SaveChangesAsync (); // Saves both the update and the insertion safely
-
+        var result = await _context.SaveChangesAsync ();
 
         return result > 0;
     }

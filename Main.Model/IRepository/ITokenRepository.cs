@@ -16,5 +16,5 @@ public interface ITokenRepository
 
     Task<bool> SaveTokenAsync (string userId,Guid tenantId,string token);
 
-    Task<bool> RotateRefreshTokenAsync (UserRefreshToken savedRefreshToken,Task<string> newAccessToken,string newRefreshTokenString);
+    Task<bool> RotateRefreshTokenAsync (UserRefreshToken savedRefreshToken,string newAccessToken,string newRefreshTokenString);
 }

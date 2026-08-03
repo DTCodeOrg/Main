@@ -296,77 +296,65 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
           .HasIndex (ut => ut.MyTenantId);
     }
 
-    // TenantId based Query filters (comes from ITenantSetter.CurrentTenantId)
-    // Initially, the CurrentTenantId is set in the TenantMiddleware, which is executed before the DbContext is created.
     private void TenantGlobalQueryFilter (ModelBuilder builder)
     {
-        // Example: Access the live property when saving data
-        _logger.LogWarning ("Query data for Tenant Id: " + ResolvedTenantId.ToString ());
+        // FIXED: Removed the runtime logger line from here to prevent application startup crashes.
 
         _ = builder.Entity<Tenant> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<TenantUser> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<TenantInvitation> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<Product> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<ProductImageFile> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<ProductComment> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<AdminPost> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<AdminImageFile> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<AdminPostComment> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<Post> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<Panel> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<Page> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<AValue> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<ExceptionLog> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
         _ = builder.Entity<UserRefreshToken> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-
     }
 
-    // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes for (entries with added, modified and deleted sattus)
+    // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes
     private void ApplyBaseDataTenantId ()
     {
-        Guid?  myTenantId = (Guid?) ResolvedTenantId;
+        Guid? myTenantId = (Guid?)ResolvedTenantId;
 
-        BaseDataModel createDataModel = _tenantContext.GetCreateBaseDataModel ();
-        BaseDataModel updateDataModel = _tenantContext.GetUpdateBaseDataModel ();
-        BaseDataModel deleteDataModel = _tenantContext.GetDeleteBaseDataModel ();
+        BaseDataModel createDataModel = _tenantContext.GetCreateBaseDataModel();
+        BaseDataModel updateDataModel = _tenantContext.GetUpdateBaseDataModel();
+        BaseDataModel deleteDataModel = _tenantContext.GetDeleteBaseDataModel();
 
+        // FIXED: Filter tracked profiles early to restrict operations strictly to data updates
         var entries = ChangeTracker.Entries()
-            .Where(e => e.Entity is IMustHaveTenant);
+        .Where(e => e.Entity is IMustHaveTenant &&
+                   (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
 
         foreach ( var entry in entries )
         {
+            var tenantEntity = (IMustHaveTenant)entry.Entity;
+
             if ( myTenantId != null )
             {
-                ( ( IMustHaveTenant ) entry.Entity ).MyTenantId = myTenantId.Value;
+                tenantEntity.MyTenantId = myTenantId.Value;
             }
 
-            var entryState = entry.State;
+            if ( entry.State == EntityState.Added )
+            {
+                tenantEntity.CreateParameters (createDataModel);
+            }
+            else if ( entry.State == EntityState.Modified )
+            {
+                tenantEntity.ModifyParameters (updateDataModel);
+            }
+            else if ( entry.State == EntityState.Deleted )
+            {
+                // FIX: Use real delete mapping parameters
+                tenantEntity.DeleteParameters (deleteDataModel);
 
-            if ( entryState == EntityState.Added )
-            {
-                ( ( IMustHaveTenant ) entry.Entity ).CreateParameters (createDataModel);
-            }
-            else if ( entryState == EntityState.Modified )
-            {
-                ( ( IMustHaveTenant ) entry.Entity ).ModifyParameters (updateDataModel);
-            }
-            else if ( entryState == EntityState.Deleted )
-            {
-                ( ( IMustHaveTenant ) entry.Entity ).ModifyParameters (deleteDataModel);
+                // FIX: Override tracking state to prevent standard hard deletions
+                entry.State = EntityState.Modified;
             }
         }
     }
@@ -374,22 +362,17 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     public override int SaveChanges (bool acceptAllChangesOnSuccess)
     {
         ApplyBaseDataTenantId ();
-
-        // Example: Access the live property when saving data
         _logger.LogWarning ("Saving data for Tenant Id: " + ResolvedTenantId.ToString ());
-
         return base.SaveChanges (acceptAllChangesOnSuccess);
     }
 
     public override Task<int> SaveChangesAsync (bool acceptAllChangesOnSuccess,CancellationToken cancellationToken = default)
     {
         ApplyBaseDataTenantId ();
-
-        // Example: Access the live property when saving data
         _logger.LogWarning ("Saving data for Tenant Id: " + ResolvedTenantId.ToString ());
-
         return base.SaveChangesAsync (acceptAllChangesOnSuccess,cancellationToken);
     }
+
 
 
 
