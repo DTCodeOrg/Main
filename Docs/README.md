@@ -2,6 +2,9 @@
 
 [Host File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc)-Laptop)
 
+<img width="921" height="459" alt="hostfilescreenshot" src="https://github.com/user-attachments/assets/08bcb32e-01a4-4c5e-86c4-f7cc0346ece7" />
+
+
 [Nginx Config File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc))
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
@@ -80,8 +83,6 @@ app.MapControllerRoute(
 * **Reasoning:** Antiforgery verification tokens rely on the security identity of the authenticated caller; evaluating it early treats verified sessions as anonymous, breaking form submissions. Similarly, `UseOutputCache()` must evaluate downstream of authentication/authorization to prevent caching private or role-restricted data across multi-tenant barriers.
 
 # ALL THESE ARE REFLECTED IN CODE. ALL THE SEARCH, RESEARCH AND CODE WRITE UP; I TOOK THE HELP OF GOOGLE AI. A LOT OF QUESTIONS, I DID CONSUME; CAUSED A LOT OF ELECTRIC ENGINES RUNNING IN HOT PATH. THANKS FOR SUCH SERVICE FOR ALL OF THE CODE WRITERS, INSIDE THE UNIVERSE. THE END PART IS ALSO, WRITTEN BY THE SAME...00
-
-<img width="921" height="459" alt="hostfilescreenshot" src="https://github.com/user-attachments/assets/08bcb32e-01a4-4c5e-86c4-f7cc0346ece7" />
 
 
 # Host File (C:\Windows\System32\drivers\etc)
