@@ -1,6 +1,6 @@
 # Host File
 
-[Host File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc))
+[Nginx Config File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc))
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
 
