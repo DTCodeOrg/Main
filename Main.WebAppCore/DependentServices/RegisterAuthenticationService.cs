@@ -3,7 +3,6 @@ using Main.Infrastructure.ICrosscuttingServices;
 using Main.WebAppCore.Controllers.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using System.Text;
 
 namespace Main.WebAppCore.DependentServices;
@@ -70,24 +69,21 @@ public static class RegisterAuthenticationService
                         if ( rotationResult != null )
                         {
                             // Write the fresh, rotated cookies straight to the response payload
-                            await AuthorizationExtensions.AddTenantIsolatedHeaderToken (
-                                context.HttpContext,tokenService,
-                                context.HttpContext.User.FindFirst (ClaimTypes.NameIdentifier)?.Value ?? "",
-                                tenantId,
-                                context.HttpContext.User.FindFirst ("UserRole")?.Value ?? "",
-                                context.HttpContext.User.FindFirst ("TenantRole")?.Value ?? "",
-                                context.HttpContext.User.FindFirst ("UserName")?.Value ?? "",
-                                context.HttpContext.User.FindFirst ("Email")?.Value ?? "",
+                            await AuthorizationExtensions.AddTenantRefreshHeaderToken (context.HttpContext,tenantId,rotationResult,
                                 15,7
                             );
 
-                            context.Token = rotationResult.AccessToken;
+                            // Validate the token cryptographically and check its lifetime bounds
+                            var principal = tokenService.ValidateAndDecryptToken(rotationResult.AccessToken, out var validatedToken);
+                            if ( principal != null && validatedToken != null && validatedToken.ValidTo > DateTime.UtcNow )
+                            {
+                                context.Token = rotationResult.AccessToken;
+                                return; // Access token is alive and well, break out early
+                            }
                         }
                     }
                 }
             };
-
-
 
         });
 
