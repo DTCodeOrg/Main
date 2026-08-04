@@ -1,3 +1,7 @@
+# Host File
+
+[Host File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc))
+
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
 
 This document describes the execution sequence and structural design of the HTTP request lifecycle pipeline. The middleware chain is meticulously ordered to eliminate race conditions, preserve multi-tenant isolation, handle static assets efficiently, and enforce cross-origin security rules.
