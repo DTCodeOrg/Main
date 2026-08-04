@@ -83,7 +83,6 @@ app.MapControllerRoute(
 
 
 # Host File (C:\Windows\System32\drivers\etc)
-# Multi-tenant Local Development Domains
 127.0.0.1    finearts.test
 127.0.0.1    lifestyles.test
 127.0.0.1    localhost
