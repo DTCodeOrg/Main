@@ -16,7 +16,6 @@ public class TokenRepository: ITokenRepository
 
     public async Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId)
     {
-        // 1. Find the token in the database
         var savedRefreshToken = await _context.UserRefreshTokens
         .FirstOrDefaultAsync(t => t.Token == token);
 
@@ -25,10 +24,8 @@ public class TokenRepository: ITokenRepository
             throw new UnauthorizedAccessException ("Invalid token.");
         }
 
-        // 2. TOKEN CHAIN PROTECTION: Detection of Replay Attack
         if ( savedRefreshToken.IsRevoked )
         {
-            // Malicious actor or leaked token! Revoke all tokens descending from or belonging to this user
             _ = await LogoutRevokeUserRefreshTokensAsync (savedRefreshToken.UserId,tenantId);
 
             throw new UnauthorizedAccessException ("Compromised token detected. All sessions revoked.");
@@ -39,26 +36,20 @@ public class TokenRepository: ITokenRepository
 
     public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId)
     {
-        // 1. Fetch only the tokens that aren't already revoked to save processing power
         var activeTokens = await _context.UserRefreshTokens
         .Where(t => t.UserId == userId && t.MyTenantId == tenantId && !t.IsRevoked)
         .ToListAsync();
 
-        // 2. Return true early if there is nothing to update anyway
         if ( activeTokens == null || !activeTokens.Any () )
         {
             return true;
         }
 
-        // 3. Mutate the tracked entities directly
         foreach ( var token in activeTokens )
         {
             token.IsRevoked = true;
-            // REMOVED: _context.UserRefreshTokens.Update(token);
-            // EF Core automatically tracks this mutation because the entity was loaded via _context
         }
 
-        // 4. Commit changes safely
         int result = await _context.SaveChangesAsync();
 
         return result > 0;
@@ -107,7 +98,9 @@ public class TokenRepository: ITokenRepository
             Token = token,
             CreatedAt = DateTime.UtcNow,
             ExpiresAt = DateTime.UtcNow.AddDays(7),
-            IsRevoked = false
+            IsRevoked = false,
+            ReplacedByToken = null,
+            MyTenantId = tenantId
         };
 
         _ = _context.UserRefreshTokens.Add (newRefreshToken);
@@ -116,7 +109,10 @@ public class TokenRepository: ITokenRepository
         return result > 0;
     }
 
-    public async Task<bool> RotateRefreshTokenAsync (UserRefreshToken savedRefreshToken,string newAccessToken,string newRefreshTokenString)
+    public async Task<bool> RotateRefreshTokenAsync (
+        UserRefreshToken savedRefreshToken,
+        string newAccessToken,
+        string newRefreshTokenString)
     {
         savedRefreshToken.IsRevoked = true;
         savedRefreshToken.ReplacedByToken = newRefreshTokenString;
@@ -131,7 +127,8 @@ public class TokenRepository: ITokenRepository
             IsRevoked = false,
             CreatedAt = DateTime.UtcNow,
             ExpiresAt = DateTime.UtcNow.AddDays(7),
-            MyTenantId = savedRefreshToken.MyTenantId
+            MyTenantId = savedRefreshToken.MyTenantId ,
+            ReplacedByToken = null
         };
 
         _ = _context.UserRefreshTokens.Add (newRefreshTokenEntity);

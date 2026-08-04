@@ -126,7 +126,7 @@ public class AccountService: IAccountService
 
     public async Task<SignInResult> AuthenticateUser (string email,string password)
     {
-        bool result = await _userRepository.PasswordSignInAsync (email, password, true, false);
+        bool result = await _userRepository.PasswordSignInAsync (email, password);
 
         return result ? SignInResult.Success : SignInResult.Failed;
     }
@@ -244,16 +244,11 @@ public class AccountService: IAccountService
     }
 
     public async Task<bool> PasswordSignInAsync
-    (string email,string password,bool isPersistent,bool lockoutOnFailure)
+    (string email,string password)
     {
-        var result = await _userRepository.PasswordSignInAsync (email,password,isPersistent,lockoutOnFailure);
+        var result = await _userRepository.PasswordSignInAsync (email,password);
 
         return result;
-    }
-
-    public async Task SignOutAsync ()
-    {
-        await _userRepository.SignOutAsync ();
     }
 
     public async Task<string> GeneratePasswordResetTokenAsync (string email)

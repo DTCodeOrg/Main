@@ -42,9 +42,6 @@ public class TenantResolverHandlingMiddleware
             tenantSetter.CurrentTenantId = Guid.Empty;
         }
 
-        // 3. Log using the value directly attached to your tracked DI framework layer
-        Serilog.Log.Warning ("TenantResolutionMiddleware resolved host '{Host}' to Tenant ID: {TenantId}",context.Request.Host.Host,tenantSetter.CurrentTenantId);
-
         await _next (context);
     }
 }

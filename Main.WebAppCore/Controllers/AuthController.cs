@@ -110,14 +110,14 @@ public class AuthController: BaseController
         await _emailService.SendEmailVerificationAsync (verifyEmailDataModel);
     }
 
-    // Registration Flow 3: User requested to check email
+
     public IActionResult VerifyEmailSent ()
     {
         ViewData["Title"] = "Email Sent";
         return View ();
     }
 
-    // Registration Flow 4: User clicks Verification link
+
     public async Task<IActionResult> VerifyLink (string email,string token)
     {
         if ( string.IsNullOrEmpty (email) || string.IsNullOrEmpty (token) )
@@ -131,7 +131,7 @@ public class AuthController: BaseController
         return RedirectToAction ("VerifyComplete");
     }
 
-    // Registration Flow 5: Tenant Account is confirmed.(Email verified)
+
     public IActionResult VerifyComplete ()
     {
         ViewData["Title"] = "Verification Complete";
@@ -139,19 +139,16 @@ public class AuthController: BaseController
     }
 
 
-
-    // Login Flow 1: login page
     public IActionResult Login ()
     {
         LoginViewModel loginDisplayViewModel = new("Login");
         return View (loginDisplayViewModel);
     }
 
-    // Login Flow: login form submit (1. authentication, 2. authorization (jwt token)
+
     [HttpPost]
     public async Task<IActionResult> Login (LoginViewModel loginDisplayViewModel)
     {
-        // 1. Guard Clause against completely empty payloads
         if ( loginDisplayViewModel == null )
         {
             ModelState.AddModelError (string.Empty,"Invalid login attempt form payload.");
@@ -160,26 +157,15 @@ public class AuthController: BaseController
 
         string email = loginDisplayViewModel?.Email ?? string.Empty;
 
-        // 1.2. FIX: Validate form structural rules first (Required fields, Email format, etc.)
+
         if ( !ModelState.IsValid )
         {
-            // If they left fields blank, return the view with automatic validation span messages
             return View ("Login",loginDisplayViewModel);
         }
 
-        // 2 Application User needed for User Id
         ApplicationUserDataModel? applicationUser = await _userAccountService.GetApplicationUser (email);
 
-
-        _logger.LogWarning ("Appli User Email:" + applicationUser?.Email!);
-
-        _logger.LogWarning ("Appli User Id:" + applicationUser?.Id!);
-
-        _logger.LogWarning ("Appli Tenant Id:" + applicationUser?.MyTenantId!);
-
-        // 3. Validation: User existence and email confirmation rules
         bool result = await IsEmailConfirmed (email);
-        _logger.LogWarning ("Email Confirmed: " + result + "...");
 
         if ( !result )
         {
@@ -189,47 +175,22 @@ public class AuthController: BaseController
             return View (new LoginViewModel ());
         }
 
+        bool signinresult = await _userAccountService.PasswordSignInAsync (applicationUser?.Email!,loginDisplayViewModel?.Password!);
 
-
-        // 4. User password submission check
-        bool signinresult = await _userAccountService.PasswordSignInAsync (applicationUser?.Email!,loginDisplayViewModel?.Password!,isPersistent: false, lockoutOnFailure: false);
-
-        // 3. Validation: User existence and email confirmation rules
-
-        _logger.LogWarning ("Signin Result (true/false): " + signinresult + "...");
-
-        // 5. Login successful workflow execution
         if ( signinresult )
         {
-
-            _logger.LogWarning ("Signin Success: (Tenannt Id) " + _tenantSetter.CurrentTenantId.ToString () + "...");
-
-            // 2. Get tenant specific role (find for user)
-            string tenantRole = await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, _tenantSetter.CurrentTenantId);
+            string tenantRole = await _userAccountService.GetTenantUserRoleClaim
+            (email, _tenantSetter.CurrentTenantId);
 
             string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{_tenantSetter.CurrentTenantId}:{tenantRole}";
 
-            _logger.LogWarning ("Tenant Role: " + tenantRole + "...");
 
-            // 4. Append safe Isolated JWT Identity Header
             _ = AuthorizationExtensions.AddTenantIsolatedHeaderToken
-                (HttpContext,
-                _tokenService,
-                applicationUser?.Id
-                ?? "",
-                _tenantSetter.CurrentTenantId,
-                tenantRole.ToString (),
-                formatedTenantRole,
-                applicationUser?.UserName ?? "",
-                applicationUser?.Email ?? "",
-                15,7);
+                (HttpContext,_tokenService,applicationUser?.Id
+                ?? "",_tenantSetter.CurrentTenantId,tenantRole.ToString (),
+                formatedTenantRole,applicationUser?.UserName ?? "",
+                applicationUser?.Email ?? "",15,7);
 
-            _logger.LogWarning ("Signin Success (formatted tenant role): " + formatedTenantRole + "...");
-
-            _logger.LogWarning ("Claims Success  (User Name): " + applicationUser?.UserName + "...");
-
-
-            // Route directly to your newly fixed root index endpoint
             return RedirectToAction ("Index","Home",new
             {
                 area = ""

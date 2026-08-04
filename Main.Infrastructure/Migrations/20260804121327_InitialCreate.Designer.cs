@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Main.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260802164953_InitialCreate3")]
-    partial class InitialCreate3
+    [Migration("20260804121327_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -350,13 +350,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000002-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0c63aa70-9af5-44e0-aa6c-6ac627473b56",
+                            ConcurrencyStamp = "5ff427fd-27f0-400d-88aa-38241972ba3a",
                             Email = "admin@system.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEAeaasTdNLWVTLh9lV1KpLqRHQmzLlD4qjORAtiMspMY7ibqquXw5Ore384jzuDzeQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPKopqudzatSAMMoc+KdL1aqia1zXlxmVtWyp2XmczjiQQSrIaNsxN6U+EBlwKMCUQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "72d5cc85-9e55-42f1-a1cb-ab138cf79112",
+                            SecurityStamp = "2f0e1b93-13c1-4be4-986a-640cb4124691",
                             TwoFactorEnabled = false,
                             UserName = "admin@system.com"
                         },
@@ -364,13 +364,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000003-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "24ced90b-8be2-42d2-aba2-ac71da754fce",
+                            ConcurrencyStamp = "cd3a3090-4938-437f-9148-a254ad7af5f1",
                             Email = "tenant1.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAELcmiY5zESFHAyA7mxlPBVY/BldqK3KUgNhWvV35KRTxeLJtZXClPZUXC690BL+Dmg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDzoeRbBFTpZ/57Qnx0IIK7M90hJaVacAGJQTuhPuIUtD4ZFWzOJkJk6P8//llYt9w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5cb07087-ca39-4670-9811-254504ab23b1",
+                            SecurityStamp = "cfe0f4f1-b87e-4b3e-8fbc-010a8fda1a00",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.admin@test.com"
                         },
@@ -378,13 +378,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000004-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "21088b06-7c85-4ec7-bf76-c908033c12d2",
+                            ConcurrencyStamp = "ae0af22c-18bb-4bf9-b469-a4ddd39e53dc",
                             Email = "tenant1.content@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEHqd9/Vxl472sEnLuWsBFMX26M3Oeaha09kq3KsDsuxH0dEI5a0aA0p92EO42kPwQw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI4LF0vDpD3XFwpGjstEXl079JPvQ3KD3sQ9h4EJYtwTsJlOGDIZGopNUo6EczNNqw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a701399c-4d3d-4f37-98d1-01655689faab",
+                            SecurityStamp = "9034ee9e-8c17-4c9c-83ba-5939198d7055",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.content@test.com"
                         },
@@ -392,13 +392,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000005-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "627450a8-6f1e-47d7-a117-eaa78645e668",
+                            ConcurrencyStamp = "956e5b0d-e834-4dc2-a410-f9e0f91f7115",
                             Email = "tenant1.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEOYbAlIAWVM1uKQ8Xt5Ge0vX7oKWGoc38jKn6cp2rjWbQT+FYFiU2mNYhX9DgZGupQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPPdOOM31lBaoX3H38xyoziPyfBZT5pSW4xtQGm0Ir/Iy6guIOZcxq98OvKBwDU19w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9fd935d2-7671-4b22-9abb-35c9ab65155e",
+                            SecurityStamp = "312c5af5-e427-4d80-8973-e7139bd3d240",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.member@test.com"
                         },
@@ -406,13 +406,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000006-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "46c386f8-e61e-4344-b4b3-1c00df836089",
+                            ConcurrencyStamp = "81e60a0f-7cc4-4be4-9d8b-4356c99a3ea5",
                             Email = "tenant2.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEA9zPykUbE6uLt2ru0ZhTDULwQ9u2Lr0vxvn26MoMvNEcrUEMDL73tQLo4iNIAxubA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL2yqD7OIMe1UkDBv6qep80CWx/az+g+F7Zwe+KpJ8+jtInC7DRYONz+AF3RLhSx0w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0ec14528-f8b7-4b8a-8f31-909bf9131b30",
+                            SecurityStamp = "157671d4-6410-49cd-a42b-59417e090af7",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.admin@test.com"
                         },
@@ -420,13 +420,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000007-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b160df0c-ff2e-495d-acfc-6ddc7af688e7",
+                            ConcurrencyStamp = "a269f8b7-c146-480d-bfa7-49ae8627a965",
                             Email = "tenant2.content@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEIwXd1Ize0JhD51ZcnmjcD2tA0OEB1ANfddsbiRT0ddGm/Fon+SJd4sB8vh+XiXDog==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELq8qZqqNbZltzAt2+JCswNVHG0lct2k+xTtLL1CK7gbTH3NXphb9/4ecA6fzeUyKg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f2c14a36-659e-4658-adf0-dbc9f50ccc7c",
+                            SecurityStamp = "2af8f3cb-8dcb-4cc6-9e52-d4db37509cfc",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.content@test.com"
                         },
@@ -434,13 +434,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000008-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8d63eecc-4cf8-43a4-b61f-42ed1b68f6bf",
+                            ConcurrencyStamp = "15af4bc0-b829-45b9-a2b6-8c5c72565df4",
                             Email = "tenant2.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAENmoQBGRNvCAhzWiK/eEZBjnlFDCMN2K4a8esAtfDcgLvuEXjjh1gutsWQcVcBfTAA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKfDt/M8ru4l7IgXESTVnwqNx8my/LYD3BOnApLs0yi4B2t7+3edTJ7Er5RDa+JRjg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "99fc0292-1f2c-4532-9a88-7324617300f5",
+                            SecurityStamp = "cb1bc0fa-51c0-4819-ab7b-e2c0f81ac572",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.member@test.com"
                         });
@@ -1386,8 +1386,6 @@ namespace Main.Infrastructure.Migrations
 
                     b.HasKey("TenantId");
 
-                    b.HasIndex("MyTenantId");
-
                     b.ToTable("Tenants");
 
                     b.HasData(
@@ -1921,7 +1919,7 @@ namespace Main.Infrastructure.Migrations
             modelBuilder.Entity("Domain.Model.EmailSmtp", b =>
                 {
                     b.HasOne("Domain.Model.Tenant", "Tenant")
-                        .WithOne("EmaiSmtp")
+                        .WithOne("EmailSmtp")
                         .HasForeignKey("Domain.Model.EmailSmtp", "FkTenantId");
 
                     b.Navigation("Tenant");
@@ -1985,7 +1983,7 @@ namespace Main.Infrastructure.Migrations
             modelBuilder.Entity("Domain.Model.UserRefreshToken", b =>
                 {
                     b.HasOne("Domain.Model.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("UserRefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2054,6 +2052,8 @@ namespace Main.Infrastructure.Migrations
             modelBuilder.Entity("Domain.Model.ApplicationUser", b =>
                 {
                     b.Navigation("TenantUsers");
+
+                    b.Navigation("UserRefreshTokens");
                 });
 
             modelBuilder.Entity("Domain.Model.Page", b =>
@@ -2075,7 +2075,7 @@ namespace Main.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Model.Tenant", b =>
                 {
-                    b.Navigation("EmaiSmtp");
+                    b.Navigation("EmailSmtp");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,5 @@
 ﻿using Main.Infrastructure;
 using Main.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
@@ -26,13 +25,12 @@ public class HomeController: BaseController
         _userContext = userContext;
     }
 
-    //[ResponseCache(CacheProfileName = "Cache1dayServerNBrowser")]
-    [AllowAnonymous]
+
     public async Task<IActionResult> Index ()
     {
         //var pageDataModel = await _pageService.GetPageDataModel((int)EnumPublicPage.Home);
 
-        HomeViewModel homeViewModel = new("Home Page");
+        HomeViewModel homeViewModel = new ("Home Page");
 
         return View (homeViewModel);
     }

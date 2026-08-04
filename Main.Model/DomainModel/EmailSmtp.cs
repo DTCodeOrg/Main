@@ -33,7 +33,6 @@ public class EmailSmtp: BaseEntity
         get; set;
     }
 
-
     public virtual Tenant? Tenant
     {
         get; set;

@@ -97,7 +97,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
             }
 
             // Save to database
-            _ = await _dbContext.SaveChangesAsync ();
+            _ = await _dbContext.SaveChangesAsync (true);
         }
         catch ( Exception ex )
         {
@@ -181,7 +181,8 @@ public class ExceptionLoggingService: IExceptionLoggingService
             exceptionLog.ResolvedAt = DateTime.UtcNow;
 
             _ = _dbContext.ExceptionLogs.Update (exceptionLog);
-            _ = await _dbContext.SaveChangesAsync ();
+
+            _ = await _dbContext.SaveChangesAsync (true);
 
             _logger.LogInformation (
                 "Exception resolved - ExceptionId: {ExceptionId}, ErrorCode: {ErrorCode}",

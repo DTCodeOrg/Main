@@ -15,9 +15,6 @@ public static class TenantResolutionExtensions
         // 1. Grab the host string directly from the browser's incoming request headers
         string host = context.Request.Host.Host; // e.g., "finearts.test"   
 
-        logger.LogWarning (context.Request.Host.Host.ToString ());
-        logger.LogWarning (host.ToString ());
-
         string? tenantHost = context.ResolveFromDomain(host);
 
         if ( !string.IsNullOrEmpty (tenantHost) )
@@ -36,8 +33,6 @@ public static class TenantResolutionExtensions
 
                 return await tenancyService.FindHostAsync (tenantHost);
             });
-
-            logger.LogWarning (tenantDisplayDataModel != null ? tenantDisplayDataModel.MyTenantId.ToString () : "Id Not Found");
 
             if ( tenantDisplayDataModel != null )
             {

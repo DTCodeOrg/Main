@@ -9,6 +9,7 @@ public class UserRefreshToken: BaseEntity
     {
     }
 
+    [Key]
     public Guid Id
     {
         get; set;
@@ -21,7 +22,7 @@ public class UserRefreshToken: BaseEntity
     }
 
     [ForeignKey (nameof (UserId))]
-    public virtual ApplicationUser? User
+    public virtual ApplicationUser User
     {
         get;
         set;

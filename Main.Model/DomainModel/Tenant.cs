@@ -62,7 +62,7 @@ public class Tenant: BaseEntity
     }
 
 
-    public virtual EmailSmtp? EmaiSmtp
+    public virtual EmailSmtp? EmailSmtp
     {
         get; set;
     }

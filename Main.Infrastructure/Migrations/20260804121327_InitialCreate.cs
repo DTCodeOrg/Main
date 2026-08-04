@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Main.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate3 : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -711,13 +711,13 @@ namespace Main.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "00000002-0000-0000-0000-000000000000", 0, "0c63aa70-9af5-44e0-aa6c-6ac627473b56", "admin@system.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEAeaasTdNLWVTLh9lV1KpLqRHQmzLlD4qjORAtiMspMY7ibqquXw5Ore384jzuDzeQ==", null, false, "72d5cc85-9e55-42f1-a1cb-ab138cf79112", false, "admin@system.com" },
-                    { "00000003-0000-0000-0000-000000000000", 0, "24ced90b-8be2-42d2-aba2-ac71da754fce", "tenant1.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAELcmiY5zESFHAyA7mxlPBVY/BldqK3KUgNhWvV35KRTxeLJtZXClPZUXC690BL+Dmg==", null, false, "5cb07087-ca39-4670-9811-254504ab23b1", false, "tenant1.admin@test.com" },
-                    { "00000004-0000-0000-0000-000000000000", 0, "21088b06-7c85-4ec7-bf76-c908033c12d2", "tenant1.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEHqd9/Vxl472sEnLuWsBFMX26M3Oeaha09kq3KsDsuxH0dEI5a0aA0p92EO42kPwQw==", null, false, "a701399c-4d3d-4f37-98d1-01655689faab", false, "tenant1.content@test.com" },
-                    { "00000005-0000-0000-0000-000000000000", 0, "627450a8-6f1e-47d7-a117-eaa78645e668", "tenant1.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEOYbAlIAWVM1uKQ8Xt5Ge0vX7oKWGoc38jKn6cp2rjWbQT+FYFiU2mNYhX9DgZGupQ==", null, false, "9fd935d2-7671-4b22-9abb-35c9ab65155e", false, "tenant1.member@test.com" },
-                    { "00000006-0000-0000-0000-000000000000", 0, "46c386f8-e61e-4344-b4b3-1c00df836089", "tenant2.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEA9zPykUbE6uLt2ru0ZhTDULwQ9u2Lr0vxvn26MoMvNEcrUEMDL73tQLo4iNIAxubA==", null, false, "0ec14528-f8b7-4b8a-8f31-909bf9131b30", false, "tenant2.admin@test.com" },
-                    { "00000007-0000-0000-0000-000000000000", 0, "b160df0c-ff2e-495d-acfc-6ddc7af688e7", "tenant2.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEIwXd1Ize0JhD51ZcnmjcD2tA0OEB1ANfddsbiRT0ddGm/Fon+SJd4sB8vh+XiXDog==", null, false, "f2c14a36-659e-4658-adf0-dbc9f50ccc7c", false, "tenant2.content@test.com" },
-                    { "00000008-0000-0000-0000-000000000000", 0, "8d63eecc-4cf8-43a4-b61f-42ed1b68f6bf", "tenant2.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAENmoQBGRNvCAhzWiK/eEZBjnlFDCMN2K4a8esAtfDcgLvuEXjjh1gutsWQcVcBfTAA==", null, false, "99fc0292-1f2c-4532-9a88-7324617300f5", false, "tenant2.member@test.com" }
+                    { "00000002-0000-0000-0000-000000000000", 0, "5ff427fd-27f0-400d-88aa-38241972ba3a", "admin@system.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEPKopqudzatSAMMoc+KdL1aqia1zXlxmVtWyp2XmczjiQQSrIaNsxN6U+EBlwKMCUQ==", null, false, "2f0e1b93-13c1-4be4-986a-640cb4124691", false, "admin@system.com" },
+                    { "00000003-0000-0000-0000-000000000000", 0, "cd3a3090-4938-437f-9148-a254ad7af5f1", "tenant1.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEDzoeRbBFTpZ/57Qnx0IIK7M90hJaVacAGJQTuhPuIUtD4ZFWzOJkJk6P8//llYt9w==", null, false, "cfe0f4f1-b87e-4b3e-8fbc-010a8fda1a00", false, "tenant1.admin@test.com" },
+                    { "00000004-0000-0000-0000-000000000000", 0, "ae0af22c-18bb-4bf9-b469-a4ddd39e53dc", "tenant1.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEI4LF0vDpD3XFwpGjstEXl079JPvQ3KD3sQ9h4EJYtwTsJlOGDIZGopNUo6EczNNqw==", null, false, "9034ee9e-8c17-4c9c-83ba-5939198d7055", false, "tenant1.content@test.com" },
+                    { "00000005-0000-0000-0000-000000000000", 0, "956e5b0d-e834-4dc2-a410-f9e0f91f7115", "tenant1.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEPPdOOM31lBaoX3H38xyoziPyfBZT5pSW4xtQGm0Ir/Iy6guIOZcxq98OvKBwDU19w==", null, false, "312c5af5-e427-4d80-8973-e7139bd3d240", false, "tenant1.member@test.com" },
+                    { "00000006-0000-0000-0000-000000000000", 0, "81e60a0f-7cc4-4be4-9d8b-4356c99a3ea5", "tenant2.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEL2yqD7OIMe1UkDBv6qep80CWx/az+g+F7Zwe+KpJ8+jtInC7DRYONz+AF3RLhSx0w==", null, false, "157671d4-6410-49cd-a42b-59417e090af7", false, "tenant2.admin@test.com" },
+                    { "00000007-0000-0000-0000-000000000000", 0, "a269f8b7-c146-480d-bfa7-49ae8627a965", "tenant2.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAELq8qZqqNbZltzAt2+JCswNVHG0lct2k+xTtLL1CK7gbTH3NXphb9/4ecA6fzeUyKg==", null, false, "2af8f3cb-8dcb-4cc6-9e52-d4db37509cfc", false, "tenant2.content@test.com" },
+                    { "00000008-0000-0000-0000-000000000000", 0, "15af4bc0-b829-45b9-a2b6-8c5c72565df4", "tenant2.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEKfDt/M8ru4l7IgXESTVnwqNx8my/LYD3BOnApLs0yi4B2t7+3edTJ7Er5RDa+JRjg==", null, false, "cb1bc0fa-51c0-4819-ab7b-e2c0f81ac572", false, "tenant2.member@test.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -925,11 +925,6 @@ namespace Main.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_TenantInvitations_MyTenantId",
                 table: "TenantInvitations",
-                column: "MyTenantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tenants_MyTenantId",
-                table: "Tenants",
                 column: "MyTenantId");
 
             migrationBuilder.CreateIndex(

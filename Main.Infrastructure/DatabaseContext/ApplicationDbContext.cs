@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace Main.Infrastructure.DatabaseContext;
 
@@ -45,7 +46,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,
     ITenantSetter tenantSetter,ITenantContext tenantContext,ILogger<ExceptionLoggingService> logger) : base (options)
     {
-        // Save the reference to the scoped service
         _tenantSetter = tenantSetter;
         _tenantContext = tenantContext;
         _logger = logger;
@@ -56,7 +56,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         get; set;
     }
 
-    public DbSet<Tenant> Tenants
+    public DbSet<UserRefreshToken> UserRefreshTokens
     {
         get; set;
     }
@@ -65,6 +65,12 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         get; set;
     }
+
+    public DbSet<Tenant> Tenants
+    {
+        get; set;
+    }
+
 
     public DbSet<TenantUser> TenantUsers
     {
@@ -136,10 +142,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         get; set;
     }
 
-    public DbSet<UserRefreshToken> UserRefreshTokens
-    {
-        get; set;
-    }
+
 
     // 2. Create a dynamic property that always fetches the live value
     public Guid ResolvedTenantId => _tenantSetter.CurrentTenantId;
@@ -148,34 +151,21 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating (builder);
 
-        // 1. SEED ROLES FIRST
-        _ = builder.Entity<IdentityRole> ().HasData (
-            new IdentityRole
-            {
-                Id = "GlobalAdmin", // Must match exactly
-                Name = "GlobalAdmin",
-                NormalizedName = "GLOBALADMIN"
-            },
-            new IdentityRole
-            {
-                Id = "User", // Must match exactly
-                Name = "User",
-                NormalizedName = "USER"
-            }
-        );
+        _ = builder.Entity<ApplicationUser> ().ToTable ("AspNetUsers");
+        _ = builder.Entity<IdentityRole> ().ToTable ("AspNetRoles");
 
         FluentApiConfiguration (builder);
 
-        SeedData (builder);
-
         TenantGlobalQueryFilter (builder);
+
+        SeedData (builder);
     }
 
     private void FluentApiConfiguration (ModelBuilder builder)
 
     {
         _ = builder.Entity<Tenant> ()
-       .HasOne (t => t.EmaiSmtp)
+       .HasOne (t => t.EmailSmtp)
        .WithOne (e => e.Tenant)
        .HasForeignKey<EmailSmtp> (e => e.FkTenantId);
 
@@ -201,11 +191,11 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
                   .IsRequired ();
         });
 
-        // 1. Locate this line in your DbContext / Configuration file:
+
         _ = builder.Entity<TenantInvitation> ()
             .Property (t => t.Status)
-            .HasDefaultValue (InvitationStatus.Pending) // or your specific default
-            .HasSentinel (( InvitationStatus ) ( -1 ));      // Add this line to silence validation [20601]
+            .HasDefaultValue (InvitationStatus.Pending)
+            .HasSentinel (( InvitationStatus ) ( -1 ));
 
 
         // Application User
@@ -219,22 +209,20 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
             .HasColumnType ("decimal(18,2)")
             .IsRequired ();
 
-        // Product
         _ = builder.Entity<Product> ()
            .Property (p => p.Discount)
            .HasPrecision (18,2);
 
         _ = builder.Entity<Product> ()
             .Property (p => p.Price)
-            .HasPrecision (18,2); // Set precision to 18 and scale to 2 digits
+            .HasPrecision (18,2);
 
         _ = builder.Entity<Product> ()
             .Property (p => p.SaleCommission)
             .HasPrecision (18,2);
 
-
-        // Email Outbox Message
-        _ = builder.Entity<EmailOutboxMessage> (static entity =>
+        _ = builder.Entity<EmailOutboxMessage> (
+            static entity =>
         {
             _ = entity.HasKey (t => t.Id);
             _ = entity.Property (t => t.ReceiverEmail)
@@ -248,9 +236,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
             _ = entity.Property (t => t.RetryCount)
                       .IsRequired ();
         });
-
-        _ = builder.Entity<Tenant> ()
-          .HasIndex (ut => ut.MyTenantId);
 
         _ = builder.Entity<TenantInvitation> ()
           .HasIndex (ut => ut.MyTenantId);
@@ -291,54 +276,63 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<ExceptionLog> ()
           .HasIndex (ut => ut.MyTenantId);
 
-
         _ = builder.Entity<EmailOutboxMessage> ()
           .HasIndex (ut => ut.MyTenantId);
     }
 
     private void TenantGlobalQueryFilter (ModelBuilder builder)
     {
-        // FIXED: Removed the runtime logger line from here to prevent application startup crashes.
+        // Dynamically discover and filter only tables that must have a tenant
+        foreach ( var entityType in builder.Model.GetEntityTypes () )
+        {
+            if ( typeof (IMustHaveTenant).IsAssignableFrom (entityType.ClrType) )
+            {
+                if ( entityType.ClrType == typeof (Tenant) || entityType.ClrType == typeof (TenantUser) || entityType.ClrType == typeof (UserRefreshToken) )
+                {
+                    continue; // Skip applying the query filter for this specific table
+                }
 
-        _ = builder.Entity<Tenant> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<TenantUser> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<TenantInvitation> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<Product> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<ProductImageFile> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<ProductComment> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<AdminPost> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<AdminImageFile> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<AdminPostComment> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<Post> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<Panel> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<Page> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<AValue> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<ExceptionLog> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
-        _ = builder.Entity<UserRefreshToken> ().HasQueryFilter (p => p.MyTenantId == ResolvedTenantId);
+
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+
+                // e.MyTenantId == ResolvedTenantId
+                var tenantProperty = Expression.Property(parameter, nameof(IMustHaveTenant.MyTenantId));
+
+                var tenantContextParam = Expression.Property(Expression.Constant(this), nameof(ResolvedTenantId));
+
+                var compareExpression = Expression.Equal(tenantProperty, tenantContextParam);
+
+                var lambda = Expression.Lambda(compareExpression, parameter);
+
+                _ = builder.Entity (entityType.ClrType).HasQueryFilter (lambda);
+            }
+        }
     }
 
-    // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes
+
     private void ApplyBaseDataTenantId ()
     {
         Guid? myTenantId = (Guid?)ResolvedTenantId;
 
+        if ( myTenantId == null )
+        {
+            return;
+        }
+
         BaseDataModel createDataModel = _tenantContext.GetCreateBaseDataModel();
         BaseDataModel updateDataModel = _tenantContext.GetUpdateBaseDataModel();
-        BaseDataModel deleteDataModel = _tenantContext.GetDeleteBaseDataModel();
 
-        // FIXED: Filter tracked profiles early to restrict operations strictly to data updates
+        // Materialize to array so tracking modifications don't break the loop
         var entries = ChangeTracker.Entries()
         .Where(e => e.Entity is IMustHaveTenant &&
-                   (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
+        (e.State == EntityState.Added || e.State == EntityState.Modified))
+        .ToArray();
 
         foreach ( var entry in entries )
         {
             var tenantEntity = (IMustHaveTenant)entry.Entity;
 
-            if ( myTenantId != null )
-            {
-                tenantEntity.MyTenantId = myTenantId.Value;
-            }
+            tenantEntity.MyTenantId = myTenantId.Value;
 
             if ( entry.State == EntityState.Added )
             {
@@ -348,39 +342,41 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
             {
                 tenantEntity.ModifyParameters (updateDataModel);
             }
-            else if ( entry.State == EntityState.Deleted )
-            {
-                // FIX: Use real delete mapping parameters
-                tenantEntity.DeleteParameters (deleteDataModel);
-
-                // FIX: Override tracking state to prevent standard hard deletions
-                entry.State = EntityState.Modified;
-            }
         }
     }
+
 
     public override int SaveChanges (bool acceptAllChangesOnSuccess)
     {
         ApplyBaseDataTenantId ();
-        _logger.LogWarning ("Saving data for Tenant Id: " + ResolvedTenantId.ToString ());
         return base.SaveChanges (acceptAllChangesOnSuccess);
     }
 
-    public override Task<int> SaveChangesAsync (bool acceptAllChangesOnSuccess,CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync (CancellationToken cancellationToken = default)
     {
         ApplyBaseDataTenantId ();
-        _logger.LogWarning ("Saving data for Tenant Id: " + ResolvedTenantId.ToString ());
-        return base.SaveChangesAsync (acceptAllChangesOnSuccess,cancellationToken);
+        return await base.SaveChangesAsync (true,cancellationToken);
     }
 
 
-
-
-
     public void SeedData (ModelBuilder builder)
-    {
-        // Convert all elements to an array of Guids
+    {      // 1. SEED ROLES FIRST
+        _ = builder.Entity<IdentityRole> ().HasData (
+            new IdentityRole
+            {
+                Id = "GlobalAdmin", // Must match exactly
+                Name = "GlobalAdmin",
+                NormalizedName = "GLOBALADMIN"
+            },
+            new IdentityRole
+            {
+                Id = "User", // Must match exactly
+                Name = "User",
+                NormalizedName = "USER"
+            }
+        );
 
+        // Convert all elements to an array of Guids
         // TENANT ID (1 & 2) 
         Guid TenantID1 = guidArray[0];
         Guid TenantID2 = guidArray[1];

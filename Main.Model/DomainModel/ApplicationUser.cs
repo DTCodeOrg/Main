@@ -17,4 +17,10 @@ public class ApplicationUser: IdentityUser
         get; set;
 
     } = new HashSet<TenantUser> ();
+
+    public virtual ICollection<UserRefreshToken> UserRefreshTokens
+    {
+        get; set;
+
+    } = new HashSet<UserRefreshToken> ();
 }

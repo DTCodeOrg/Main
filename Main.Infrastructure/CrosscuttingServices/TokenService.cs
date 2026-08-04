@@ -33,7 +33,7 @@ public class TokenService: ITokenService
             IssuerSigningKey = new SymmetricSecurityKey (_signingKey),
             ValidateIssuer = false,
             ValidateAudience = false,
-            ValidateLifetime = true, // FIXED: Enforce expiration checks during verification loops
+            ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
             RoleClaimType = "UserRole",
             NameClaimType = "UserName"

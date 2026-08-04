@@ -1,5 +1,4 @@
 ﻿using Domain.Model;
-using System.Security.Claims;
 namespace Main.IRepository;
 
 public interface IApplicationUserRepository
@@ -14,17 +13,17 @@ public interface IApplicationUserRepository
 
     Task<ApplicationUser?> FindByEmailAsync (string email);
 
-    Task<bool> PasswordSignInAsync (string email,string password,bool isPersistent,bool lockoutFailure);
+    Task<bool> PasswordSignInAsync (string email,string password);
 
     Task<bool> CreateAsync (ApplicationUser userIdentityEntity,string password);
 
     Task<bool> ChangePasswordAsync (string email,string password,string rePassword);
 
-    Task<string?> GenerateEmailConfirmationTokenAsync (string email);
+    Task<string> GenerateEmailConfirmationTokenAsync (string email);
 
     Task<bool> ConfirmEmailAsync (string email,string token);
 
-    Task<List<string>> GetRolesAsync (string email);
+    Task<string> GetRolesAsync (string email);
 
     Task<string> GetTenantRolesAsync (string email,Guid tenantId);
 
@@ -35,10 +34,6 @@ public interface IApplicationUserRepository
     Task<bool> SetLockoutEndDateAsync (string email);
 
     Task<bool> IsEmailConfirmedAsync (string email);
-
-    Task AddClaimAsync (string email,Claim claimType);
-
-    Task SignOutAsync ();
 
     Task<string> GeneratePasswordResetTokenAsync (string email);
 
