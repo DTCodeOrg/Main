@@ -13,6 +13,58 @@
 
 This document describes the execution sequence and structural design of the HTTP request lifecycle pipeline. The middleware chain is meticulously ordered to eliminate race conditions, preserve multi-tenant isolation, handle static assets efficiently, and enforce cross-origin security rules.
 
+   [HTTP Request]
+        │
+        ▼
+┌──────────────────────────────┐
+│1. Error & TLS Enforcement    │ ──► StatusCodePages, HttpsRedirection
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 2. Edge Security (CORS)      │    ──► Appends headers before any terminal handlers
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 3. Static Asset Optimization │ ──► WebOptimizer, StaticFiles (Bypasses Tenancy/Auth)
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 4. Endpoint Identification   │ ──► UseRouting (Enables Endpoint Metadata Inspection)
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 5. Tenancy Context Layer     │ ──► TenantResolver (Stores TenantId in HttpContext.Items)
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 6. Isolated Session Layer    │ ──► TenantSessionCookie, UseSession (Tenant-Scoped)
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 7. Context Localization      │ ──► CustomLocalization (Tenant-Configured Culture)
+└──────────────────────────────┘
+             │
+             ▼
+┌──────────────────────────────┐
+│ 8. Security Auth Matrix      │ ──► Authentication, TokenValidation, Authorization
+──────────────────────────────┘
+             │
+             ▼
+┌──────────────────────────────┐
+│9.Anti-Exploit & Optimization │ ──► Antiforgery, OutputCache (Context-Aware)
+└──────────────────────────────┘
+             │
+             ▼
+┌──────────────────────────────┐
+│ 10. Endpoint Controllers     │ ──► MapControllers, MapControllerRoute
+└──────────────────────────────┘
+
 
 ## Production Execution Sequence (`Program.cs`)
 [Program.cs](https://github.com/nayeeem81/Main/blob/master/Main.WebAppCore/Program.cs)

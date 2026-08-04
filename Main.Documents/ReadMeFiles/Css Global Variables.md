@@ -1,3 +1,55 @@
+[HTTP Request]
+        │
+        ▼
+┌──────────────────────────────┐
+│1. Error & TLS Enforcement    │ ──► StatusCodePages, HttpsRedirection
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 2. Edge Security (CORS)      │    ──► Appends headers before any terminal handlers
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 3. Static Asset Optimization │ ──► WebOptimizer, StaticFiles (Bypasses Tenancy/Auth)
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 4. Endpoint Identification   │ ──► UseRouting (Enables Endpoint Metadata Inspection)
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 5. Tenancy Context Layer     │ ──► TenantResolver (Stores TenantId in HttpContext.Items)
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 6. Isolated Session Layer    │ ──► TenantSessionCookie, UseSession (Tenant-Scoped)
+└──────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────┐
+│ 7. Context Localization      │ ──► CustomLocalization (Tenant-Configured Culture)
+└──────────────────────────────┘
+             │
+             ▼
+┌──────────────────────────────┐
+│ 8. Security Auth Matrix      │ ──► Authentication, TokenValidation, Authorization
+──────────────────────────────┘
+             │
+             ▼
+┌──────────────────────────────┐
+│9.Anti-Exploit & Optimization │ ──► Antiforgery, OutputCache (Context-Aware)
+└──────────────────────────────┘
+             │
+             ▼
+┌──────────────────────────────┐
+│ 10. Endpoint Controllers     │ ──► MapControllers, MapControllerRoute
+└──────────────────────────────┘
+
 ## To create a multi-tenant theme in .NET 8, map tenant-specific settings from your database or configuration:
 
 **to CSS Custom Properties (variables) in your _Layout.cshtml.** 
