@@ -1,4 +1,4 @@
-# Host File
+# Host File & Nginx Server Config
 
 [Host File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc)-Laptop)
 
@@ -10,7 +10,7 @@ This document describes the execution sequence and structural design of the HTTP
 
 
 ## Production Execution Sequence (`Program.cs`)
-[Program.cs] (https://github.com/nayeeem81/Main/blob/master/Main.WebAppCore/Program.cs)
+[Program.cs](https://github.com/nayeeem81/Main/blob/master/Main.WebAppCore/Program.cs)
 ```csharp
 // 1. Error Handling & Protocol Enforcement
 app.UseStatusCodePages();
