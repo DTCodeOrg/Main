@@ -22,13 +22,6 @@ public class TokenRefreshMiddleware
             return;
         }
 
-        // 2. If the user is already successfully authenticated by the access token, continue down the pipeline
-        if ( context.User.Identity?.IsAuthenticated == true )
-        {
-            await _next (context);
-            return;
-        }
-
         // 3. The access token was missing or expired. Let's look for a valid refresh token instead
         var tenantId = tenantSetter.CurrentTenantId;
         var refreshCookieName = $".App.RefreshToken.{tenantId}";
@@ -44,13 +37,6 @@ public class TokenRefreshMiddleware
                 {
                     // Securely append new cookies to the response object payload safely outside the Jwt Event context
                     await AuthorizationExtensions.AddTenantRefreshHeaderToken (context,tenantId,rotationResult,15,7);
-
-                    // Manually build the ClaimsPrincipal from the new access token so this current request evaluates as authenticated immediately
-                    var principal = tokenService.ValidateAndDecryptToken(rotationResult.AccessToken, out _);
-                    if ( principal != null )
-                    {
-                        context.User = principal; // Binds the identity to the current executing Razor View context instantly!
-                    }
                 }
             }
             catch
