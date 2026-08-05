@@ -209,32 +209,22 @@ public class AuthController: BaseController
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout ()
     {
-        var currentTenantId = _tenantSetter.CurrentTenantId.ToString();
-
+        // 1. Get the current tenant suffix
+        var currentTenantId = _tenantSetter.CurrentTenantId.ToString ();
         // Explicitly grab the ClaimTypes.NameIdentifier
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-        // 1. Server-Side: Attempt database revocation safely
-        if ( !string.IsNullOrEmpty (userId) && !string.IsNullOrEmpty (_tenantSetter.CurrentTenantId.ToString ()) )
+        var accessCookieName = $".App.AccessToken.{currentTenantId}";
+        var refreshCookieName = $".App.RefreshToken.{currentTenantId}";
+        // 2. Extract refresh token to revoke it in the database
+        if ( Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
         {
-            try
-            {
-                // Wrap in try-catch so a database crash can NEVER block browser cookie deletion
-                _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,_tenantSetter.CurrentTenantId);
-            }
-            catch ( Exception ex )
-            {
-                _logger.LogWarning (ex,"Failed to revoke tokens in DB");
-                // Log your error here (e.g., _logger.LogError(ex, "Failed to revoke tokens in DB"));
-                // DO NOT THROW. Let the code proceed to clean the browser.
-            }
+            // Wrap in try-catch so a database crash can NEVER block browser cookie deletion
+            _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,_tenantSetter.CurrentTenantId);
         }
-
-        // 2. Server-Side: Clear session footprints
-        HttpContext.Session.Clear ();
-
 
         // Grab the current host header to target the exact client domain (e.g., ".finearts.test")
         // If you appended cookies with a leading dot, add it here too: $".{HttpContext.Request.Host.Host}"
@@ -245,33 +235,28 @@ public class AuthController: BaseController
             Path = "/",
             Domain = currentDomain, // CRITICAL: Must match the cookie's domain exactly
             Secure = true,          // Match your creation configuration
-            HttpOnly = true
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
+            Expires = DateTimeOffset.UtcNow.AddDays(-1) // Forces browser deletion
         };
 
-        // 3. Browser-Side: Clean up cookies regardless of DB success
-        if ( !string.IsNullOrEmpty (currentTenantId) )
-        {
-            // Path MUST match exactly where they were appended
-            Response.Cookies.Delete ($".App.AccessToken.{currentTenantId}",deletionOptions);
-            Response.Cookies.Delete ($".App.RefreshToken.{currentTenantId}",deletionOptions);
-            Response.Cookies.Delete ($".AspNetCore.Antiforgery.{currentTenantId}",deletionOptions);
-            Response.Cookies.Delete ($".Session.{currentTenantId}",deletionOptions);
-        }
+        HttpContext.Response.Cookies.Delete (accessCookieName,deletionOptions);
+        HttpContext.Response.Cookies.Delete (refreshCookieName,deletionOptions);
+        HttpContext.Response.Cookies.Delete ($".Session.{currentTenantId}",deletionOptions);
+        HttpContext.Response.Cookies.Delete ($".AspNetCore.Antiforgery.{currentTenantId}",deletionOptions);
 
-        // Clear fallback cookies using the exact same domain options
-        Response.Cookies.Delete (".AspNetCore.Session",deletionOptions);
+        // 4. Clean Nginx Cache for this specific logout session/redirect
+        HttpContext.Response.Headers.Append ("Cache-Control","no-cache, no-store, must-revalidate");
+        HttpContext.Response.Headers.Append ("Pragma","no-cache");
+        HttpContext.Response.Headers.Append ("Expires","0");
 
-        // 4. Force browser cache eviction and Storage Wipe
-        Response.Headers.Append ("Clear-Site-Data","\"cache\", \"storage\"");
-        Response.Headers.Append ("Cache-Control","no-cache, no-store, must-revalidate");
-        Response.Headers.Append ("Pragma","no-cache");
-        Response.Headers.Append ("Expires","0");
+        // Custom header if your Nginx is configured to purge/bypass on it
+        HttpContext.Response.Headers.Append ("X-Clear-Cache","true");
 
-        // 5. Hard redirect to login screen
-        return RedirectToAction ("Login","Auth");
+        // 5. Move back to the home page
+        return RedirectToAction ("Index","Home");
+
     }
-
-
 
 
     // Password Reset Flow (1): User initiates password reset by providing email address 
@@ -282,7 +267,6 @@ public class AuthController: BaseController
 
         return View (new ForgotPasswordViewModel ());
     }
-
 
 
     // Password Reset Flow (2): User submits email address to receive password reset link.
