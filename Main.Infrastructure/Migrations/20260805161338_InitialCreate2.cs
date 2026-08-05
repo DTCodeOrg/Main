@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Main.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreate2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,7 +26,6 @@ namespace Main.Infrastructure.Migrations
                     WebsiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ShortNote = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     SearchTag = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -91,7 +90,6 @@ namespace Main.Infrastructure.Migrations
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Variable = table.Column<int>(type: "int", nullable: false),
                     ParentValueId = table.Column<long>(type: "bigint", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -121,7 +119,6 @@ namespace Main.Infrastructure.Migrations
                     ProcessedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Error = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RetryCount = table.Column<int>(type: "int", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -165,7 +162,6 @@ namespace Main.Infrastructure.Migrations
                     ResolutionNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResolvedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     OccurrenceCount = table.Column<int>(type: "int", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -189,7 +185,6 @@ namespace Main.Infrastructure.Migrations
                     PageID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EnumPublicPage = table.Column<int>(type: "int", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -221,7 +216,6 @@ namespace Main.Infrastructure.Migrations
                     Discount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     SaleCommission = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     SearchTag = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -251,7 +245,6 @@ namespace Main.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiresOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AcceptedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -279,7 +272,6 @@ namespace Main.Infrastructure.Migrations
                     Store = table.Column<int>(type: "int", nullable: false),
                     SmtpId = table.Column<int>(type: "int", nullable: true),
                     SecretKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -304,7 +296,6 @@ namespace Main.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ImageFileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     AdminPostID = table.Column<int>(type: "int", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -335,7 +326,6 @@ namespace Main.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AdminPostID = table.Column<int>(type: "int", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -472,7 +462,6 @@ namespace Main.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TenantRole = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -506,7 +495,6 @@ namespace Main.Infrastructure.Migrations
                     IsRevoked = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReplacedByToken = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    SessionUserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ModifiedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -539,7 +527,6 @@ namespace Main.Infrastructure.Migrations
                     PanelTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PanelTemplate = table.Column<int>(type: "int", nullable: false),
                     PageID = table.Column<int>(type: "int", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -570,7 +557,6 @@ namespace Main.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductID = table.Column<int>(type: "int", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -601,7 +587,6 @@ namespace Main.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ImageFileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     ProductID = table.Column<int>(type: "int", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -638,7 +623,6 @@ namespace Main.Infrastructure.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EnableSsl = table.Column<bool>(type: "bit", nullable: false),
                     FkTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -674,7 +658,6 @@ namespace Main.Infrastructure.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     WebsiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PanelID = table.Column<int>(type: "int", nullable: false),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -711,45 +694,45 @@ namespace Main.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "00000002-0000-0000-0000-000000000000", 0, "e64c0651-1863-4df1-b713-e468d8a8ed8e", "admin@system.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEN11A6Dt5+q291/CBy6+TU+HrMO333mzpfdBmBsR/3a8/Hj+KhAkxZOO7d66A8619A==", null, false, "20c8d9d2-426c-446e-b5d8-bab35c456aac", false, "admin@system.com" },
-                    { "00000003-0000-0000-0000-000000000000", 0, "407a08ad-e30c-4a35-aec4-2b4d5dcd9d64", "tenant1.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEEORATDIijpdW8pipYhSYe4jznedBHKdvu/BHW4Okp7Doqp6RSxLAeeDw6c7xa7Ujg==", null, false, "3ccf9d84-0b2a-4750-b53a-f2637390d9f4", false, "tenant1.admin@test.com" },
-                    { "00000004-0000-0000-0000-000000000000", 0, "589358e7-5b17-4ec1-9f53-0e4684deb906", "tenant1.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEE2RDGfgGGhqo88QLr+er/BZZUQv9X5LJtEi+GIYiHOxyuGA5yeBLapI28q3f0QgvA==", null, false, "6fed39a0-9a07-42ac-8a4d-3627a7644934", false, "tenant1.content@test.com" },
-                    { "00000005-0000-0000-0000-000000000000", 0, "d4c66591-e3d6-4a03-ac82-a7741340399a", "tenant1.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEIHYer+B1r57MZwrvfZFe9lW/48ihq1tpTf1D9w4rr4ecLPcbfXzCBhjQgi8ncyVlA==", null, false, "3cdc85be-7f54-4e10-b63f-978eb56b5b04", false, "tenant1.member@test.com" },
-                    { "00000006-0000-0000-0000-000000000000", 0, "252804ea-ceee-4494-9978-eff202eb3567", "tenant2.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEO6Q81uw4ouubxu8sFthZwUGeXm1yTXa/cBugWoS0Vi+9GziSZwmByi0t2DFCflr7g==", null, false, "76cbec4d-8162-4db2-866d-6bb173d9a2f4", false, "tenant2.admin@test.com" },
-                    { "00000007-0000-0000-0000-000000000000", 0, "70cb2660-798b-4971-96ed-a9e5a666dd25", "tenant2.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAECIDf6GfVoSzi7oiz7/HQdUVbtWybDgyHgtd1s4XE/A7hOe94s3Sa5GOBOv+Wr9TUg==", null, false, "e99df783-0c4a-405e-9288-d826160b7fef", false, "tenant2.content@test.com" },
-                    { "00000008-0000-0000-0000-000000000000", 0, "8bef7134-2b45-430a-8e0d-9794b6adf45e", "tenant2.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEP2gMPVbv+RjWZoe2Wzl/KPYUKcBwXKtFetO1GcIGdbIMRTOUthcYf3ASLk+jSpfvA==", null, false, "d314ebb0-cba1-48cb-bd37-5b3fbf8c776b", false, "tenant2.member@test.com" }
+                    { "00000002-0000-0000-0000-000000000000", 0, "6cff3ba5-df80-4390-836d-7168d197c88f", "admin@system.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEJjtWWMEOxsi5xWhsDlRK91qPrSvoCvsHY9PqMxF1TlnU9o9UtaZhttGLaZU1OkO2A==", null, false, "d696325d-ee28-46d5-93a9-d13844269c47", false, "admin@system.com" },
+                    { "00000003-0000-0000-0000-000000000000", 0, "c3a6320b-801d-4e4c-9ae5-8be356eacf82", "tenant1.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAECPTXM3D+2p3jUXiEcZM32+s2fp3kxaODnGN1FJEhn32QHtLhNSoDprbuS2QQCT79g==", null, false, "6f8a7e5d-bbb9-45e8-8b86-3aa7ebb8ef09", false, "tenant1.admin@test.com" },
+                    { "00000004-0000-0000-0000-000000000000", 0, "21c85b09-aef7-4d48-8dfe-a317ebb47d29", "tenant1.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEIWyTyo3pJywwXl2Khfsku9ENaJ+W8xX8p4drb7/lRxsLsrQZ149O/PigmjB6z+IMw==", null, false, "50dc8449-d2e3-4a75-bb59-21b68dd84454", false, "tenant1.content@test.com" },
+                    { "00000005-0000-0000-0000-000000000000", 0, "e5259613-c8b8-455b-9714-756322b077f6", "tenant1.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEIMlcgjm8JMAiZCB/WzVukaN/mwbjfXqcqMwpgjDDx6KfeGQu1ChlE9Z6r/8fGvNTw==", null, false, "ff4cc37e-4997-4712-a5a1-4918a6fe2eb4", false, "tenant1.member@test.com" },
+                    { "00000006-0000-0000-0000-000000000000", 0, "8bae12fb-dfb1-4400-9bce-a90d9b4ce620", "tenant2.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEHdeIqqQnBweEagOxK3t3A1AjqhA4X/bZ0rOWwXpaZFbzcFDoV9xplIiuo4o2EoTew==", null, false, "62b579b5-9b81-438c-81c6-84f38471c82e", false, "tenant2.admin@test.com" },
+                    { "00000007-0000-0000-0000-000000000000", 0, "0210c4ce-780e-4531-a4b4-3e87e33660f0", "tenant2.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEKCdB++WOIWHaXnbH8q9BS//mXlNodgnHXyHWW1uW+cguBiG0MWnxD7bU2zmiTnzwg==", null, false, "c29e055c-f432-4e41-89df-d1476bc10b6d", false, "tenant2.content@test.com" },
+                    { "00000008-0000-0000-0000-000000000000", 0, "eb55cdd9-fee8-487b-9387-d80e1eee25ed", "tenant2.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEKpVsNgMX5QfxsKI82VSR6JPIQDtlJ2qsLgltGcvQTWCVsxfvVgGmswNtP49KJvcpw==", null, false, "07084a69-d75c-49ed-9d56-44ef4d930bee", false, "tenant2.member@test.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Pages",
-                columns: new[] { "PageID", "CreatedBy", "CreatedDate", "DeletedBy", "DeletedDate", "EnumPublicPage", "IsActive", "ModifiedBy", "ModifiedDate", "MyTenantId", "SessionUserId", "TenantContinent", "TenantCountry" },
+                columns: new[] { "PageID", "CreatedBy", "CreatedDate", "DeletedBy", "DeletedDate", "EnumPublicPage", "IsActive", "ModifiedBy", "ModifiedDate", "MyTenantId", "TenantContinent", "TenantCountry" },
                 values: new object[,]
                 {
-                    { 2, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 3, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 4, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 10, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 5, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 6, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 7, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 7, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 8, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 8, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 9, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 9, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 11, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 12, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 13, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 10, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 14, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 15, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 7, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 16, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 8, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 17, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 },
-                    { 18, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 9, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1 }
+                    { 2, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1 },
+                    { 3, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1 },
+                    { 4, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 10, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1 },
+                    { 5, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1 },
+                    { 6, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 7, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1 },
+                    { 7, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 8, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1 },
+                    { 8, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1 },
+                    { 9, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 9, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1 },
+                    { 11, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 1, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1 },
+                    { 12, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 3, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1 },
+                    { 13, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 10, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1 },
+                    { 14, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 6, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1 },
+                    { 15, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 7, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1 },
+                    { 16, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 8, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1 },
+                    { 17, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 2, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1 },
+                    { 18, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 9, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Tenants",
-                columns: new[] { "TenantId", "CreatedBy", "CreatedDate", "DeletedBy", "DeletedDate", "HostName", "IsActive", "ModifiedBy", "ModifiedDate", "MyTenantId", "Name", "SecretKey", "SessionUserId", "SmtpId", "Store", "TenantContinent", "TenantCountry", "TenantHostType" },
+                columns: new[] { "TenantId", "CreatedBy", "CreatedDate", "DeletedBy", "DeletedDate", "HostName", "IsActive", "ModifiedBy", "ModifiedDate", "MyTenantId", "Name", "SecretKey", "SmtpId", "Store", "TenantContinent", "TenantCountry", "TenantHostType" },
                 values: new object[,]
                 {
-                    { new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "lifestyles", true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0000000b-0000-0000-0000-000000000000"), "LifeStyle Store", null, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1, null, 1, 0 },
-                    { new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "finearts", true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0000000c-0000-0000-0000-000000000000"), "Fine Arts Store", null, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 2, null, 1, 0 }
+                    { new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "lifestyles", true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0000000b-0000-0000-0000-000000000000"), "LifeStyle Store", null, null, 1, null, 1, 0 },
+                    { new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "finearts", true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0000000c-0000-0000-0000-000000000000"), "Fine Arts Store", null, null, 2, null, 1, 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -768,15 +751,15 @@ namespace Main.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "TenantUsers",
-                columns: new[] { "TenantUserId", "CreatedBy", "CreatedDate", "DeletedBy", "DeletedDate", "IsActive", "ModifiedBy", "ModifiedDate", "MyTenantId", "SessionUserId", "TenantContinent", "TenantCountry", "TenantRole", "UserId" },
+                columns: new[] { "TenantUserId", "CreatedBy", "CreatedDate", "DeletedBy", "DeletedDate", "IsActive", "ModifiedBy", "ModifiedDate", "MyTenantId", "TenantContinent", "TenantCountry", "TenantRole", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1, "Admin", "00000003-0000-0000-0000-000000000000" },
-                    { 2, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1, "ContentManager", "00000004-0000-0000-0000-000000000000" },
-                    { 3, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1, "Member", "00000005-0000-0000-0000-000000000000" },
-                    { 4, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1, "Admin", "00000006-0000-0000-0000-000000000000" },
-                    { 5, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1, "ContentManager", "00000007-0000-0000-0000-000000000000" },
-                    { 6, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", null, 1, "Member", "00000008-0000-0000-0000-000000000000" }
+                    { 1, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1, "Admin", "00000003-0000-0000-0000-000000000000" },
+                    { 2, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1, "ContentManager", "00000004-0000-0000-0000-000000000000" },
+                    { 3, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000001-0000-0000-0000-000000000000"), null, 1, "Member", "00000005-0000-0000-0000-000000000000" },
+                    { 4, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1, "Admin", "00000006-0000-0000-0000-000000000000" },
+                    { 5, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1, "ContentManager", "00000007-0000-0000-0000-000000000000" },
+                    { 6, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "e02fd0e4-00fd-000a-ca30-0F00a0898ba1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000002-0000-0000-0000-000000000000"), null, 1, "Member", "00000008-0000-0000-0000-000000000000" }
                 });
 
             migrationBuilder.CreateIndex(

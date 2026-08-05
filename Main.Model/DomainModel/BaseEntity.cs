@@ -47,7 +47,6 @@ public class BaseEntity: RootBaseEntity, IMustHaveTenant
 
     public void AddSessionParameters (BaseDataModel modelBase)
     {
-        SessionUserId = modelBase.SessionUserId?.Trim ();
         TenantCountry = modelBase.TenantCountry;
         TenantContinent = modelBase.TenantContinent?.Trim ();
     }

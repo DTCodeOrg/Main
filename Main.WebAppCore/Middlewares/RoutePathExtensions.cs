@@ -1,5 +1,5 @@
 ﻿
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.Middlewares;
 
 public static class ReutePathExtensions
 {

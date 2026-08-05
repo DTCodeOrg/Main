@@ -4,13 +4,11 @@ using Main.Infrastructure;
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.Middlewares;
 
 public class TenantResolverHandlingMiddleware
 {
     private readonly RequestDelegate _next;
-    private const string rootDomain = "localhost";
-    private const string TenantHeaderKey = "X-Tenant-ID";
 
     public TenantResolverHandlingMiddleware (RequestDelegate next)
     {
@@ -18,28 +16,26 @@ public class TenantResolverHandlingMiddleware
     }
 
     public async Task InvokeAsync (
-    HttpContext context,
-    ITenantSetter tenantSetter, // This object reference must NEVER be overwritten via "="
-    ITenancyService tenancyService,
-    IMemoryCache memoryCache,
-    ILogger<TenantResolverHandlingMiddleware> logger)
+        HttpContext context,
+        ITenantSetter tenantSetter,
+        ITenancyService tenancyService,
+        IMemoryCache memoryCache,
+        ILogger<TenantResolverHandlingMiddleware> logger)
     {
-        // 1. Resolve tenant context data into a separate variable payload reference
-        TenantDisplayDataModel? resolvedTenant = await TenantResolutionExtensions.TryResolveTenantAsync (
-        context, tenancyService, memoryCache, logger
-    );
+        TenantDisplayDataModel? resolvedTenant
+        = await TenantResolutionExtensions.TryResolveTenantAsync ( context, tenancyService, memoryCache);
 
         if ( resolvedTenant != null )
         {
-            // 2. CRITICAL: Mutate the properties of the container-managed instance directly
             tenantSetter.CurrentTenantId = resolvedTenant?.MyTenantId ?? Guid.Empty;
             tenantSetter.TenantName = resolvedTenant?.Name ?? string.Empty;
             tenantSetter.TenantStore = resolvedTenant?.StoreType ?? StoreType.FineArts;
+            context.Items["TenantId"] = resolvedTenant?.MyTenantId ?? Guid.Empty;
         }
         else
         {
-            // Handle unresolvable host domains gracefully
             tenantSetter.CurrentTenantId = Guid.Empty;
+            context.Items["TenantId"] = resolvedTenant?.MyTenantId ?? Guid.Empty;
         }
 
         await _next (context);

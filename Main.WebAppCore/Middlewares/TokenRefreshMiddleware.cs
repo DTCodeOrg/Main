@@ -1,7 +1,7 @@
 ﻿using Main.Infrastructure;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.WebAppCore.Controllers.Extensions;
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.Middlewares;
 
 public class TokenRefreshMiddleware
 {

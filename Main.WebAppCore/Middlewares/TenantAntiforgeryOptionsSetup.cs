@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.Options;
 
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.Middlewares;
 
 public class TenantAntiforgeryOptionsSetup: IConfigureOptions<AntiforgeryOptions>
 {

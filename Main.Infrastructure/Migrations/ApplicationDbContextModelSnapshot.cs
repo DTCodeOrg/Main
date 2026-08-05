@@ -61,9 +61,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<long>("ParentValueId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
 
@@ -123,9 +120,6 @@ namespace Main.Infrastructure.Migrations
 
                     b.Property<Guid>("MyTenantId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
@@ -187,9 +181,6 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SearchTag")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SessionUserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShortNote")
@@ -255,9 +246,6 @@ namespace Main.Infrastructure.Migrations
 
                     b.Property<Guid>("MyTenantId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
@@ -347,13 +335,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000002-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e64c0651-1863-4df1-b713-e468d8a8ed8e",
+                            ConcurrencyStamp = "6cff3ba5-df80-4390-836d-7168d197c88f",
                             Email = "admin@system.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEN11A6Dt5+q291/CBy6+TU+HrMO333mzpfdBmBsR/3a8/Hj+KhAkxZOO7d66A8619A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJjtWWMEOxsi5xWhsDlRK91qPrSvoCvsHY9PqMxF1TlnU9o9UtaZhttGLaZU1OkO2A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "20c8d9d2-426c-446e-b5d8-bab35c456aac",
+                            SecurityStamp = "d696325d-ee28-46d5-93a9-d13844269c47",
                             TwoFactorEnabled = false,
                             UserName = "admin@system.com"
                         },
@@ -361,13 +349,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000003-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "407a08ad-e30c-4a35-aec4-2b4d5dcd9d64",
+                            ConcurrencyStamp = "c3a6320b-801d-4e4c-9ae5-8be356eacf82",
                             Email = "tenant1.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEEORATDIijpdW8pipYhSYe4jznedBHKdvu/BHW4Okp7Doqp6RSxLAeeDw6c7xa7Ujg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECPTXM3D+2p3jUXiEcZM32+s2fp3kxaODnGN1FJEhn32QHtLhNSoDprbuS2QQCT79g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3ccf9d84-0b2a-4750-b53a-f2637390d9f4",
+                            SecurityStamp = "6f8a7e5d-bbb9-45e8-8b86-3aa7ebb8ef09",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.admin@test.com"
                         },
@@ -375,13 +363,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000004-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "589358e7-5b17-4ec1-9f53-0e4684deb906",
+                            ConcurrencyStamp = "21c85b09-aef7-4d48-8dfe-a317ebb47d29",
                             Email = "tenant1.content@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEE2RDGfgGGhqo88QLr+er/BZZUQv9X5LJtEi+GIYiHOxyuGA5yeBLapI28q3f0QgvA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIWyTyo3pJywwXl2Khfsku9ENaJ+W8xX8p4drb7/lRxsLsrQZ149O/PigmjB6z+IMw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6fed39a0-9a07-42ac-8a4d-3627a7644934",
+                            SecurityStamp = "50dc8449-d2e3-4a75-bb59-21b68dd84454",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.content@test.com"
                         },
@@ -389,13 +377,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000005-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d4c66591-e3d6-4a03-ac82-a7741340399a",
+                            ConcurrencyStamp = "e5259613-c8b8-455b-9714-756322b077f6",
                             Email = "tenant1.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEIHYer+B1r57MZwrvfZFe9lW/48ihq1tpTf1D9w4rr4ecLPcbfXzCBhjQgi8ncyVlA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIMlcgjm8JMAiZCB/WzVukaN/mwbjfXqcqMwpgjDDx6KfeGQu1ChlE9Z6r/8fGvNTw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3cdc85be-7f54-4e10-b63f-978eb56b5b04",
+                            SecurityStamp = "ff4cc37e-4997-4712-a5a1-4918a6fe2eb4",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.member@test.com"
                         },
@@ -403,13 +391,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000006-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "252804ea-ceee-4494-9978-eff202eb3567",
+                            ConcurrencyStamp = "8bae12fb-dfb1-4400-9bce-a90d9b4ce620",
                             Email = "tenant2.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEO6Q81uw4ouubxu8sFthZwUGeXm1yTXa/cBugWoS0Vi+9GziSZwmByi0t2DFCflr7g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHdeIqqQnBweEagOxK3t3A1AjqhA4X/bZ0rOWwXpaZFbzcFDoV9xplIiuo4o2EoTew==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "76cbec4d-8162-4db2-866d-6bb173d9a2f4",
+                            SecurityStamp = "62b579b5-9b81-438c-81c6-84f38471c82e",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.admin@test.com"
                         },
@@ -417,13 +405,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000007-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "70cb2660-798b-4971-96ed-a9e5a666dd25",
+                            ConcurrencyStamp = "0210c4ce-780e-4531-a4b4-3e87e33660f0",
                             Email = "tenant2.content@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAECIDf6GfVoSzi7oiz7/HQdUVbtWybDgyHgtd1s4XE/A7hOe94s3Sa5GOBOv+Wr9TUg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKCdB++WOIWHaXnbH8q9BS//mXlNodgnHXyHWW1uW+cguBiG0MWnxD7bU2zmiTnzwg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e99df783-0c4a-405e-9288-d826160b7fef",
+                            SecurityStamp = "c29e055c-f432-4e41-89df-d1476bc10b6d",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.content@test.com"
                         },
@@ -431,13 +419,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000008-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8bef7134-2b45-430a-8e0d-9794b6adf45e",
+                            ConcurrencyStamp = "eb55cdd9-fee8-487b-9387-d80e1eee25ed",
                             Email = "tenant2.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEP2gMPVbv+RjWZoe2Wzl/KPYUKcBwXKtFetO1GcIGdbIMRTOUthcYf3ASLk+jSpfvA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKpVsNgMX5QfxsKI82VSR6JPIQDtlJ2qsLgltGcvQTWCVsxfvVgGmswNtP49KJvcpw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d314ebb0-cba1-48cb-bd37-5b3fbf8c776b",
+                            SecurityStamp = "07084a69-d75c-49ed-9d56-44ef4d930bee",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.member@test.com"
                         });
@@ -495,9 +483,6 @@ namespace Main.Infrastructure.Migrations
 
                     b.Property<int>("RetryCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Subject")
                         .IsRequired()
@@ -573,9 +558,6 @@ namespace Main.Infrastructure.Migrations
 
                     b.Property<int>("Port")
                         .HasColumnType("int");
-
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
@@ -686,9 +668,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ResolvedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Source")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -756,9 +735,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<Guid>("MyTenantId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
 
@@ -782,7 +758,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -795,7 +770,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -808,7 +782,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -821,7 +794,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -834,7 +806,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -847,7 +818,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -860,7 +830,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -873,7 +842,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -886,7 +854,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -899,7 +866,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -912,7 +878,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -925,7 +890,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -938,7 +902,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -951,7 +914,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -964,7 +926,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         },
                         new
@@ -977,7 +938,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1
                         });
                 });
@@ -1026,9 +986,6 @@ namespace Main.Infrastructure.Migrations
 
                     b.Property<string>("PanelTitle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SessionUserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenantContinent")
@@ -1097,9 +1054,6 @@ namespace Main.Infrastructure.Migrations
 
                     b.Property<int>("RootID")
                         .HasColumnType("int");
-
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
@@ -1186,9 +1140,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<string>("SearchTag")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("SubCategoryID")
                         .HasColumnType("int");
 
@@ -1245,9 +1196,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
 
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
 
@@ -1302,9 +1250,6 @@ namespace Main.Infrastructure.Migrations
 
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
-
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
@@ -1363,9 +1308,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<string>("SecretKey")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("SmtpId")
                         .HasColumnType("int");
 
@@ -1397,7 +1339,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("0000000b-0000-0000-0000-000000000000"),
                             Name = "LifeStyle Store",
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             Store = 1,
                             TenantCountry = 1,
                             TenantHostType = 0
@@ -1413,7 +1354,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("0000000c-0000-0000-0000-000000000000"),
                             Name = "Fine Arts Store",
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             Store = 2,
                             TenantCountry = 1,
                             TenantHostType = 0
@@ -1466,9 +1406,6 @@ namespace Main.Infrastructure.Migrations
 
                     b.Property<Guid>("MyTenantId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
@@ -1528,9 +1465,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<Guid>("MyTenantId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("SessionUserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
 
@@ -1563,7 +1497,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1,
                             TenantRole = "Admin",
                             UserId = "00000003-0000-0000-0000-000000000000"
@@ -1577,7 +1510,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1,
                             TenantRole = "ContentManager",
                             UserId = "00000004-0000-0000-0000-000000000000"
@@ -1591,7 +1523,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1,
                             TenantRole = "Member",
                             UserId = "00000005-0000-0000-0000-000000000000"
@@ -1605,7 +1536,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1,
                             TenantRole = "Admin",
                             UserId = "00000006-0000-0000-0000-000000000000"
@@ -1619,7 +1549,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1,
                             TenantRole = "ContentManager",
                             UserId = "00000007-0000-0000-0000-000000000000"
@@ -1633,7 +1562,6 @@ namespace Main.Infrastructure.Migrations
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MyTenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             TenantCountry = 1,
                             TenantRole = "Member",
                             UserId = "00000008-0000-0000-0000-000000000000"
@@ -1684,10 +1612,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<string>("ReplacedByToken")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("SessionUserId")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("TenantContinent")
                         .HasMaxLength(100)

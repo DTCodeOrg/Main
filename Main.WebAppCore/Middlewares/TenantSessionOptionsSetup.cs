@@ -1,7 +1,7 @@
 ﻿using Main.Infrastructure;
 using Microsoft.Extensions.Options;
 
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.Middlewares;
 
 public class TenantSessionOptionsSetup: IConfigureOptions<SessionOptions>
 {

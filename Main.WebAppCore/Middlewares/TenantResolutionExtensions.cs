@@ -2,18 +2,17 @@
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.Middlewares;
 
 public static class TenantResolutionExtensions
 {
     public static async Task<TenantDisplayDataModel?> TryResolveTenantAsync (
         this HttpContext context,
         ITenancyService tenancyService,
-        IMemoryCache memoryCache,
-        ILogger<TenantResolverHandlingMiddleware> logger)
+        IMemoryCache memoryCache)
     {
-        // 1. Grab the host string directly from the browser's incoming request headers
-        string host = context.Request.Host.Host; // e.g., "finearts.test"   
+
+        string host = context.Request.Host.Host; // "finearts.test"   
 
         string? tenantHost = context.ResolveFromDomain(host);
 
@@ -22,13 +21,8 @@ public static class TenantResolutionExtensions
             TenantDisplayDataModel? tenantDisplayDataModel =
             await memoryCache.GetOrCreateAsync($"tenant_{tenantHost}", async entry =>
             {
-                // 1. MANDATORY: Set the size to satisfy your global SizeLimit
                 _ =  entry.SetSize(1) ;
-
-                // Resets the 1-hour lifetime every time this tenant is requested
                 _ =  entry.SetSlidingExpiration(TimeSpan.FromHours(1)) ;
-
-                // 2. OPTIONAL: Set how long this tenant data stays in memory
                 _ =  entry.SetAbsoluteExpiration(TimeSpan.FromHours(1)) ;
 
                 return await tenancyService.FindHostAsync (tenantHost);
@@ -39,6 +33,7 @@ public static class TenantResolutionExtensions
                 return tenantDisplayDataModel;
             }
         }
+
         return null;
     }
 
@@ -62,7 +57,7 @@ public static class TenantResolutionExtensions
         string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
         if ( segments != null && segments.Length > 0 )
         {
-            return segments[0]; // This will now successfully return "finearts"
+            return segments[0];
         }
 
         return "";

@@ -2,10 +2,9 @@ using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
 using Main.WebAppCore.DepententServices;
-using Main.WebAppCore.Middleware;
+using Main.WebAppCore.Middlewares;
 using Microsoft.AspNetCore.HttpOverrides;
 using ResourceLibrary.Resources;
-using Serilog;
 
 internal class Program
 {
@@ -13,59 +12,40 @@ internal class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        // --- 2. Core Infrastructure & DI Services ---
+        // --- Core Infrastructure & DI Services ---
         _ = builder.Services.AddHttpContextAccessor ();
 
         _ = builder.Services.AddDistributedMemoryCache ();
 
         _ = builder.Services.AddSession (options =>
             {
-                // These act as system-wide defaults if the middleware skips a step
                 options.IdleTimeout = TimeSpan.FromMinutes (30);
-
                 options.Cookie.HttpOnly = true;
             });
 
         _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
-
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
 
-        // --- 1. Logging & Configuration ---
-        _ = builder.Host.UseSerilog ();
-
-        _ = builder.AddSerilogConfiguration ();
-
-        // Standard Microsoft generic logger factories configuration
-        _ = builder.Services.AddSingleton<Serilog.ILogger> (Serilog.Log.Logger);
-
-        _ = builder.Services.AddLogging (loggingBuilder =>
-        {
-            _ = loggingBuilder.AddSerilog (dispose: true);
-        });
-
-        _ = builder.Services.AddExceptionLogging (builder.Configuration);
+        // --- Logging & Configuration ---
+        // _ = builder.AddSerilogConfiguration ();
+        //_ = builder.Host.UseSerilog ();
+        //_ = builder.Services.AddExceptionLogging (builder.Configuration);
 
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
             .Get<MyConfigSettings> () ?? new MyConfigSettings ();
 
-        _ = builder.Services.AddDatabase (builder.Configuration);
 
+        _ = builder.Services.AddDatabase (builder.Configuration);
+        _ = builder.Services.AddRepository (builder.Configuration);
+        _ = builder.Services.AddService (builder.Configuration);
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
 
-        _ = builder.Services.AddRepository (builder.Configuration);
-
-        _ = builder.Services.AddService (builder.Configuration);
-
         _ = builder.Services.AddAntiforgery ();
-
         _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionsSetup> ();
 
         _ = builder.Services.AddEmailService (builder.Configuration);
-
         _ = builder.Services.AddCustomLocalization ();
-
         _ = builder.Services.AddAuthorizations (builder.Configuration);
-
         _ = builder.Services.AddAuthentication (builder.Configuration);
 
         _ = builder.Services.AddWebOptimizer (pipeline =>
@@ -82,7 +62,6 @@ internal class Program
 
         var app = builder.Build();
 
-        // 1. Core Proxy Headers Mapping
         var forwardedHeadersOptions = new ForwardedHeadersOptions
         {
             ForwardedHeaders = ForwardedHeaders.XForwardedFor |
@@ -106,8 +85,9 @@ internal class Program
         }
         else
         {
-            _ = app.UseGlobalExceptionHandling ();
+            // _ = app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();
         }
+
 
         // 1. Error handling must sit at the absolute top to catch failures down the line
         _ = app.UseStatusCodePages ();

@@ -15,7 +15,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     // 1. Store the interface instance, NOT the raw Guid value
     private readonly ITenantSetter _tenantSetter;
     private readonly ITenantContext _tenantContext;
-    private readonly ILogger<ExceptionLoggingService> _logger;
 
     public static readonly Guid[] guidArray = new[]
     {
@@ -48,7 +47,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         _tenantSetter = tenantSetter;
         _tenantContext = tenantContext;
-        _logger = logger;
     }
 
     public DbSet<ApplicationUser> ApplicationUsers
@@ -308,7 +306,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
             _ = entity.Property (e => e.DeletedBy).HasMaxLength (256).IsRequired (false);
 
             _ = entity.Property (e => e.ReplacedByToken).HasMaxLength (2000).IsRequired (false);
-            _ = entity.Property (e => e.SessionUserId).HasMaxLength (450).IsRequired (false);
             _ = entity.Property (e => e.TenantContinent).HasMaxLength (100).IsRequired (false);
             _ = entity.Property (e => e.TenantCountry).HasMaxLength (100).IsRequired (false);
 

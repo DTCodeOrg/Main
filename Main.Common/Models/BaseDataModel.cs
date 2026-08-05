@@ -11,11 +11,6 @@ public class BaseDataModel
         get; set;
     }
 
-    public string? SessionUserId
-    {
-        get; set;
-    }
-
     public string? TenantUserId
     {
         get; set;

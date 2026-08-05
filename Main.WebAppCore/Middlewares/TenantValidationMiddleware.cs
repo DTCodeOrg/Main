@@ -1,6 +1,6 @@
 ﻿using Main.Infrastructure;
 
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.Middlewares;
 
 public class TenantValidationMiddleware
 {

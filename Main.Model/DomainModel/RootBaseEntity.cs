@@ -6,12 +6,6 @@ public class RootBaseEntity
     {
     }
 
-    public string? SessionUserId
-    {
-        get;
-        set;
-    }
-
     public string CreatedBy
     {
         get; set;

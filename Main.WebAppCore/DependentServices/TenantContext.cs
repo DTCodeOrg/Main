@@ -36,12 +36,8 @@ public class TenantContext: ITenantContext
 
     private string GetResolvedTenantId ()
     {
-        if ( _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue
-        ("X-Tenant-ID",out var resolvedTenantId) != null )
-        {
-            return resolvedTenantId.ToString ();
-        }
-        return string.Empty;
+        Guid activeTenant = _httpContextAccessor.HttpContext?.Items["TenantId"] is Guid id ? id : Guid.Empty;
+        return activeTenant != Guid.Empty ? activeTenant.ToString () : string.Empty;
     }
 
     public DateTime GetLocalNow ()
@@ -59,10 +55,6 @@ public class TenantContext: ITenantContext
 
             CreatedBy = GetCurrentUserId (),
             TenantUserId = GetCurrentUserId (),
-            SessionUserId = GetCurrentUserId (),
-
-            TenantUserRole = GetCurrentTenantRole (),
-            IentityRole = GetIdentityRole() ,
 
             TenantCountry = AppSettings.Current.EnumCountry,
             IsActive = true
@@ -78,14 +70,7 @@ public class TenantContext: ITenantContext
         BaseDataModel baseDataModel = new ()
         {
             ModifiedDate = GetLocalNow ( ) ,
-
             ModifiedBy = GetCurrentUserId (),
-            SessionUserId = GetCurrentUserId (),
-            TenantUserId = GetCurrentUserId (),
-
-            TenantUserRole = GetCurrentTenantRole (),
-            IentityRole = GetIdentityRole (),
-
             IsActive = true,
             TenantCountry = AppSettings.Current.EnumCountry
         };
@@ -98,16 +83,10 @@ public class TenantContext: ITenantContext
         BaseDataModel baseDataModel = new ()
         {
             DeletedDate = GetLocalNow ( ),
-
             DeletedBy = GetCurrentUserId (),
-            SessionUserId = GetCurrentUserId (),
-            TenantUserId = GetCurrentUserId (),
 
             TenantCountry = AppSettings.Current.EnumCountry,
             IsActive = false,
-
-            TenantUserRole = GetCurrentTenantRole (),
-            IentityRole = GetIdentityRole ()
         };
 
         return baseDataModel;

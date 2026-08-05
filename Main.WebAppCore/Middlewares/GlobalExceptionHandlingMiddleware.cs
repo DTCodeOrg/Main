@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text.Json;
 
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.Middlewares;
 
 public class GlobalExceptionHandlingMiddleware
 {
@@ -36,28 +36,35 @@ public class GlobalExceptionHandlingMiddleware
 
 
     private static async Task HandleExceptionAsync (
-        HttpContext context,
-        Exception exception,
-        IExceptionLoggingService exceptionLoggingService,
-        ITenantSetter tenantSetter)
+    HttpContext context,
+    Exception exception,
+    IExceptionLoggingService exceptionLoggingService,
+    ITenantSetter tenantSetter)
     {
-        // Map exception to error code and status code
         var (errorCode,statusCode,userMessage) = MapException (exception);
-
-        // Get request information for logging
         var request = context.Request;
-        var userId = context.User?.FindFirst("sub")?.Value ??
-                    context.User?.FindFirst("nameid")?.Value;
+
+        // FIX 1: Use the standard security claim identity type mapped by .NET Identity
+        var userId = context.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        // FIX 2: Unleash your GetClientIpAddress helper to read through Nginx proxy lines!
         var clientIpAddress = GetClientIpAddress(context);
 
-        // Get request body if available
+        // Safely extract request stream data if buffered correctly upstream
         string? requestBody = null;
-        if ( request.ContentLength.GetValueOrDefault () > 0 )
+        if ( request.ContentLength.GetValueOrDefault () > 0 && request.Body.CanSeek )
         {
-            request.EnableBuffering ();
-            using var reader = new StreamReader (request.Body,leaveOpen: true);
-            requestBody = await reader.ReadToEndAsync ();
-            request.Body.Position = 0; // Reset for next middleware
+            try
+            {
+                request.Body.Position = 0; // Wind back to the beginning
+                using var reader = new StreamReader(request.Body, leaveOpen: true);
+                requestBody = await reader.ReadToEndAsync ();
+                request.Body.Position = 0; // Reset for security tracking down the chain
+            }
+            catch
+            {
+                requestBody = "[Unreadable Stream payload]";
+            }
         }
 
         var requestUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
@@ -65,7 +72,6 @@ public class GlobalExceptionHandlingMiddleware
 
         try
         {
-            // Log exception to database and file
             await exceptionLoggingService.LogExceptionAsync (
                 tenantSetter,
                 exception: exception,
@@ -73,23 +79,37 @@ public class GlobalExceptionHandlingMiddleware
                 statusCode: statusCode,
                 userMessage: userMessage,
                 userId: userId,
-                clientIpAddress: clientIpAddress,
+                clientIpAddress: clientIpAddress, // Restored tracking metrics
                 requestUrl: requestUrl,
                 httpMethod: request.Method,
                 requestHeaders: requestHeaders,
                 requestBody: requestBody,
                 customData: null,
-                source: "API");
+                source: "MVC_WEB_APP");
         }
         catch ( Exception ex )
         {
-            // Log to Serilog if database logging fails
             Log.Fatal (ex,"Failed to log exception to database. Original exception: {Message}",exception.Message);
         }
 
-        // Send error response to client
-        await SendErrorResponseAsync (context,errorCode,statusCode,userMessage);
+
+        // For standard browser page clicks, redirect to your Razor view error action page
+        context.Response.Redirect ($"/Home/Error?errorCode={errorCode}&statusCode={statusCode}");
+
     }
+
+    private static string GetClientIpAddress (HttpContext context)
+    {
+        // Reads the original user IP address forwarded by your Nginx proxy setup
+        if ( context.Request.Headers.TryGetValue ("X-Forwarded-For",out var forwardedFor) )
+        {
+            var ips = forwardedFor.ToString().Split(',');
+            return ips[0].Trim ();
+        }
+
+        return context.Connection.RemoteIpAddress?.ToString () ?? "Unknown";
+    }
+
 
 
     private static (string ErrorCode,int StatusCode,string UserMessage) MapException (Exception exception)
@@ -97,12 +117,7 @@ public class GlobalExceptionHandlingMiddleware
         return exception switch
         {
             // Validation exceptions
-            ArgumentNullException => (
-                ExceptionErrorCodes.INVALID_ARGUMENT_ERROR,
-                ExceptionErrorCodes.INVALID_ARGUMENT_ERROR_CODE,
-                UserFriendlyMessages.BAD_REQUEST),
-
-            ArgumentException => (
+            ArgumentNullException or ArgumentException => (
                 ExceptionErrorCodes.INVALID_ARGUMENT_ERROR,
                 ExceptionErrorCodes.INVALID_ARGUMENT_ERROR_CODE,
                 UserFriendlyMessages.BAD_REQUEST),
@@ -113,18 +128,19 @@ public class GlobalExceptionHandlingMiddleware
                 ExceptionErrorCodes.NOT_FOUND_CODE,
                 UserFriendlyMessages.NOT_FOUND),
 
-            // Timeout exceptions
-            TimeoutException => (
+            // Timeout and cancellation exceptions
+            TimeoutException or OperationCanceledException => (
                 ExceptionErrorCodes.TIMEOUT_ERROR,
                 ExceptionErrorCodes.TIMEOUT_ERROR_CODE,
                 UserFriendlyMessages.TIMEOUT_ERROR),
 
-            // Network/IO exceptions
+            // Network exceptions
             HttpRequestException => (
                 ExceptionErrorCodes.NETWORK_ERROR,
                 ExceptionErrorCodes.NETWORK_ERROR_CODE,
                 UserFriendlyMessages.NETWORK_ERROR),
 
+            // File and IO exceptions
             FileNotFoundException => (
                 ExceptionErrorCodes.FILE_NOT_FOUND,
                 ExceptionErrorCodes.FILE_NOT_FOUND_CODE,
@@ -135,9 +151,7 @@ public class GlobalExceptionHandlingMiddleware
                 ExceptionErrorCodes.IO_ERROR_CODE,
                 UserFriendlyMessages.DATABASE_ERROR),
 
-
-
-            // Database exceptions
+            // Database specific exceptions (Child must come before Parent)
             DbUpdateConcurrencyException => (
                 ExceptionErrorCodes.CONFLICT,
                 ExceptionErrorCodes.CONFLICT_CODE,
@@ -148,70 +162,18 @@ public class GlobalExceptionHandlingMiddleware
                 ExceptionErrorCodes.DATA_INTEGRITY_ERROR_CODE,
                 UserFriendlyMessages.DATABASE_ERROR),
 
-            OperationCanceledException => (
-                ExceptionErrorCodes.TIMEOUT_ERROR,
-                ExceptionErrorCodes.TIMEOUT_ERROR_CODE,
-                UserFriendlyMessages.TIMEOUT_ERROR),
-
             InvalidOperationException => (
                 ExceptionErrorCodes.INVALID_OPERATION,
                 ExceptionErrorCodes.INVALID_OPERATION_CODE,
                 UserFriendlyMessages.INVALID_OPERATION),
 
-            // Default case
+            // Default fallback case
             _ => (
                 ExceptionErrorCodes.UNKNOWN_ERROR,
                 ExceptionErrorCodes.UNKNOWN_ERROR_CODE,
                 UserFriendlyMessages.UNKNOWN_ERROR)
         };
     }
-
-
-    private static async Task SendErrorResponseAsync (
-        HttpContext context,
-        string errorCode,
-        int statusCode,
-        string userMessage)
-    {
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = statusCode;
-
-        var response = new ErrorResponse
-        {
-            ErrorCode = errorCode,
-            Message = userMessage,
-            StatusCode = statusCode,
-            Timestamp = DateTime.UtcNow,
-            Path = context.Request.Path.ToString(),
-            TraceId = context.TraceIdentifier
-        };
-
-        // Add detailed exception info in development only
-        if ( context.Request.Host.Host == "localhost" ||
-            Environment.GetEnvironmentVariable ("ASPNETCORE_ENVIRONMENT") == "Development" )
-        {
-            // In development, you might want to include more details
-            // response.Details = exception.Message;
-        }
-
-        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-        await context.Response.WriteAsJsonAsync (response,options);
-    }
-
-
-    private static string GetClientIpAddress (HttpContext context)
-    {
-        // Try to get IP from X-Forwarded-For header (for proxied requests)
-        if ( context.Request.Headers.TryGetValue ("X-Forwarded-For",out var forwardedFor) )
-        {
-            var ips = forwardedFor.ToString().Split(',');
-            return ips[0].Trim ();
-        }
-
-        // Fall back to RemoteIpAddress
-        return context.Connection.RemoteIpAddress?.ToString () ?? "Unknown";
-    }
-
 
     private static string SerializeHeaders (IHeaderDictionary headers)
     {
@@ -230,15 +192,5 @@ public class GlobalExceptionHandlingMiddleware
             .ToDictionary(h => h.Key, h => h.Value.ToString());
 
         return JsonSerializer.Serialize (filteredHeaders);
-    }
-}
-
-
-public static class GlobalExceptionHandlingMiddlewareExtensions
-{
-
-    public static IApplicationBuilder UseGlobalExceptionHandling (this IApplicationBuilder app)
-    {
-        return app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();
     }
 }

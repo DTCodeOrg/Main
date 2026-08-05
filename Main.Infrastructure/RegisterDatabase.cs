@@ -18,6 +18,8 @@ public static class RegisterDatabase
         {
             _ = options.UseLazyLoadingProxies ();
             _ = options.UseSqlServer (connectionString);
+            //_ = options.EnableSensitiveDataLogging ();
+            //_ = options.EnableDetailedErrors ();
         });
 
         _ = services.AddIdentity<ApplicationUser,IdentityRole> (options =>

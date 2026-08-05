@@ -16,8 +16,6 @@ public class TenantUser: BaseEntity
 
         TenantCountry = Country.Bangladesh;
         IsActive = true;
-
-        SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
     }
 
     public TenantUser ()

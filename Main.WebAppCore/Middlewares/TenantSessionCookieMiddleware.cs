@@ -1,4 +1,4 @@
-﻿namespace Main.WebAppCore.Middleware;
+﻿namespace Main.WebAppCore.Middlewares;
 
 using Main.Infrastructure;
 using Microsoft.AspNetCore.Http;
