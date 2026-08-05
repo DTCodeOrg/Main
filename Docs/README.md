@@ -68,51 +68,8 @@ This document describes the execution sequence and structural design of the HTTP
 
 ## Production Execution Sequence (`Program.cs`)
 [Program.cs](https://github.com/nayeeem81/Main/blob/master/Main.WebAppCore/Program.cs)
-```csharp
-// 1. Error Handling & Protocol Enforcement
-app.UseStatusCodePages();
-app.UseHttpsRedirection();
 
-// 2. Global CORS Policy
-app.UseCors();
 
-// 3. Static Assets Optimization Compiler & Handlers
-app.UseWebOptimizer();
-app.UseStaticFiles();
-
-// 4. Multi-Tenant Boundary Identification Routing
-app.UseRouting(); 
-
-// 5. Tenancy Context Extraction
-app.UseMiddleware<TenantResolverHandlingMiddleware>(); 
-
-// 6. Session Management Configuration (Tenant-Scoped Setup)
-app.UseMiddleware<TenantSessionCookieMiddleware>();
-app.UseSession();
-
-// 7. Context Optimization & Processing
-app.UseCustomLocalization();
-
-// 8. Security Authentication Matrix
-app.UseAuthentication();
-app.UseMiddleware<TokenValidationMiddleware>();
-app.UseAuthorization();
-
-// 9. Data Storage & Output Optimization Pools
-app.UseAntiforgery(); 
-app.UseOutputCache();  
-
-// 10. Endpoint Mappings
-app.MapControllers();
-app.MapControllerRoute(
-    name: "MyArea",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-```
-
----
 
 ## Core Structural Rules & Dependencies
 
