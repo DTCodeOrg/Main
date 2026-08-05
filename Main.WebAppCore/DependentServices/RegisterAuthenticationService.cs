@@ -1,6 +1,4 @@
 ﻿using Main.Infrastructure;
-using Main.Infrastructure.ICrosscuttingServices;
-using Main.WebAppCore.Controllers.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -20,7 +18,7 @@ public static class RegisterAuthenticationService
         })
         .AddJwtBearer ("Bearer",options =>
         {
-            options.Authority = null;  // No external authority; self-validating
+            options.Authority = null;
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -31,57 +29,25 @@ public static class RegisterAuthenticationService
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
-                // Ensure these matching property labels completely reflect what is emitted inside your token generator service payload claims
                 RoleClaimType = "UserRole",
                 NameClaimType = "UserName"
             };
 
             options.Events = new JwtBearerEvents
             {
-                OnMessageReceived = async context =>
+                OnMessageReceived = context =>
                 {
                     var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
-                    var tenantId = tenantSetter.CurrentTenantId;
 
-                    var accessCookieName = $".App.AccessToken.{tenantId}";
-                    var refreshCookieName = $".App.RefreshToken.{tenantId}";
+                    var accessCookieName = $".App.AccessToken.{tenantSetter.CurrentTenantId.ToString()}";
 
-                    // 1. Check if a valid Access Token exists
-                    if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) && !string.IsNullOrEmpty (accessToken) )
+                    if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) )
                     {
-                        var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
-
-                        // Validate the token cryptographically and check its lifetime bounds
-                        var principal = tokenService.ValidateAndDecryptToken(accessToken, out var validatedToken);
-                        if ( principal != null && validatedToken != null && validatedToken.ValidTo > DateTime.UtcNow )
-                        {
-                            context.Token = accessToken;
-                            return; // Access token is alive and well, break out early
-                        }
+                        // Just hand the token to the native engine. Let it handle validation!
+                        context.Token = accessToken;
                     }
 
-                    // 2. Access Token failed/expired. Fallback immediately to secure Refresh Token rotation
-                    if ( context.Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
-                    {
-                        var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
-                        var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken, tenantId, 15, 7);
-
-                        if ( rotationResult != null )
-                        {
-                            // Write the fresh, rotated cookies straight to the response payload
-                            await AuthorizationExtensions.AddTenantRefreshHeaderToken (context.HttpContext,tenantId,rotationResult,
-                                15,7
-                            );
-
-                            // Validate the token cryptographically and check its lifetime bounds
-                            var principal = tokenService.ValidateAndDecryptToken(rotationResult.AccessToken, out var validatedToken);
-                            if ( principal != null && validatedToken != null && validatedToken.ValidTo > DateTime.UtcNow )
-                            {
-                                context.Token = rotationResult.AccessToken;
-                                return; // Access token is alive and well, break out early
-                            }
-                        }
-                    }
+                    return Task.CompletedTask;
                 }
             };
 

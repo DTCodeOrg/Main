@@ -278,6 +278,44 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
         _ = builder.Entity<EmailOutboxMessage> ()
           .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<UserRefreshToken> (entity =>
+        {
+            // Set explicit Primary Key
+            _ = entity.HasKey (e => e.Id);
+
+            // Explicitly dictate Guid generation behavior if DB should handle it
+            _ = entity.Property (e => e.Id)
+                  .ValueGeneratedNever (); // Set this if you use Guid.NewGuid() in C# code
+
+            // Critical Fix: Map the heavy token payload properly to avoid truncation
+            _ = entity.Property (e => e.Token)
+                  .IsRequired ()
+                  .HasMaxLength (2000); // Gives ample space for long cryptographic signatures
+
+            // Map the multitenant identifier
+            _ = entity.Property (e => e.MyTenantId)
+                  .IsRequired ();
+
+            // Match ASP.NET Core Identity default string size for UserId (usually nvarchar(450))
+            _ = entity.Property (e => e.UserId)
+                  .IsRequired ()
+                  .HasMaxLength (450);
+
+            // Configure Audit lengths so they don't bloat memory allocations
+            _ = entity.Property (e => e.CreatedBy).HasMaxLength (256).IsRequired (false);
+            _ = entity.Property (e => e.ModifiedBy).HasMaxLength (256).IsRequired (false);
+            _ = entity.Property (e => e.DeletedBy).HasMaxLength (256).IsRequired (false);
+
+            _ = entity.Property (e => e.ReplacedByToken).HasMaxLength (2000).IsRequired (false);
+            _ = entity.Property (e => e.SessionUserId).HasMaxLength (450).IsRequired (false);
+            _ = entity.Property (e => e.TenantContinent).HasMaxLength (100).IsRequired (false);
+            _ = entity.Property (e => e.TenantCountry).HasMaxLength (100).IsRequired (false);
+
+            // Add index over Tenant and Token for rapid lookup performance on logout requests
+            _ = entity.HasIndex (e => new { e.MyTenantId,e.Token })
+                  .HasDatabaseName ("IX_UserRefreshTokens_Tenant_Token");
+        });
     }
 
     private void TenantGlobalQueryFilter (ModelBuilder builder)

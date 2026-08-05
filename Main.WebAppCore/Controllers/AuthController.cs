@@ -212,51 +212,37 @@ public class AuthController: BaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout ()
     {
-        // 1. Get the current tenant suffix
-        var currentTenantId = _tenantSetter.CurrentTenantId.ToString ();
-        // Explicitly grab the ClaimTypes.NameIdentifier
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+        var tenantId = _tenantSetter.CurrentTenantId;
+        var accessTokenName = $".App.AccessToken.{tenantId.ToString()}";
+        string refreshTokenName = $".App.RefreshToken.{tenantId.ToString()}";
 
-        var accessCookieName = $".App.AccessToken.{currentTenantId}";
-        var refreshCookieName = $".App.RefreshToken.{currentTenantId}";
-        // 2. Extract refresh token to revoke it in the database
-        if ( Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
+        // 1. Revoke the token in the database first
+        if ( Request.Cookies.TryGetValue (refreshTokenName,out var refreshToken) )
         {
-            // Wrap in try-catch so a database crash can NEVER block browser cookie deletion
-            _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,_tenantSetter.CurrentTenantId);
+            _ = await _tokenService.RevokeUserRefreshTokensAsync (refreshToken,_tenantSetter.CurrentTenantId);
         }
 
-        // Grab the current host header to target the exact client domain (e.g., ".finearts.test")
-        // If you appended cookies with a leading dot, add it here too: $".{HttpContext.Request.Host.Host}"
-        string currentDomain = HttpContext.Request.Host.Host;
-
-        var deletionOptions = new CookieOptions
+        // 2. Define CookieOptions that MATCH your creation settings perfectly
+        CookieOptions cookieOptions = new ()
         {
-            Path = "/",
-            Domain = currentDomain, // CRITICAL: Must match the cookie's domain exactly
-            Secure = true,          // Match your creation configuration
             HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
-            Expires = DateTimeOffset.UtcNow.AddDays(-1) // Forces browser deletion
+            Secure = true,          // Must match your login creation setup
+            SameSite = SameSiteMode.Lax, // Must match your login creation setup
+            Path = "/" ,             // Must match your login creation setup
+            Domain = Request.Host.Host // Must match your login creation setup
         };
 
-        HttpContext.Response.Cookies.Delete (accessCookieName,deletionOptions);
-        HttpContext.Response.Cookies.Delete (refreshCookieName,deletionOptions);
-        HttpContext.Response.Cookies.Delete ($".Session.{currentTenantId}",deletionOptions);
-        HttpContext.Response.Cookies.Delete ($".AspNetCore.Antiforgery.{currentTenantId}",deletionOptions);
+        // 3. Pass the options object into the Delete method
+        HttpContext.Response.Cookies.Delete (accessTokenName,cookieOptions);
+        HttpContext.Response.Cookies.Delete (refreshTokenName,cookieOptions);
 
-        // 4. Clean Nginx Cache for this specific logout session/redirect
-        HttpContext.Response.Headers.Append ("Cache-Control","no-cache, no-store, must-revalidate");
-        HttpContext.Response.Headers.Append ("Pragma","no-cache");
-        HttpContext.Response.Headers.Append ("Expires","0");
+        // 4. Signal Nginx to bypass caches
+        Response.Headers.Append ("Cache-Control","no-cache, no-store, must-revalidate");
+        Response.Headers.Append ("X-Clear-Cache","true");
 
-        // Custom header if your Nginx is configured to purge/bypass on it
-        HttpContext.Response.Headers.Append ("X-Clear-Cache","true");
-
-        // 5. Move back to the home page
         return RedirectToAction ("Index","Home");
-
     }
+
 
 
     // Password Reset Flow (1): User initiates password reset by providing email address 

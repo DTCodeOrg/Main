@@ -82,10 +82,6 @@ internal class Program
 
         var app = builder.Build();
 
-        // =========================================================================
-        // --- 6. HTTP REQUEST PIPELINE EXECUTION ORDER (FULLY RECOGNIZED) ---
-        // =========================================================================
-
         // 1. Core Proxy Headers Mapping
         var forwardedHeadersOptions = new ForwardedHeadersOptions
         {
@@ -96,14 +92,12 @@ internal class Program
 
         forwardedHeadersOptions.AllowedHosts.Clear ();
 
-        // FIXED: Clear default network constraints safely to trust loopback Nginx proxy
         forwardedHeadersOptions.KnownNetworks.Clear ();
 
         forwardedHeadersOptions.KnownProxies.Clear ();
 
         _ = app.UseForwardedHeaders (forwardedHeadersOptions);
 
-        // 2. Base Diagnostic & Exception Layers
         if ( app.Environment.IsDevelopment () )
         {
             _ = app.UseDeveloperExceptionPage ();
@@ -141,14 +135,18 @@ internal class Program
 
         // 8. Security Authentication Matrix (Auth MUST occur BEFORE Antiforgery & Caching)
         _ = app.UseAuthentication ();
-        _ = app.UseMiddleware<TokenValidationMiddleware> ();
+
+        // 9. Custom refresh middleware captures expired requests before authentication evaluations happen
+        _ = app.UseMiddleware<TokenRefreshMiddleware> ();
+        _ = app.UseMiddleware<TenantValidationMiddleware> ();
+
         _ = app.UseAuthorization ();
 
-        // 9. Data Storage & Output Optimization Pools
+        // 10. Data Storage & Output Optimization Pools
         _ = app.UseAntiforgery (); // Must run AFTER Authentication so it knows the User ID
         _ = app.UseOutputCache ();  // Must run AFTER Authorization to prevent caching private data
 
-        // 10. Endpoint Mappings
+        // 11. Endpoint Mappings
         _ = app.MapControllers ();
 
         _ = app.MapControllerRoute (

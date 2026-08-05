@@ -500,22 +500,22 @@ namespace Main.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsRevoked = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReplacedByToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReplacedByToken = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    SessionUserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantCountry = table.Column<int>(type: "int", maxLength: 100, nullable: true),
+                    TenantContinent = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -711,13 +711,13 @@ namespace Main.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "00000002-0000-0000-0000-000000000000", 0, "5ff427fd-27f0-400d-88aa-38241972ba3a", "admin@system.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEPKopqudzatSAMMoc+KdL1aqia1zXlxmVtWyp2XmczjiQQSrIaNsxN6U+EBlwKMCUQ==", null, false, "2f0e1b93-13c1-4be4-986a-640cb4124691", false, "admin@system.com" },
-                    { "00000003-0000-0000-0000-000000000000", 0, "cd3a3090-4938-437f-9148-a254ad7af5f1", "tenant1.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEDzoeRbBFTpZ/57Qnx0IIK7M90hJaVacAGJQTuhPuIUtD4ZFWzOJkJk6P8//llYt9w==", null, false, "cfe0f4f1-b87e-4b3e-8fbc-010a8fda1a00", false, "tenant1.admin@test.com" },
-                    { "00000004-0000-0000-0000-000000000000", 0, "ae0af22c-18bb-4bf9-b469-a4ddd39e53dc", "tenant1.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEI4LF0vDpD3XFwpGjstEXl079JPvQ3KD3sQ9h4EJYtwTsJlOGDIZGopNUo6EczNNqw==", null, false, "9034ee9e-8c17-4c9c-83ba-5939198d7055", false, "tenant1.content@test.com" },
-                    { "00000005-0000-0000-0000-000000000000", 0, "956e5b0d-e834-4dc2-a410-f9e0f91f7115", "tenant1.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEPPdOOM31lBaoX3H38xyoziPyfBZT5pSW4xtQGm0Ir/Iy6guIOZcxq98OvKBwDU19w==", null, false, "312c5af5-e427-4d80-8973-e7139bd3d240", false, "tenant1.member@test.com" },
-                    { "00000006-0000-0000-0000-000000000000", 0, "81e60a0f-7cc4-4be4-9d8b-4356c99a3ea5", "tenant2.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEL2yqD7OIMe1UkDBv6qep80CWx/az+g+F7Zwe+KpJ8+jtInC7DRYONz+AF3RLhSx0w==", null, false, "157671d4-6410-49cd-a42b-59417e090af7", false, "tenant2.admin@test.com" },
-                    { "00000007-0000-0000-0000-000000000000", 0, "a269f8b7-c146-480d-bfa7-49ae8627a965", "tenant2.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAELq8qZqqNbZltzAt2+JCswNVHG0lct2k+xTtLL1CK7gbTH3NXphb9/4ecA6fzeUyKg==", null, false, "2af8f3cb-8dcb-4cc6-9e52-d4db37509cfc", false, "tenant2.content@test.com" },
-                    { "00000008-0000-0000-0000-000000000000", 0, "15af4bc0-b829-45b9-a2b6-8c5c72565df4", "tenant2.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEKfDt/M8ru4l7IgXESTVnwqNx8my/LYD3BOnApLs0yi4B2t7+3edTJ7Er5RDa+JRjg==", null, false, "cb1bc0fa-51c0-4819-ab7b-e2c0f81ac572", false, "tenant2.member@test.com" }
+                    { "00000002-0000-0000-0000-000000000000", 0, "e64c0651-1863-4df1-b713-e468d8a8ed8e", "admin@system.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEN11A6Dt5+q291/CBy6+TU+HrMO333mzpfdBmBsR/3a8/Hj+KhAkxZOO7d66A8619A==", null, false, "20c8d9d2-426c-446e-b5d8-bab35c456aac", false, "admin@system.com" },
+                    { "00000003-0000-0000-0000-000000000000", 0, "407a08ad-e30c-4a35-aec4-2b4d5dcd9d64", "tenant1.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEEORATDIijpdW8pipYhSYe4jznedBHKdvu/BHW4Okp7Doqp6RSxLAeeDw6c7xa7Ujg==", null, false, "3ccf9d84-0b2a-4750-b53a-f2637390d9f4", false, "tenant1.admin@test.com" },
+                    { "00000004-0000-0000-0000-000000000000", 0, "589358e7-5b17-4ec1-9f53-0e4684deb906", "tenant1.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEE2RDGfgGGhqo88QLr+er/BZZUQv9X5LJtEi+GIYiHOxyuGA5yeBLapI28q3f0QgvA==", null, false, "6fed39a0-9a07-42ac-8a4d-3627a7644934", false, "tenant1.content@test.com" },
+                    { "00000005-0000-0000-0000-000000000000", 0, "d4c66591-e3d6-4a03-ac82-a7741340399a", "tenant1.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEIHYer+B1r57MZwrvfZFe9lW/48ihq1tpTf1D9w4rr4ecLPcbfXzCBhjQgi8ncyVlA==", null, false, "3cdc85be-7f54-4e10-b63f-978eb56b5b04", false, "tenant1.member@test.com" },
+                    { "00000006-0000-0000-0000-000000000000", 0, "252804ea-ceee-4494-9978-eff202eb3567", "tenant2.admin@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEO6Q81uw4ouubxu8sFthZwUGeXm1yTXa/cBugWoS0Vi+9GziSZwmByi0t2DFCflr7g==", null, false, "76cbec4d-8162-4db2-866d-6bb173d9a2f4", false, "tenant2.admin@test.com" },
+                    { "00000007-0000-0000-0000-000000000000", 0, "70cb2660-798b-4971-96ed-a9e5a666dd25", "tenant2.content@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAECIDf6GfVoSzi7oiz7/HQdUVbtWybDgyHgtd1s4XE/A7hOe94s3Sa5GOBOv+Wr9TUg==", null, false, "e99df783-0c4a-405e-9288-d826160b7fef", false, "tenant2.content@test.com" },
+                    { "00000008-0000-0000-0000-000000000000", 0, "8bef7134-2b45-430a-8e0d-9794b6adf45e", "tenant2.member@test.com", true, false, null, null, null, "AQAAAAIAAYagAAAAEP2gMPVbv+RjWZoe2Wzl/KPYUKcBwXKtFetO1GcIGdbIMRTOUthcYf3ASLk+jSpfvA==", null, false, "d314ebb0-cba1-48cb-bd37-5b3fbf8c776b", false, "tenant2.member@test.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -936,6 +936,11 @@ namespace Main.Infrastructure.Migrations
                 name: "IX_TenantUsers_UserId",
                 table: "TenantUsers",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRefreshTokens_Tenant_Token",
+                table: "UserRefreshTokens",
+                columns: new[] { "MyTenantId", "Token" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRefreshTokens_UserId",

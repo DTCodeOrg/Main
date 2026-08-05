@@ -2,11 +2,11 @@
 
 namespace Main.WebAppCore.Middleware;
 
-public class TokenValidationMiddleware
+public class TenantValidationMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public TokenValidationMiddleware (RequestDelegate next) => _next = next;
+    public TenantValidationMiddleware (RequestDelegate next) => _next = next;
 
     public async Task InvokeAsync (HttpContext context)
     {
