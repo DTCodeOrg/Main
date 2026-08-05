@@ -1,77 +1,25 @@
-# Host File & Nginx Server Config
-
-[Host File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc)-Laptop)
-
-<img width="921" height="459" alt="hostfilescreenshot" src="https://github.com/user-attachments/assets/08bcb32e-01a4-4c5e-86c4-f7cc0346ece7" />
-
-
-[Nginx Config File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc))
-
-<img width="558" height="253" alt="certificate" src="https://github.com/user-attachments/assets/f7e6c960-78c6-4e3b-a771-aa001b58300d" />
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
 
 This document describes the execution sequence and structural design of the HTTP request lifecycle pipeline. The middleware chain is meticulously ordered to eliminate race conditions, preserve multi-tenant isolation, handle static assets efficiently, and enforce cross-origin security rules.
 
-   [HTTP Request]
-        │
-        ▼
-┌──────────────────────────────┐
-│1. Error & TLS Enforcement    │ ──► StatusCodePages, HttpsRedirection
-└──────────────────────────────┘
-            │
-            ▼
-┌──────────────────────────────┐
-│ 2. Edge Security (CORS)      │    ──► Appends headers before any terminal handlers
-└──────────────────────────────┘
-            │
-            ▼
-┌──────────────────────────────┐
-│ 3. Static Asset Optimization │ ──► WebOptimizer, StaticFiles (Bypasses Tenancy/Auth)
-└──────────────────────────────┘
-            │
-            ▼
-┌──────────────────────────────┐
-│ 4. Endpoint Identification   │ ──► UseRouting (Enables Endpoint Metadata Inspection)
-└──────────────────────────────┘
-            │
-            ▼
-┌──────────────────────────────┐
-│ 5. Tenancy Context Layer     │ ──► TenantResolver (Stores TenantId in HttpContext.Items)
-└──────────────────────────────┘
-            │
-            ▼
-┌──────────────────────────────┐
-│ 6. Isolated Session Layer    │ ──► TenantSessionCookie, UseSession (Tenant-Scoped)
-└──────────────────────────────┘
-            │
-            ▼
-┌──────────────────────────────┐
-│ 7. Context Localization      │ ──► CustomLocalization (Tenant-Configured Culture)
-└──────────────────────────────┘
-             │
-             ▼
-┌──────────────────────────────┐
-│ 8. Security Auth Matrix      │ ──► Authentication, TokenValidation, Authorization
-──────────────────────────────┘
-             │
-             ▼
-┌──────────────────────────────┐
-│9.Anti-Exploit & Optimization │ ──► Antiforgery, OutputCache (Context-Aware)
-└──────────────────────────────┘
-             │
-             ▼
-┌──────────────────────────────┐
-│ 10. Endpoint Controllers     │ ──► MapControllers, MapControllerRoute
-└──────────────────────────────┘
+[Multi-Tenant ASP.NET Core Middleware Pipeline Architecture](https://github.com/nayeeem81/Main/wiki/(.NET-8.0)-Pipeline)
+
+   1. HTTP Request
+   2. Error & TLS Enforcement        ──► StatusCodePages, HttpsRedirection
+   3. Edge Security (CORS)           ──► Appends headers before any terminal handlers
+   4. Static Asset Optimization      ──► WebOptimizer, StaticFiles (Bypasses Tenancy/Auth)
+   5. Endpoint Identification        ──► UseRouting (Enables Endpoint Metadata Inspection)
+   6. Tenancy Context Layer          ──► TenantResolver (Stores TenantId in HttpContext.Items)
+   7. Isolated Session Layer         ──► TenantSessionCookie, UseSession (Tenant-Scoped)
+   8. Context Localization           ──► CustomLocalization (Tenant-Configured Culture)
+   9. Refresh Token                  ──► Recreate access token when expired or Browser reopens 
+   10. Security Auth Matrix          ──► Authentication, TokenValidation, Authorization
+   11. Anti-Exploit & Optimization   ──► Antiforgery, OutputCache (Context-Aware)
+   12. Endpoint Controllers          ──► MapControllers, MapControllerRoute
 
 
-## Production Execution Sequence (`Program.cs`)
-[Program.cs](https://github.com/nayeeem81/Main/blob/master/Main.WebAppCore/Program.cs)
-
-
-
-## Core Structural Rules & Dependencies
+# Core Structural Rules & Dependencies
 
 ### 1. Global CORS Placement
 * **Rule:** Must execute *before* `UseStaticFiles` and `UseRouting`.
@@ -93,21 +41,18 @@ This document describes the execution sequence and structural design of the HTTP
 * **Rule:** `UseAuthentication()` runs *before* `UseAntiforgery()` and `UseOutputCache()`.
 * **Reasoning:** Antiforgery verification tokens rely on the security identity of the authenticated caller; evaluating it early treats verified sessions as anonymous, breaking form submissions. Similarly, `UseOutputCache()` must evaluate downstream of authentication/authorization to prevent caching private or role-restricted data across multi-tenant barriers.
 
-# ALL THESE ARE REFLECTED IN CODE. ALL THE SEARCH, RESEARCH AND CODE WRITE UP; I TOOK THE HELP OF GOOGLE AI. A LOT OF QUESTIONS, I DID CONSUME; CAUSED A LOT OF ELECTRIC ENGINES RUNNING IN HOT PATH. THANKS FOR SUCH SERVICE FOR ALL OF THE CODE WRITERS, INSIDE THE UNIVERSE. THE END PART IS ALSO, WRITTEN BY THE SAME...00
+# Host File & Nginx Server Config
+
+[Host File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc)-Laptop)
+
+<img width="921" height="459" alt="hostfilescreenshot" src="https://github.com/user-attachments/assets/08bcb32e-01a4-4c5e-86c4-f7cc0346ece7" />
 
 
-# Host File (C:\Windows\System32\drivers\etc)
-127.0.0.1    finearts.test
-127.0.0.1    lifestyles.test
-127.0.0.1    localhost
+[Nginx Config File](https://github.com/nayeeem81/Main/wiki/Host-File-(C:%5CWindows%5CSystem32%5Cdrivers%5Cetc))
 
-127.0.0.1   app.internal
+<img width="558" height="253" alt="certificate" src="https://github.com/user-attachments/assets/f7e6c960-78c6-4e3b-a771-aa001b58300d" />
 
-# Multitenant .NET 8.0 Web App Middleware Execution:
-
-At the end, the program.cs code is provided which will justify the order of the middleware and following explanations. 
-
-**Kestrel server:** 
+# Kestrel server
 
 - The Kestrel server is the lightweight (🔄100% tested), cross-platform (windows 🔄100% tested), high-performance (🔄100% tested) web server built directly into .NET.  
 - When the multi-tenant .NET 8.0 web application runs, Kestrel acts as the inner server that directly hosts the app code and handles raw network connections (like HTTP and WebSockets 🔄100% tested). 
@@ -116,17 +61,17 @@ At the end, the program.cs code is provided which will justify the order of the 
 **1. Kestrel's Role in this Architecture** 
 From the Visual studio IDE, when we click the run button (debug menu) for the code in my development environment, Kestrel is the process start running on the machine/laptop (listening on a port like localhost:52899). The kestrel process (🔄100% tested: web server built directly into .NET) is running now and listening. In the power shell, we write commands and run the nginx process (reverse proxy) which listens to (http and https). Then we type to test the multi-tenant custom domains. 
 
-**The Flow:**  
+# Flow  
 
 In the browser, type and visit https://finearts.test, the request first goes to the local Nginx proxy. Nginx terminates the SSL encryption and proxies (forwards) the raw traffic to Kestrel via HTTP on my web app localhost port (5000). (🔄100% tested). In the solution of the application, we have launchSettings.json, which is configured to listen to 5000. 
 
 **"applicationUrl": "http://127.0.0.1:5000"** 
 
-**The Handshake:**  
+# The Handshake
 
 When your browser opens that WebSocket connection in the browser inspect (web tool), I tested and see, Kestrel is the server that accepts the 101 Switching Protocols handshake and holds the TCP pipe open to process your background real-time data or development Hot Reload. (🔄100% tested) 
 
-**Why does the middleware order pipeline and configure headers Is very important?** 
+## Why does the middleware order pipeline and configure headers Is very important? 
 
 Because Kestrel sits behind Nginx, it does not naturally know what domain the user typed into their browser—it only sees localhost:52899. 
 
@@ -175,102 +120,8 @@ The host in the local machine is configured with two domains. It is then forward
 
 You can keep the folder in any drive. For making the path short, in the root of any drive is good to go. The following are the contents of the Nginx configuration file. 
 
-**#Global configurations (Must be at the top)** 
-```
-worker_processes 1; 
 
-events { worker_connections 1024; } 
-```
-**#The parent HTTP context block** 
-```
-http { 
-```
-**#Expand global buffer limits to prevent Cookie Bloat crashes** 
- 
-```
-client_header_buffer_size 8k; 
-large_client_header_buffers 4 32k; 
-include       mime.types; 
-default_type  application/octet-stream; 
-sendfile        on; 
-keepalive_timeout  65; 
-```
-
-**#Redirect all HTTP traffic to HTTPS automatically** 
-```
-server {    
-
- listen       80; 
- 
-   server_name  localhost finearts.test lifestyles.test app.imternal; 
-   
-   return 301 https://$host$request_uri; 
-} 
-```
-**#Secure local HTTPS server block** 
-```
-server { 
-
-   listen       443 ssl; 
-   
-   server_name    localhost finearts.test lifestyles.test app.imternal; 
-``` 
- 
-  **#Paths to your mkcert local SSL certificates** 
-``` 
-   ssl_certificate      ssl/localhost+3.pem; 
-   
-   ssl_certificate_key  ssl/localhost+3-key.pem; 
-``` 
-   **#Recommended local development SSL settings** 
-``` 
-   ssl_protocols        TLSv1.2 TLSv1.3; 
-   
-   ssl_ciphers          HIGH:!aNULL:!MD5; 
-``` 
-**#Allow image binary uploads up to 15MB** 
-``` 
-client_max_body_size 15M; 
-    
-location / { 
-```
-        
-   **#Route traffic to your local .NET application** 
-
- ```
-       proxy_pass         http: //127.0.0.1: 5000; 
-       proxy_http_version 1.1; 
-```
- 
-   **#Stream large image file payloads directly without disk-caching in Nginx** 
- ```
-   proxy_request_buffering off; 
-   
-   proxy_buffering off; 
-``` 
-   **#Forward original protocol metadata down to .NET**    
-   
-   **#Forward headers so .NET reads the multi-tenant host context accurately** 
-
- ```
-       proxy_set_header   Host $host; 
-       proxy_set_header X-Real-IP $remote_addr; 
- 
-       proxy_set_header   X-Forwarded-Host $host; 
-       proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for; 
-       proxy_set_header   X-Forwarded-Proto $scheme; 
-```
-        
-**#WebSocket and connection persistence headers** 
- ```
-       proxy_set_header   Upgrade $http_upgrade; 
-       proxy_set_header   Connection "upgrade"; 
-       proxy_cache_bypass $http_upgrade; 
-   } 
-} 
-} 
-```
-# PowerShell Commands (Nginx): 
+# PowerShell Commands (Nginx) 
 
 ```
 cd D:\nginx-1.31.3\conf 
@@ -281,7 +132,7 @@ Start-Process -FilePath "D:\nginx-1.31.3\nginx.exe" -ArgumentList "-s reload" -N
 
 .\nginx.exe -s stop 
 ```
-# PowerShell Commands (Create Certificate): 
+# PowerShell Commands (Create Certificate) 
 
 **(D:\nginx-1.31.3\conf\ssl)**
 ```
