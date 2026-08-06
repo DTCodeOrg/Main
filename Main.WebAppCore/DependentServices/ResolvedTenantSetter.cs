@@ -3,7 +3,7 @@ using Main.Infrastructure;
 
 namespace Main.WebAppCore.DependentServices;
 
-public class TenantSetter: ITenantSetter
+public class ResolvedTenantSetter: ITenantSetter
 {
 
     public Guid CurrentTenantId

@@ -1,11 +1,12 @@
 ﻿using Main.Infrastructure;
+using Main.WebAppCore.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Main.WebAppCore.DependentServices;
+namespace Main.WebAppCore.Middlewares;
 
-public static class RegisterAuthenticationService
+public static class AuthenticationMiddleware
 {
     public static IServiceCollection AddAuthentication (this IServiceCollection services,IConfiguration configuration)
     {

@@ -4,12 +4,12 @@ using Main.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-public class TenantSessionCookieMiddleware
+public class TenantSessionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IOptions<SessionOptions> _globalSessionOptions;
 
-    public TenantSessionCookieMiddleware (RequestDelegate next,IOptions<SessionOptions> globalSessionOptions)
+    public TenantSessionMiddleware (RequestDelegate next,IOptions<SessionOptions> globalSessionOptions)
     {
         _next = next;
         _globalSessionOptions = globalSessionOptions;

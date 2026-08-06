@@ -1,8 +1,6 @@
-﻿using Main.Common;
+﻿namespace Main.Common;
 
-namespace Main.WebAppCore.DependentServices;
-
-public class MyConfigSettings
+public class ConfigurationSettings
 {
     public Country EnumCountry
     {

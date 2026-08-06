@@ -1,4 +1,4 @@
-﻿namespace Main.WebAppCore.Middlewares;
+﻿namespace Main.WebAppCore.DependentServices;
 
 public static class TenantSafetyCheckExtensions
 {

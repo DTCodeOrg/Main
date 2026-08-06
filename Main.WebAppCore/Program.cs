@@ -1,7 +1,7 @@
+using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
-using Main.WebAppCore.DepententServices;
 using Main.WebAppCore.Middlewares;
 using Microsoft.AspNetCore.HttpOverrides;
 using ResourceLibrary.Resources;
@@ -23,8 +23,8 @@ internal class Program
                 options.Cookie.HttpOnly = true;
             });
 
-        _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
-        _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
+        _ = builder.Services.AddScoped<ITenantContext,TenantHttpContext> ();
+        _ = builder.Services.AddScoped<ITenantSetter,ResolvedTenantSetter> ();
 
         // --- Logging & Configuration ---
         // _ = builder.AddSerilogConfiguration ();
@@ -32,7 +32,7 @@ internal class Program
         //_ = builder.Services.AddExceptionLogging (builder.Configuration);
 
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
-            .Get<MyConfigSettings> () ?? new MyConfigSettings ();
+            .Get<ConfigurationSettings> () ?? new ConfigurationSettings ();
 
 
         _ = builder.Services.AddDatabase (builder.Configuration);
@@ -41,7 +41,8 @@ internal class Program
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
 
         _ = builder.Services.AddAntiforgery ();
-        _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionsSetup> ();
+        _ = builder.Services
+            .ConfigureOptions<TenantAntiforgeryOptionMiddleware> ();
 
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
@@ -104,10 +105,10 @@ internal class Program
         _ = app.UseRouting ();
 
         // 5. Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
-        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
+        _ = app.UseMiddleware<TenantResolverMiddleware> ();
 
         // 6. Session Management Configuration (Tenant-Scoped Setup)
-        _ = app.UseMiddleware<TenantSessionCookieMiddleware> ();
+        _ = app.UseMiddleware<TenantSessionMiddleware> ();
         _ = app.UseSession ();
 
         // 7. Context Optimization & Processing (Culture needs Tenant context)

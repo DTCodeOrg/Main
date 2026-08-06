@@ -1,19 +1,19 @@
 ﻿using Main.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Main.WebAppCore.DepententServices;
+namespace Main.WebAppCore.Middlewares;
 
-public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
+public class ApplicationUserRoleMiddleware: AuthorizationHandler<TenantRoleRequirementMiddleware>
 {
     private readonly ITenantSetter _tenantSetter;
 
     // You can safely inject your scoped tenant resolver here
-    public TenantRoleHandler (ITenantSetter tenantSetter)
+    public ApplicationUserRoleMiddleware (ITenantSetter tenantSetter)
     {
         _tenantSetter = tenantSetter;
     }
 
-    protected override Task HandleRequirementAsync (AuthorizationHandlerContext context,TenantRoleRequirement requirement)
+    protected override Task HandleRequirementAsync (AuthorizationHandlerContext context,TenantRoleRequirementMiddleware requirement)
     {
         // 1. READ FROM JWT: Extract tenant ownership from the validated JWT claims
         var tokenTenantId = context.User.FindFirst("TenantId")?.Value;

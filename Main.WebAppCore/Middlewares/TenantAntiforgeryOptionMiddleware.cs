@@ -4,11 +4,11 @@ using Microsoft.Extensions.Options;
 
 namespace Main.WebAppCore.Middlewares;
 
-public class TenantAntiforgeryOptionsSetup: IConfigureOptions<AntiforgeryOptions>
+public class TenantAntiforgeryOptionMiddleware: IConfigureOptions<AntiforgeryOptions>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public TenantAntiforgeryOptionsSetup (IHttpContextAccessor httpContextAccessor)
+    public TenantAntiforgeryOptionMiddleware (IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }

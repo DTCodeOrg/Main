@@ -1,9 +1,9 @@
 ﻿using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Infrastructure.ICrosscuttingServices;
 
-namespace Main.WebAppCore.DependentServices;
+namespace Main.WebAppCore.Middlewares;
 
-public static class RegisterExceptionLoggingService
+public static class ExceptionLoggingMiddleware
 {
     public static IServiceCollection AddExceptionLogging (this IServiceCollection services,
     IConfiguration configuration)

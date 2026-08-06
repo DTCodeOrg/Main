@@ -2,7 +2,7 @@
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Main.WebAppCore.Middlewares;
+namespace Main.WebAppCore.DependentServices;
 
 public static class TenantResolutionExtensions
 {

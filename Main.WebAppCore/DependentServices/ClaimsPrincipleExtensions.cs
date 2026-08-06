@@ -2,7 +2,7 @@
 
 namespace Main.WebAppCore.DependentServices;
 
-public static class ClaimsPrincipalExtensions
+public static class ClaimsPrincipalExtension
 {
     // Custom overload: checks your formatted tenant claim string instantly
     public static bool IsInTenantRole (this ClaimsPrincipal user,string currentTenantId,string expectedRole)

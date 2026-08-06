@@ -2,15 +2,16 @@
 using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
+using Main.WebAppCore.DependentServices;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Main.WebAppCore.Middlewares;
 
-public class TenantResolverHandlingMiddleware
+public class TenantResolverMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public TenantResolverHandlingMiddleware (RequestDelegate next)
+    public TenantResolverMiddleware (RequestDelegate next)
     {
         _next = next;
     }
@@ -20,7 +21,7 @@ public class TenantResolverHandlingMiddleware
         ITenantSetter tenantSetter,
         ITenancyService tenancyService,
         IMemoryCache memoryCache,
-        ILogger<TenantResolverHandlingMiddleware> logger)
+        ILogger<TenantResolverMiddleware> logger)
     {
         TenantDisplayDataModel? resolvedTenant
         = await TenantResolutionExtensions.TryResolveTenantAsync ( context, tenancyService, memoryCache);
