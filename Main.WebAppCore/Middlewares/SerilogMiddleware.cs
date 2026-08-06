@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
 
-namespace Main.Infrastructure;
+namespace Main.WebAppCore.Middlewares;
 
-public static class RegisterSerilogConfiguration
+public static class SerilogMiddleware
 {
     public static WebApplicationBuilder AddSerilogConfiguration (this WebApplicationBuilder builder)
     {
@@ -69,6 +67,4 @@ public static class RegisterSerilogConfiguration
 
         return builder;
     }
-
-
 }

@@ -11,9 +11,9 @@ namespace Main.WebAppCore.Middlewares;
 public class GlobalExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly Microsoft.Extensions.Logging.ILogger < ExceptionLoggingService > _logger;
+    private readonly ILogger < ExceptionLoggingService > _logger;
 
-    public GlobalExceptionHandlingMiddleware (RequestDelegate next,Microsoft.Extensions.Logging.ILogger<ExceptionLoggingService> logger)
+    public GlobalExceptionHandlingMiddleware (RequestDelegate next,ILogger<ExceptionLoggingService> logger)
     {
         _next = next;
         _logger = logger;

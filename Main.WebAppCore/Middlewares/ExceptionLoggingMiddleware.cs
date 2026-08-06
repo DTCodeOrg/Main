@@ -5,7 +5,7 @@ namespace Main.WebAppCore.Middlewares;
 
 public static class ExceptionLoggingMiddleware
 {
-    public static IServiceCollection AddExceptionLogging (this IServiceCollection services,
+    public static IServiceCollection AddExceptionLoggingMiddleware (this IServiceCollection services,
     IConfiguration configuration)
     {
 

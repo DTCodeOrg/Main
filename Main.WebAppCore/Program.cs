@@ -5,6 +5,7 @@ using Main.WebAppCore.DependentServices;
 using Main.WebAppCore.Middlewares;
 using Microsoft.AspNetCore.HttpOverrides;
 using ResourceLibrary.Resources;
+using Serilog;
 
 internal class Program
 {
@@ -27,9 +28,9 @@ internal class Program
         _ = builder.Services.AddScoped<ITenantSetter,ResolvedTenantSetter> ();
 
         // --- Logging & Configuration ---
-        // _ = builder.AddSerilogConfiguration ();
-        //_ = builder.Host.UseSerilog ();
-        //_ = builder.Services.AddExceptionLogging (builder.Configuration);
+        _ = builder.AddSerilogConfiguration ();
+        _ = builder.Host.UseSerilog ();
+        _ = builder.Services.AddExceptionLoggingMiddleware (builder.Configuration);
 
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
             .Get<ConfigurationSettings> () ?? new ConfigurationSettings ();
@@ -86,7 +87,7 @@ internal class Program
         }
         else
         {
-            // _ = app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();
+            _ = app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();
         }
 
 
