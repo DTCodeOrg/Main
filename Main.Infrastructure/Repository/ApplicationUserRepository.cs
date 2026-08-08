@@ -1,10 +1,8 @@
 ﻿using Domain.Model;
-using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Main.Repository;
 
@@ -12,17 +10,14 @@ public class ApplicationUserRepository: IApplicationUserRepository
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly ApplicationDbContext _context;
-    private readonly ILogger<ExceptionLoggingService>  _logger;
+    private readonly IdentityAppDbContext _idetityContext;
 
     public ApplicationUserRepository (UserManager<ApplicationUser> userManager,
-    SignInManager<ApplicationUser> signInManager,ApplicationDbContext context,
-    ILogger<ExceptionLoggingService> logger)
+    SignInManager<ApplicationUser> signInManager,IdentityAppDbContext context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _context = context;
-        _logger = logger;
+        _idetityContext = context;
     }
 
     public async Task<bool> AddToRoleAsync (string email,string roleName)
@@ -38,22 +33,22 @@ public class ApplicationUserRepository: IApplicationUserRepository
     {
         ApplicationUser? applicationUser = await FindByEmailAsync (email);
 
-        TenantUser userTenant = new ()
+        TenantUserRole userTenant = new ()
         {
             UserId = applicationUser!.Id,
             TenantRole = roleName,
-            MyTenantId = tenantId
+            TenantId = tenantId
         };
 
-        _ = _context.TenantUsers.Add (userTenant);
-        var result = await _context.SaveChangesAsync ();
+        _ = _idetityContext.TenantUserRoles.Add (userTenant);
+        var result = await _idetityContext.SaveChangesAsync ();
         return result > 0;
     }
 
     public async Task<ApplicationUser?> FindByEmailAsync (string email)
     {
         ApplicationUser?  applicationUser
-            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            = await _idetityContext.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
             (a => a.Email == email.ToString() );
 
         return applicationUser;
@@ -62,7 +57,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
     public async Task<ApplicationUser?> FindByNameIdAsync (string id)
     {
         ApplicationUser?  applicationUser
-            = await _context.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            = await _idetityContext.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
             (a => a.Id == id.ToString() );
 
         return applicationUser;
@@ -161,9 +156,9 @@ public class ApplicationUserRepository: IApplicationUserRepository
             return string.Empty;
         }
 
-        TenantUser? userTenants =
-        await _context.TenantUsers.FirstOrDefaultAsync<TenantUser>
-        (a => a.MyTenantId == tenantId && a.UserId == applicationUser.Id);
+        TenantUserRole? userTenants =
+        await _idetityContext.TenantUserRoles.FirstOrDefaultAsync<TenantUserRole>
+        (a => a.TenantId == tenantId && a.UserId == applicationUser.Id);
 
         return userTenants == null ? string.Empty : userTenants.TenantRole;
     }
@@ -198,7 +193,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<ApplicationUser?> ApplicationUsers (string userId)
     {
-        ApplicationUser? user = await _context.ApplicationUsers
+        ApplicationUser? user = await _idetityContext.ApplicationUsers
         .FirstOrDefaultAsync<ApplicationUser>(a => a.Id == userId);
 
         return user;
@@ -206,7 +201,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<List<ApplicationUser?>> ApplicationUsers ()
     {
-        List<ApplicationUser?> userList = await _context.ApplicationUsers
+        List<ApplicationUser?> userList = await _idetityContext.ApplicationUsers
         .ToListAsync<ApplicationUser?>();
 
         return userList;

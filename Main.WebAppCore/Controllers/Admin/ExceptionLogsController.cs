@@ -13,11 +13,11 @@ namespace Main.WebAppCore;
 [Authorize (Roles = "Admin")]
 public class ExceptionLogsController: ControllerBase
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly LogDbContext _dbContext;
     private readonly IExceptionLoggingService _exceptionLoggingService;
 
     public ExceptionLogsController (
-        ApplicationDbContext dbContext,
+        LogDbContext dbContext,
         IExceptionLoggingService exceptionLoggingService)
     {
         _dbContext = dbContext;

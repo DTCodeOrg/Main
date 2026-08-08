@@ -3,7 +3,7 @@
 
 @{
 
-    if ( User.IsInTenantRole(TenantContext.CurrentTenantId.ToString(),"Member") )
+    if ( User.IsInTenantRole(TenantSetter.ResolvedTenantId, "Member") )
     {
         <div class="dropdown">
             <a class="dropdown-toggle text-truncate"

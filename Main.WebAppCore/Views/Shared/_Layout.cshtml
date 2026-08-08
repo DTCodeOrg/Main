@@ -1,19 +1,30 @@
-﻿<!doctype html>
+﻿
+
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport"
           content="width=device-width, initial-scale=1">
-    <meta name="application-name" content="@TenantSetter.TenantName" />
 
+    <meta name="application-name" content="@TenantSetter.CurrentTenant.TenantName" />
+    <style>
+        :root {
+            --brand-primary: "@TenantSetter.CurrentTenant.ThemeModel?.PrimaryColor";
+            --brand-secondary: "@TenantSetter.CurrentTenant.ThemeModel?.SecondaryColor";
+            --brand-bg: "@TenantSetter.CurrentTenant.ThemeModel?.BackgroundColor";
+            --brand-font: "@TenantSetter.CurrentTenant.ThemeModel?.FontStack";
+        }
+   </style>
           
     <title>
-        @ViewBag.Title | @TenantSetter.TenantName 
+        @ViewBag.Title | @TenantSetter.CurrentTenant.TenantName 
     </title>
 
     <link rel="shortcut icon"
           href="~/favicon.ico"
           type="image/x-icon" />
+
     <link href="~/favicon.ico"
           rel="icon"
           type="image/x-icon" />
@@ -21,6 +32,7 @@
     <link rel="stylesheet"
           href="~/css/css/all.css"
           type="text/css">
+    
 
     <script type="importmap"></script>
 
@@ -30,11 +42,13 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-    <!-- 1. Inject Antiforgery Service and embed safe payload into Page Metadata -->
+   
     @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
     @{
         var tokens = Antiforgery.GetAndStoreTokens(Context);
     }
+
     <meta name="xsrf-token" content="@tokens.RequestToken" />
 
     @RenderSection( "Styles",required: false )

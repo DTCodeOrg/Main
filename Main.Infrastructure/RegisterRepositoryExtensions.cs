@@ -34,6 +34,8 @@ public static class RegisterRepositoryExtensions
 
         _ = services.AddScoped<ITokenService,TokenService> ();
 
+        _ = services.AddScoped<IThemeRepository,ThemeRepository> ();
+
 
 
         return services;

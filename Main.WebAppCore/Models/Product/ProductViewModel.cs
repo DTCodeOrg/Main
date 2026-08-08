@@ -1,7 +1,5 @@
 ﻿using DataTransferModel;
 
-using Main.Common;
-
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using System.ComponentModel.DataAnnotations;
@@ -12,13 +10,13 @@ namespace WebAppCore.ViewModel;
 
 public class ProductViewModel: BaseViewModel
 {
-    public ProductViewModel ( StoreType enumShopType )
+    public ProductViewModel ()
     {
         AV_Category = DropDownListItems.GetCategoryList
-                ( enumShopType );
+                ();
 
         AV_SubCategory = DropDownListItems.GetSubCategoryList
-                ( enumShopType );
+                ();
 
     }
 
@@ -28,57 +26,57 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    [Display ( Name = "Product Category " )]
-    [Required ( ErrorMessage = "Category is required!" )]
+    [Display (Name = "Product Category ")]
+    [Required (ErrorMessage = "Category is required!")]
     public int CategoryID
     {
         get; set;
     }
 
 
-    [Display ( Name = "Product Sub Category" )]
-    [Required ( ErrorMessage = "Sub category is required!" )]
+    [Display (Name = "Product Sub Category")]
+    [Required (ErrorMessage = "Sub category is required!")]
     public int SubCategoryID
     {
         get; set;
     }
 
 
-    [Display ( Name = "Product Name" )]
-    [Required ( ErrorMessage = "Product Name is required!" )]
+    [Display (Name = "Product Name")]
+    [Required (ErrorMessage = "Product Name is required!")]
     public string ProductName
     {
         get; set;
     }
 
 
-    [Display ( Name = "Description" )]
-    [StringLength ( 4000 )]
+    [Display (Name = "Description")]
+    [StringLength (4000)]
     public string? Description
     {
         get; set;
     }
 
 
-    [Display ( Name = "Price (Taka)" )]
-    [Required ( ErrorMessage = "Price is required!" )]
-    [DataType ( DataType.Currency )]
+    [Display (Name = "Price (Taka)")]
+    [Required (ErrorMessage = "Price is required!")]
+    [DataType (DataType.Currency)]
     public decimal UnitPrice
     {
         get; set;
     }
 
 
-    [Display ( Name = "Discount" )]
-    [DataType ( DataType.Currency )]
+    [Display (Name = "Discount")]
+    [DataType (DataType.Currency)]
     public decimal Discount
     {
         get; set;
     }
 
 
-    [Display ( Name = "Sales Commission" )]
-    [DataType ( DataType.Currency )]
+    [Display (Name = "Sales Commission")]
+    [DataType (DataType.Currency)]
     public decimal SaleCommission
     {
         get; set;
@@ -97,31 +95,31 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    [Display ( Name = "Search Tags (Comma Seoerated)" )]
+    [Display (Name = "Search Tags (Comma Seoerated)")]
     public string? SearchTag
     {
         get; set;
     }
 
 
-    [Display ( Name = "Product Category" )]
+    [Display (Name = "Product Category")]
     public string? CategoryText
     {
         get; set;
     }
 
 
-    [Display ( Name = "Sub Category" )]
+    [Display (Name = "Sub Category")]
     public string? SubCategoryText
     {
         get; set;
     }
 
-    public void SetDisplaytext ( StoreType EnumShopType )
+    public void SetDisplaytext ()
     {
-        CategoryText = DropDownListItems.GetCategoryText ( EnumShopType,CategoryID );
+        CategoryText = DropDownListItems.GetCategoryText (CategoryID);
 
-        SubCategoryText = DropDownListItems.GetCategoryText ( EnumShopType,SubCategoryID );
+        SubCategoryText = DropDownListItems.GetCategoryText (SubCategoryID);
     }
 
     public IEnumerable<SelectListItem> AV_Category
@@ -134,7 +132,7 @@ public class ProductViewModel: BaseViewModel
         get; set;
     }
 
-    public List<ImageFile> ImageFiles { get; set; } = new List<ImageFile> ( );
+    public List<ImageFile> ImageFiles { get; set; } = new List<ImageFile> ();
 
 }
 

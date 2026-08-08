@@ -4,17 +4,5 @@ namespace Main.Services;
 
 public interface ITenancyService
 {
-    bool TenancyFound
-    {
-        get; set;
-    }
-
-    TenantDisplayDataModel? CurrentTenant
-    {
-        get; set;
-    }
-
-    Task<TenantDisplayDataModel?> FindTenantAsync (string? hostName);
-
     Task<TenantDisplayDataModel> FindHostAsync (string hostName);
 }

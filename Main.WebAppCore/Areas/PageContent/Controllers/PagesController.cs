@@ -38,9 +38,9 @@ public class PagesController: BaseController
     {
         try
         {
-            List<PageDisplayDataModel> listPageDataModel = await _pageService.GetAllPages(_tenantSetter.TenantName);
+            List<PageDisplayDataModel> listPageDataModel = await _pageService.GetAllPages(_tenantSetter.CurrentTenant.TenantName);
 
-            List<PageDisplayViewModel> listPageViewModel = PageMapping.PageDisplayMapping(listPageDataModel, _tenantSetter.TenantName);
+            List<PageDisplayViewModel> listPageViewModel = PageMapping.PageDisplayMapping(listPageDataModel, _tenantSetter.CurrentTenant.TenantName);
 
             return View (listPageViewModel);
 
@@ -64,7 +64,6 @@ public class PagesController: BaseController
 
         pagePanelViewModel.ListSelectPosts =
             PageMapping.MapSelectPostViewModel (listSelectProductsDataModel
-                                                ,_tenantSetter.TenantStore
                                                 ,AppSettings.Current.EnumCurrency);
         pagePanelViewModel.PageID = id;
         pagePanelViewModel.PanelTitle = "";
@@ -206,7 +205,6 @@ public class PagesController: BaseController
 
 
     [HttpDelete]
-    [ValidateAntiForgeryToken]
     [Authorize (Roles = "Admin")]
     public async Task<IActionResult> DeletePanel (int panelId,int pageId)
     {

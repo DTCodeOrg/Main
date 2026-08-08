@@ -104,7 +104,7 @@ public class TokenService: ITokenService
         }
 
         ApplicationUser? user = await _applicationUserRepository.ApplicationUsers(savedRefreshToken.UserId!);
-        TenantUser? tenantUser = await _tenantUserRepository.GetByUserIdAsync(savedRefreshToken.UserId!, tenantId);
+        TenantUserRole? tenantUser = await _tenantUserRepository.GetByUserIdAsync(savedRefreshToken.UserId!, tenantId);
 
         string tenantRole = tenantUser?.TenantRole!;
         string formatedTenantRole = $"{savedRefreshToken.UserId}:{tenantId}:{tenantRole}";

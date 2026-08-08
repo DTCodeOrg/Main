@@ -17,7 +17,7 @@ public static class AuthExtensions
             NormalizedUserName = StringRelated.GetTrimmedRemovedSpaseString(accountDisplayViewModel?.UserName!).ToUpper (),
 
             Password = accountDisplayViewModel?.Password!,
-            ClientName = accountDisplayViewModel?.ClientName!
+            TenantName = accountDisplayViewModel?.ClientName!
         };
 
         return userAccountDataModel;

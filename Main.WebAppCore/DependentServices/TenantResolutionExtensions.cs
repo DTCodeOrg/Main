@@ -12,8 +12,7 @@ public static class TenantResolutionExtensions
         IMemoryCache memoryCache)
     {
 
-        string host = context.Request.Host.Host; // "finearts.test"   
-
+        string host = context.Request.Host.Host;
         string? tenantHost = context.ResolveFromDomain(host);
 
         if ( !string.IsNullOrEmpty (tenantHost) )

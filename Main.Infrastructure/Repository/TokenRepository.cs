@@ -7,16 +7,16 @@ namespace Main.Repository;
 
 public class TokenRepository: ITokenRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IdentityAppDbContext _context;
 
-    public TokenRepository (ApplicationDbContext context)
+    public TokenRepository (IdentityAppDbContext context)
     {
         _context = context;
     }
 
     public async Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId)
     {
-        var savedRefreshToken = await _context.UserRefreshTokens
+        var savedRefreshToken = await _context.ApplicationUserRefreshTokens
         .FirstOrDefaultAsync(t => t.Token == token);
 
         if ( savedRefreshToken == null )
@@ -36,8 +36,8 @@ public class TokenRepository: ITokenRepository
 
     public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId)
     {
-        var activeTokens = await _context.UserRefreshTokens
-        .Where(t => t.UserId == userId && t.MyTenantId == tenantId && !t.IsRevoked)
+        var activeTokens = await _context.ApplicationUserRefreshTokens
+        .Where(t => t.UserId == userId && t.TenantId == tenantId && !t.IsRevoked)
         .ToListAsync();
 
         if ( activeTokens == null || !activeTokens.Any () )
@@ -59,15 +59,15 @@ public class TokenRepository: ITokenRepository
     public async Task<UserRefreshToken?> GetSavedRefreshTokenAsync (string userId,Guid tenantId)
     {
         UserRefreshToken? userRefreshToken =
-        await _context.UserRefreshTokens.FirstOrDefaultAsync<UserRefreshToken>
-        (a => a.UserId == userId && a.MyTenantId == tenantId);
+        await _context.ApplicationUserRefreshTokens.FirstOrDefaultAsync<UserRefreshToken>
+        (a => a.UserId == userId && a.TenantId == tenantId);
 
         return userRefreshToken;
     }
 
     public async Task<bool> UpdateTokenAsync (UserRefreshToken userRefreshToken)
     {
-        _ = _context.UserRefreshTokens.Update (userRefreshToken);
+        _ = _context.ApplicationUserRefreshTokens.Update (userRefreshToken);
         var result = await _context.SaveChangesAsync ();
 
         return result > 0;
@@ -75,8 +75,8 @@ public class TokenRepository: ITokenRepository
 
     public async Task<bool> RevokeAllUserTokensAsync (string userId,Guid tenantId)
     {
-        var allUserTokens = await _context.UserRefreshTokens
-        .Where(t => t.UserId == userId && t.MyTenantId == tenantId && !t.IsRevoked)
+        var allUserTokens = await _context.ApplicationUserRefreshTokens
+        .Where(t => t.UserId == userId && t.TenantId == tenantId && !t.IsRevoked)
         .ToListAsync();
 
         foreach ( var token in allUserTokens )
@@ -100,10 +100,10 @@ public class TokenRepository: ITokenRepository
             ExpiresAt = DateTime.UtcNow.AddDays(7),
             IsRevoked = false,
             ReplacedByToken = null,
-            MyTenantId = tenantId
+            TenantId = tenantId
         };
 
-        _ = _context.UserRefreshTokens.Add (newRefreshToken);
+        _ = _context.ApplicationUserRefreshTokens.Add (newRefreshToken);
         int  result = await _context.SaveChangesAsync ();
 
         return result > 0;
@@ -127,11 +127,11 @@ public class TokenRepository: ITokenRepository
             IsRevoked = false,
             CreatedAt = DateTime.UtcNow,
             ExpiresAt = DateTime.UtcNow.AddDays(7),
-            MyTenantId = savedRefreshToken.MyTenantId ,
+            TenantId = savedRefreshToken.TenantId ,
             ReplacedByToken = null
         };
 
-        _ = _context.UserRefreshTokens.Add (newRefreshTokenEntity);
+        _ = _context.ApplicationUserRefreshTokens.Add (newRefreshTokenEntity);
         var result = await _context.SaveChangesAsync ();
 
         return result > 0;

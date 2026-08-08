@@ -9,12 +9,6 @@ public class Page: BaseEntity
         PageID = id;
         EnumPublicPage = page;
         MyTenantId = seedTenancyId;
-
-        ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
-        CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
-        CreatedDate = DateTime.MinValue;
-        ModifiedDate = DateTime.MinValue;
-
         TenantCountry = Country.Bangladesh;
         IsActive = true;
     }
@@ -35,11 +29,6 @@ public class Page: BaseEntity
         ListPanels = new List<Panel> ();
         EnumPublicPage = enumPublicPage;
         MyTenantId = tenantId;
-        ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
-        CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
-        CreatedDate = DateTime.MinValue;
-        ModifiedDate = DateTime.MinValue;
-
         TenantCountry = Country.Bangladesh;
         IsActive = true;
     }

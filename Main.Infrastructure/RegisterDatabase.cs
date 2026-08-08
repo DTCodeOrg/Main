@@ -14,7 +14,7 @@ public static class RegisterDatabase
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-        _ = services.AddDbContext<ApplicationDbContext> (options =>
+        _ = services.AddDbContext<LogDbContext> (options =>
         {
             _ = options.UseLazyLoadingProxies ();
             _ = options.UseSqlServer (connectionString);
@@ -42,7 +42,7 @@ public static class RegisterDatabase
             options.Lockout.AllowedForNewUsers = lockOut.GetValue<bool> ("AllowedForNewUsers");
             options.User.RequireUniqueEmail = user.GetValue<bool> ("RequireUniqueEmail");
         })
-        .AddEntityFrameworkStores<ApplicationDbContext> ();
+        .AddEntityFrameworkStores<LogDbContext> ();
 
         _ = services.Configure<DataProtectionTokenProviderOptions>
         (options => options.TokenLifespan = TimeSpan.FromHours (2));

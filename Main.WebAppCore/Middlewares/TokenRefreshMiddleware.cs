@@ -14,7 +14,6 @@ public class TokenRefreshMiddleware
 
     public async Task InvokeAsync (HttpContext context,ITokenService tokenService,ITenantSetter tenantSetter)
     {
-        // 1. CRITICAL LOGOUT BYPASS: Do not auto-refresh tokens if the user is actively hitting the logout action!
         if ( context.Request.Path.StartsWithSegments ("/Account/Logout") ||
             context.Request.Path.StartsWithSegments ("/Auth/Logout") )
         {
@@ -22,26 +21,22 @@ public class TokenRefreshMiddleware
             return;
         }
 
-        // 3. The access token was missing or expired. Let's look for a valid refresh token instead
-        var tenantId = tenantSetter.CurrentTenantId;
-        var refreshCookieName = $".App.RefreshToken.{tenantId}";
+        var refreshCookieName = $".App.RefreshToken.{tenantSetter.ResolvedTenantId}";
 
         if ( context.Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
         {
             try
             {
-                // Try to rotate the token securely via the database service
-                var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken, tenantId, 15, 7);
+                var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken.ToString(), tenantSetter.ResolvedTenantId, 15, 7);
 
                 if ( rotationResult != null )
                 {
-                    // Securely append new cookies to the response object payload safely outside the Jwt Event context
-                    await AuthorizationExtensions.AddTenantRefreshHeaderToken (context,tenantId,rotationResult,15,7);
+                    await AuthorizationExtensions.AddTenantRefreshHeaderToken (context,tenantSetter.ResolvedTenantId,rotationResult,15,7);
                 }
             }
             catch
             {
-                // If rotation fails (e.g. token reuse or expired), clear malicious cookies out here cleanly
+
             }
         }
 

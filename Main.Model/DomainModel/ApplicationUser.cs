@@ -12,11 +12,11 @@ public class ApplicationUser: IdentityUser
     {
     }
 
-    public virtual ICollection<TenantUser> TenantUsers
+    public virtual ICollection<TenantUserRole> TenantUsers
     {
         get; set;
 
-    } = new HashSet<TenantUser> ();
+    } = new HashSet<TenantUserRole> ();
 
     public virtual ICollection<UserRefreshToken> UserRefreshTokens
     {

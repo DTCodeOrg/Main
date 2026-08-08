@@ -15,17 +15,17 @@ internal class Program
 
         // --- Core Infrastructure & DI Services ---
         _ = builder.Services.AddHttpContextAccessor ();
-
         _ = builder.Services.AddDistributedMemoryCache ();
 
         _ = builder.Services.AddSession (options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes (30);
-                options.Cookie.HttpOnly = true;
-            });
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes (30);
+            options.Cookie.HttpOnly = true;
+        });
 
-        _ = builder.Services.AddScoped<ITenantContext,TenantHttpContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,ResolvedTenantSetter> ();
+        _ = builder.Services.AddScoped<IStorageService,LocalStorageService> ();
+        _ = builder.Services.AddScoped<ITenantAssetResolver,TenantAssetResolver> ();
 
         // --- Logging & Configuration ---
         _ = builder.AddSerilogConfiguration ();
@@ -35,15 +35,13 @@ internal class Program
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
             .Get<ConfigurationSettings> () ?? new ConfigurationSettings ();
 
-
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
 
         _ = builder.Services.AddAntiforgery ();
-        _ = builder.Services
-            .ConfigureOptions<TenantAntiforgeryOptionMiddleware> ();
+        _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionMiddleware> ();
 
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
@@ -66,9 +64,10 @@ internal class Program
 
         var forwardedHeadersOptions = new ForwardedHeadersOptions
         {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                         ForwardedHeaders.XForwardedHost |
-                         ForwardedHeaders.XForwardedProto
+            ForwardedHeaders =
+            ForwardedHeaders.XForwardedFor |
+            ForwardedHeaders.XForwardedHost |
+            ForwardedHeaders.XForwardedProto
         };
 
         forwardedHeadersOptions.AllowedHosts.Clear ();
@@ -82,14 +81,12 @@ internal class Program
         if ( app.Environment.IsDevelopment () )
         {
             _ = app.UseDeveloperExceptionPage ();
-
             _ = app.UseMigrationsEndPoint ();
         }
         else
         {
             _ = app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();
         }
-
 
         // 1. Error handling must sit at the absolute top to catch failures down the line
         _ = app.UseStatusCodePages ();
@@ -125,8 +122,8 @@ internal class Program
         _ = app.UseAuthorization ();
 
         // 10. Data Storage & Output Optimization Pools
-        _ = app.UseAntiforgery (); // Must run AFTER Authentication so it knows the User ID
-        _ = app.UseOutputCache ();  // Must run AFTER Authorization to prevent caching private data
+        _ = app.UseAntiforgery ();
+        _ = app.UseOutputCache ();
 
         // 11. Endpoint Mappings
         _ = app.MapControllers ();

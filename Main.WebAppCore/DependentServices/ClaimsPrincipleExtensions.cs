@@ -5,7 +5,8 @@ namespace Main.WebAppCore.DependentServices;
 public static class ClaimsPrincipalExtension
 {
     // Custom overload: checks your formatted tenant claim string instantly
-    public static bool IsInTenantRole (this ClaimsPrincipal user,string currentTenantId,string expectedRole)
+    public static bool IsInTenantRole (this ClaimsPrincipal user,
+        Guid currentTenantId,string expectedRole)
     {
         if ( user?.Identity?.IsAuthenticated != true )
         {
@@ -25,7 +26,7 @@ public static class ClaimsPrincipalExtension
         }
 
         // Reconstruct the exact string format your token uses
-        var expectedClaimValue = $"{loggedUserId}:{currentTenantId}:{expectedRole}";
+        var expectedClaimValue = $"{loggedUserId}:{currentTenantId.ToString()}:{expectedRole}";
 
         // Instantly scan the claims array for a match
         return user.HasClaim (c => c.Type == "TenantRole" && c.Value == expectedClaimValue);

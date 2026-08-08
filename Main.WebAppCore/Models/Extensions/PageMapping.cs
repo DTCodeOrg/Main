@@ -7,70 +7,69 @@ namespace WebAppCore.ViewModel.Extensions;
 
 public static class PageMapping
 {
-    public static List<PageDisplayViewModel> PageDisplayMapping ( List<PageDisplayDataModel> listPageDisplayDataModel,string company )
+    public static List<PageDisplayViewModel> PageDisplayMapping (List<PageDisplayDataModel> listPageDisplayDataModel,string company)
     {
-        List<PageDisplayViewModel> listPageDisplayViewModels = new List<PageDisplayViewModel> ();
+        List<PageDisplayViewModel> listPageDisplayViewModels = new();
 
         PageDisplayViewModel pageDisplayViewModel;
 
-        listPageDisplayDataModel.ForEach ( dataModel =>
+        listPageDisplayDataModel.ForEach (dataModel =>
         {
             pageDisplayViewModel = new PageDisplayViewModel
             {
                 PageID = dataModel.PageID,
 
-                PageName = ListEnum.GetPageDescription ( dataModel.EnumPublicPage ),
+                PageName = ListEnum.GetPageDescription (dataModel.EnumPublicPage),
 
                 CompanyName = company
             };
 
-            listPageDisplayViewModels.Add ( pageDisplayViewModel );
-        } );
+            listPageDisplayViewModels.Add (pageDisplayViewModel);
+        });
 
         return listPageDisplayViewModels;
     }
 
-    public static List<PostSelectViewModel> MapSelectPostViewModel ( List<PostDataModel> listSelectProductsDataModels,StoreType categoryFor,Currency currency )
+    public static List<PostSelectViewModel> MapSelectPostViewModel (List<PostDataModel> listSelectProductsDataModels,Currency currency)
     {
         if ( listSelectProductsDataModels == null )
         {
-            return new List<PostSelectViewModel> ( );
+            return new List<PostSelectViewModel> ();
         }
 
         List<PostSelectViewModel> listPostSelectViewModels =
-            new List<PostSelectViewModel> ();
+            new();
 
         PostSelectViewModel postSelectViewModel;
 
-        listSelectProductsDataModels.ForEach ( dataModel =>
+        listSelectProductsDataModels.ForEach (dataModel =>
         {
-            postSelectViewModel = new PostSelectViewModel ( dataModel.EnumPostType,
-                dataModel.RootID,dataModel.ImageFileID,dataModel.ImageOrderID )
+            postSelectViewModel = new PostSelectViewModel (dataModel.EnumPostType,
+                dataModel.RootID,dataModel.ImageFileID,dataModel.ImageOrderID)
             {
                 ImageFileContent = dataModel.ImageFileContent,
-                CategoryName = DropDownListItems.GetCategoryText ( categoryFor,
-                    dataModel.CategoryID ),
+                CategoryName = DropDownListItems.GetCategoryText (dataModel.CategoryID),
 
                 PostTitle = dataModel.PostTitle,
                 Price = dataModel.Price,
-                Currency = ListEnum.GetCurrencyDescription ( currency ),
+                Currency = ListEnum.GetCurrencyDescription (currency),
                 PanelPostID = dataModel.PanelPostID
             };
 
-            listPostSelectViewModels.Add ( postSelectViewModel );
+            listPostSelectViewModels.Add (postSelectViewModel);
 
-        } );
+        });
 
         return listPostSelectViewModels;
     }
 
-    public static PageViewModel MapPageViewModel ( PageDataModel pageDataModel )
+    public static PageViewModel MapPageViewModel (PageDataModel pageDataModel)
     {
-        List<PanelViewModel>  listPanelViewModel = new List<PanelViewModel> ();
+        List<PanelViewModel>  listPanelViewModel = new();
 
         PanelViewModel panelViewModel;
 
-        pageDataModel.ListPanels.ForEach ( pagePanelDataModel =>
+        pageDataModel.ListPanels.ForEach (pagePanelDataModel =>
         {
             panelViewModel = new PanelViewModel
             {
@@ -78,13 +77,13 @@ public static class PageMapping
                 PanelID = pagePanelDataModel.PanelID,
                 PanelTitle = pagePanelDataModel.PanelTitle ?? "",
                 PanelTemplate = pagePanelDataModel.PanelTemplate,
-                PageName = ListEnum.GetPageDescription ( pageDataModel.EnumPublicPage ),
+                PageName = ListEnum.GetPageDescription (pageDataModel.EnumPublicPage),
                 PanelPosition = pagePanelDataModel.PanelPosition
             };
 
             PostViewModel postViewModel;
 
-            pagePanelDataModel.ListPosts.ForEach ( panelPostDataModel =>
+            pagePanelDataModel.ListPosts.ForEach (panelPostDataModel =>
             {
                 postViewModel = new PostViewModel
                 {
@@ -97,15 +96,15 @@ public static class PageMapping
                     PanelID = panelViewModel.PanelID
                 };
 
-                panelViewModel.CreatePanelPost ( postViewModel );
+                panelViewModel.CreatePanelPost (postViewModel);
 
-            } );
+            });
 
-            listPanelViewModel.Add ( panelViewModel );
+            listPanelViewModel.Add (panelViewModel);
 
-        } );
+        });
 
-        PageViewModel pageViewModel = new PageViewModel
+        PageViewModel pageViewModel = new ()
         {
             ListPagePanels =
                 listPanelViewModel.ToList<PanelViewModel> ( ).OrderBy ( a => a.PanelPosition ).ToList ( )

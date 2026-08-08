@@ -8,9 +8,9 @@ namespace Main.Repository;
 
 public class TenantInvitationRepository: ITenantInvitationRepository
 {
-    private readonly ApplicationDbContext _db;
+    private readonly IdentityAppDbContext _db;
 
-    public TenantInvitationRepository (ApplicationDbContext db)
+    public TenantInvitationRepository (IdentityAppDbContext db)
     {
         _db = db;
     }

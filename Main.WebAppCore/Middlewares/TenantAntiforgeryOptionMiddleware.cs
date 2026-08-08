@@ -18,9 +18,9 @@ public class TenantAntiforgeryOptionMiddleware: IConfigureOptions<AntiforgeryOpt
         var context = _httpContextAccessor.HttpContext;
         var tenantSetter = context?.RequestServices.GetRequiredService<ITenantSetter>();
 
-        if ( tenantSetter?.CurrentTenantId != null )
+        if ( tenantSetter?.ResolvedTenantId != null )
         {
-            var tenantId = tenantSetter.CurrentTenantId.ToString(); // e.g., "finearts"
+            var tenantId = tenantSetter.ResolvedTenantId.ToString(); // e.g., "finearts"
 
             options.Cookie.Name = $".AspNetCore.Antiforgery.{tenantId}";
             options.Cookie.Domain = context!.Request.Host.Host; // Locked to "finearts.test"

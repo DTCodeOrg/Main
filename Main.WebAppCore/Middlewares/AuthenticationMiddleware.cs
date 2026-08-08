@@ -40,7 +40,7 @@ public static class AuthenticationMiddleware
                 {
                     var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
 
-                    var accessCookieName = $".App.AccessToken.{tenantSetter.CurrentTenantId.ToString()}";
+                    var accessCookieName = $".App.AccessToken.{tenantSetter.ResolvedTenantId.ToString()}";
 
                     if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) )
                     {

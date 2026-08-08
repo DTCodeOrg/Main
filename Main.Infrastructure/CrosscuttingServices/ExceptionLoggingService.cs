@@ -9,11 +9,11 @@ namespace Main.Infrastructure.CrosscuttingHelperServices;
 
 public class ExceptionLoggingService: IExceptionLoggingService
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly LogDbContext _dbContext;
     private readonly ILogger<ExceptionLoggingService> _logger;
 
     public ExceptionLoggingService (
-        ApplicationDbContext dbContext,
+        LogDbContext dbContext,
         ILogger<ExceptionLoggingService> logger)
     {
         _dbContext = dbContext;

@@ -1,4 +1,6 @@
-﻿namespace Main.Model.DomainModel;
+﻿using Main.Common;
+
+namespace Main.Model.DomainModel;
 
 public class RootBaseEntity
 {
@@ -6,7 +8,49 @@ public class RootBaseEntity
     {
     }
 
-    public string CreatedBy
+    public void CreateParameters (BaseDataModel modelBase)
+    {
+        CreatedBy = modelBase.CreatedBy;
+        CreatedDate = modelBase.CreatedDate;
+
+        ModifiedBy = null;
+        ModifiedDate = null;
+
+        DeletedBy = null;
+        DeletedDate = null;
+
+        IsActive = true;
+
+        AddSessionParameters (modelBase);
+    }
+
+    public void ModifyParameters (BaseDataModel modelBase)
+    {
+        ModifiedBy = modelBase.TenantUserId?.Trim ();
+        ModifiedDate = modelBase.ModifiedDate;
+        DeletedDate = null;
+        DeletedBy = null;
+        IsActive = true;
+
+        AddSessionParameters (modelBase);
+    }
+
+    public void DeleteParameters (BaseDataModel modelBase)
+    {
+        DeletedBy = modelBase.TenantUserId?.Trim ();
+        DeletedDate = modelBase.DeletedDate?.Date;
+        IsActive = false;
+
+        AddSessionParameters (modelBase);
+    }
+
+    public void AddSessionParameters (BaseDataModel modelBase)
+    {
+        TenantCountry = modelBase.TenantCountry;
+        TenantContinent = modelBase.TenantContinent?.Trim ();
+    }
+
+    public string? CreatedBy
     {
         get; set;
     }
@@ -22,7 +66,7 @@ public class RootBaseEntity
         get; set;
     }
 
-    public DateTime CreatedDate
+    public DateTime? CreatedDate
     {
         get; set;
     }
@@ -40,5 +84,16 @@ public class RootBaseEntity
     public bool IsActive
     {
         get; set;
+    }
+
+    public Country? TenantCountry
+    {
+        get; set;
+    }
+
+    public string? TenantContinent
+    {
+        get;
+        set;
     }
 }

@@ -67,7 +67,7 @@ public class ManageAdminPostController: BaseController
             return View (model: AdminPostMapping
                 .MapAdminPostDisplayViewModelList (
                 listAdminPosts,
-                _tenantSetter.TenantName));
+                _tenantSetter.CurrentTenant.TenantName));
         }
         catch
         {

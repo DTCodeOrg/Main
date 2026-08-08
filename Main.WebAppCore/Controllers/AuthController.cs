@@ -180,14 +180,14 @@ public class AuthController: BaseController
         if ( signinresult )
         {
             string tenantRole = await _userAccountService.GetTenantUserRoleClaim
-            (email, _tenantSetter.CurrentTenantId);
+            (email, _tenantSetter.ResolvedTenantId);
 
-            string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{_tenantSetter.CurrentTenantId}:{tenantRole}";
+            string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{_tenantSetter.ResolvedTenantId }:{tenantRole}";
 
 
             _ = AuthorizationExtensions.AddTenantIsolatedHeaderToken
                 (HttpContext,_tokenService,applicationUser?.Id
-                ?? "",_tenantSetter.CurrentTenantId,tenantRole.ToString (),
+                ?? "",_tenantSetter.ResolvedTenantId,tenantRole.ToString (),
                 formatedTenantRole,applicationUser?.UserName ?? "",
                 applicationUser?.Email ?? "",15,7);
 
@@ -212,14 +212,14 @@ public class AuthController: BaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout ()
     {
-        var tenantId = _tenantSetter.CurrentTenantId;
+        Guid tenantId = _tenantSetter.ResolvedTenantId;
         var accessTokenName = $".App.AccessToken.{tenantId.ToString()}";
         string refreshTokenName = $".App.RefreshToken.{tenantId.ToString()}";
 
         // 1. Revoke the token in the database first
         if ( Request.Cookies.TryGetValue (refreshTokenName,out var refreshToken) )
         {
-            _ = await _tokenService.RevokeUserRefreshTokensAsync (refreshToken,_tenantSetter.CurrentTenantId);
+            _ = await _tokenService.RevokeUserRefreshTokensAsync (refreshToken,_tenantSetter.ResolvedTenantId);
         }
 
         // 2. Define CookieOptions that MATCH your creation settings perfectly
