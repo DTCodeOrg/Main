@@ -10,12 +10,6 @@ public class TenantDbContext: DbContext
 {
     private readonly ITenantSetter _tenantSetter;
 
-    public static readonly Guid[] guidArray = new []
-    {
-        new Guid(1, 0, 0, new byte[8]),
-        new Guid(2, 0, 0, new byte[8])
-    };
-
     public TenantDbContext (DbContextOptions<TenantDbContext> options) : base (options)
     {
     }
@@ -94,8 +88,14 @@ public class TenantDbContext: DbContext
             }
         }
 
-        Guid TenantId1 = guidArray[0];
-        Guid TenantId2 = guidArray[1];
+        Guid[] guidTenantArray = new []
+        {
+            new Guid(1, 0, 0, new byte[8]),
+            new Guid(2, 0, 0, new byte[8])
+        };
+
+        Guid TenantId1 = guidTenantArray[0];
+        Guid TenantId2 = guidTenantArray[1];
 
         int pageCounterIDTenant1 = 1 ;
         PageSeed (modelBuilder,TenantId1,pageCounterIDTenant1);
@@ -195,6 +195,12 @@ public class TenantDbContext: DbContext
     private void ApplyBaseDataTenantId ()
     {
         Guid ResolvedTenantId = _tenantSetter.CurrentTenant.ResolvedTenantId;
+
+        Guid[] guidTenantArray = new []
+        {
+            new Guid(1, 0, 0, new byte[8]),
+            new Guid(2, 0, 0, new byte[8])
+        };
 
         BaseDataModel createDataModel = _tenantSetter.CreateMetaData;
         BaseDataModel updateDataModel = _tenantSetter.UpdateMetaData;

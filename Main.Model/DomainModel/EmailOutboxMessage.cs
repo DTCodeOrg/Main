@@ -57,7 +57,7 @@ public class EmailOutboxMessage: RootBaseEntity
     }
 
     [ForeignKey ("TenantId")]
-    public Tenant? Tenant
+    public virtual Tenant? Tenant
     {
         get; set;
     }

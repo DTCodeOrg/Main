@@ -1,10 +1,10 @@
 
-Add-Migration InitialCreate4 -Context Main.Infrastructure.DatabaseContext.ApplicationDbContext
-
-Update-Database -Context Main.Infrastructure.DatabaseContext.ApplicationDbContext
-
-
-
+Add-Migration InitialCreateIdentity1 -Context Main.Infrastructure.DatabaseContext.IdentityAppDbContext
+Add-Migration InitialCreateTenant1 -Context Main.Infrastructure.DatabaseContext.TenantDbContext
+Add-Migration InitialCreateLog1 -Context Main.Infrastructure.DatabaseContext.LogDbContext
+Update-Database -Context Main.Infrastructure.DatabaseContext.IdentityAppDbContext
+Update-Database -Context Main.Infrastructure.DatabaseContext.TenantDbContext
+Update-Database -Context Main.Infrastructure.DatabaseContext.LogDbContext
 
 
 :: 1. Navigate to your master working directory path

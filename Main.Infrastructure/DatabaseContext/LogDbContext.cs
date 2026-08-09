@@ -9,13 +9,6 @@ public class LogDbContext: DbContext
 {
     private readonly ITenantSetter _tenantSetter;
 
-    public static readonly Guid[] guidArray
-    = new []
-    {
-        new Guid(1, 0, 0, new byte[8]),
-        new Guid(2, 0, 0, new byte[8])
-    };
-
     public LogDbContext (DbContextOptions<LogDbContext> options) : base (options)
     {
     }
@@ -34,12 +27,6 @@ public class LogDbContext: DbContext
     protected override void OnModelCreating (ModelBuilder builder)
     {
         base.OnModelCreating (builder);
-
-        FluentApiConfiguration (builder);
-    }
-
-    private void FluentApiConfiguration (ModelBuilder builder)
-    {
     }
 
     private void ApplyBaseMetaData ()

@@ -26,7 +26,7 @@ public class RootBaseEntity
 
     public void ModifyParameters (BaseDataModel modelBase)
     {
-        ModifiedBy = modelBase.TenantUserId?.Trim ();
+        ModifiedBy = modelBase.ModifiedBy;
         ModifiedDate = modelBase.ModifiedDate;
         DeletedDate = null;
         DeletedBy = null;
@@ -37,8 +37,8 @@ public class RootBaseEntity
 
     public void DeleteParameters (BaseDataModel modelBase)
     {
-        DeletedBy = modelBase.TenantUserId?.Trim ();
-        DeletedDate = modelBase.DeletedDate?.Date;
+        DeletedBy = modelBase.DeletedBy;
+        DeletedDate = modelBase.DeletedDate;
         IsActive = false;
 
         AddSessionParameters (modelBase);
