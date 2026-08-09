@@ -9,14 +9,14 @@ namespace Main.Infrastructure.CrosscuttingHelperServices;
 
 public class ExceptionLoggingService: IExceptionLoggingService
 {
-    private readonly LogDbContext _dbContext;
+    private readonly LogDbContext _LogContext;
     private readonly ILogger<ExceptionLoggingService> _logger;
 
     public ExceptionLoggingService (
-        LogDbContext dbContext,
+        LogDbContext logContext,
         ILogger<ExceptionLoggingService> logger)
     {
-        _dbContext = dbContext;
+        _LogContext = logContext;
         _logger = logger;
     }
 
@@ -37,7 +37,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
     {
         try
         {
-            // Log to Serilog (file)
+
             _logger.LogError (
                 exception,
                 "Exception occurred - ErrorCode: {ErrorCode}, StatusCode: {StatusCode}, UserId: {UserId}, Source: {Source}",
@@ -46,8 +46,8 @@ public class ExceptionLoggingService: IExceptionLoggingService
                 userId ?? "Anonymous",
                 source);
 
-            // Try to find existing exception log to increment occurrence count
-            var existingLog = await _dbContext.ExceptionLogs
+
+            var existingLog = await _LogContext.ExceptionLogs
                 .AsNoTracking()
                 .Where(e => e.ExceptionType == exception.GetType().Name
                     && e.ErrorCode == errorCode
@@ -59,12 +59,11 @@ public class ExceptionLoggingService: IExceptionLoggingService
             ExceptionLog exceptionLog;
 
             if ( existingLog != null &&
-                ( DateTime.UtcNow - existingLog.CreatedAt ).TotalHours < 1 ) // Within 1 hour
+                ( DateTime.UtcNow - existingLog.CreatedAt ).TotalHours < 1 )
             {
-                // Update existing log
                 existingLog.OccurrenceCount++;
-                existingLog.CreatedAt = DateTime.UtcNow; // Update timestamp
-                _ = _dbContext.ExceptionLogs.Update (existingLog);
+                existingLog.CreatedAt = DateTime.UtcNow;
+                _ = _LogContext.ExceptionLogs.Update (existingLog);
                 exceptionLog = existingLog;
             }
             else
@@ -93,11 +92,11 @@ public class ExceptionLoggingService: IExceptionLoggingService
                     OccurrenceCount = 1
                 };
 
-                _ = _dbContext.ExceptionLogs.Add (exceptionLog);
+                _ = _LogContext.ExceptionLogs.Add (exceptionLog);
             }
 
             // Save to database
-            _ = await _dbContext.SaveChangesAsync (true);
+            _ = await _LogContext.SaveChangesAsync (true);
         }
         catch ( Exception ex )
         {
@@ -119,7 +118,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
         int pageNumber = 1,
         int pageSize = 20)
     {
-        var query = _dbContext.ExceptionLogs.AsNoTracking();
+        var query = _LogContext.ExceptionLogs.AsNoTracking();
 
         // Apply filters
         if ( statusCode.HasValue )
@@ -162,9 +161,9 @@ public class ExceptionLoggingService: IExceptionLoggingService
     {
         var today = DateTime.UtcNow.Date;
 
-        var total = await _dbContext.ExceptionLogs.CountAsync();
-        var unresolved = await _dbContext.ExceptionLogs.CountAsync(e => e.IsResolved == false);
-        var todayCount = await _dbContext.ExceptionLogs.CountAsync(e => e.CreatedAt.Date == today);
+        var total = await _LogContext.ExceptionLogs.CountAsync();
+        var unresolved = await _LogContext.ExceptionLogs.CountAsync(e => e.IsResolved == false);
+        var todayCount = await _LogContext.ExceptionLogs.CountAsync(e => e.CreatedAt.Date == today);
 
         return (total,unresolved,todayCount);
     }
@@ -172,7 +171,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
 
     public async Task MarkAsResolvedAsync (long exceptionId,string? notes = null)
     {
-        var exceptionLog = await _dbContext.ExceptionLogs.FindAsync(exceptionId);
+        var exceptionLog = await _LogContext.ExceptionLogs.FindAsync(exceptionId);
 
         if ( exceptionLog != null )
         {
@@ -180,9 +179,9 @@ public class ExceptionLoggingService: IExceptionLoggingService
             exceptionLog.ResolutionNotes = notes;
             exceptionLog.ResolvedAt = DateTime.UtcNow;
 
-            _ = _dbContext.ExceptionLogs.Update (exceptionLog);
+            _ = _LogContext.ExceptionLogs.Update (exceptionLog);
 
-            _ = await _dbContext.SaveChangesAsync (true);
+            _ = await _LogContext.SaveChangesAsync (true);
 
             _logger.LogInformation (
                 "Exception resolved - ExceptionId: {ExceptionId}, ErrorCode: {ErrorCode}",
@@ -194,7 +193,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
 
     public async Task<ExceptionLog?> GetExceptionByIdAsync (long id)
     {
-        return await _dbContext.ExceptionLogs
+        return await _LogContext.ExceptionLogs
             .AsNoTracking ()
             .FirstOrDefaultAsync (e => e.Id == id);
     }

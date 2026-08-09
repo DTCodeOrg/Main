@@ -9,7 +9,6 @@ public class AdminPostRepository: IAdminPostRepository
 {
     private readonly TenantDbContext _context;
 
-
     public AdminPostRepository (TenantDbContext context)
     {
         _context = context;

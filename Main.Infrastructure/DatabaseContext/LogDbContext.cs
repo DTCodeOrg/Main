@@ -76,6 +76,7 @@ public class LogDbContext: DbContext
     public override int SaveChanges (bool acceptAllChangesOnSuccess)
     {
         ApplyBaseMetaData ();
+
         return base.SaveChanges (acceptAllChangesOnSuccess);
     }
 

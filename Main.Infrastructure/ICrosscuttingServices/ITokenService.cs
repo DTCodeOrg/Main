@@ -18,4 +18,5 @@ public interface ITokenService
     Task<bool> RevokeUserRefreshTokensAsync (string userId,Guid tenantId);
 
     Task<TokenResult> RotateRefreshTokenAsync (string token,Guid tenantId,int accessExpiryMinutes,int refreshExpiryDays);
+
 }

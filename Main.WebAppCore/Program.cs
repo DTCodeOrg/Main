@@ -120,9 +120,9 @@ internal class Program
         _ = app.UseMiddleware<TenantValidationMiddleware> ();
 
         _ = app.UseAuthorization ();
+        _ = app.UseAntiforgery ();
 
         // 10. Data Storage & Output Optimization Pools
-        _ = app.UseAntiforgery ();
         _ = app.UseOutputCache ();
 
         // 11. Endpoint Mappings
