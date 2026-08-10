@@ -2,7 +2,7 @@
 
 namespace Main.Model.DomainModel;
 
-public class RootBaseEntity
+public class RootBaseEntity: INeedRootBaseEntity
 {
     public RootBaseEntity ()
     {

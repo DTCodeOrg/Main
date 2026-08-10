@@ -33,7 +33,7 @@ public class TokenService: ITokenService
             IssuerSigningKey = new SymmetricSecurityKey (_signingKey),
             ValidateIssuer = false,
             ValidateAudience = false,
-            ValidateLifetime = true,
+            ValidateLifetime = false,
             ClockSkew = TimeSpan.Zero,
             RoleClaimType = "UserRole",
             NameClaimType = "UserName"
@@ -77,8 +77,15 @@ public class TokenService: ITokenService
 
     public async Task<bool> SaveRefreshToken (string userId,Guid tenantId,string token)
     {
-        _ = await _tokenRepository.SaveTokenAsync (userId,tenantId,token);
-        return true;
+        try
+        {
+            bool result = await _tokenRepository.SaveTokenAsync (userId,tenantId,token);
+            return result;
+        }
+        catch ( Exception ex )
+        {
+            throw new Exception ($"Error saving refresh token: {ex.Message}",ex);
+        }
     }
 
     public ClaimsPrincipal? ValidateAndDecryptToken (string token,out SecurityToken? validatedToken)

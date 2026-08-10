@@ -1,11 +1,11 @@
-﻿using Main.Common;
+﻿using Azure.Core;
+using Main.Common;
 using Main.Infrastructure.ICrosscuttingServices;
 
 namespace Main.WebAppCore.Controllers.Extensions;
 
 public static class AuthorizationExtensions
 {
-
     public static async Task AddTenantIsolatedHeaderToken (
         HttpContext context,ITokenService tokenService,
         string userId,Guid resolvedTenantId,
@@ -57,5 +57,11 @@ public static class AuthorizationExtensions
         // Append Refresh Token Cookie
         context.Response.Cookies.Append ($".App.RefreshToken.{tenantIdStr}",rotationResult.RefreshToken,
             new CookieOptions (baseCookieOptions) { Expires = DateTimeOffset.UtcNow.AddDays (days) });
+
+        var tokenService = context.RequestServices.GetRequiredService<ITokenService>();
+
+        // Validate manually 
+        var validateResult = tokenService.ValidateAndDecryptToken (rotationResult.AccessToken,out var validatedToken);
+
     }
 }

@@ -16,7 +16,6 @@ namespace Main.WebAppCore.Controllers;
 public class AuthController: BaseController
 {
     private readonly ITenantSetter _tenantSetter;
-    private readonly ITenantContext _userContext;
     private readonly IAccountService _userAccountService;
     private readonly IEmailSenderService _emailService;
     private readonly ITokenService _tokenService;
@@ -24,7 +23,6 @@ public class AuthController: BaseController
 
     public AuthController (
         IAccountService userAccountService,
-        ITenantContext userContext,
         IEmailSenderService emailService,
         ITenantSetter tenantSetter,
         ITokenService tokenService,
@@ -32,7 +30,6 @@ public class AuthController: BaseController
        )
     {
         _userAccountService = userAccountService;
-        _userContext = userContext;
         _emailService = emailService;
         _tenantSetter = tenantSetter;
         _tokenService = tokenService;
@@ -89,10 +86,10 @@ public class AuthController: BaseController
     public async Task SendVerifyEmail
     (string? email,HttpContext context)
     {
-        string localEmail = email ??  string.Empty ;
+        string localEmail = email ??  string.Empty;
         string emailVerifyToken = await _userAccountService.GetEmailVerifyToken (localEmail);
 
-        string? verifyLink = Url.Action(
+        string? verifyLink = Url.Action (
             action: "VerifyLink",
             controller: "Auth",
             values: new
@@ -125,7 +122,6 @@ public class AuthController: BaseController
             return BadRequest ("Invalid verification request parameters.");
         }
 
-        _ = _userContext.GetCreateBaseDataModel ();
         _ = await _userAccountService.CompleteEmailVerification (email,token);
 
         return RedirectToAction ("VerifyComplete");
@@ -156,7 +152,6 @@ public class AuthController: BaseController
         }
 
         string email = loginDisplayViewModel?.Email ?? string.Empty;
-
 
         if ( !ModelState.IsValid )
         {
@@ -195,7 +190,6 @@ public class AuthController: BaseController
             {
                 area = ""
             });
-
         }
 
         return View ("Login",loginDisplayViewModel);

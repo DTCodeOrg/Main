@@ -3,6 +3,7 @@ using Main.Common;
 using Main.Infrastructure;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
+using Main.Model.DomainModel;
 
 namespace Main.Services;
 
@@ -53,7 +54,7 @@ public class TenantInvitationService: ITenantInvitationService
         var invitation = new TenantInvitation
         {
             InviteId = Guid.NewGuid(),
-            MyTenantId = tenantId,
+            TenantId = tenantId,
             Email = email,
             InvitedByUserId = invitedByUserId,
             TenantRole = tenantRole,
@@ -108,7 +109,7 @@ public class TenantInvitationService: ITenantInvitationService
             _ = await _userRepository.AddToRoleAsync (user.Email,"User");
         }
 
-        var alreadyMember = await _tenantUserRepository.ExistsAsync(invitation.MyTenantId, user.Id);
+        var alreadyMember = await _tenantUserRepository.ExistsAsync(invitation.TenantId, user.Id);
 
 
         if ( !alreadyMember )

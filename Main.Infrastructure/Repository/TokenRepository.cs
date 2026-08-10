@@ -16,22 +16,24 @@ public class TokenRepository: ITokenRepository
 
     public async Task<UserRefreshToken> GetRefreshTokens (string token,Guid tenantId)
     {
-        var savedRefreshToken = await _context.ApplicationUserRefreshTokens
-        .FirstOrDefaultAsync(t => t.Token == token);
+        // Inside your TokenService
+        var existingToken = await _context.ApplicationUserRefreshTokens
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Token == token && t.TenantId == tenantId);
 
-        if ( savedRefreshToken == null )
+        if ( existingToken == null )
         {
             throw new UnauthorizedAccessException ("Invalid token.");
         }
 
-        if ( savedRefreshToken.IsRevoked )
+        if ( existingToken.IsRevoked )
         {
-            _ = await LogoutRevokeUserRefreshTokensAsync (savedRefreshToken.UserId,tenantId);
+            _ = await LogoutRevokeUserRefreshTokensAsync (existingToken.UserId,tenantId);
 
             throw new UnauthorizedAccessException ("Compromised token detected. All sessions revoked.");
         }
 
-        return savedRefreshToken;
+        return existingToken;
     }
 
     public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId)

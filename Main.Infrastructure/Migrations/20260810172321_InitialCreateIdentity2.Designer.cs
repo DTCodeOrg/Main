@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Main.Infrastructure.Migrations
 {
     [DbContext(typeof(IdentityAppDbContext))]
-    [Migration("20260809221812_InitialCreateIdentity1")]
-    partial class InitialCreateIdentity1
+    [Migration("20260810172321_InitialCreateIdentity2")]
+    partial class InitialCreateIdentity2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,13 +101,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000002-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5ae127d1-14dd-4006-8ecd-2b980cf15eb0",
+                            ConcurrencyStamp = "0ec18b45-7b90-4f9b-aac6-f1e1042b4537",
                             Email = "admin@system.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEPFQL0/jAYKUD6PeOADU9cW7Jbz59F/iJKVe85hsB69cZW1foxQNUeYegAdNex+WQg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDbPrr2eRfg9gMH9odkhcVuETo4lj5XZVVqWd4VRucCKZtmgYbzt5qTRVBincv5EwA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fa3b007a-9169-4897-b56e-4023598072b6",
+                            SecurityStamp = "597bc031-aa39-4096-822a-8c902fdc1518",
                             TwoFactorEnabled = false,
                             UserName = "admin@system.com"
                         },
@@ -115,13 +115,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000003-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0aadd326-3c27-4fa7-8d67-60afdf8e1259",
+                            ConcurrencyStamp = "8d168e3c-bf1a-4898-81d1-3eb6801a8626",
                             Email = "tenant1.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEFNi8s15shiE7nCHGp00XovGjBNxjTY6xZUtr06cFxEj8XG3LGwAqlNQqE4gJFHTgw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEP8kMzanf5gOJsucUwd8hDe9D3bzFgANEuXrBfMe/9e6zfqsVNLhDvPeEM0BfszNHw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "01b03237-419e-4185-966d-075a12438545",
+                            SecurityStamp = "55b64e26-1eee-4dcc-aa82-f30494a8df82",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.admin@test.com"
                         },
@@ -129,13 +129,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000004-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f8f05cb5-a8f9-45aa-aaa5-eb45f186720c",
+                            ConcurrencyStamp = "e76963be-72ab-469e-ba8d-adec44a0a1c7",
                             Email = "tenant1.content@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEHjZp04ND/vRypbUyQF+Lj0K0qS4ZZDV0ko8hWZDZuhQDv3UqMtrmbVEP8JYJrmXHQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH/gevJFodV9G7fgc+nPaAnSqbt9IUqQrYBHjH/PWETJZ8NY7SSOolqfLVX1rP0KZA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "868ce34b-426f-467a-aa93-026ea97f8812",
+                            SecurityStamp = "baee7fe9-f316-47ad-b7d1-3b4532d5ae53",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.content@test.com"
                         },
@@ -143,13 +143,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000005-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7731b98a-af9c-41eb-bbd7-667bdbf2ac63",
+                            ConcurrencyStamp = "6e155c27-5a80-4da9-8875-5fccdac6da9e",
                             Email = "tenant1.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEEDZjltJFCEZ/lArqXwUSdiNdJRJIuNRtHM1CQFUvCS1f9ngPAH0JHcoWEUE83UMjA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHDHBpsq1jmW6jC8nR/fDBSuJr5OSJqiQvtzsoozNyoLV4bM/yWGc8kO0TzWnpIG7Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a07785e7-07ef-46c7-999c-bce72089a9b5",
+                            SecurityStamp = "b65cf960-5385-4d69-8ca0-1d169f527cd8",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.member@test.com"
                         },
@@ -157,13 +157,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000006-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "10e6a896-6c17-4175-929a-0e7198d7da1f",
+                            ConcurrencyStamp = "0a31e465-d26c-47b5-88ed-3fc4f25e0250",
                             Email = "tenant2.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEEAs90xJDEebgEoQszvjy+VQJRb1zvmSNZggrobfY3i2iA6lHqy256S7UJoArLv/yw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDne6xQT71CK8UU4M6jD3IIs3Y3dBHBYO2pRH6l+MOVrRuM3CmuMtY+XFGRy6i0J1w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "50aa7e48-dd5e-4caa-b853-2654befa7fd1",
+                            SecurityStamp = "daf973b9-59b0-4d54-bab7-0ca41c49f48c",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.admin@test.com"
                         },
@@ -171,13 +171,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000007-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "06c0402a-7002-4a9b-a56c-73f312e99db9",
+                            ConcurrencyStamp = "452079e1-b435-4339-85c8-b02258091978",
                             Email = "tenant2.content@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAENROfxEPfRZ/wYrEBLz3fknyR1xtsvEOTOo1KXjZJNrDGw6Xh3tgFMLey+wyik2i3g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH4U44aJKxPaUdplhxl3hKvFGQAMiVRQsMlX3aHsVCVkT/fOLO1EZS5VpxnQajRxfQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "254c279a-e332-4d90-a386-8f9383d4a5f8",
+                            SecurityStamp = "53e671ee-c255-4c13-a464-f9a95a081578",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.content@test.com"
                         },
@@ -185,13 +185,13 @@ namespace Main.Infrastructure.Migrations
                         {
                             Id = "00000008-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "aff083ee-b911-41c4-a4e9-4ac539384313",
+                            ConcurrencyStamp = "d445c9a3-6b8d-4e7d-9153-fd2b5aaead17",
                             Email = "tenant2.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEIs1De2xpGICnlKHwiv+LUEiODQwrh1IrC9hRyKi+uV5njcI+mFEZlWmGac2jHC06Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB3paxZTN4QQ6ORJR50ndI9FUf2YLH7MTfSv+Xmad611scflWj/cYoYD/aaUt4mo8Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cf22b57f-fa4e-4ccd-8c1a-bd7fa944f75f",
+                            SecurityStamp = "606b2c1a-5c7b-4fc9-96fa-d56c3e850c9f",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.member@test.com"
                         });
@@ -343,77 +343,6 @@ namespace Main.Infrastructure.Migrations
                             TenantName = "Tenant 2",
                             TenantThemeId = new Guid("0000000f-0000-0000-0000-000000000000")
                         });
-                });
-
-            modelBuilder.Entity("Domain.Model.TenantInvitation", b =>
-                {
-                    b.Property<Guid>("InviteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("AcceptedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ExpiresOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InvitedByUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("MyTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
-
-                    b.Property<string>("TenantContinent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TenantCountry")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TenantRole")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("InviteId");
-
-                    b.HasIndex("MyTenantId");
-
-                    b.ToTable("TenantInvitations");
                 });
 
             modelBuilder.Entity("Domain.Model.TenantSmtpServer", b =>
@@ -705,6 +634,77 @@ namespace Main.Infrastructure.Migrations
                     b.ToTable("ApplicationUserRefreshTokens");
                 });
 
+            modelBuilder.Entity("Main.Model.DomainModel.TenantInvitation", b =>
+                {
+                    b.Property<Guid>("InviteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("AcceptedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiresOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InvitedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TenantRole")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("InviteId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("TenantInvitations");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -928,6 +928,17 @@ namespace Main.Infrastructure.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Main.Model.DomainModel.TenantInvitation", b =>
+                {
+                    b.HasOne("Domain.Model.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -14,8 +14,22 @@ public class TokenRefreshMiddleware
 
     public async Task InvokeAsync (HttpContext context,ITokenService tokenService,ITenantSetter tenantSetter)
     {
-        if ( context.Request.Path.StartsWithSegments ("/Account/Logout") ||
-            context.Request.Path.StartsWithSegments ("/Auth/Logout") )
+        var path = context.Request.Path;
+
+        // 1. CRITICAL: Skip running rotation logic on auth management endpoints completely!
+        if ( path.StartsWithSegments ("/Account/Logout") ||
+            path.StartsWithSegments ("/Auth/Logout") ||
+            path.StartsWithSegments ("/Account/Login") ||
+            path.StartsWithSegments ("/Auth/Login") )
+        {
+            await _next (context);
+            return;
+        }
+
+        var accessCookieName = $".App.AccessToken.{tenantSetter.ResolvedTenantId}";
+
+        // 2. If already authenticated by the JwtBearer middleware, skip rotation
+        if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) && !string.IsNullOrEmpty (accessToken) )
         {
             await _next (context);
             return;

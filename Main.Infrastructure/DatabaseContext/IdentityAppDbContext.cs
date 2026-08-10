@@ -1,5 +1,6 @@
 ﻿using Domain.Model;
 using Main.Common;
+using Main.Model.DomainModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -100,7 +101,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
             .IsUnique ();
 
         _ = builder.Entity<TenantInvitation> ()
-         .HasIndex (ut => ut.MyTenantId);
+         .HasIndex (ut => ut.TenantId);
 
         _ = builder.Entity<UserRefreshToken> ()
             .HasIndex (e => new { e.TenantId,e.Token });
@@ -318,7 +319,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId1)
         {
             TenantName = "Tenant 1",
-            Host = "tenant1.com",
+            Host = "tenant1",
             TenantThemeId = themeId1
         });
     }
@@ -328,7 +329,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId2)
         {
             TenantName = "Tenant 2",
-            Host = "tenant2.com",
+            Host = "tenant2",
             TenantThemeId = themeId2
         });
     }
@@ -394,14 +395,14 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         BaseDataModel deleteDataModel = _tenantSetter.DeleteMetaData;
 
         var entries = ChangeTracker.Entries()
-        .Where(e => e.Entity is not IMustHaveTenant &&
-              (e.State == EntityState.Added
+        .Where(e =>
+              e.State == EntityState.Added
                || e.State == EntityState.Modified
-               || e.State == EntityState.Detached)).ToArray();
+               || e.State == EntityState.Detached).ToArray();
 
         foreach ( var entry in entries )
         {
-            var tenantEntity = (IMustHaveTenant) entry.Entity;
+            var tenantEntity = (INeedRootBaseEntity) entry.Entity;
 
             if ( entry.State == EntityState.Added )
             {
@@ -409,7 +410,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
             }
             else if ( entry.State == EntityState.Deleted )
             {
-                tenantEntity.ModifyParameters (deleteDataModel);
+                tenantEntity.DeleteParameters (deleteDataModel);
             }
             else if ( entry.State == EntityState.Modified )
             {

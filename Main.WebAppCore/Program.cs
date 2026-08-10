@@ -13,6 +13,9 @@ internal class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
+            .Get<ConfigurationSettings> () ?? new ConfigurationSettings ();
+
         // --- Core Infrastructure & DI Services ---
         _ = builder.Services.AddHttpContextAccessor ();
         _ = builder.Services.AddDistributedMemoryCache ();
@@ -32,8 +35,7 @@ internal class Program
         _ = builder.Host.UseSerilog ();
         _ = builder.Services.AddExceptionLoggingMiddleware (builder.Configuration);
 
-        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
-            .Get<ConfigurationSettings> () ?? new ConfigurationSettings ();
+
 
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddRepository (builder.Configuration);
@@ -95,15 +97,15 @@ internal class Program
         // 2. Global CORS policy (Must be evaluated BEFORE static files and routing)
         _ = app.UseCors ();
 
+        // 5. Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
+        _ = app.UseMiddleware<TenantResolverMiddleware> ();
+
         // 3. Static Assets Optimization Compiler & Handlers (Bypass tenancy/session overhead)
         _ = app.UseWebOptimizer ();
         _ = app.UseStaticFiles ();
 
         // 4. Multi-Tenant Boundary Identification Routing
         _ = app.UseRouting ();
-
-        // 5. Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
-        _ = app.UseMiddleware<TenantResolverMiddleware> ();
 
         // 6. Session Management Configuration (Tenant-Scoped Setup)
         _ = app.UseMiddleware<TenantSessionMiddleware> ();

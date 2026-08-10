@@ -21,6 +21,8 @@ public static class RegisterDatabase
         {
             _ = options.UseLazyLoadingProxies ();
             _ = options.UseSqlServer (logConnectionString);
+            _ = options.EnableSensitiveDataLogging ();
+            _ = options.EnableDetailedErrors ();
         });
 
         _ = services.AddDbContext<TenantDbContext> (options =>
