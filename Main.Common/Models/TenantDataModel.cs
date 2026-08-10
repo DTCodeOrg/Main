@@ -4,7 +4,7 @@ public class TenantDataModel
 {
     public TenantDataModel ()
     {
-        ThemeModel = new TenantThemeModel ();
+        TenantThemeModel = new TenantThemeModel ();
     }
 
     public TenantDataModel
@@ -14,7 +14,7 @@ public class TenantDataModel
         TenantName = tenantName;
         Host = host;
         SecretKey = key;
-        ThemeModel = new TenantThemeModel ();
+        TenantThemeModel = new TenantThemeModel ();
     }
 
     public Guid ResolvedTenantId
@@ -37,7 +37,7 @@ public class TenantDataModel
         get; set;
     }
 
-    public TenantThemeModel ThemeModel
+    public TenantThemeModel TenantThemeModel
     {
         get; set;
     }

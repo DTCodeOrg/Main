@@ -8,6 +8,6 @@ public interface ITenantRepository
 
     Task<Tenant?> CreateTenantAsync (Tenant tenant);
 
-    Task<Tenant> FindHostAsync (string hostName);
+    Task<Tenant?> FindHostAsync (string hostName);
 
 }

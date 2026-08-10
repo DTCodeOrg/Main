@@ -1,5 +1,4 @@
-﻿using DataTransferModel;
-using Domain.Model;
+﻿using Domain.Model;
 using Main.Common;
 using Main.IRepository;
 
@@ -14,18 +13,25 @@ public class TenancyService: ITenancyService
         _tenantRepository = tenantRepository;
     }
 
-    public async Task<TenantDisplayDataModel> FindHostAsync (string hostName)
+    public async Task<TenantDataModel> FindHostAsync (string hostName)
     {
-        var tenant = await _tenantRepository.FindHostAsync (hostName);
+        Tenant? tenant = await _tenantRepository.FindHostAsync (hostName);
 
-        TenantDisplayDataModel tenantDataModel
-        =  new (tenant.TenantId, tenant.TenantName, tenant.Host, tenant.SecretKey );
+        if ( tenant == null )
+        {
+            throw new InvalidOperationException ("Tenant not found");
+        }
+
+        TenantDataModel tenantDataModel =
+        new (tenant.TenantId, tenant.TenantName, tenant.Host, tenant.SecretKey );
+
+        tenantDataModel.ResolvedTenantId = tenant.TenantId;
 
         if ( tenant.TenantTheme != null )
         {
             TenantTheme tenantTheme = tenant.TenantTheme;
 
-            tenantDataModel.ThemeModel = new TenantThemeModel ()
+            tenantDataModel.TenantThemeModel = new TenantThemeModel ()
             {
                 PrimaryColor = tenantTheme.PrimaryColor,
                 SecondaryColor = tenantTheme.SecondaryColor,
@@ -36,20 +42,12 @@ public class TenancyService: ITenancyService
         }
         else
         {
-            tenantDataModel.ThemeModel = new TenantThemeModel ()
+            tenantDataModel.TenantThemeModel = new TenantThemeModel ()
             {
-                // Deep, mysterious evergreen/pine color for headers and primary elements
                 PrimaryColor = "#1B3B2B",
-
-                // Soft, glowing moss or misty sage green for buttons and accents
                 SecondaryColor = "#728C69",
-
-                // Very soft, off-white tinted with a hint of morning mist/gray to prevent harsh contrast
                 BackgroundColor = "#F4F6F4",
-
-                // Clean, natural-feeling sans-serif font stack with a classic fallback
                 FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-
                 LogoFileName = ""
             };
         }

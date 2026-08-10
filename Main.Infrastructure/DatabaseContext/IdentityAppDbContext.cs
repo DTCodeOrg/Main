@@ -318,7 +318,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId1)
         {
             TenantName = "Tenant 1",
-            Host = "tenant1",
+            Host = "tenant1.com",
             TenantThemeId = themeId1
         });
     }
@@ -328,7 +328,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId2)
         {
             TenantName = "Tenant 2",
-            Host = "tenant2",
+            Host = "tenant2.com",
             TenantThemeId = themeId2
         });
     }

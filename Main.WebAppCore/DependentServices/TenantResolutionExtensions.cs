@@ -1,4 +1,4 @@
-﻿using DataTransferModel;
+﻿using Main.Common;
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -6,7 +6,7 @@ namespace Main.WebAppCore.DependentServices;
 
 public static class TenantResolutionExtensions
 {
-    public static async Task<TenantDisplayDataModel?> TryResolveTenantAsync (
+    public static async Task<TenantDataModel?> TryResolveTenantAsync (
         this HttpContext context,
         ITenancyService tenancyService,
         IMemoryCache memoryCache)
@@ -17,19 +17,19 @@ public static class TenantResolutionExtensions
 
         if ( !string.IsNullOrEmpty (tenantHost) )
         {
-            TenantDisplayDataModel? tenantDisplayDataModel =
+            TenantDataModel? tenantDataModel =
             await memoryCache.GetOrCreateAsync($"tenant_{tenantHost}", async entry =>
             {
-                _ =  entry.SetSize(1) ;
-                _ =  entry.SetSlidingExpiration(TimeSpan.FromHours(1)) ;
-                _ =  entry.SetAbsoluteExpiration(TimeSpan.FromHours(1)) ;
+                _ =  entry.SetSize(1);
+                _ =  entry.SetSlidingExpiration(TimeSpan.FromHours(1));
+                _ =  entry.SetAbsoluteExpiration(TimeSpan.FromHours(1));
 
                 return await tenancyService.FindHostAsync (tenantHost);
             });
 
-            if ( tenantDisplayDataModel != null )
+            if ( tenantDataModel != null )
             {
-                return tenantDisplayDataModel;
+                return tenantDataModel;
             }
         }
 

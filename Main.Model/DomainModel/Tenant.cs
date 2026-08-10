@@ -20,6 +20,7 @@ public class Tenant: RootBaseEntity
 
     public Tenant ()
     {
+
     }
 
     public Tenant (HostType hostType)

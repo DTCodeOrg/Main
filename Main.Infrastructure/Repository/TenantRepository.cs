@@ -14,12 +14,12 @@ public class TenantRepository: ITenantRepository
         _tenantContext = context;
     }
 
-    public async Task<Tenant> FindHostAsync (string hostName)
+    public async Task<Tenant?> FindHostAsync (string hostName)
     {
-        var tenant = await _tenantContext.Tenants
+        Tenant? tenant = await _tenantContext.Tenants
             .FirstOrDefaultAsync<Tenant> ( a => a.Host.ToLower() == hostName.ToString ());
 
-        return tenant!;
+        return tenant;
     }
 
     public async Task<Tenant?> GetTenantByIdAsync (Guid tenantId)
