@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Main.Model.DomainModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Model;
 
-public class TenantTheme
+public class TenantTheme: RootBaseEntity
 {
     public TenantTheme ()
     {
