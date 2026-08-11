@@ -1,5 +1,4 @@
 ﻿using Main.Common;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebAppCore.Helper;
@@ -11,7 +10,7 @@ public class DropDownListItems
     }
 
 
-    //   [ResponseCache(CacheProfileName = "Cache1dayServerNBrowser")]
+
     public static IEnumerable<SelectListItem> GetPostTypeList ()
     {
         var listCountries = ListEnum.GetPostTypeList().OrderBy(a => a.Text).ToList();
@@ -29,7 +28,7 @@ public class DropDownListItems
     }
 
 
-    [ResponseCache (CacheProfileName = "Cache1dayServerNBrowser")]
+
     public static IEnumerable<SelectListItem> GetAdminPostTypeList ()
     {
         var listCountries = ListEnum.GetAdminPostTypeList().ToList();
@@ -51,7 +50,7 @@ public class DropDownListItems
     }
 
 
-    [ResponseCache (CacheProfileName = "Cache1dayServerNBrowser")]
+
     public static IEnumerable<SelectListItem> GetPageList ()
     {
         var listCountries = ListEnum.GetPublicPages().OrderBy(a => a.Text).ToList();
@@ -69,7 +68,7 @@ public class DropDownListItems
     }
 
 
-    [ResponseCache (CacheProfileName = "Cache1dayServerNBrowser")]
+
     public static IEnumerable<SelectListItem> GetPanelTempletList ()
     {
         var listColumns = ListEnum.GetPanelTempletList().OrderBy(a => a.Text).ToList();
@@ -97,7 +96,7 @@ public class DropDownListItems
         return objCurrencyListItems.AsEnumerable ();
     }
 
-    [ResponseCache (CacheProfileName = "Cache1dayServerNBrowser")]
+
     public static IEnumerable<SelectListItem> GetCurrencyList ()
     {
         var listCurrency = ListEnum.GetCurrencyList().OrderBy(a => a.Text).ToList();
@@ -117,7 +116,7 @@ public class DropDownListItems
         return objCurrencyListItems.AsEnumerable ();
     }
 
-    [ResponseCache (CacheProfileName = "Cache1dayServerNBrowser")]
+
     public static IEnumerable<SelectListItem> GetCountryList ()
     {
         var listCountries = ListEnum.GetCountryList().OrderBy(a => a.Text).ToList();
@@ -138,23 +137,23 @@ public class DropDownListItems
         return objCountryListItems.AsEnumerable ();
     }
 
-    // [ResponseCache(CacheProfileName = "Cache30Mins")]
-    public static IEnumerable<SelectListItem> GetSubCategoryList (StoreType store)
+
+    public static IEnumerable<SelectListItem> GetSubCategoryList ()
     {
         _ = new List<TenantVariableModel> ();
 
-        return GetSelectList (TenantStoreHelper.GetSubCategoryList (store),"");
+        return GetSelectList (TenantStoreHelper.GetSubCategoryList (),"");
     }
 
-    //[ResponseCache ( CacheProfileName = "Cache30Mins" )]
+
     public static IEnumerable<SelectListItem> GetSubCategories
-    (StoreType store,int categoryId)
+    (int categoryId)
     {
         return GetSelectList
-        (TenantStoreHelper.GetSubCategoryListByID (categoryId,store),"");
+        (TenantStoreHelper.GetSubCategoryListByID (categoryId),"");
     }
 
-    // [ResponseCache ( CacheProfileName = "Cache1dayServerNBrowser" )]
+
     public static IEnumerable<SelectListItem> GetShowHideList ()
     {
         var listShowHideList = ListEnum.GetShowHideList();
@@ -223,19 +222,19 @@ public class DropDownListItems
         return objList.AsEnumerable ();
     }
 
-    //[ResponseCache ( CacheProfileName = "Cache1dayServerNBrowser" )]
-    public static IEnumerable<SelectListItem> GetCategoryList (StoreType store)
+
+    public static IEnumerable<SelectListItem> GetCategoryList ()
     {
-        return GetSelectList (TenantStoreHelper.GetCategoryList (store));
+        return GetSelectList (TenantStoreHelper.GetCategoryList ());
     }
 
-    public static string GetCategoryText (StoreType store,int categoryId)
+    public static string GetCategoryText (int categoryId)
     {
-        return TenantStoreHelper.GetTextForCategoryId (categoryId,store);
+        return TenantStoreHelper.GetTextForCategoryId (categoryId);
     }
 
-    public static string GetSubCategoryText (StoreType store,int subCategoryId)
+    public static string GetSubCategoryText (int subCategoryId)
     {
-        return TenantStoreHelper.GetTextForSubCategoryId (subCategoryId,store);
+        return TenantStoreHelper.GetTextForSubCategoryId (subCategoryId);
     }
 }

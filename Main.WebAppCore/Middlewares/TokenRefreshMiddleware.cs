@@ -14,34 +14,59 @@ public class TokenRefreshMiddleware
 
     public async Task InvokeAsync (HttpContext context,ITokenService tokenService,ITenantSetter tenantSetter)
     {
-        // 1. CRITICAL LOGOUT BYPASS: Do not auto-refresh tokens if the user is actively hitting the logout action!
-        if ( context.Request.Path.StartsWithSegments ("/Account/Logout") ||
-            context.Request.Path.StartsWithSegments ("/Auth/Logout") )
+        var path = context.Request.Path;
+
+        // 1. Skip running rotation logic on auth management endpoints completely!
+        if ( path.StartsWithSegments ("/Account/Logout") ||
+            path.StartsWithSegments ("/Auth/Logout") ||
+            path.StartsWithSegments ("/Account/Login") ||
+            path.StartsWithSegments ("/Auth/Login") )
         {
             await _next (context);
             return;
         }
 
-        // 3. The access token was missing or expired. Let's look for a valid refresh token instead
-        var tenantId = tenantSetter.CurrentTenantId;
-        var refreshCookieName = $".App.RefreshToken.{tenantId}";
+        var accessCookieName = $".App.AccessToken.{tenantSetter.ResolvedTenantId}";
+        bool hasAccessToken = context.Request.Cookies.TryGetValue(accessCookieName, out var accessToken);
+
+        // 2. FIX: Check if the access token exists AND is cryptographically valid (not expired)
+        if ( hasAccessToken && !string.IsNullOrEmpty (accessToken) )
+        {
+            // Use your service to check the cryptographic signature and expiration status
+            var principal = tokenService.ValidateAndDecryptToken(accessToken, out var validatedToken);
+
+            // If the token is valid, safe, and active, continue the request pipeline normally
+            if ( principal != null )
+            {
+                await _next (context);
+                return;
+            }
+
+            // If principal is null, it means ValidateAndDecryptToken threw an exception (e.g., token expired).
+            // The code will naturally bypass this IF statement and fall through to rotate the token!
+        }
+
+        var refreshCookieName = $".App.RefreshToken.{tenantSetter.ResolvedTenantId}";
 
         if ( context.Request.Cookies.TryGetValue (refreshCookieName,out var refreshToken) && !string.IsNullOrEmpty (refreshToken) )
         {
             try
             {
-                // Try to rotate the token securely via the database service
-                var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken, tenantId, 15, 7);
+                var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken.ToString(), tenantSetter.ResolvedTenantId, 15, 7);
 
                 if ( rotationResult != null )
                 {
-                    // Securely append new cookies to the response object payload safely outside the Jwt Event context
-                    await AuthorizationExtensions.AddTenantRefreshHeaderToken (context,tenantId,rotationResult,15,7);
+                    // This appends the fresh new access/refresh tokens to the browser cookie storage response container
+                    await AuthorizationExtensions.AddTenantRefreshHeaderToken (context,tenantSetter.ResolvedTenantId,rotationResult,15,7);
+
+                    // CRUCIAL FOR CURRENT REQUEST: Feed the brand-new access token back into the HttpContext 
+                    // so the subsequent .AddJwtBearer middleware reads the NEW token instead of the old expired one!
+                    context.Items["JwtBearer:Token"] = rotationResult.AccessToken;
                 }
             }
             catch
             {
-                // If rotation fails (e.g. token reuse or expired), clear malicious cookies out here cleanly
+                // Handle logging or clean up invalid refresh tokens here if needed
             }
         }
 

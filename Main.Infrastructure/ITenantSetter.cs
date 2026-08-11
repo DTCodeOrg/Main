@@ -4,18 +4,40 @@ namespace Main.Infrastructure;
 
 public interface ITenantSetter
 {
-    Guid CurrentTenantId
+    TenantDataModel CurrentTenant
     {
         get; set;
     }
 
-    StoreType TenantStore
+    public Guid ResolvedTenantId
     {
         get; set;
     }
 
-    string TenantName
+    Guid HttpContextTenantId
     {
-        get; set;
+        get;
+    }
+
+    string HttpContextUserId
+    {
+        get;
+    }
+
+    DateTime GetLocalNow ();
+
+    BaseDataModel CreateMetaData
+    {
+        get;
+    }
+
+    BaseDataModel UpdateMetaData
+    {
+        get;
+    }
+
+    BaseDataModel DeleteMetaData
+    {
+        get;
     }
 }

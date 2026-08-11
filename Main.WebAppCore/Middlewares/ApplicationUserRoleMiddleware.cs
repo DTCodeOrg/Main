@@ -22,7 +22,7 @@ public class ApplicationUserRoleMiddleware: AuthorizationHandler<TenantRoleRequi
         var tokenUserRole = context.User.FindFirst("UserRole")?.Value;
 
         // 3. READ FROM REQUEST CONTEXT: Get the current active tenant requested by the URL
-        var currentTenantId = _tenantSetter.CurrentTenantId.ToString();
+        var currentTenantId = _tenantSetter.ResolvedTenantId.ToString();
 
         // 4. CROSS-CHECK EVERYTHING: Secure validation logic
         if ( !string.IsNullOrEmpty (tokenTenantId) &&

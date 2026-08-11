@@ -1,16 +1,16 @@
-using Domain.Model;
 using Main.Common;
 using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
+using Main.Model.DomainModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Main.Repository;
 
 public class TenantInvitationRepository: ITenantInvitationRepository
 {
-    private readonly ApplicationDbContext _db;
+    private readonly IdentityAppDbContext _db;
 
-    public TenantInvitationRepository (ApplicationDbContext db)
+    public TenantInvitationRepository (IdentityAppDbContext db)
     {
         _db = db;
     }
@@ -19,7 +19,7 @@ public class TenantInvitationRepository: ITenantInvitationRepository
         => await _db.TenantInvitations.FirstOrDefaultAsync (x => x.Token == token,ct);
 
     public async Task<TenantInvitation?> GetByEmailAndTenantAsync (Guid tenantId,string email,CancellationToken ct = default)
-        => await _db.TenantInvitations.FirstOrDefaultAsync (x => x.MyTenantId == tenantId && x.Email == email,ct);
+        => await _db.TenantInvitations.FirstOrDefaultAsync (x => x.TenantId == tenantId && x.Email == email,ct);
 
     public async Task AddAsync (TenantInvitation invitation,CancellationToken ct = default)
     {
@@ -34,5 +34,6 @@ public class TenantInvitationRepository: ITenantInvitationRepository
     }
 
     public async Task<bool> ExistsAsync (Guid tenantId,string email,CancellationToken ct = default)
-        => await _db.TenantInvitations.AnyAsync (x => x.MyTenantId == tenantId && x.Email == email && x.Status == InvitationStatus.Pending,ct);
+        => await _db.TenantInvitations.AnyAsync
+        (x => x.TenantId == tenantId && x.Email == email && x.Status == InvitationStatus.Pending,ct);
 }

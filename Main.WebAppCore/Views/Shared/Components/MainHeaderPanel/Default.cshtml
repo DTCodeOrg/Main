@@ -5,7 +5,7 @@
         <a class="logo" 
            id="ancor_Index_Home" 
            href="@Url.Action("Index", "Home")">
-            @TenantSetter.TenantName
+            @TenantSetter.CurrentTenant.TenantName
         </a>
 
         @await Html.PartialAsync("_SimpleSearch")

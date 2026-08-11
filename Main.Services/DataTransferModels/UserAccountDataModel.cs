@@ -23,7 +23,7 @@ namespace Main.Services
             get; set;
         }
 
-        public string ClientName
+        public string TenantName
         {
             get; set;
         }

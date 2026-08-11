@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Main.Model.DomainModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Model;
 
-public class UserRefreshToken: BaseEntity
+public class UserRefreshToken: RootBaseEntity
 {
     public UserRefreshToken ()
     {
@@ -28,7 +29,6 @@ public class UserRefreshToken: BaseEntity
         set;
     }
 
-    // The actual unique token string/hash
     public string Token
     {
         get; set;
@@ -49,10 +49,20 @@ public class UserRefreshToken: BaseEntity
         get; set;
     }
 
-    // Optional: For token rotation tracking
     public string? ReplacedByToken
     {
         get; set;
     }
-}
 
+    public Guid TenantId
+    {
+        get; set;
+    }
+
+    [ForeignKey (nameof (TenantId))]
+    public virtual Tenant? Tenant
+    {
+        get; set;
+    }
+
+}

@@ -7,26 +7,26 @@ namespace Main.Repository;
 
 public class PanelRepository: IPanelRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly TenantDbContext _tenantContext;
 
     public PanelRepository ()
     {
     }
 
 
-    public PanelRepository (ApplicationDbContext context)
+    public PanelRepository (TenantDbContext context)
     {
-        _context = context;
+        _tenantContext = context;
     }
 
     public async Task<bool> DeletePanelAsync (int panelId)
     {
-        Panel? panel = await _context.Panels.FindAsync ( panelId );
+        Panel? panel = await _tenantContext.Panels.FindAsync ( panelId );
 
         if ( panel != null )
         {
-            _ = _context.Panels.Remove (panel);
-            int result = await _context.SaveChangesAsync();
+            _ = _tenantContext.Panels.Remove (panel);
+            int result = await _tenantContext.SaveChangesAsync();
             return result > 0;
         }
 

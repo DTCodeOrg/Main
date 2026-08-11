@@ -1,23 +1,40 @@
-﻿namespace Domain.Model;
+﻿using Main.Model.DomainModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class EmailOutboxMessage: BaseEntity
+namespace Domain.Model;
+
+public class EmailOutboxMessage: RootBaseEntity
 {
     public EmailOutboxMessage ()
     {
     }
 
+    [Key]
     public int Id
     {
         get; set;
     }
 
-    public string ReceiverEmail { get; set; } = string.Empty;
+    public string? ReceiverEmail
+    {
+        get; set;
+    }
 
-    public string Subject { get; set; } = string.Empty;
+    public string? Subject
+    {
+        get; set;
+    }
 
-    public string Body { get; set; } = string.Empty;
+    public string? Body
+    {
+        get; set;
+    }
 
-    public DateTime CreatedOnUtc { get; set; } = DateTime.UtcNow;
+    public DateTime? CreatedOnUtc
+    {
+        get; set;
+    }
 
     public DateTime? ProcessedOnUtc
     {
@@ -29,10 +46,19 @@ public class EmailOutboxMessage: BaseEntity
         get; set;
     }
 
-    public int RetryCount
+    public int? RetryCount
     {
         get; set;
     }
 
+    public Guid TenantId
+    {
+        get; set;
+    }
 
+    [ForeignKey ("TenantId")]
+    public virtual Tenant? Tenant
+    {
+        get; set;
+    }
 }

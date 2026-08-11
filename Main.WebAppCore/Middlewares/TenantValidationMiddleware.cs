@@ -16,7 +16,7 @@ public class TenantValidationMiddleware
             var tokenTenantId = context.User.FindFirst("TenantId")?.Value;
             var tenantSetter = context.RequestServices.GetRequiredService<ITenantSetter>();
 
-            if ( tokenTenantId != tenantSetter.CurrentTenantId.ToString () )
+            if ( tokenTenantId != tenantSetter.ResolvedTenantId.ToString () )
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 await context.Response.WriteAsync ("Cross-tenant identity access denied.");

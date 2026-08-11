@@ -12,17 +12,17 @@ public class HomeController: BaseController
 
     private readonly IStringLocalizer<SharedResource> _localizer;
     private readonly IPageService _pageService;
-    private readonly ITenantContext _userContext;
+    private readonly ITenantSetter _tenantSetter;
 
     public HomeController (
         IStringLocalizer<SharedResource> localizer,
         IPageService pageService,
-        ITenantContext userContext
+        ITenantSetter tenantSetter
         )
     {
         _localizer = localizer;
         _pageService = pageService;
-        _userContext = userContext;
+        _tenantSetter = tenantSetter;
     }
 
 

@@ -13,13 +13,28 @@ public static class RegisterDatabase
         this IServiceCollection services,IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var identityConnectionString = configuration.GetConnectionString("IdentityAppConnection");
+        var tenantConnectionString = configuration.GetConnectionString("TenantConnection");
+        var logConnectionString = configuration.GetConnectionString("LogConnection");
 
-        _ = services.AddDbContext<ApplicationDbContext> (options =>
+        _ = services.AddDbContext<LogDbContext> (options =>
         {
             _ = options.UseLazyLoadingProxies ();
-            _ = options.UseSqlServer (connectionString);
-            //_ = options.EnableSensitiveDataLogging ();
-            //_ = options.EnableDetailedErrors ();
+            _ = options.UseSqlServer (logConnectionString);
+            _ = options.EnableSensitiveDataLogging ();
+            _ = options.EnableDetailedErrors ();
+        });
+
+        _ = services.AddDbContext<TenantDbContext> (options =>
+        {
+            _ = options.UseLazyLoadingProxies ();
+            _ = options.UseSqlServer (tenantConnectionString);
+        });
+
+        _ = services.AddDbContext<IdentityAppDbContext> (options =>
+        {
+            _ = options.UseLazyLoadingProxies ();
+            _ = options.UseSqlServer (identityConnectionString);
         });
 
         _ = services.AddIdentity<ApplicationUser,IdentityRole> (options =>
@@ -42,7 +57,7 @@ public static class RegisterDatabase
             options.Lockout.AllowedForNewUsers = lockOut.GetValue<bool> ("AllowedForNewUsers");
             options.User.RequireUniqueEmail = user.GetValue<bool> ("RequireUniqueEmail");
         })
-        .AddEntityFrameworkStores<ApplicationDbContext> ();
+        .AddEntityFrameworkStores<IdentityAppDbContext> ();
 
         _ = services.Configure<DataProtectionTokenProviderOptions>
         (options => options.TokenLifespan = TimeSpan.FromHours (2));
@@ -50,4 +65,3 @@ public static class RegisterDatabase
         return services;
     }
 }
-

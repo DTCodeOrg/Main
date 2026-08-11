@@ -16,7 +16,6 @@ namespace Main.WebAppCore.Controllers;
 public class AuthController: BaseController
 {
     private readonly ITenantSetter _tenantSetter;
-    private readonly ITenantContext _userContext;
     private readonly IAccountService _userAccountService;
     private readonly IEmailSenderService _emailService;
     private readonly ITokenService _tokenService;
@@ -24,7 +23,6 @@ public class AuthController: BaseController
 
     public AuthController (
         IAccountService userAccountService,
-        ITenantContext userContext,
         IEmailSenderService emailService,
         ITenantSetter tenantSetter,
         ITokenService tokenService,
@@ -32,7 +30,6 @@ public class AuthController: BaseController
        )
     {
         _userAccountService = userAccountService;
-        _userContext = userContext;
         _emailService = emailService;
         _tenantSetter = tenantSetter;
         _tokenService = tokenService;
@@ -89,10 +86,10 @@ public class AuthController: BaseController
     public async Task SendVerifyEmail
     (string? email,HttpContext context)
     {
-        string localEmail = email ??  string.Empty ;
+        string localEmail = email ??  string.Empty;
         string emailVerifyToken = await _userAccountService.GetEmailVerifyToken (localEmail);
 
-        string? verifyLink = Url.Action(
+        string? verifyLink = Url.Action (
             action: "VerifyLink",
             controller: "Auth",
             values: new
@@ -125,7 +122,6 @@ public class AuthController: BaseController
             return BadRequest ("Invalid verification request parameters.");
         }
 
-        _ = _userContext.GetCreateBaseDataModel ();
         _ = await _userAccountService.CompleteEmailVerification (email,token);
 
         return RedirectToAction ("VerifyComplete");
@@ -157,7 +153,6 @@ public class AuthController: BaseController
 
         string email = loginDisplayViewModel?.Email ?? string.Empty;
 
-
         if ( !ModelState.IsValid )
         {
             return View ("Login",loginDisplayViewModel);
@@ -166,40 +161,57 @@ public class AuthController: BaseController
         ApplicationUserDataModel? applicationUser = await _userAccountService.GetApplicationUser (email);
 
         bool result = await IsEmailConfirmed (email);
-
         if ( !result )
         {
-
             await SendVerifyEmail (email,HttpContext);
-
             return View (new LoginViewModel ());
         }
 
+        // This method is totally safe! It only checks the password hashes without ghost cookies.
         bool signinresult = await _userAccountService.PasswordSignInAsync (applicationUser?.Email!,loginDisplayViewModel?.Password!);
 
         if ( signinresult )
         {
-            string tenantRole = await _userAccountService.GetTenantUserRoleClaim
-            (email, _tenantSetter.CurrentTenantId);
+            string tenantRole = await _userAccountService.GetTenantUserRoleClaim(email, _tenantSetter.ResolvedTenantId);
+            string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{_tenantSetter.ResolvedTenantId }:{tenantRole}";
 
-            string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{_tenantSetter.CurrentTenantId}:{tenantRole}";
+            // Safely declare your token timing definitions
+            int accessJwtMinutes = 15;
+            int maxRefreshDays = 7;
 
+            var accessJwt = await _tokenService.GenerateAccessToken(applicationUser?.Id!, _tenantSetter.ResolvedTenantId, formatedTenantRole, tenantRole, applicationUser?.UserName!, email, accessJwtMinutes);
+            var refreshTokenStr = _tokenService.GenerateRefreshToken();
 
-            _ = AuthorizationExtensions.AddTenantIsolatedHeaderToken
-                (HttpContext,_tokenService,applicationUser?.Id
-                ?? "",_tenantSetter.CurrentTenantId,tenantRole.ToString (),
-                formatedTenantRole,applicationUser?.UserName ?? "",
-                applicationUser?.Email ?? "",15,7);
+            _ = await _tokenService.SaveRefreshToken (applicationUser?.Id!,_tenantSetter.ResolvedTenantId,refreshTokenStr);
+
+            var baseCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Path = "/"  ,
+                Domain = HttpContext.Request.Host.Host
+            };
+
+            //  FIX: Let the browser store the access cookie file for 7 days.
+            // Your native .AddJwtBearer middleware validation parameters (ValidateLifetime = true) 
+            // will strictly handle checking and expiring the token after 15 minutes.
+            HttpContext.Response.Cookies.Append ($".App.AccessToken.{_tenantSetter.ResolvedTenantId}",accessJwt,
+                new CookieOptions (baseCookieOptions) { Expires = DateTimeOffset.UtcNow.AddDays (maxRefreshDays) });
+
+            HttpContext.Response.Cookies.Append ($".App.RefreshToken.{_tenantSetter.ResolvedTenantId}",refreshTokenStr,
+                new CookieOptions (baseCookieOptions) { Expires = DateTimeOffset.UtcNow.AddDays (maxRefreshDays) });
 
             return RedirectToAction ("Index","Home",new
             {
                 area = ""
             });
-
         }
 
+        ModelState.AddModelError (string.Empty,"Invalid login attempt.");
         return View ("Login",loginDisplayViewModel);
     }
+
 
     public async Task<bool> IsEmailConfirmed (string? email)
     {
@@ -212,31 +224,31 @@ public class AuthController: BaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout ()
     {
-        var tenantId = _tenantSetter.CurrentTenantId;
+        Guid tenantId = _tenantSetter.ResolvedTenantId;
+        string userId = _tenantSetter.HttpContextUserId;
+
+
         var accessTokenName = $".App.AccessToken.{tenantId.ToString()}";
         string refreshTokenName = $".App.RefreshToken.{tenantId.ToString()}";
 
-        // 1. Revoke the token in the database first
-        if ( Request.Cookies.TryGetValue (refreshTokenName,out var refreshToken) )
-        {
-            _ = await _tokenService.RevokeUserRefreshTokensAsync (refreshToken,_tenantSetter.CurrentTenantId);
-        }
 
-        // 2. Define CookieOptions that MATCH your creation settings perfectly
-        CookieOptions cookieOptions = new ()
+        _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,_tenantSetter.ResolvedTenantId);
+
+
+        var baseCookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,          // Must match your login creation setup
-            SameSite = SameSiteMode.Lax, // Must match your login creation setup
-            Path = "/" ,             // Must match your login creation setup
-            Domain = Request.Host.Host // Must match your login creation setup
+            Secure = true,
+            SameSite = SameSiteMode.Lax,
+            Path = "/",
+            Domain = HttpContext.Request.Host.Host
         };
 
-        // 3. Pass the options object into the Delete method
-        HttpContext.Response.Cookies.Delete (accessTokenName,cookieOptions);
-        HttpContext.Response.Cookies.Delete (refreshTokenName,cookieOptions);
 
-        // 4. Signal Nginx to bypass caches
+        HttpContext.Response.Cookies.Delete (accessTokenName,baseCookieOptions);
+        HttpContext.Response.Cookies.Delete (refreshTokenName,baseCookieOptions);
+
+
         Response.Headers.Append ("Cache-Control","no-cache, no-store, must-revalidate");
         Response.Headers.Append ("X-Clear-Cache","true");
 

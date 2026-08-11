@@ -13,27 +13,28 @@ internal class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
+            .Get<ConfigurationSettings> () ?? new ConfigurationSettings ();
+
         // --- Core Infrastructure & DI Services ---
         _ = builder.Services.AddHttpContextAccessor ();
-
         _ = builder.Services.AddDistributedMemoryCache ();
 
         _ = builder.Services.AddSession (options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes (30);
-                options.Cookie.HttpOnly = true;
-            });
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes (30);
+            options.Cookie.HttpOnly = true;
+        });
 
-        _ = builder.Services.AddScoped<ITenantContext,TenantHttpContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,ResolvedTenantSetter> ();
+        _ = builder.Services.AddScoped<IStorageService,LocalStorageService> ();
+        _ = builder.Services.AddScoped<ITenantAssetResolver,TenantAssetResolver> ();
 
         // --- Logging & Configuration ---
         _ = builder.AddSerilogConfiguration ();
         _ = builder.Host.UseSerilog ();
         _ = builder.Services.AddExceptionLoggingMiddleware (builder.Configuration);
 
-        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
-            .Get<ConfigurationSettings> () ?? new ConfigurationSettings ();
 
 
         _ = builder.Services.AddDatabase (builder.Configuration);
@@ -42,8 +43,7 @@ internal class Program
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
 
         _ = builder.Services.AddAntiforgery ();
-        _ = builder.Services
-            .ConfigureOptions<TenantAntiforgeryOptionMiddleware> ();
+        _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptionMiddleware> ();
 
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
@@ -66,9 +66,10 @@ internal class Program
 
         var forwardedHeadersOptions = new ForwardedHeadersOptions
         {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                         ForwardedHeaders.XForwardedHost |
-                         ForwardedHeaders.XForwardedProto
+            ForwardedHeaders =
+            ForwardedHeaders.XForwardedFor |
+            ForwardedHeaders.XForwardedHost |
+            ForwardedHeaders.XForwardedProto
         };
 
         forwardedHeadersOptions.AllowedHosts.Clear ();
@@ -79,17 +80,18 @@ internal class Program
 
         _ = app.UseForwardedHeaders (forwardedHeadersOptions);
 
+        // 5. Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
+        _ = app.UseMiddleware<TenantResolverMiddleware> ();
+
         if ( app.Environment.IsDevelopment () )
         {
             _ = app.UseDeveloperExceptionPage ();
-
             _ = app.UseMigrationsEndPoint ();
         }
         else
         {
             _ = app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();
         }
-
 
         // 1. Error handling must sit at the absolute top to catch failures down the line
         _ = app.UseStatusCodePages ();
@@ -105,28 +107,28 @@ internal class Program
         // 4. Multi-Tenant Boundary Identification Routing
         _ = app.UseRouting ();
 
-        // 5. Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
-        _ = app.UseMiddleware<TenantResolverMiddleware> ();
-
         // 6. Session Management Configuration (Tenant-Scoped Setup)
         _ = app.UseMiddleware<TenantSessionMiddleware> ();
         _ = app.UseSession ();
 
-        // 7. Context Optimization & Processing (Culture needs Tenant context)
         _ = app.UseCustomLocalization ();
 
-        // 8. Security Authentication Matrix (Auth MUST occur BEFORE Antiforgery & Caching)
+        // 2. Step 2: Intercept expired tokens and rotate them
+        _ = app.UseMiddleware<TokenRefreshMiddleware> ();
+
+        // 3. Step 3: Authenticate the user (Unpacks the valid JWT into context.User)
         _ = app.UseAuthentication ();
 
-        // 9. Custom refresh middleware captures expired requests before authentication evaluations happen
-        _ = app.UseMiddleware<TokenRefreshMiddleware> ();
+        // 4. Step 4: Validate cross-tenant access (Your TenantValidationMiddleware runs safely here!)
         _ = app.UseMiddleware<TenantValidationMiddleware> ();
 
+        // 5. Step 5: Authorize roles and handle antiforgery
         _ = app.UseAuthorization ();
 
+        _ = app.UseAntiforgery ();
+
         // 10. Data Storage & Output Optimization Pools
-        _ = app.UseAntiforgery (); // Must run AFTER Authentication so it knows the User ID
-        _ = app.UseOutputCache ();  // Must run AFTER Authorization to prevent caching private data
+        _ = app.UseOutputCache ();
 
         // 11. Endpoint Mappings
         _ = app.MapControllers ();

@@ -3,6 +3,7 @@ using Main.Common;
 using Main.Infrastructure;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
+using Main.Model.DomainModel;
 
 namespace Main.Services;
 
@@ -13,7 +14,7 @@ public class TenantInvitationService: ITenantInvitationService
     private readonly ITenantUserRepository _tenantUserRepository;
     private readonly ITenantRepository _tenantRepository;
     private readonly IEmailSenderService _emailSender;
-    private readonly Guid tenantId;
+    private readonly  ITenantSetter _tenantSetter;
 
     public TenantInvitationService (
        IApplicationUserRepository userRepository,
@@ -27,17 +28,17 @@ public class TenantInvitationService: ITenantInvitationService
         _invitationRepository = invitationRepository;
         _tenantUserRepository = tenantUserRepository;
         _emailSender = emailSender;
-        tenantId = tenantSetter.CurrentTenantId;
         _tenantRepository = tenantRepository;
+        _tenantSetter = tenantSetter;
     }
 
     public async Task<string> InviteUserAsync (Guid tenantId,string email,string tenantRole,string invitedByUserId,CancellationToken ct = default)
     {
         Tenant? tenant = await _tenantRepository.GetTenantByIdAsync (tenantId);
 
-        string? host = tenant?.HostName != null ? tenant.HostName : "";
+        string? host = tenant?.Host != null ? tenant.Host : "";
 
-        _ = tenant?.Name != null ? tenant.Name : "";
+        _ = tenant?.TenantName != null ? tenant.TenantName : "";
 
 
         email = email.Trim ().ToLowerInvariant ();
@@ -53,7 +54,7 @@ public class TenantInvitationService: ITenantInvitationService
         var invitation = new TenantInvitation
         {
             InviteId = Guid.NewGuid(),
-            MyTenantId = tenantId,
+            TenantId = tenantId,
             Email = email,
             InvitedByUserId = invitedByUserId,
             TenantRole = tenantRole,
@@ -108,12 +109,12 @@ public class TenantInvitationService: ITenantInvitationService
             _ = await _userRepository.AddToRoleAsync (user.Email,"User");
         }
 
-        var alreadyMember = await _tenantUserRepository.ExistsAsync(invitation.MyTenantId, user.Id);
+        var alreadyMember = await _tenantUserRepository.ExistsAsync(invitation.TenantId, user.Id);
 
 
         if ( !alreadyMember )
         {
-            await _tenantUserRepository.AddAsync (new TenantUser
+            await _tenantUserRepository.AddAsync (new TenantUserRole
             {
                 UserId = user.Id,
                 TenantRole = invitation.TenantRole ?? "ContentManager"

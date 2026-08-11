@@ -1,5 +1,4 @@
-﻿using DataTransferModel;
-using Main.Common;
+﻿using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
@@ -16,27 +15,28 @@ public class TenantResolverMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync (
-        HttpContext context,
-        ITenantSetter tenantSetter,
-        ITenancyService tenancyService,
-        IMemoryCache memoryCache,
-        ILogger<TenantResolverMiddleware> logger)
+    public async Task InvokeAsync (HttpContext context,ITenantSetter tenantSetter,ITenancyService tenancyService,IMemoryCache memoryCache,ILogger<TenantResolverMiddleware> logger)
     {
-        TenantDisplayDataModel? resolvedTenant
+        TenantDataModel? resolvedTenant
         = await TenantResolutionExtensions.TryResolveTenantAsync ( context, tenancyService, memoryCache);
 
         if ( resolvedTenant != null )
         {
-            tenantSetter.CurrentTenantId = resolvedTenant?.MyTenantId ?? Guid.Empty;
-            tenantSetter.TenantName = resolvedTenant?.Name ?? string.Empty;
-            tenantSetter.TenantStore = resolvedTenant?.StoreType ?? StoreType.FineArts;
-            context.Items["TenantId"] = resolvedTenant?.MyTenantId ?? Guid.Empty;
-        }
-        else
-        {
-            tenantSetter.CurrentTenantId = Guid.Empty;
-            context.Items["TenantId"] = resolvedTenant?.MyTenantId ?? Guid.Empty;
+            tenantSetter.ResolvedTenantId = resolvedTenant.ResolvedTenantId;
+            tenantSetter.CurrentTenant = resolvedTenant;
+            tenantSetter.CurrentTenant.ResolvedTenantId = resolvedTenant.ResolvedTenantId;
+            context.Items["TenantId"] = resolvedTenant.ResolvedTenantId;
+
+            tenantSetter.CurrentTenant.TenantThemeModel =
+                new TenantThemeModel ()
+                {
+                    Default = true,
+                    PrimaryColor = resolvedTenant.TenantThemeModel.PrimaryColor,
+                    SecondaryColor = resolvedTenant.TenantThemeModel.SecondaryColor,
+                    BackgroundColor = resolvedTenant.TenantThemeModel.BackgroundColor,
+                    FontStack = resolvedTenant.TenantThemeModel.FontStack,
+                    LogoFileName = resolvedTenant.TenantThemeModel.LogoFileName
+                };
         }
 
         await _next (context);

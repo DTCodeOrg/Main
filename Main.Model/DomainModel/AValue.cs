@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Model;
 
-public class AValue: BaseEntity
+public class AllowedValue: BaseEntity
 {
-    public AValue ()
+    public AllowedValue ()
     {
     }
 
-    public AValue (Country country,string text,EnumTenantVariable variable)
+    public AllowedValue (Country country,string text,EnumTenantVariable variable)
     {
         if ( string.IsNullOrEmpty (text) )
         {

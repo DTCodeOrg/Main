@@ -4,17 +4,10 @@ namespace Main.IRepository;
 
 public interface ITenantRepository
 {
-    Tenant? CurrentTenant
-    {
-        get; set;
-    }
-
-    Task FindCurrentTenantAsync (string? hostName);
-
     Task<Tenant?> GetTenantByIdAsync (Guid tenantId);
 
     Task<Tenant?> CreateTenantAsync (Tenant tenant);
 
-    Task<Tenant> FindHostAsync (string hostName);
+    Task<Tenant?> FindHostAsync (string hostName);
 
 }

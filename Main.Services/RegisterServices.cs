@@ -1,4 +1,4 @@
-﻿using Main.Services.IServices;
+﻿using Main.Services.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 namespace Main.Services;
@@ -13,6 +13,7 @@ public static class RegisterServices
         _ = services.AddScoped<IAdminPostService,AdminPostService> ();
         _ = services.AddScoped<IProductService,ProductService> ();
         _ = services.AddScoped<IPageService,PageService> ();
+        _ = services.AddScoped<IThemeService,ThemeService> ();
 
         return services;
     }

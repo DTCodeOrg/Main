@@ -1,27 +1,31 @@
 ﻿using Main.Common;
+using Main.Model.DomainModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Model;
 
-public class Tenant: BaseEntity
+public class Tenant: RootBaseEntity
 {
     // seed
-    public Tenant (Guid id,Guid myTenantId)
+    public Tenant (Guid id)
     {
         TenantId = id;
-        MyTenantId = myTenantId;
-
-        ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
-        CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
-        CreatedDate = DateTime.MinValue;
-        ModifiedDate = DateTime.MinValue;
-
-        TenantCountry = Country.Bangladesh;
+        CreatedBy = null;
+        CreatedDate = null;
+        ModifiedDate = null;
+        TenantCountry = null;
         IsActive = true;
     }
 
     public Tenant ()
     {
+
+    }
+
+    public Tenant (HostType hostType)
+    {
+        HostType = hostType;
     }
 
     [Key]
@@ -31,36 +35,19 @@ public class Tenant: BaseEntity
     }
 
     [Required]
-    public string Name
+    public string TenantName
     {
         get; set;
     }
 
     [Required]
-    public HostType TenantHostType
+    public HostType HostType
     {
         get; set;
     }
 
     [Required]
-    public string HostName
-    {
-        get; set;
-    }
-
-    [Required]
-    public StoreType Store
-    {
-        get; set;
-    }
-
-    public int? SmtpId
-    {
-        get; set;
-    }
-
-
-    public virtual EmailSmtp? EmailSmtp
+    public string Host
     {
         get; set;
     }
@@ -70,4 +57,14 @@ public class Tenant: BaseEntity
         get; set;
     }
 
+    public Guid TenantThemeId
+    {
+        get; set;
+    }
+
+    [ForeignKey (nameof (TenantThemeId))]
+    public virtual TenantTheme? TenantTheme
+    {
+        get; set;
+    }
 }

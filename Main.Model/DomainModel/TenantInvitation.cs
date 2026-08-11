@@ -1,8 +1,10 @@
+using Domain.Model;
 using Main.Common;
 using System.ComponentModel.DataAnnotations;
-namespace Domain.Model;
+using System.ComponentModel.DataAnnotations.Schema;
+namespace Main.Model.DomainModel;
 
-public class TenantInvitation: BaseEntity
+public class TenantInvitation: RootBaseEntity
 {
     public TenantInvitation ()
     {
@@ -10,6 +12,17 @@ public class TenantInvitation: BaseEntity
 
     [Key]
     public Guid InviteId
+    {
+        get; set;
+    }
+
+    public Guid TenantId
+    {
+        get; set;
+    }
+
+    [ForeignKey ("TenantId")]
+    public virtual Tenant? Tenant
     {
         get; set;
     }

@@ -7,48 +7,24 @@ namespace Main.Repository;
 
 public class TenantRepository: ITenantRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IdentityAppDbContext _tenantContext;
 
-    public TenantRepository (ApplicationDbContext context)
+    public TenantRepository (IdentityAppDbContext context)
     {
-        _context = context;
+        _tenantContext = context;
     }
 
-    public Tenant? CurrentTenant
+    public async Task<Tenant?> FindHostAsync (string hostName)
     {
-        get;
-        set;
-    }
+        Tenant? tenant = await _tenantContext.Tenants
+            .FirstOrDefaultAsync<Tenant> ( a => a.Host.ToLower() == hostName.ToString ());
 
-    public async Task FindCurrentTenantAsync (string? hostName)
-    {
-        string host = hostName != null ? hostName : "";
-
-        if ( host.Length == 0 )
-        {
-            CurrentTenant = null;
-        }
-
-        CurrentTenant = await _context.Tenants
-            .IgnoreQueryFilters ()
-            .FirstOrDefaultAsync<Tenant>
-             (tenant => tenant.HostName.Length == host.Length
-              && string.Equals (tenant.HostName,host));
-    }
-
-    public async Task<Tenant> FindHostAsync (string hostName)
-    {
-        var tenantHost = await _context.Tenants
-            .IgnoreQueryFilters ()
-            .FirstOrDefaultAsync<Tenant>
-             ( a=> a.HostName.ToLower() == hostName.ToString ()  );
-
-        return tenantHost!;
+        return tenant;
     }
 
     public async Task<Tenant?> GetTenantByIdAsync (Guid tenantId)
     {
-        Tenant? tenant = await _context.Tenants.FirstOrDefaultAsync (tenant => tenant.MyTenantId == tenantId);
+        Tenant? tenant = await _tenantContext.Tenants.FirstOrDefaultAsync (tenant => tenant.TenantId == tenantId);
 
         return tenant;
     }
@@ -57,8 +33,8 @@ public class TenantRepository: ITenantRepository
     {
         if ( tenant != null )
         {
-            _ = _context.Tenants.Add (tenant);
-            _ = await _context.SaveChangesAsync ();
+            _ = _tenantContext.Tenants.Add (tenant);
+            _ = await _tenantContext.SaveChangesAsync ();
         }
 
         return tenant;

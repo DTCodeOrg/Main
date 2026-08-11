@@ -9,12 +9,11 @@ public class TenantDisplayDataModel
     }
 
     public TenantDisplayDataModel
-    (Guid tenantId,string name,string domain,StoreType shopType,string? key)
+    (Guid tenantId,string tenantName,string host,string? key)
     {
         MyTenantId = tenantId;
-        Name = name;
-        Domain = domain;
-        StoreType = shopType;
+        TenantName = tenantName;
+        Host = host;
         SecretKey = key;
     }
 
@@ -23,22 +22,22 @@ public class TenantDisplayDataModel
         get; set;
     }
 
-    public string Name
+    public string TenantName
     {
         get; set;
     }
 
-    public string Domain
-    {
-        get; set;
-    }
-
-    public StoreType StoreType
+    public string Host
     {
         get; set;
     }
 
     public string? SecretKey
+    {
+        get; set;
+    }
+
+    public TenantThemeModel ThemeModel
     {
         get; set;
     }

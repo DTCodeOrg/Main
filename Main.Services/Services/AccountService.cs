@@ -1,5 +1,4 @@
 ﻿using DataTransferModel;
-
 using Domain.Model;
 using Main.Common;
 using Main.IRepository;
@@ -54,10 +53,9 @@ public class AccountService: IAccountService
 
             Tenant? tenant = new ()
             {
-                Name = userAccountDataModel.ClientName,
-                TenantHostType = HostType.SubDomain,
-                HostName = userAccountDataModel.ClientName.Replace(" ", "-").ToLower(),
-                Store = StoreType.Defaut
+                TenantName = userAccountDataModel.TenantName,
+                HostType = HostType.SubDomain,
+                Host = userAccountDataModel.TenantName.Replace(" ", "-").ToLower()
             };
 
 
@@ -72,7 +70,7 @@ public class AccountService: IAccountService
             }
 
 
-            TenantUser tenantUser = new ()
+            TenantUserRole tenantUser = new ()
             {
                 UserId =  userIdentityEntity.Id ,
                 TenantRole = "Admin"
@@ -103,7 +101,7 @@ public class AccountService: IAccountService
             return null;
         }
 
-        TenantUser? tenantUser =
+        TenantUserRole? tenantUser =
         await _tenantUserRepository.GetByUserIdAsync(applicationUser?.Id!, tenantId);
 
         if ( tenantUser == null )
@@ -117,7 +115,7 @@ public class AccountService: IAccountService
             Id = applicationUser?.Id!,
             UserName = applicationUser?.UserName,
             Email = applicationUser?.Email,
-            MyTenantId = tenantUser.MyTenantId ,
+            MyTenantId = tenantUser.TenantId ,
 
         };
 

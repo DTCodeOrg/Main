@@ -1,0 +1,33 @@
+﻿@model UpdateLogoViewModel
+
+@{
+    ViewData["Title"] = "Update Tenant Logo";
+}
+
+<h2>Update Logo</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <!-- enctype is mandatory for file uploads -->
+        <form asp-action="UpdateLogo" asp-controller="Theme" method="post" enctype="multipart/form-data">
+            
+            <div class="form-group mb-3">
+                <label for="logoFile" class="form-label">Select New Logo Image</label>
+                <!-- Name attribute must exactly match the POST parameter: logoFile -->
+                <input type="file" id="logoFile" name="logoFile" class="form-control" accept="image/*" required />
+            </div>
+
+            @if (Model.CurrentLogoFileName != null)
+            {
+                <div class="mb-3">
+                    <p>Current Logo:</p>
+                    <!-- Adjust the src path based on where your _storageService saves files -->
+                    <img src="/uploads/logos/@Model.CurrentLogoFileName" alt="Current Logo" style="max-height: 100px; display: block;" />
+                </div>
+            }
+
+            <button type="submit" class="btn btn-primary">Upload and Save</button>
+            <a asp-action="Index" asp-controller="Home" asp-area="" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

@@ -34,7 +34,7 @@ public class TenantInvitationController: BaseController
         var tenantId = Guid.Parse(User.FindFirst("TenantId")?.Value ?? Guid.Empty.ToString());
         var invitedByUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-        var result = await _invitationService.InviteUserAsync(_tenantSetter.CurrentTenantId, model.Email, model.TenantRole, invitedByUserId);
+        var result = await _invitationService.InviteUserAsync(_tenantSetter.ResolvedTenantId, model.Email, model.TenantRole, invitedByUserId);
 
         TempData["Message"] = result;
         return RedirectToAction (nameof (Invite));

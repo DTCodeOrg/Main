@@ -6,23 +6,24 @@ namespace Main.Repository;
 
 public class PageRepository: IPageRepository
 {
-    private readonly ApplicationDbContext _context;
 
-    public PageRepository (ApplicationDbContext context)
+    private readonly TenantDbContext _tenantContext;
+
+    public PageRepository (TenantDbContext tenantContext)
     {
-        _context = context;
+        _tenantContext = tenantContext;
     }
 
     public async Task<List<Page>> GetAllPages ()
     {
-        List<Page> listPages = await _context.Pages.ToListAsync();
+        List<Page> listPages = await _tenantContext.Pages.ToListAsync();
 
         return listPages.ToList ();
     }
 
     public async Task<Page> GetSinglePage (int id)
     {
-        var page = await _context.Pages.FirstOrDefaultAsync<Page> (m => m.PageID == id);
+        var page = await _tenantContext.Pages.FirstOrDefaultAsync<Page> (m => m.PageID == id);
 
         if ( page == null )
         {
@@ -36,7 +37,7 @@ public class PageRepository: IPageRepository
     {
         panel.ListPosts = listPosts;
 
-        Page? page = await _context.Pages.FirstOrDefaultAsync<Page>
+        Page? page = await _tenantContext.Pages.FirstOrDefaultAsync<Page>
                                   ( m => m.PageID == panel.PageID );
 
         if ( page == null )
@@ -46,9 +47,9 @@ public class PageRepository: IPageRepository
 
         page.CreatePanel (panel);
 
-        _ = _context.Pages.Update (page);
+        _ = _tenantContext.Pages.Update (page);
 
-        int result = await _context.SaveChangesAsync();
+        int result = await _tenantContext.SaveChangesAsync();
 
         return result > 0;
     }
@@ -57,16 +58,16 @@ public class PageRepository: IPageRepository
     {
         page.ListPanels = listPanels;
 
-        _ = _context.Pages.Update (page);
+        _ = _tenantContext.Pages.Update (page);
 
-        int result = await _context.SaveChangesAsync();
+        int result = await _tenantContext.SaveChangesAsync();
 
         return result > 0;
     }
 
     public async Task<bool> PageExists (int id)
     {
-        return await _context.Pages.AnyAsync (e => e.PageID == id);
+        return await _tenantContext.Pages.AnyAsync (e => e.PageID == id);
     }
 }
 

@@ -2,6 +2,7 @@
 using Main.Common;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -77,16 +78,46 @@ public class TokenService: ITokenService
 
     public async Task<bool> SaveRefreshToken (string userId,Guid tenantId,string token)
     {
-        _ = await _tokenRepository.SaveTokenAsync (userId,tenantId,token);
-        return true;
+        try
+        {
+            bool result = await _tokenRepository.SaveTokenAsync (userId,tenantId,token);
+            return result;
+        }
+        catch ( Exception ex )
+        {
+            throw new Exception ($"Error saving refresh token: {ex.Message}",ex);
+        }
     }
+
 
     public ClaimsPrincipal? ValidateAndDecryptToken (string token,out SecurityToken? validatedToken)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
+
         try
         {
-            return tokenHandler.ValidateToken (token,_validationParameters,out validatedToken);
+            // 1. Run the base token verification
+            var genericPrincipal = tokenHandler.ValidateToken (token, _validationParameters, out validatedToken);
+
+            if ( genericPrincipal == null )
+            {
+                return null;
+            }
+
+            // 2. Extract the raw verified claims array
+            var claims = genericPrincipal.Claims;
+
+            // 3. FIX: Build a clean identity that explicitly claims the "Bearer" scheme
+            // Also map your custom Name and Role types so @User.Identity.Name works cleanly!
+            var mvcCompatibleIdentity = new ClaimsIdentity(
+            claims,
+            JwtBearerDefaults.AuthenticationScheme, // "Bearer"
+            _validationParameters.NameClaimType,    // "UserName"
+            _validationParameters.RoleClaimType     // "UserRole"
+        );
+
+            // 4. Return the newly minted principal
+            return new ClaimsPrincipal (mvcCompatibleIdentity);
         }
         catch
         {
@@ -95,22 +126,26 @@ public class TokenService: ITokenService
         }
     }
 
+
     public async Task<TokenResult> RotateRefreshTokenAsync (string token,Guid tenantId,int accessExpiryMinutes,int refreshExpiryDays)
     {
         UserRefreshToken savedRefreshToken = await _tokenRepository.GetRefreshTokens(token, tenantId);
+
         if ( savedRefreshToken == null )
         {
             return null!;
         }
 
         ApplicationUser? user = await _applicationUserRepository.ApplicationUsers(savedRefreshToken.UserId!);
-        TenantUser? tenantUser = await _tenantUserRepository.GetByUserIdAsync(savedRefreshToken.UserId!, tenantId);
+
+        TenantUserRole? tenantUser = await _tenantUserRepository.GetByUserIdAsync(savedRefreshToken.UserId!, tenantId);
 
         string tenantRole = tenantUser?.TenantRole!;
         string formatedTenantRole = $"{savedRefreshToken.UserId}:{tenantId}:{tenantRole}";
 
         // FIXED: Added missing await keyword to pull raw string response instead of a Task object instance
         var newAccessToken = await GenerateAccessToken(savedRefreshToken.UserId!, tenantId, formatedTenantRole, tenantRole, user?.UserName!, user?.Email!, accessExpiryMinutes);
+
         var newRefreshTokenString = GenerateRefreshToken();
 
         var result = await _tokenRepository.RotateRefreshTokenAsync(savedRefreshToken, newAccessToken.ToString(), newRefreshTokenString);

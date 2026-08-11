@@ -1,4 +1,4 @@
-using Domain.Model;
+using Main.Model.DomainModel;
 
 namespace Main.IRepository;
 

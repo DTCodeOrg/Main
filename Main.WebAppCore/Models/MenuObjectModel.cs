@@ -7,29 +7,23 @@ namespace Main.WebAppCore.Models;
 
 public class MenuObjectModel
 {
+
+    public MenuObjectModel (bool isAdvancedSearch)
+    {
+        AV_Category = DropDownListItems.GetCategoryList ();
+
+        AV_SubCategory = DropDownListItems.GetSubCategoryList ();
+    }
+
     public MenuObjectModel ()
     {
-    }
-
-    public MenuObjectModel (bool isAdvancedSearch,StoreType store)
-    {
-        AV_Category = DropDownListItems.GetCategoryList (store);
-
-        AV_SubCategory = DropDownListItems.GetSubCategoryList (store);
-    }
-
-    public MenuObjectModel (StoreType store)
-    {
-        TenantStore = store;
-
         ListCategory = new List<TenantVariableModel> ();
         ListSubCategory = new List<TenantVariableModel> ();
-
-        ListCategory = TenantStoreHelper.GetCategoryList (store);
-        ListSubCategory = TenantStoreHelper.GetSubCategoryList (store);
+        ListCategory = TenantStoreHelper.GetCategoryList ();
+        ListSubCategory = TenantStoreHelper.GetSubCategoryList ();
     }
 
-    public string ClientName
+    public string TenantName
     {
         get; set;
     }
@@ -80,11 +74,6 @@ public class MenuObjectModel
     }
 
     public List<TenantVariableModel> ListSubCategory
-    {
-        get; set;
-    }
-
-    public StoreType TenantStore
     {
         get; set;
     }

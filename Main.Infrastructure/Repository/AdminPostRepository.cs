@@ -7,10 +7,9 @@ namespace Main.Repository;
 
 public class AdminPostRepository: IAdminPostRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly TenantDbContext _context;
 
-
-    public AdminPostRepository (ApplicationDbContext context)
+    public AdminPostRepository (TenantDbContext context)
     {
         _context = context;
     }
@@ -23,7 +22,7 @@ public class AdminPostRepository: IAdminPostRepository
 
     public async Task<List<AdminPost>> GetAllAdminContentPosts ()
     {
-        var listPostEntity = await _context.AdPosts
+        var listPostEntity = await _context.AdminPosts
                                            .ToListAsync();
 
         return listPostEntity;
@@ -31,12 +30,12 @@ public class AdminPostRepository: IAdminPostRepository
 
     public async Task<bool> DeleteAdminPost (int postId)
     {
-        var adminPost = _context.AdPosts.ToList()
+        var adminPost = _context.AdminPosts.ToList()
             .FirstOrDefault(a => a.AdminPostID == postId);
 
         if ( adminPost != null )
         {
-            _ = _context.AdPosts.Remove (adminPost);
+            _ = _context.AdminPosts.Remove (adminPost);
         }
 
         var result = await _context.SaveChangesAsync();
@@ -46,7 +45,7 @@ public class AdminPostRepository: IAdminPostRepository
 
     public async Task<bool> DeleteAdminPostImage (int id,int postId)
     {
-        var adminImageFile = await _context.AdImageFiles
+        var adminImageFile = await _context.AdminImageFiles
                         .Where(
                            a => a.AdminImageFileID == id
                            && a.AdminPostID == postId)
@@ -54,7 +53,7 @@ public class AdminPostRepository: IAdminPostRepository
 
         if ( adminImageFile != null )
         {
-            _ = _context.AdImageFiles.Remove (adminImageFile);
+            _ = _context.AdminImageFiles.Remove (adminImageFile);
         }
 
         var result = await _context.SaveChangesAsync();
@@ -64,7 +63,7 @@ public class AdminPostRepository: IAdminPostRepository
 
     public async Task<AdminPost> GetAdminPostByPostID (int postId)
     {
-        var postEntity = await _context.AdPosts
+        var postEntity = await _context.AdminPosts
                             .SingleAsync (a => a.AdminPostID == postId);
 
         return postEntity;
@@ -72,7 +71,7 @@ public class AdminPostRepository: IAdminPostRepository
 
     public async Task<bool> SaveNewAdminPost (AdminPost adminPostEntity)
     {
-        _ = _context.AdPosts.Add (adminPostEntity);
+        _ = _context.AdminPosts.Add (adminPostEntity);
 
         int result = await _context.SaveChangesAsync();
 
@@ -81,7 +80,7 @@ public class AdminPostRepository: IAdminPostRepository
 
     public async Task<bool> UpdateAdminPost (AdminPost postEntity)
     {
-        _ = _context.AdPosts.Update (postEntity);
+        _ = _context.AdminPosts.Update (postEntity);
 
         var result = await _context.SaveChangesAsync();
 
@@ -90,7 +89,7 @@ public class AdminPostRepository: IAdminPostRepository
 
     public async Task<List<AdminPost>> GetSelectAdminPosts ()
     {
-        return await _context.AdPosts.ToListAsync<AdminPost> ();
+        return await _context.AdminPosts.ToListAsync<AdminPost> ();
     }
 }
 

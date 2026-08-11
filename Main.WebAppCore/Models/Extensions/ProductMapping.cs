@@ -8,9 +8,9 @@ namespace WebAppCore.ViewModel.Extensions;
 
 public static class ProductMapping
 {
-    public static ProductDataModel NewProductDataModel ( ProductViewModel productViewModel )
+    public static ProductDataModel NewProductDataModel (ProductViewModel productViewModel)
     {
-        return new ProductDataModel ( )
+        return new ProductDataModel ()
         {
             ProductName = productViewModel.ProductName,
             SearchTag = productViewModel.SearchTag,
@@ -25,9 +25,9 @@ public static class ProductMapping
         };
     }
 
-    public static ProductViewModel MapProductViewModel ( ProductDataModel productDataModel,StoreType enumShopType )
+    public static ProductViewModel MapProductViewModel (ProductDataModel productDataModel)
     {
-        ProductViewModel productViewModel = new ProductViewModel(enumShopType);
+        ProductViewModel productViewModel = new();
 
         productViewModel.ProductID = productDataModel.ProductID;
         productViewModel.CategoryID = productDataModel.CategoryID;
@@ -40,14 +40,14 @@ public static class ProductMapping
         productViewModel.SearchTag = productDataModel.SearchTag;
 
 
-        List <ImageFile> imageFiles = new List<ImageFile>();
+        List <ImageFile> imageFiles = new();
         ImageFile imageFile;
 
-        productDataModel.ImageFiles.ForEach ( file =>
+        productDataModel.ImageFiles.ForEach (file =>
         {
-            imageFile = new ImageFile ( file.ImageFileContent,file.ProductID,file.ProductImageFileID );
-            imageFiles.Add ( imageFile );
-        } );
+            imageFile = new ImageFile (file.ImageFileContent,file.ProductID,file.ProductImageFileID);
+            imageFiles.Add (imageFile);
+        });
 
         productViewModel.ImageFiles = imageFiles;
 
@@ -55,14 +55,14 @@ public static class ProductMapping
 
     }
 
-    public static ProductDataModel MapProductDataModel ( ProductViewModel productViewModel )
+    public static ProductDataModel MapProductDataModel (ProductViewModel productViewModel)
     {
         if ( productViewModel == null )
         {
-            return new ProductDataModel ( );
+            return new ProductDataModel ();
         }
 
-        ProductDataModel productDataModel = new ProductDataModel();
+        ProductDataModel productDataModel = new();
 
         productDataModel.ProductID = productViewModel.ProductID;
         productDataModel.CategoryID = productViewModel.CategoryID;
@@ -77,26 +77,26 @@ public static class ProductMapping
         return productDataModel;
     }
 
-    public static List<ProductDisplayViewModel> MapDisplayProductViewModel ( List<ProductDisplayModel> productDataModels,StoreType EnumShopType )
+    public static List<ProductDisplayViewModel> MapDisplayProductViewModel (List<ProductDisplayModel> productDataModels)
     {
-        List<ProductDisplayViewModel> dispayProductViewModels = new List<ProductDisplayViewModel>();
+        List<ProductDisplayViewModel> dispayProductViewModels = new();
 
         ProductDisplayViewModel productDisplayViewModel;
 
-        productDataModels.ForEach ( model =>
+        productDataModels.ForEach (model =>
         {
-            productDisplayViewModel = new ProductDisplayViewModel ( )
+            productDisplayViewModel = new ProductDisplayViewModel ()
             {
                 ProductID = model.ProductID,
-                DisplayCategory = DropDownListItems.GetCategoryText ( EnumShopType,model.CategoryID ),
+                DisplayCategory = DropDownListItems.GetCategoryText (model.CategoryID),
                 ProductName = model.ProductName,
-                DisplaySubCategory = DropDownListItems.GetSubCategoryText ( EnumShopType,model.SubCategoryID ),
+                DisplaySubCategory = DropDownListItems.GetSubCategoryText (model.SubCategoryID),
                 UnitPrice = model.UnitPrice
             };
 
-            dispayProductViewModels.Add ( productDisplayViewModel );
-        } );
+            dispayProductViewModels.Add (productDisplayViewModel);
+        });
 
-        return dispayProductViewModels.ToList ( );
+        return dispayProductViewModels.ToList ();
     }
 }

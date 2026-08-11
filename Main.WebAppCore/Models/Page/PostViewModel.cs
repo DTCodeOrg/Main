@@ -8,19 +8,19 @@ namespace WebAppCore.ViewModel;
 
 public class PostViewModel: BaseViewModel
 {
-    public PostViewModel ( )
+    public PostViewModel ()
     {
     }
 
-    public PostViewModel ( StoreType shopType )
+    public PostViewModel (StoreType shopType)
     {
-        AV_Category = DropDownListItems.GetCategoryList ( shopType );
+        AV_Category = DropDownListItems.GetCategoryList ();
     }
 
 
-    public PostViewModel ( StoreType shopType,EnumPostType enumPostType,int rootId,int imageId,int order )
+    public PostViewModel (StoreType shopType,EnumPostType enumPostType,int rootId,int imageId,int order)
     {
-        AV_Category = DropDownListItems.GetCategoryList ( shopType );
+        AV_Category = DropDownListItems.GetCategoryList ();
 
         EnumPostType = enumPostType;
         RootID = rootId;
@@ -43,7 +43,7 @@ public class PostViewModel: BaseViewModel
     public int RootID
     {
         get; set;
-    } // Admin or Company (Key) of EnumPostType
+    }
 
 
     public int ImageOrderID
@@ -64,17 +64,17 @@ public class PostViewModel: BaseViewModel
     }
 
 
-    public string GetTextCategory ( )
+    public string GetTextCategory ()
     {
         var CategoryText = string.Empty;
 
-        AV_Category.ToList ( ).ForEach ( x =>
+        AV_Category.ToList ().ForEach (x =>
         {
-            if ( x.Value == CategoryID.ToString ( ) )
+            if ( x.Value == CategoryID.ToString () )
             {
                 CategoryText = x.Text;
             }
-        } );
+        });
 
         return CategoryText;
     }
@@ -90,7 +90,7 @@ public class PostViewModel: BaseViewModel
     {
         get
         {
-            return GetTextCategory ( );
+            return GetTextCategory ();
         }
     }
 

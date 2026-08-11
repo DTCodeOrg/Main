@@ -13,7 +13,6 @@ using WebAppCore.ViewModel.Extensions;
 namespace Main.WebAppCore;
 
 [Area ("CompanyContent")]
-[Authorize (Roles = "Company,Admin")]
 public class ManageProductController: BaseController
 {
 
@@ -42,7 +41,7 @@ public class ManageProductController: BaseController
             List<ProductDisplayModel> productDataModels = await _productService.GetAllProducts();
 
             List<ProductDisplayViewModel> displayProductViewModels = ProductMapping.MapDisplayProductViewModel
-                ( productDataModels, _tenantSetter.TenantStore );
+                ( productDataModels );
 
             return View (displayProductViewModels);
         }
@@ -82,14 +81,14 @@ public class ManageProductController: BaseController
     }
 
 
-    [Authorize (Roles = "Company,Admin")]
+
     public IActionResult NewProduct ()
     {
         try
         {
             ClearImageFileListSession ();
 
-            ProductViewModel objProductViewModel = new (_tenantSetter.TenantStore)
+            ProductViewModel objProductViewModel = new ()
             {
                 PageName = "New Product"
             };
@@ -98,13 +97,12 @@ public class ManageProductController: BaseController
         }
         catch
         {
-            return View (new ProductViewModel (_tenantSetter.TenantStore));
+            return View (new ProductViewModel ());
         }
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    [Authorize (Roles = "Company,Admin")]
+
     public async Task<IActionResult> SaveProduct (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -142,7 +140,6 @@ public class ManageProductController: BaseController
     }
 
     [HttpGet]
-    [Authorize (Roles = "Company,Admin")]
     public async Task<ActionResult> Edit (int id)
     {
         try
@@ -151,7 +148,7 @@ public class ManageProductController: BaseController
 
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel, _tenantSetter.TenantStore );
+            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
 
             productViewModel.PageName = "Edit Product";
 
@@ -159,14 +156,13 @@ public class ManageProductController: BaseController
         }
         catch
         {
-            return View (new ProductViewModel (_tenantSetter.TenantStore));
+            return View (new ProductViewModel ());
         }
     }
 
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize (Roles = "Company,Admin")]
     public async Task<IActionResult> Edit (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -203,16 +199,15 @@ public class ManageProductController: BaseController
     }
 
 
-    [Authorize (Roles = "Company,Admin")]
     public async Task<IActionResult> Details (int id)
     {
         try
         {
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel , _tenantSetter.TenantStore);
+            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
 
-            productViewModel.SetDisplaytext (_tenantSetter.TenantStore);
+            productViewModel.SetDisplaytext ();
 
             productViewModel.PageName = "Product Details";
 
@@ -220,13 +215,12 @@ public class ManageProductController: BaseController
         }
         catch
         {
-            return View (new ProductViewModel (_tenantSetter.TenantStore));
+            return View (new ProductViewModel ());
         }
     }
 
 
     [HttpPost]
-    [Authorize (Roles = "Company,Admin")]
     public JsonResult UploadImage (IFormFile file)
     {
         if ( file != null && file.Length > 0 )
@@ -311,8 +305,7 @@ public class ManageProductController: BaseController
 
 
     [HttpDelete]
-    [Authorize (Roles = "Company,Admin")]
-    [Authorize (Roles = "Company,Admin")]
+
     public async Task<JsonResult> ImageRemove (int id,int postId)
     {
         try
@@ -341,12 +334,11 @@ public class ManageProductController: BaseController
 
 
     [HttpGet]
-    [Authorize (Roles = "Company,Admin")]
     public JsonResult GetSubCategories (int id)
     {
         try
         {
-            var listSubCategories = DropDownListItems.GetSubCategories( _tenantSetter.TenantStore, id );
+            var listSubCategories = DropDownListItems.GetSubCategories( id );
 
             return Json (listSubCategories);
         }
@@ -358,12 +350,11 @@ public class ManageProductController: BaseController
 
 
     [HttpGet]
-    [Authorize (Roles = "Company,Admin")]
     public async Task<IActionResult> Delete (int id)
     {
         try
         {
-            ProductViewModel productViewModel = new(_tenantSetter.TenantStore);
+            ProductViewModel productViewModel = new();
             productViewModel.ProductID = id;
 
             return View (productViewModel);
@@ -379,7 +370,6 @@ public class ManageProductController: BaseController
 
 
     [HttpGet]
-    [Authorize (Roles = "Company,Admin")]
     public async Task<IActionResult> DeleteProduct (int id,int fakeId)
     {
         try

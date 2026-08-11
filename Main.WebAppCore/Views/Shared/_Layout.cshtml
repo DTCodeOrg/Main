@@ -1,19 +1,24 @@
-﻿<!doctype html>
+﻿@{
+    var theme = TenantSetter.CurrentTenant.TenantThemeModel;
+}
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport"
           content="width=device-width, initial-scale=1">
-    <meta name="application-name" content="@TenantSetter.TenantName" />
 
+    <meta name="application-name" content="@TenantSetter.CurrentTenant.TenantName" />
+   
           
     <title>
-        @ViewBag.Title | @TenantSetter.TenantName 
+        @ViewBag.Title | @TenantSetter.CurrentTenant.TenantName 
     </title>
 
     <link rel="shortcut icon"
           href="~/favicon.ico"
           type="image/x-icon" />
+
     <link href="~/favicon.ico"
           rel="icon"
           type="image/x-icon" />
@@ -21,6 +26,7 @@
     <link rel="stylesheet"
           href="~/css/css/all.css"
           type="text/css">
+    
 
     <script type="importmap"></script>
 
@@ -30,12 +36,23 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-    <!-- 1. Inject Antiforgery Service and embed safe payload into Page Metadata -->
+   
     @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
     @{
         var tokens = Antiforgery.GetAndStoreTokens(Context);
     }
+
     <meta name="xsrf-token" content="@tokens.RequestToken" />
+
+    <style>
+            :root {
+                --brand-primary: "@theme.PrimaryColor !important";
+                --brand-secondary: "@theme.SecondaryColor  !important";
+                --brand-bg: "@theme.BackgroundColor  !important";
+                --brand-font: "@theme.FontStack  !important";
+            }
+    </style>
 
     @RenderSection( "Styles",required: false )
 

@@ -12,11 +12,11 @@ namespace Main.WebAppCore;
 [Authorize (Roles = "Admin")]
 public class ExceptionDashboardController: Controller
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly LogDbContext _dbContext;
     private readonly IExceptionLoggingService _exceptionLoggingService;
 
     public ExceptionDashboardController (
-        ApplicationDbContext dbContext,
+        LogDbContext dbContext,
         IExceptionLoggingService exceptionLoggingService)
     {
         _dbContext = dbContext;
