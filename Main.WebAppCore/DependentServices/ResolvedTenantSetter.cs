@@ -21,7 +21,7 @@ public class ResolvedTenantSetter: ITenantSetter
 
     public ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
 
-    public Guid HttpContextUserId => User?.FindFirst (ClaimTypes.NameIdentifier)?.Value is string userId ? Guid.Parse (userId) : Guid.Empty;
+    public string HttpContextUserId => User?.FindFirst (ClaimTypes.NameIdentifier)?.Value is string userId ? userId : string.Empty;
 
     public string HttpContextTenantRole
     {
@@ -50,8 +50,8 @@ public class ResolvedTenantSetter: ITenantSetter
             BaseDataModel baseDataModel = new ()
             {
                 CreatedDate = GetLocalNow ( ),
-                CreatedBy = HttpContextUserId.ToString(),
-                TenantUserId = HttpContextUserId.ToString(),
+                CreatedBy = HttpContextUserId,
+                TenantUserId = HttpContextUserId,
                 TenantCountry = AppSettings.Current.EnumCountry,
                 IsActive = true
             };

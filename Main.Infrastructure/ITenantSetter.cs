@@ -19,7 +19,7 @@ public interface ITenantSetter
         get;
     }
 
-    Guid HttpContextUserId
+    string HttpContextUserId
     {
         get;
     }

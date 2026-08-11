@@ -145,14 +145,14 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                       .ValueGeneratedNever ();
                 _ = entity.Property (e => e.Token)
                       .IsRequired ()
-                      .HasMaxLength (2000);
+                      .HasMaxLength (4000);
                 _ = entity.Property (e => e.UserId)
                       .IsRequired ()
                       .HasMaxLength (450);
                 _ = entity.Property (e => e.CreatedBy).HasMaxLength (256).IsRequired (false);
                 _ = entity.Property (e => e.ModifiedBy).HasMaxLength (256).IsRequired (false);
                 _ = entity.Property (e => e.DeletedBy).HasMaxLength (256).IsRequired (false);
-                _ = entity.Property (e => e.ReplacedByToken).HasMaxLength (2000).IsRequired (false);
+                _ = entity.Property (e => e.ReplacedByToken).HasMaxLength (4000).IsRequired (false);
                 _ = entity.Property (e => e.TenantContinent).HasMaxLength (100).IsRequired (false);
                 _ = entity.Property (e => e.TenantCountry).HasMaxLength (100).IsRequired (false);
             });

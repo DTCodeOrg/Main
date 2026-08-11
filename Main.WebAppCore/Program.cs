@@ -80,6 +80,9 @@ internal class Program
 
         _ = app.UseForwardedHeaders (forwardedHeadersOptions);
 
+        // 5. Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
+        _ = app.UseMiddleware<TenantResolverMiddleware> ();
+
         if ( app.Environment.IsDevelopment () )
         {
             _ = app.UseDeveloperExceptionPage ();
@@ -97,9 +100,6 @@ internal class Program
         // 2. Global CORS policy (Must be evaluated BEFORE static files and routing)
         _ = app.UseCors ();
 
-        // 5. Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
-        _ = app.UseMiddleware<TenantResolverMiddleware> ();
-
         // 3. Static Assets Optimization Compiler & Handlers (Bypass tenancy/session overhead)
         _ = app.UseWebOptimizer ();
         _ = app.UseStaticFiles ();
@@ -111,17 +111,20 @@ internal class Program
         _ = app.UseMiddleware<TenantSessionMiddleware> ();
         _ = app.UseSession ();
 
-        // 7. Context Optimization & Processing (Culture needs Tenant context)
         _ = app.UseCustomLocalization ();
 
-        // 8. Security Authentication Matrix (Auth MUST occur BEFORE Antiforgery & Caching)
+        // 2. Step 2: Intercept expired tokens and rotate them
+        _ = app.UseMiddleware<TokenRefreshMiddleware> ();
+
+        // 3. Step 3: Authenticate the user (Unpacks the valid JWT into context.User)
         _ = app.UseAuthentication ();
 
-        // 9. Custom refresh middleware captures expired requests before authentication evaluations happen
-        _ = app.UseMiddleware<TokenRefreshMiddleware> ();
+        // 4. Step 4: Validate cross-tenant access (Your TenantValidationMiddleware runs safely here!)
         _ = app.UseMiddleware<TenantValidationMiddleware> ();
 
+        // 5. Step 5: Authorize roles and handle antiforgery
         _ = app.UseAuthorization ();
+
         _ = app.UseAntiforgery ();
 
         // 10. Data Storage & Output Optimization Pools

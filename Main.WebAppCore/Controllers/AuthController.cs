@@ -161,30 +161,46 @@ public class AuthController: BaseController
         ApplicationUserDataModel? applicationUser = await _userAccountService.GetApplicationUser (email);
 
         bool result = await IsEmailConfirmed (email);
-
         if ( !result )
         {
-
             await SendVerifyEmail (email,HttpContext);
-
             return View (new LoginViewModel ());
         }
 
+        // This method is totally safe! It only checks the password hashes without ghost cookies.
         bool signinresult = await _userAccountService.PasswordSignInAsync (applicationUser?.Email!,loginDisplayViewModel?.Password!);
 
         if ( signinresult )
         {
-            string tenantRole = await _userAccountService.GetTenantUserRoleClaim
-            (email, _tenantSetter.ResolvedTenantId);
-
+            string tenantRole = await _userAccountService.GetTenantUserRoleClaim(email, _tenantSetter.ResolvedTenantId);
             string formatedTenantRole = $"{applicationUser?.Id ?? ""}:{_tenantSetter.ResolvedTenantId }:{tenantRole}";
 
+            // Safely declare your token timing definitions
+            int accessJwtMinutes = 15;
+            int maxRefreshDays = 7;
 
-            _ = AuthorizationExtensions.AddTenantIsolatedHeaderToken
-                (HttpContext,_tokenService,applicationUser?.Id
-                ?? "",_tenantSetter.ResolvedTenantId,tenantRole.ToString (),
-                formatedTenantRole,applicationUser?.UserName ?? "",
-                applicationUser?.Email ?? "",15,7);
+            var accessJwt = await _tokenService.GenerateAccessToken(applicationUser?.Id!, _tenantSetter.ResolvedTenantId, formatedTenantRole, tenantRole, applicationUser?.UserName!, email, accessJwtMinutes);
+            var refreshTokenStr = _tokenService.GenerateRefreshToken();
+
+            _ = await _tokenService.SaveRefreshToken (applicationUser?.Id!,_tenantSetter.ResolvedTenantId,refreshTokenStr);
+
+            var baseCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Path = "/"  ,
+                Domain = HttpContext.Request.Host.Host
+            };
+
+            //  FIX: Let the browser store the access cookie file for 7 days.
+            // Your native .AddJwtBearer middleware validation parameters (ValidateLifetime = true) 
+            // will strictly handle checking and expiring the token after 15 minutes.
+            HttpContext.Response.Cookies.Append ($".App.AccessToken.{_tenantSetter.ResolvedTenantId}",accessJwt,
+                new CookieOptions (baseCookieOptions) { Expires = DateTimeOffset.UtcNow.AddDays (maxRefreshDays) });
+
+            HttpContext.Response.Cookies.Append ($".App.RefreshToken.{_tenantSetter.ResolvedTenantId}",refreshTokenStr,
+                new CookieOptions (baseCookieOptions) { Expires = DateTimeOffset.UtcNow.AddDays (maxRefreshDays) });
 
             return RedirectToAction ("Index","Home",new
             {
@@ -192,8 +208,10 @@ public class AuthController: BaseController
             });
         }
 
+        ModelState.AddModelError (string.Empty,"Invalid login attempt.");
         return View ("Login",loginDisplayViewModel);
     }
+
 
     public async Task<bool> IsEmailConfirmed (string? email)
     {
@@ -207,30 +225,30 @@ public class AuthController: BaseController
     public async Task<IActionResult> Logout ()
     {
         Guid tenantId = _tenantSetter.ResolvedTenantId;
+        string userId = _tenantSetter.HttpContextUserId;
+
+
         var accessTokenName = $".App.AccessToken.{tenantId.ToString()}";
         string refreshTokenName = $".App.RefreshToken.{tenantId.ToString()}";
 
-        // 1. Revoke the token in the database first
-        if ( Request.Cookies.TryGetValue (refreshTokenName,out var refreshToken) )
-        {
-            _ = await _tokenService.RevokeUserRefreshTokensAsync (refreshToken,_tenantSetter.ResolvedTenantId);
-        }
 
-        // 2. Define CookieOptions that MATCH your creation settings perfectly
-        CookieOptions cookieOptions = new ()
+        _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,_tenantSetter.ResolvedTenantId);
+
+
+        var baseCookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,          // Must match your login creation setup
-            SameSite = SameSiteMode.Lax, // Must match your login creation setup
-            Path = "/" ,             // Must match your login creation setup
-            Domain = Request.Host.Host // Must match your login creation setup
+            Secure = true,
+            SameSite = SameSiteMode.Lax,
+            Path = "/",
+            Domain = HttpContext.Request.Host.Host
         };
 
-        // 3. Pass the options object into the Delete method
-        HttpContext.Response.Cookies.Delete (accessTokenName,cookieOptions);
-        HttpContext.Response.Cookies.Delete (refreshTokenName,cookieOptions);
 
-        // 4. Signal Nginx to bypass caches
+        HttpContext.Response.Cookies.Delete (accessTokenName,baseCookieOptions);
+        HttpContext.Response.Cookies.Delete (refreshTokenName,baseCookieOptions);
+
+
         Response.Headers.Append ("Cache-Control","no-cache, no-store, must-revalidate");
         Response.Headers.Append ("X-Clear-Cache","true");
 

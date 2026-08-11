@@ -15,19 +15,16 @@ namespace Main.WebAppCore;
 public class PagesController: BaseController
 {
     private readonly IPageService _pageService;
-    private readonly ITenantContext _userContext;
     private readonly ILogger<PagesController> _logger;
     private readonly ITenantSetter _tenantSetter;
 
     public PagesController (
       IPageService pageDataService,
-      ITenantContext userContext,
       ITenantSetter tenantSetter,
       ILogger<PagesController> logger
     )
     {
         _pageService = pageDataService;
-        _userContext = userContext;
         _logger = logger;
         _tenantSetter = tenantSetter;
     }
@@ -94,7 +91,7 @@ public class PagesController: BaseController
             = new( ( EnumPanelTemplate ) model.TemplateTypeID,
                                     model.PageID, model.PanelTitle  );
 
-            pagePanelDataModel.SetBaseDataModel (_userContext.GetCreateBaseDataModel ());
+            pagePanelDataModel.SetBaseDataModel (_tenantSetter.CreateMetaData);
 
             List<PostDataModel> listReferencePosts
                 = await _pageService.GetSelectProducts( );
@@ -108,7 +105,7 @@ public class PagesController: BaseController
 
             listUserSelectedPosts.ForEach (selectedPost =>
             {
-                selectedPost.SetBaseDataModel (_userContext.GetCreateBaseDataModel ());
+                selectedPost.SetBaseDataModel (_tenantSetter.CreateMetaData);
                 pagePanelDataModel.CreatePost (selectedPost);
             });
 
@@ -182,7 +179,7 @@ public class PagesController: BaseController
                 });
             }
 
-            BaseDataModel baseDataModel = _userContext.GetUpdateBaseDataModel ();
+            BaseDataModel baseDataModel = _tenantSetter.CreateMetaData;
 
             bool result = await _pageService.UpdatePanelsOrderAsync ( listPanelPositionDataModel, baseDataModel, pageId );
 

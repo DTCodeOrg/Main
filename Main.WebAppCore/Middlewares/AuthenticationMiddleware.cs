@@ -28,7 +28,7 @@ public static class AuthenticationMiddleware
                 (Encoding.UTF8.GetBytes (configuration["Jwt:Key"]!)),
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                ValidateLifetime = false,
+                ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
                 RoleClaimType = "UserRole",
                 NameClaimType = "UserName"
@@ -38,9 +38,17 @@ public static class AuthenticationMiddleware
             {
                 OnMessageReceived = context =>
                 {
+                    //var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
+                    //var accessCookieName = $".App.AccessToken.{tenantSetter.ResolvedTenantId}";
+                    //if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) )
+                    //{
+                    //    //  FIX: Hand the raw token string directly to the native middleware engine.
+                    //    // This will unpack the signature, map your claims, and set context.Success() automatically.
+
+                    //}
+
                     var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
                     var accessCookieName = $".App.AccessToken.{tenantSetter.ResolvedTenantId}";
-
                     if ( context.Request.Cookies.TryGetValue (accessCookieName,out var accessToken) )
                     {
                         var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
@@ -51,6 +59,7 @@ public static class AuthenticationMiddleware
                         if ( validateResult != null )
                         {
                             // This tells the framework: "Stop looking, this user is authenticated!"
+                            // context.Token = accessToken;
                             context.Principal = validateResult;
                             context.Success ();
                         }
