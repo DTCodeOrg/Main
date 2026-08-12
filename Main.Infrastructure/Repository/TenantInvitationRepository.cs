@@ -1,7 +1,7 @@
 using Main.Common;
 using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
-using Main.Model.DomainModel;
+using Main.Model.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Main.Repository;

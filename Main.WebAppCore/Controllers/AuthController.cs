@@ -5,6 +5,7 @@ using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.Services;
 using Main.WebAppCore.Controllers.Extensions;
+using Main.WebAppCore.Filters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -37,6 +38,8 @@ public class AuthController: BaseController
     }
 
     // Registration Flow 1: User accesses the registration page
+    [HttpGet]
+    [TypeFilter (typeof (TransactionAttribute))]
     public IActionResult Registration ()
     {
         var objModel = new RegistrationViewModel();
@@ -46,6 +49,7 @@ public class AuthController: BaseController
 
     // Registration Flow 2: User submits the registration form.
     [HttpPost]
+    [TypeFilter (typeof (TransactionAttribute))]
     public async Task<IActionResult> Registration (RegistrationViewModel registrationViewModel)
     {
         if ( ModelState.IsValid )

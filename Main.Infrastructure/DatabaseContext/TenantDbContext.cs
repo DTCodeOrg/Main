@@ -1,5 +1,7 @@
-﻿using Domain.Model;
-using Main.Common;
+﻿using Main.Common;
+using Main.Model.Base;
+using Main.Model.Identity;
+using Main.Model.Tenant;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Linq.Expressions;
@@ -70,9 +72,8 @@ public class TenantDbContext: DbContext
         get; set;
     }
 
-
-
     public Guid CurrentTenantId => _tenantSetter?.ResolvedTenantId ?? Guid.Empty;
+
     protected override void OnModelCreating (ModelBuilder modelBuilder)
     {
         base.OnModelCreating (modelBuilder);
@@ -108,7 +109,6 @@ public class TenantDbContext: DbContext
         var parameter = Expression.Parameter(type, "e");
         var property = Expression.Property(parameter, nameof(IMustHaveTenant.MyTenantId));
 
-        // Points to the transparent 'CurrentTenantId' Guid property on 'this' DbContext instance
         var dbContextConst = Expression.Constant(this);
         var tenantIdValue = Expression.Property(dbContextConst, nameof(CurrentTenantId));
 
@@ -192,6 +192,7 @@ public class TenantDbContext: DbContext
         _ = modelBuilder.Entity<AllowedValue> ()
           .HasIndex (ut => ut.MyTenantId);
     }
+
     private void ApplyBaseDataTenantId ()
     {
         Guid ResolvedTenantId = _tenantSetter.CurrentTenant.ResolvedTenantId;
@@ -210,7 +211,7 @@ public class TenantDbContext: DbContext
         .Where(e => e.Entity is IMustHaveTenant &&
               (e.State == EntityState.Added
                || e.State == EntityState.Modified
-               || e.State == EntityState.Detached)).ToArray();
+               || e.State == EntityState.Deleted)).ToArray();
 
         foreach ( var entry in entries )
         {
@@ -223,7 +224,7 @@ public class TenantDbContext: DbContext
             }
             else if ( entry.State == EntityState.Deleted )
             {
-                tenantEntity.ModifyParameters (deleteDataModel);
+                tenantEntity.DeleteParameters (deleteDataModel);
             }
             else if ( entry.State == EntityState.Modified )
             {

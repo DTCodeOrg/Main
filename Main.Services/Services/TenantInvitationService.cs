@@ -1,9 +1,8 @@
-using Domain.Model;
 using Main.Common;
 using Main.Infrastructure;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
-using Main.Model.DomainModel;
+using Main.Model.Identity;
 
 namespace Main.Services;
 

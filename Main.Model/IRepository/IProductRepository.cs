@@ -1,4 +1,4 @@
-﻿using Domain.Model;
+﻿using Main.Model.Tenant;
 namespace Main.IRepository;
 
 public interface IProductRepository

@@ -35,8 +35,6 @@ internal class Program
         _ = builder.Host.UseSerilog ();
         _ = builder.Services.AddExceptionLoggingMiddleware (builder.Configuration);
 
-
-
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
@@ -54,6 +52,8 @@ internal class Program
         {
             _ = pipeline.CompileLessFiles ();
         });
+
+        _ = builder.Services.AddControllersWithViews ();
 
         _ = builder.Services.AddControllers (options =>
         {

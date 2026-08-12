@@ -1,7 +1,7 @@
 ﻿using DataTransferModel;
-using Domain.Model;
 using Main.Common;
 using Main.IRepository;
+using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
 namespace Main.Services;
 

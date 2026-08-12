@@ -1,6 +1,6 @@
-﻿using Domain.Model;
-using Main.Infrastructure.DatabaseContext;
+﻿using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
+using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,0 +1,105 @@
+﻿using Main.Common;
+
+namespace Main.Model.Base;
+
+public class BaseEntity: IMustHaveTenant
+{
+
+    public BaseEntity ()
+    {
+    }
+
+    public string? TenantContinent
+    {
+        get;
+        set;
+    }
+    public Guid MyTenantId
+    {
+        get;
+        set;
+    }
+    public Country? TenantCountry
+    {
+        get;
+        set;
+    }
+
+    public void CreateParameters (BaseDataModel modelBase)
+    {
+        CreatedBy = modelBase.CreatedBy;
+        CreatedDate = modelBase.CreatedDate;
+
+        ModifiedBy = null;
+        ModifiedDate = null;
+
+        DeletedBy = null;
+        DeletedDate = null;
+
+        IsActive = true;
+
+        AddSessionParameters (modelBase);
+    }
+
+    public void ModifyParameters (BaseDataModel modelBase)
+    {
+        ModifiedBy = modelBase.ModifiedBy;
+        ModifiedDate = modelBase.ModifiedDate;
+        DeletedDate = null;
+        DeletedBy = null;
+        IsActive = true;
+
+        AddSessionParameters (modelBase);
+    }
+
+    public void DeleteParameters (BaseDataModel modelBase)
+    {
+        DeletedBy = modelBase.DeletedBy;
+        DeletedDate = modelBase.DeletedDate;
+        IsActive = false;
+
+        AddSessionParameters (modelBase);
+    }
+
+    public void AddSessionParameters (BaseDataModel modelBase)
+    {
+        TenantCountry = modelBase.TenantCountry;
+        TenantContinent = modelBase.TenantContinent?.Trim ();
+    }
+
+    public string? CreatedBy
+    {
+        get; set;
+    }
+
+    public string? ModifiedBy
+
+    {
+        get; set;
+    }
+
+    public string? DeletedBy
+    {
+        get; set;
+    }
+
+    public DateTime? CreatedDate
+    {
+        get; set;
+    }
+
+    public DateTime? ModifiedDate
+    {
+        get; set;
+    }
+
+    public DateTime? DeletedDate
+    {
+        get; set;
+    }
+
+    public bool IsActive
+    {
+        get; set;
+    }
+}

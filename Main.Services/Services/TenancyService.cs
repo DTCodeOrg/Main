@@ -1,6 +1,6 @@
-﻿using Domain.Model;
-using Main.Common;
+﻿using Main.Common;
 using Main.IRepository;
+using Main.Model.Identity;
 
 namespace Main.Services.Services;
 

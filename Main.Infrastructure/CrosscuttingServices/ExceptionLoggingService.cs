@@ -1,6 +1,6 @@
-using Domain.Model;
 using Main.Infrastructure.DatabaseContext;
 using Main.Infrastructure.ICrosscuttingServices;
+using Main.Model.Log;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -56,7 +56,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
                 .OrderByDescending(e => e.CreatedAt)
                 .FirstOrDefaultAsync();
 
-            ExceptionLog exceptionLog;
+            ExceptionLogs exceptionLog;
 
             if ( existingLog != null &&
                 ( DateTime.UtcNow - existingLog.CreatedAt ).TotalHours < 1 )
@@ -69,7 +69,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
             else
             {
                 // Create new exception log entry
-                exceptionLog = new ExceptionLog
+                exceptionLog = new ExceptionLogs
                 {
                     ExceptionType = exception.GetType ().Name,
                     StatusCode = statusCode,
@@ -109,7 +109,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
     }
 
 
-    public async Task<List<ExceptionLog>> GetExceptionsAsync (
+    public async Task<List<ExceptionLogs>> GetExceptionsAsync (
         int? statusCode = null,
         string? errorCode = null,
         DateTime? startDate = null,
@@ -191,7 +191,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
     }
 
 
-    public async Task<ExceptionLog?> GetExceptionByIdAsync (long id)
+    public async Task<ExceptionLogs?> GetExceptionByIdAsync (long id)
     {
         return await _LogContext.ExceptionLogs
             .AsNoTracking ()

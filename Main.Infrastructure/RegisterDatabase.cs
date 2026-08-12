@@ -1,5 +1,6 @@
 ﻿using Domain.Model;
 using Main.Infrastructure.DatabaseContext;
+using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -61,6 +62,9 @@ public static class RegisterDatabase
 
         _ = services.Configure<DataProtectionTokenProviderOptions>
         (options => options.TokenLifespan = TimeSpan.FromHours (2));
+
+        // Crucial: Register Unit of Work
+        _ = services.AddScoped<IUnitOfWork,UnitOfWork> ();
 
         return services;
     }

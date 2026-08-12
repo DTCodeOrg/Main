@@ -1,7 +1,8 @@
 ﻿using DataTransferModel;
-using Domain.Model;
 using Main.Common;
 using Main.IRepository;
+using Main.Model.Identity;
+using Main.Model.Tenant;
 using Main.Services.Extensions;
 namespace Main.Services;
 

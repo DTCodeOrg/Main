@@ -1,7 +1,7 @@
-﻿using Domain.Model;
-using Main.Common;
+﻿using Main.Common;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
+using Main.Model.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

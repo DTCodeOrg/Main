@@ -1,6 +1,6 @@
-﻿using Domain.Model;
-using Main.Common;
-using Main.Model.DomainModel;
+﻿using Main.Common;
+using Main.Model.Base;
+using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -109,6 +109,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
     private void ConfigureEntitiesWithFluent (ModelBuilder builder)
     {
+        _ = builder.Entity<ApplicationUser> ().ToTable ("ApplicationUsers");
+
         _ = builder.Entity<TenantInvitation> (static entity =>
             {
                 _ = entity.Property (t => t.Email)
