@@ -19,7 +19,7 @@ public class TokenRepository: ITokenRepository
         // Inside your TokenService
         var existingToken = await _context.ApplicationUserRefreshTokens
             .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Token == token && t.TenantId == tenantId);
+            .FirstOrDefaultAsync(t => t.Token == token && t.TenantId == tenantId && !t.IsRevoked);
 
         if ( existingToken == null )
         {
@@ -62,7 +62,7 @@ public class TokenRepository: ITokenRepository
     {
         UserRefreshToken? userRefreshToken =
         await _context.ApplicationUserRefreshTokens.FirstOrDefaultAsync<UserRefreshToken>
-        (a => a.UserId == userId && a.TenantId == tenantId);
+        (a => a.UserId == userId && a.TenantId == tenantId && !a.IsRevoked);
 
         return userRefreshToken;
     }
