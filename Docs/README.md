@@ -1,3 +1,4 @@
+[Watch This .NET Multi-Tenant SaaS App Run Locally!](https://1drv.ms/v/c/93d70fb51193cb6b/IQA-f-V2ZcA3RKPQmD1k3q_QAaFFDqIFFMMyGS7K9kcHEQ8?e=vbLY54)
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
 
