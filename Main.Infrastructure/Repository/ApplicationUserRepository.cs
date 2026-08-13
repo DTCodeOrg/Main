@@ -37,7 +37,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
         if ( applicationUser != null && identityRole != null )
         {
-            var identiyUserRole = new IdentityUserRole<string> ()
+            var identiyUserRole = new GlobalIentityRole ()
             {
                 RoleId = applicationUser.Id.ToString (),
                 UserId = identityRole.Id.ToString ()

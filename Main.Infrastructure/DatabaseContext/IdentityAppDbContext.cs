@@ -4,6 +4,7 @@ using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Main.Infrastructure.DatabaseContext;
 
@@ -26,34 +27,31 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         new Guid(1, 0, 0, new byte[8]),   // Tenant 1                              // index 0
         new Guid(2, 0, 0, new byte[8]),   // Tenant 2                              // index 1
         new Guid(3, 0, 0, new byte[8]),   // IdentityRole (ID)                     // index 2
-        new Guid(1, 0, 0, new byte[8]),   // IdentityRole (ID)                     // index 3
-        new Guid(2, 0, 0, new byte[8]),   // Global Admin (ID of User)             // index 4
-        new Guid(3, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 5
-        new Guid(4, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 6
-        new Guid(5, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 7
-        new Guid(6, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 8
-        new Guid(7, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 9
-        new Guid(8, 0, 0, new byte[8]),   //                                       // index 10
-        new Guid(9, 0, 0, new byte[8]),   //                                       // index 11
-        new Guid(10, 0, 0, new byte[8]),  //                                       // index 12
-        new Guid(11, 0, 0, new byte[8]),  //                                       // index 13
-        new Guid(12, 0, 0, new byte[8]),  //                                       // index 14
-        new Guid(13, 0, 0, new byte[8]),  //                                       // index 15
-        new Guid(14, 0, 0, new byte[8]),  // (Tenant 1 Theme)                      // index 16
-        new Guid(15, 0, 0, new byte[8])   // (Tenant 2 Theme)                      // index 17
+        new Guid(4, 0, 0, new byte[8]),   // IdentityRole (ID)                     // index 3
+        new Guid(5, 0, 0, new byte[8]),   // Global Admin (ID of User)             // index 4
+        new Guid(6, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 5
+        new Guid(7, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 6
+        new Guid(8, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 7
+        new Guid(9, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 8
+        new Guid(10, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 9
+        new Guid(11, 0, 0, new byte[8]),   //                                       // index 10
+        new Guid(12, 0, 0, new byte[8]),   //                                       // index 11
+        new Guid(13, 0, 0, new byte[8]),  //                                       // index 12
+        new Guid(14, 0, 0, new byte[8]),  //                                       // index 13
+        new Guid(15, 0, 0, new byte[8]),  //                                       // index 14
+        new Guid(16, 0, 0, new byte[8]),  //                                       // index 15
+        new Guid(17, 0, 0, new byte[8]),  // (Tenant 1 Theme)                      // index 16
+        new Guid(18, 0, 0, new byte[8]),  // (Tenant 2 Theme)                      // index 17
+        new Guid(19, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 18
+        new Guid(20, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 19
+        new Guid(21, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 20
+        new Guid(22, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 21
+        new Guid(23, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 22
+        new Guid(24, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 23
+        new Guid(25, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 24
     };
 
     public DbSet<ApplicationUser> IdentityUsers
-    {
-        get; set;
-    }
-
-    public DbSet<IdentityRole> IdentityRoles
-    {
-        get; set;
-    }
-
-    public DbSet<IdentityUserRole<string>> IdentityUserRoles
     {
         get; set;
     }
@@ -120,8 +118,6 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
     private void ConfigureEntitiesWithFluent (ModelBuilder builder)
     {
         _ = builder.Entity<ApplicationUser> ().ToTable ("IdentityUsers");
-        _ = builder.Entity<IdentityRole> ().ToTable ("IdentityRoles");
-        _ = builder.Entity<IdentityUserRole<string>> ().ToTable ("IdentityUserRoles");
 
         _ = builder.Entity<TenantInvitation> (static entity =>
             {
@@ -174,14 +170,14 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
     public void SeedData (ModelBuilder builder)
     {
-        Guid IdentityRoleId1 = guidArray[2];
-        Guid IdentityRoleId2 = guidArray[3];
-        GlobalIdentityRoles (builder,IdentityRoleId1,IdentityRoleId2);
-
         Guid TenantId1 = guidArray[0];
         Guid TenantId2 = guidArray[1];
         TenantSeed1 (builder,TenantId1);
         TenantSeed2 (builder,TenantId2);
+
+        Guid IdentityRoleId1 = guidArray[2];
+        Guid IdentityRoleId2 = guidArray[3];
+        GlobalIdentityRoles (builder,IdentityRoleId1,IdentityRoleId2);
 
         Guid ThemeId1 = guidArray[16];
         Guid ThemeId2 = guidArray[17];
@@ -189,6 +185,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         Tenant2ThemeSeed (builder,ThemeId2,TenantId2);
 
         Guid UserIdGlobal1 = guidArray[4];
+
+        _ = guidArray[18];
         var adminGlobalEmail = "admin@system.com";
         GlobalUsers (builder,UserIdGlobal1,adminGlobalEmail,IdentityRoleId1);
 
@@ -225,7 +223,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 TenantId = tenantId1 ,
                 TenantRole = "Admin",
                 TenantUserRoleId = 1,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                GlobalRoleId = guidArray[19].ToString()
             },
 
             new {
@@ -235,7 +234,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 TenantId = tenantId1 ,
                 TenantRole = "Manager",
                 TenantUserRoleId = 2,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                GlobalRoleId = guidArray[20].ToString()
             },
 
             new
@@ -246,7 +246,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 TenantId = tenantId1 ,
                 TenantRole = "Member",
                 TenantUserRoleId = 3,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                GlobalRoleId = guidArray[21].ToString()
             },
 
             new {
@@ -256,7 +257,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 TenantId = tenantId2  ,
                 TenantRole = "Admin",
                 TenantUserRoleId = 4,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                GlobalRoleId = guidArray[22].ToString()
             },
 
             new {
@@ -266,7 +268,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 TenantId = tenantId2  ,
                 TenantRole = "Manager",
                 TenantUserRoleId = 5,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                GlobalRoleId = guidArray[23].ToString()
             },
 
             new {
@@ -276,7 +279,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 TenantId = tenantId2 ,
                 TenantRole = "Member",
                 TenantUserRoleId = 6,
-                EmailConfirmed = true
+                EmailConfirmed = true  ,
+                GlobalRoleId = guidArray[24].ToString()
             }
         };
 
@@ -294,12 +298,12 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
             user.PasswordHash = hasher.HashPassword (user,"Focus@1nm");
             _ = builder.Entity<ApplicationUser> ().HasData (user);
 
-            _ = builder.Entity<IdentityUserRole<string>> ().HasData (
-           new IdentityUserRole<string>
-           {
-               RoleId = config.RoleId.ToString (),
-               UserId = config.UserId.ToString ()
-           });
+            _ = builder.Entity<GlobalIentityRole> ().HasData (
+                new GlobalIentityRole ()
+                {
+                    RoleId = config.RoleId.ToString (),
+                    UserId = config.UserId.ToString ()
+                });
 
             _ = builder.Entity<TenantUserRole> ().HasData
                 (new TenantUserRole (config.TenantUserRoleId)
@@ -327,8 +331,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
         _ = builder.Entity<ApplicationUser> ().HasData (newAdmin);
 
-        _ = builder.Entity<IdentityUserRole<string>> ().HasData (
-       new IdentityUserRole<string>
+        _ = builder.Entity<GlobalIentityRole> ().HasData (
+       new GlobalIentityRole ()
        {
            RoleId = identityRoleId1.ToString (),
            UserId = UserIdGlobal1.ToString ()

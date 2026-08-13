@@ -18,7 +18,7 @@ public class Tenant: RootBaseEntity
 
     public Tenant ()
     {
-
+        TenantId = Guid.NewGuid ();
     }
 
     public Tenant (HostType hostType)
