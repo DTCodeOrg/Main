@@ -55,9 +55,8 @@ public class AccountService: IAccountService
             {
                 TenantName = userAccountDataModel.TenantName,
                 HostType = HostType.SubDomain,
-                Host = userAccountDataModel.TenantName.Replace(" ", "-").ToLower()
+                Host = StringRelated.GetTrimmedRemovedSpaseString(  userAccountDataModel.UserName.Trim())
             };
-
 
             tenant = await _tenantRepository.CreateTenantAsync (tenant);
 

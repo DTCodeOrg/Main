@@ -24,7 +24,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
     {
         ApplicationUser? applicationUser = await FindByEmailAsync (email);
 
-        var result = await _userManager.AddToRoleAsync (applicationUser!,roleName);
+        IdentityResult result = await _userManager.AddToRoleAsync (applicationUser!,roleName);
 
         return result.Succeeded == true;
     }
@@ -48,7 +48,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
     public async Task<ApplicationUser?> FindByEmailAsync (string email)
     {
         ApplicationUser?  applicationUser
-            = await _idetityContext.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            = await _idetityContext.IdentityUsers.FirstOrDefaultAsync<ApplicationUser>
             (a => a.Email == email.ToString() );
 
         return applicationUser;
@@ -57,7 +57,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
     public async Task<ApplicationUser?> FindByNameIdAsync (string id)
     {
         ApplicationUser?  applicationUser
-            = await _idetityContext.ApplicationUsers.FirstOrDefaultAsync<ApplicationUser>
+            = await _idetityContext.IdentityUsers.FirstOrDefaultAsync<ApplicationUser>
             (a => a.Id == id.ToString() );
 
         return applicationUser;
@@ -193,7 +193,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<ApplicationUser?> ApplicationUsers (string userId)
     {
-        ApplicationUser? user = await _idetityContext.ApplicationUsers
+        ApplicationUser? user = await _idetityContext.IdentityUsers
         .FirstOrDefaultAsync<ApplicationUser>(a => a.Id == userId);
 
         return user;
@@ -201,7 +201,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<List<ApplicationUser?>> ApplicationUsers ()
     {
-        List<ApplicationUser?> userList = await _idetityContext.ApplicationUsers
+        List<ApplicationUser?> userList = await _idetityContext.IdentityUsers
         .ToListAsync<ApplicationUser?>();
 
         return userList;
