@@ -13,18 +13,42 @@ public class ThemeService: IThemeService
         _themeRepository = themeRepository;
     }
 
-    public async Task<TenantThemeModel> GetTenantThemeAsync (Guid themeId)
+    public async Task<TenantThemeModel?> GetThemeByTenantAsync (Guid tenantId)
     {
-        TenantTheme theme = await _themeRepository.GetTenantThemeAsync (themeId);
+        TenantTheme? theme = await _themeRepository.GetThemeByTenantAsync (tenantId);
 
-        TenantThemeModel themeDataModel = new()
+        if ( theme == null )
+        {
+            return null;
+        }
+
+        TenantThemeModel themeDataModel = new ()
         {
             Id = theme.Id,
             PrimaryColor = theme.PrimaryColor,
             SecondaryColor = theme.SecondaryColor,
             BackgroundColor = theme.BackgroundColor,
             FontStack = theme.FontStack,
-            LogoFileName = theme.LogoFileName
+            LogoFilePath = theme.LogoFilePath,
+            TenantId = theme.TenantId
+        };
+
+        return themeDataModel;
+    }
+
+    public async Task<TenantThemeModel> GetTenantThemeAsync (Guid themeId)
+    {
+        TenantTheme themeEntity = await _themeRepository.GetTenantThemeAsync (themeId);
+
+        TenantThemeModel themeDataModel = new()
+        {
+            Id = themeEntity.Id,
+            PrimaryColor = themeEntity.PrimaryColor,
+            SecondaryColor = themeEntity.SecondaryColor,
+            BackgroundColor = themeEntity.BackgroundColor,
+            FontStack = themeEntity.FontStack,
+            LogoFilePath = themeEntity.LogoFilePath,
+            TenantId = themeEntity.TenantId
         };
 
         return themeDataModel;
@@ -38,7 +62,7 @@ public class ThemeService: IThemeService
         existingTheme.SecondaryColor = theme.SecondaryColor;
         existingTheme.BackgroundColor = theme.BackgroundColor;
         existingTheme.FontStack = theme.FontStack;
-        existingTheme.LogoFileName = theme.LogoFileName;
+        existingTheme.LogoFilePath = theme.LogoFilePath;
 
         await _themeRepository.UpdateTenantThemeAsync (existingTheme);
     }

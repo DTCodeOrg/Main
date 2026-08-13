@@ -44,48 +44,30 @@ public class AccountService: IAccountService
     {
         ApplicationUser userIdentityEntity = CreateApplicationUser(userAccountDataModel);
 
-        bool resultCreateIdentityUser = await
-        _userRepository.CreateAsync(userIdentityEntity, userAccountDataModel.Password);
+        _ = await
+        _userRepository.CreateAsync (userIdentityEntity,userAccountDataModel.Password);
 
-        if ( resultCreateIdentityUser )
+        _ = await _userRepository.AddToRoleAsync (userIdentityEntity.Email!);
+
+        Tenant? tenant = new ()
         {
-            _ = await _userRepository.AddToRoleAsync (userIdentityEntity.Email!,"User");
+            TenantName = userAccountDataModel.TenantName,
+            HostType = HostType.SubDomain,
+            Host = StringRelated.GetTrimmedRemovedSpaseString(userAccountDataModel.UserName.Trim())
+        };
 
-            Tenant? tenant = new ()
-            {
-                TenantName = userAccountDataModel.TenantName,
-                HostType = HostType.SubDomain,
-                Host = StringRelated.GetTrimmedRemovedSpaseString(  userAccountDataModel.UserName.Trim())
-            };
+        Tenant? tenantEntity = await _tenantRepository.CreateTenantAsync (tenant);
 
-            tenant = await _tenantRepository.CreateTenantAsync (tenant);
-
-            if ( tenant == null )
-            {
-                IdentityError[] errors = [];
-                IdentityResult result = IdentityResult
-                    .Failed( errors );
-                return result;
-            }
-
-
-            TenantUserRole tenantUser = new ()
-            {
-                UserId =  userIdentityEntity.Id ,
-                TenantRole = "Admin"
-            };
-
-            await _tenantUserRepository.AddAsync (tenantUser);
-
-            return IdentityResult.Success;
-        }
-        else
+        TenantUserRole tenantUser = new()
         {
-            IdentityError[] errors = [];
-            IdentityResult result = IdentityResult
-                .Failed( errors );
-            return result;
-        }
+            TenantId = tenantEntity?.TenantId ?? Guid.Empty,
+            UserId =  userIdentityEntity.Id,
+            TenantRole = "Admin"
+        };
+
+        _ = await _tenantUserRepository.AddAsync (tenantUser);
+
+        return IdentityResult.Success;
     }
 
 

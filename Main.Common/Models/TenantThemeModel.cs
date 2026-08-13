@@ -41,7 +41,7 @@ public class TenantThemeModel
         get; set;
     }
 
-    public string? LogoFileName
+    public string? LogoFilePath
     {
         get; set;
     }

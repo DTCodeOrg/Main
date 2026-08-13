@@ -14,10 +14,11 @@ public class TenantUserRepository: ITenantUserRepository
         _db = db;
     }
 
-    public async Task AddAsync (TenantUserRole membership,CancellationToken ct = default)
+    public async Task<bool> AddAsync (TenantUserRole membership,CancellationToken ct = default)
     {
         _ = _db.TenantUserRoles.Add (membership);
-        _ = await _db.SaveChangesAsync (ct);
+        int result = await _db.SaveChangesAsync (ct);
+        return result > 0;
     }
 
     public async Task<bool> ExistsAsync (Guid tenantId,string userId,CancellationToken ct = default)

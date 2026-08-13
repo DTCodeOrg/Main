@@ -34,9 +34,10 @@ public class TenantRepository: ITenantRepository
         if ( tenant != null )
         {
             _ = _tenantContext.Tenants.Add (tenant);
-            _ = await _tenantContext.SaveChangesAsync ();
+            int result  = await _tenantContext.SaveChangesAsync ();
+            return result > 0 ? tenant : null;
         }
 
-        return tenant;
+        return null;
     }
 }

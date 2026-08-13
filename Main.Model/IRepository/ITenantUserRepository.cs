@@ -4,7 +4,7 @@ namespace Main.IRepository;
 
 public interface ITenantUserRepository
 {
-    Task AddAsync (TenantUserRole membership,CancellationToken ct = default);
+    Task<bool> AddAsync (TenantUserRole membership,CancellationToken ct = default);
 
     Task<bool> ExistsAsync (Guid tenantId,string userId,CancellationToken ct = default);
 

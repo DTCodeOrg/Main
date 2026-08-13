@@ -9,7 +9,7 @@ public class TenantUserRole: RootBaseEntity
 {
     public TenantUserRole (int id)
     {
-        TenantUserId = id;
+        TenantUserRoleId = id;
 
         TenantCountry = Country.Bangladesh;
 
@@ -21,7 +21,7 @@ public class TenantUserRole: RootBaseEntity
     }
 
     [Key]
-    public int TenantUserId
+    public int TenantUserRoleId
     {
         get; set;
     }

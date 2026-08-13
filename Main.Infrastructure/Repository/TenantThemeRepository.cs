@@ -14,28 +14,43 @@ public class ThemeRepository: IThemeRepository
         _context = context;
     }
 
-    public async Task<TenantTheme> GetTenantThemeAsync (Guid themeId)
+    public async Task<TenantTheme?> GetThemeByTenantAsync (Guid tenantId)
     {
-        var TenantTheme = await _context.TenantThemes.FirstOrDefaultAsync (t => t.Id == themeId);
+        var tenantTheme =
+            await _context.TenantThemes.FirstOrDefaultAsync (t => t.TenantId == tenantId);
 
-        if ( TenantTheme == null )
+        if ( tenantTheme == null )
         {
-            TenantTheme = new TenantTheme
+            return null;
+        }
+
+        return tenantTheme!;
+    }
+
+    public async Task<TenantTheme> GetTenantThemeAsync (Guid tenantId)
+    {
+        var tenantTheme = await _context.TenantThemes.FirstOrDefaultAsync
+        (t => t.TenantId == tenantId);
+
+        if ( tenantTheme == null )
+        {
+            tenantTheme = new TenantTheme
             {
                 Id = Guid.NewGuid (),
+                TenantId = tenantId,
                 PrimaryColor = "#000000",
                 SecondaryColor = "#FFFFFF",
                 BackgroundColor = "#F0F0F0",
                 FontStack = "Arial, sans-serif",
-                LogoFileName = null
+                LogoFilePath = null
             };
 
-            _ = _context.TenantThemes.Add (TenantTheme);
+            _ = _context.TenantThemes.Add (tenantTheme);
 
             _ = await _context.SaveChangesAsync ();
         }
 
-        return TenantTheme;
+        return tenantTheme;
     }
 
     public async Task UpdateTenantThemeAsync (TenantTheme theme)
@@ -44,5 +59,4 @@ public class ThemeRepository: IThemeRepository
 
         _ = await _context.SaveChangesAsync ();
     }
-
 }

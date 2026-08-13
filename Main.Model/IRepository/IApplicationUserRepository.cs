@@ -7,7 +7,7 @@ public interface IApplicationUserRepository
 
     Task<ApplicationUser?> ApplicationUsers (string userId);
 
-    Task<bool> AddToRoleAsync (string email,string roleName);
+    Task<bool> AddToRoleAsync (string email);
 
     Task<bool> AddToTenantRoleAsync (string email,Guid tenantId,string roleName);
 

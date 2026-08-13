@@ -20,13 +20,36 @@ public class ApplicationUserRepository: IApplicationUserRepository
         _idetityContext = context;
     }
 
-    public async Task<bool> AddToRoleAsync (string email,string roleName)
+    private async Task<IdentityRole?> GetTenantIdentityRole ()
+    {
+        IdentityRole? idetityRole = await _idetityContext
+            .IdentityRoles
+            .Where (a => a.Name == "User")
+            .FirstOrDefaultAsync();
+
+        return idetityRole;
+    }
+
+    public async Task<bool> AddToRoleAsync (string email)
     {
         ApplicationUser? applicationUser = await FindByEmailAsync (email);
+        IdentityRole? identityRole = await GetTenantIdentityRole ();
 
-        IdentityResult result = await _userManager.AddToRoleAsync (applicationUser!,roleName);
+        if ( applicationUser != null && identityRole != null )
+        {
+            var identiyUserRole = new IdentityUserRole<string> ()
+            {
+                RoleId = applicationUser.Id.ToString (),
+                UserId = identityRole.Id.ToString ()
+            };
 
-        return result.Succeeded == true;
+            _ = _idetityContext.IdentityUserRoles.Add (identiyUserRole);
+            int result = _idetityContext.SaveChanges();
+
+            return result > 0;
+        }
+
+        return false;
     }
 
     public async Task<bool> AddToTenantRoleAsync (string email,Guid tenantId,string roleName)
@@ -47,7 +70,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<ApplicationUser?> FindByEmailAsync (string email)
     {
-        ApplicationUser?  applicationUser
+        ApplicationUser? applicationUser
             = await _idetityContext.IdentityUsers.FirstOrDefaultAsync<ApplicationUser>
             (a => a.Email == email.ToString() );
 

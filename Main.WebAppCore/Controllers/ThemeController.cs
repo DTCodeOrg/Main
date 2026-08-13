@@ -30,7 +30,7 @@ public class ThemeController: Controller
 
         var viewModel = new UpdateLogoViewModel
         {
-            CurrentLogoFileName = theme?.LogoFileName
+            CurrentLogoFileName = theme?.LogoFilePath
         };
 
         return View (viewModel);
@@ -59,7 +59,7 @@ public class ThemeController: Controller
 
         if ( theme != null )
         {
-            theme.LogoFileName = fileName;
+            theme.LogoFilePath = fileName;
             await _themeService.UpdateTenantThemeAsync (theme);
         }
 

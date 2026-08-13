@@ -1,5 +1,6 @@
 ﻿using Main.Model.Base;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Main.Model.Identity;
 
@@ -35,9 +36,20 @@ public class TenantTheme: RootBaseEntity
         get; set;
     }
 
-    public string? LogoFileName
+    public string? LogoFilePath
     {
         get; set;
     }
 
+    public Guid TenantId
+    {
+        get; set;
+    } = Guid.Empty;
+
+
+    [ForeignKey ("TenantId")]
+    public virtual Tenant Tenant
+    {
+        get; set;
+    }
 }

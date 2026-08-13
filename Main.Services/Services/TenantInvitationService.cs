@@ -35,10 +35,9 @@ public class TenantInvitationService: ITenantInvitationService
     {
         Tenant? tenant = await _tenantRepository.GetTenantByIdAsync (tenantId);
 
-        string? host = tenant?.Host != null ? tenant.Host : "";
+        string host = tenant?.Host ?? string.Empty;
 
-        _ = tenant?.TenantName != null ? tenant.TenantName : "";
-
+        _ = tenant?.TenantName ?? string.Empty;
 
         email = email.Trim ().ToLowerInvariant ();
 
@@ -62,7 +61,7 @@ public class TenantInvitationService: ITenantInvitationService
             ExpiresOn = DateTime.UtcNow.AddDays(7)
         };
 
-        await _invitationRepository.AddAsync (invitation,ct);
+        _ = await _invitationRepository.AddAsync (invitation,ct);
 
         var acceptUrl = $"https://{host}/account/accept-invitation?token={token}";
         var emailBody = InvitationEmailTemplate.BuildInvitationEmail (
@@ -79,6 +78,7 @@ public class TenantInvitationService: ITenantInvitationService
     public async Task<bool> AcceptInvitationAsync (string token,string? fullName,CancellationToken ct = default)
     {
         var invitation = await _invitationRepository.GetByTokenAsync(token, ct);
+
         if ( invitation is null || invitation.Status != InvitationStatus.Pending || invitation.ExpiresOn < DateTime.UtcNow )
         {
             return false;
@@ -97,26 +97,21 @@ public class TenantInvitationService: ITenantInvitationService
                 EmailConfirmed = true
             };
 
-            var createResult = await _userRepository.CreateAsync(user, "Msainc@1nm");
+            _ = await _userRepository.CreateAsync (user,"Msainc@1nm");
 
-            if ( !createResult )
-            {
-                return false;
-                //throw new Exception (string.Join (", ",createResult.Errors.Select (e => e.Description)));
-            }
-
-            _ = await _userRepository.AddToRoleAsync (user.Email,"User");
+            _ = await _userRepository.AddToRoleAsync (user.Email);
         }
 
-        var alreadyMember = await _tenantUserRepository.ExistsAsync(invitation.TenantId, user.Id);
+        bool alreadyMember = await _tenantUserRepository.ExistsAsync(invitation.TenantId, user.Id);
 
 
         if ( !alreadyMember )
         {
-            await _tenantUserRepository.AddAsync (new TenantUserRole
+            _ = await _tenantUserRepository.AddAsync (new TenantUserRole
             {
                 UserId = user.Id,
-                TenantRole = invitation.TenantRole ?? "ContentManager"
+                TenantRole = invitation.TenantRole ?? "ContentManager",
+                TenantId = invitation.TenantId
             });
         }
 
@@ -124,7 +119,7 @@ public class TenantInvitationService: ITenantInvitationService
 
         invitation.AcceptedOn = DateTime.UtcNow;
 
-        await _invitationRepository.UpdateAsync (invitation,ct);
+        _ = await _invitationRepository.UpdateAsync (invitation,ct);
 
         return true;
     }

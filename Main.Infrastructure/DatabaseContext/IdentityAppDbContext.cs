@@ -121,6 +121,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
     {
         _ = builder.Entity<ApplicationUser> ().ToTable ("IdentityUsers");
         _ = builder.Entity<IdentityRole> ().ToTable ("IdentityRoles");
+        _ = builder.Entity<IdentityUserRole<string>> ().ToTable ("IdentityUserRoles");
 
         _ = builder.Entity<TenantInvitation> (static entity =>
             {
@@ -175,27 +176,25 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
     {
         Guid IdentityRoleId1 = guidArray[2];
         Guid IdentityRoleId2 = guidArray[3];
-
         GlobalIdentityRoles (builder,IdentityRoleId1,IdentityRoleId2);
-
-        Guid ThemeId1 = guidArray[16];
-        Guid ThemeId2 = guidArray[17];
-
-        _ = Tenant1ThemeSeed (builder,ThemeId1);
-
-        _ = Tenant2ThemeSeed (builder,ThemeId2);
 
         Guid TenantId1 = guidArray[0];
         Guid TenantId2 = guidArray[1];
+        TenantSeed1 (builder,TenantId1);
+        TenantSeed2 (builder,TenantId2);
 
-        TenantSeed1 (builder,TenantId1,ThemeId1);
-        TenantSeed2 (builder,TenantId2,ThemeId2);
+        Guid ThemeId1 = guidArray[16];
+        Guid ThemeId2 = guidArray[17];
+        Tenant1ThemeSeed (builder,ThemeId1,TenantId1);
+        Tenant2ThemeSeed (builder,ThemeId2,TenantId2);
 
         Guid UserIdGlobal1 = guidArray[4];
         var adminGlobalEmail = "admin@system.com";
         GlobalUsers (builder,UserIdGlobal1,adminGlobalEmail,IdentityRoleId1);
 
-        // UserId2, UserId3, UserId4, UserId5, UserId6, UserId7 // Tenant Users (Global Role: User)
+
+        // UserId2, UserId3, UserId4, UserId5, UserId6, UserId7 
+        // Tenant Users (Global Role: User)
         Guid UserId2 = guidArray[5];
         Guid UserId3 = guidArray[6];
         Guid UserId4 = guidArray[7];
@@ -217,8 +216,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
     {
         var hasher = new PasswordHasher<ApplicationUser>();
 
-        // For each tenant create 3 users seed
-        var testUsersConfigurationSeed = new[]
+        var testUsersConfigurationSeed = new []
         {
             new {
                 UserId = userId2.ToString(),
@@ -226,17 +224,17 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 Email = "tenant1.admin@test.com",
                 TenantId = tenantId1 ,
                 TenantRole = "Admin",
-                TenantRoleId = 1,
+                TenantUserRoleId = 1,
                 EmailConfirmed = true
             },
 
             new {
                 UserId = userId3.ToString(),
                 RoleId = globalTenantRoleId.ToString(),
-                Email = "tenant1.content@test.com",
+                Email = "tenant1.manager@test.com",
                 TenantId = tenantId1 ,
-                TenantRole = "ContentManager",
-                TenantRoleId = 2,
+                TenantRole = "Manager",
+                TenantUserRoleId = 2,
                 EmailConfirmed = true
             },
 
@@ -247,7 +245,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 Email = "tenant1.member@test.com",
                 TenantId = tenantId1 ,
                 TenantRole = "Member",
-                TenantRoleId = 3,
+                TenantUserRoleId = 3,
                 EmailConfirmed = true
             },
 
@@ -257,17 +255,17 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 Email = "tenant2.admin@test.com",
                 TenantId = tenantId2  ,
                 TenantRole = "Admin",
-                TenantRoleId = 4,
+                TenantUserRoleId = 4,
                 EmailConfirmed = true
             },
 
             new {
                 UserId = userId6.ToString(),
                 RoleId = globalTenantRoleId.ToString(),
-                Email = "tenant2.content@test.com",
+                Email = "tenant2.manager@test.com",
                 TenantId = tenantId2  ,
-                TenantRole = "ContentManager",
-                TenantRoleId = 5,
+                TenantRole = "Manager",
+                TenantUserRoleId = 5,
                 EmailConfirmed = true
             },
 
@@ -277,7 +275,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 Email = "tenant2.member@test.com",
                 TenantId = tenantId2 ,
                 TenantRole = "Member",
-                TenantRoleId = 6,
+                TenantUserRoleId = 6,
                 EmailConfirmed = true
             }
         };
@@ -303,12 +301,13 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                UserId = config.UserId.ToString ()
            });
 
-            _ = builder.Entity<TenantUserRole> ().HasData (new TenantUserRole (config.TenantRoleId)
-            {
-                UserId = config.UserId,
-                TenantRole = config.TenantRole,
-                TenantId = config.TenantId
-            });
+            _ = builder.Entity<TenantUserRole> ().HasData
+                (new TenantUserRole (config.TenantUserRoleId)
+                {
+                    UserId = config.UserId,
+                    TenantRole = config.TenantRole,
+                    TenantId = config.TenantId
+                });
         }
     }
 
@@ -336,23 +335,21 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
        });
     }
 
-    private void TenantSeed1 (ModelBuilder builder,Guid tenantId1,Guid themeId1)
+    private void TenantSeed1 (ModelBuilder builder,Guid tenantId1)
     {
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId1)
         {
             TenantName = "Tenant 1",
-            Host = "tenant1",
-            TenantThemeId = themeId1
+            Host = "tenant1"
         });
     }
 
-    private void TenantSeed2 (ModelBuilder builder,Guid tenantId2,Guid themeId2)
+    private void TenantSeed2 (ModelBuilder builder,Guid tenantId2)
     {
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId2)
         {
             TenantName = "Tenant 2",
-            Host = "tenant2",
-            TenantThemeId = themeId2
+            Host = "tenant2"
         });
     }
 
@@ -374,38 +371,37 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         );
     }
 
-    private TenantTheme Tenant1ThemeSeed (ModelBuilder builder,Guid theme)
+    private void Tenant1ThemeSeed (ModelBuilder builder,Guid themeId,Guid tenantId)
     {
         TenantTheme tenantTheme = new()
         {
-            Id = theme,
+            Id = themeId,
             PrimaryColor = "#122A1E",
             SecondaryColor = "#879882",
             BackgroundColor = "#F7F8F5",
             FontStack = "Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', Georgia, 'Times New Roman', serif",
-            LogoFileName = ""
+            LogoFilePath = "~/favicon.ico" ,
+            TenantId = tenantId
         };
 
         _ = builder.Entity<TenantTheme> ().HasData (tenantTheme);
-
-        return tenantTheme;
     }
 
-    private TenantTheme Tenant2ThemeSeed (ModelBuilder builder,Guid theme)
+    private void Tenant2ThemeSeed (ModelBuilder builder,Guid themeId,Guid tenantId)
     {
         TenantTheme tenantTheme = new()
         {
-            Id = theme,
+            Id = themeId,
             PrimaryColor = "#1B3B2B",
             SecondaryColor = "#728C69",
             BackgroundColor = "#F4F6F4",
             FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-            LogoFileName = ""
+            LogoFilePath = "~/favicon.ico" ,
+            TenantId = tenantId
         };
 
         _ = builder.Entity<TenantTheme> ().HasData (tenantTheme);
 
-        return tenantTheme;
     }
 
 
@@ -441,11 +437,10 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         }
     }
 
-    public override int SaveChanges (bool acceptAllChangesOnSuccess)
-    {
-        ApplyBaseDataTenantId ();
 
-        return base.SaveChanges (acceptAllChangesOnSuccess);
+    public override int SaveChanges ()
+    {
+        return base.SaveChanges ();
     }
 
     public override async Task<int> SaveChangesAsync (CancellationToken cancellationToken = default)
