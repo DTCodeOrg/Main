@@ -4,30 +4,24 @@ public static class TenantStoreHelper
 {
     public static List<TenantVariableModel> GetCategoryList ()
     {
-        List<TenantVariableModel>  listCategory = new  List<TenantVariableModel> ();
+        List<TenantVariableModel> listCategory  = new List<TenantVariableModel> ();
 
-        listCategory =
-            TenantStores.ListTenantStoreMenu ()
-            .Where<TenantVariableModel> (m =>
-            m.Variable == EnumTenantVariable.ProductCategory &&
-            m.ValueID == m.ParentID).ToList ();
-
+        listCategory = TenantStores.ListTenantStoreMenu ().Where<TenantVariableModel>
+                                    (m => m.Variable == EnumTenantVariable.ProductCategory).ToList ();
 
         return listCategory.ToList ();
     }
 
     public static List<TenantVariableModel> GetSubCategoryList ()
     {
-        List<TenantVariableModel>  listSubCategory = new  List<TenantVariableModel> ();
+        List<TenantVariableModel> listCategory  = new List<TenantVariableModel> ();
 
-        listSubCategory =
-            TenantStores.ListTenantStoreMenu ()
-            .Where<TenantVariableModel> (m =>
-            m.Variable == EnumTenantVariable.ProductSubCategory).ToList ();
-
+        List<TenantVariableModel> listSubCategory = TenantStores.ListTenantStoreMenu ().Where<TenantVariableModel>
+                                                    (m =>  m.Variable == EnumTenantVariable.ProductSubCategory).ToList ();
 
         return listSubCategory.ToList ();
     }
+
 
     public static List<TenantVariableModel>
     GetSubCategoryListByID (int categoryId)
@@ -43,25 +37,25 @@ public static class TenantStoreHelper
     }
 
     public static string GetTextForCategoryId
-    (int categoryId)
+    (string categoryId)
     {
         List<TenantVariableModel> listCategory = GetCategoryList (  );
 
         TenantVariableModel? tenantVariableModel =
                 listCategory.FirstOrDefault<TenantVariableModel>
-                ( m =>  m.ValueID == categoryId);
+                ( m =>  m.ValueID == int.Parse (categoryId));
 
         return tenantVariableModel!.Text;
     }
 
-    public static string GetTextForSubCategoryId (int subCategoryId)
+    public static string GetTextForSubCategoryId (string subCategoryId)
     {
         List<TenantVariableModel>  listSubCategory = new  List<TenantVariableModel> ();
         listSubCategory = GetSubCategoryList ();
 
         TenantVariableModel? tenantVariableModel =
                 listSubCategory.FirstOrDefault<TenantVariableModel>
-                ( m =>  m.ValueID == subCategoryId);
+                ( m =>  m.ValueID == int.Parse(subCategoryId));
 
         return tenantVariableModel!.Text;
     }

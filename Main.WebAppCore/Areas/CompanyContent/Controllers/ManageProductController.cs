@@ -1,5 +1,4 @@
 ﻿using DataTransferModel;
-using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
@@ -13,27 +12,24 @@ using WebAppCore.ViewModel.Extensions;
 namespace Main.WebAppCore;
 
 [Area ("CompanyContent")]
+[Authorize (Policy = "TenantAdmin")]
 public class ManageProductController: BaseController
 {
 
     private readonly IProductService _productService;
     private readonly ILogger<ManageProductController> _logger;
-    private readonly ITenantContext _userContext;
     private readonly ITenantSetter _tenantSetter;
 
     public ManageProductController (IProductService productService,
         ILogger<ManageProductController> logger,
-        ITenantContext userContext,
         ITenantSetter tenantSetter)
     {
         _productService = productService;
         _logger = logger;
-        _userContext = userContext;
         _tenantSetter = tenantSetter;
     }
 
 
-    [Authorize (Roles = "Company,Admin")]
     public async Task<IActionResult> Index ()
     {
         try
@@ -57,15 +53,13 @@ public class ManageProductController: BaseController
         List<ProductFileDataModel> listProductImageFileDataModels
                                       = new();
 
-        BaseDataModel baseDataModel = _userContext.GetCreateBaseDataModel ( );
-
         ProductFileDataModel productImageFileDataModel;
 
         List<ImageFile> listSessionImageFiles = GetAllSessionImages();
 
         listSessionImageFiles.ForEach (imgFile =>
         {
-            productImageFileDataModel = new ProductFileDataModel (baseDataModel)
+            productImageFileDataModel = new ProductFileDataModel ()
             {
                 ImageFileContent = imgFile.FileContent,
                 ProductID = imgFile.PostID ?? 0,
@@ -93,6 +87,9 @@ public class ManageProductController: BaseController
                 PageName = "New Product"
             };
 
+            objProductViewModel.AV_Category = DropDownListItems.GetCategoryList ();
+            objProductViewModel.AV_SubCategory = DropDownListItems.GetSubCategoryList ();
+
             return View (objProductViewModel);
         }
         catch
@@ -102,7 +99,6 @@ public class ManageProductController: BaseController
     }
 
     [HttpPost]
-
     public async Task<IActionResult> SaveProduct (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -113,8 +109,6 @@ public class ManageProductController: BaseController
         try
         {
             ProductDataModel productDataModel = ProductMapping.NewProductDataModel ( collection );
-
-            productDataModel.BaseDataModel = _userContext.GetCreateBaseDataModel ();
 
             SetImageInDataModel (productDataModel);
 
@@ -162,7 +156,6 @@ public class ManageProductController: BaseController
 
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -173,8 +166,6 @@ public class ManageProductController: BaseController
         try
         {
             ProductDataModel productDataModel = ProductMapping.MapProductDataModel ( collection );
-
-            productDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ();
 
             SetImageInDataModel (productDataModel);
 
@@ -305,7 +296,6 @@ public class ManageProductController: BaseController
 
 
     [HttpDelete]
-
     public async Task<JsonResult> ImageRemove (int id,int postId)
     {
         try
