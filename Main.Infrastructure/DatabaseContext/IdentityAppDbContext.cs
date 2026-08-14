@@ -4,7 +4,6 @@ using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace Main.Infrastructure.DatabaseContext;
 
@@ -42,19 +41,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         new Guid(16, 0, 0, new byte[8]),  //                                       // index 15
         new Guid(17, 0, 0, new byte[8]),  // (Tenant 1 Theme)                      // index 16
         new Guid(18, 0, 0, new byte[8]),  // (Tenant 2 Theme)                      // index 17
-        new Guid(19, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 18
-        new Guid(20, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 19
-        new Guid(21, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 20
-        new Guid(22, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 21
-        new Guid(23, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 22
-        new Guid(24, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 23
-        new Guid(25, 0, 0, new byte[8]),  // IdentityRoleUser: Id                  // index 24
     };
-
-    public DbSet<ApplicationUser> IdentityUsers
-    {
-        get; set;
-    }
 
     public DbSet<UserRefreshToken> ApplicationUserRefreshTokens
     {
@@ -104,21 +91,11 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
     private void ConfigureIndexes (ModelBuilder builder)
     {
-        _ = builder.Entity<ApplicationUser> ()
-            .HasIndex (u => u.Email)
-            .IsUnique ();
 
-        _ = builder.Entity<TenantInvitation> ()
-         .HasIndex (ut => ut.TenantId);
-
-        _ = builder.Entity<UserRefreshToken> ()
-            .HasIndex (e => new { e.TenantId,e.Token });
     }
 
     private void ConfigureEntitiesWithFluent (ModelBuilder builder)
     {
-        _ = builder.Entity<ApplicationUser> ().ToTable ("IdentityUsers");
-
         _ = builder.Entity<TenantInvitation> (static entity =>
             {
                 _ = entity.Property (t => t.Email)
@@ -177,7 +154,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
         Guid IdentityRoleId1 = guidArray[2];
         Guid IdentityRoleId2 = guidArray[3];
-        GlobalIdentityRoles (builder,IdentityRoleId1,IdentityRoleId2);
+        IdentityRolesSeed (builder,IdentityRoleId1,IdentityRoleId2);
 
         Guid ThemeId1 = guidArray[16];
         Guid ThemeId2 = guidArray[17];
@@ -185,10 +162,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         Tenant2ThemeSeed (builder,ThemeId2,TenantId2);
 
         Guid UserIdGlobal1 = guidArray[4];
-
-        _ = guidArray[18];
         var adminGlobalEmail = "admin@system.com";
-        GlobalUsers (builder,UserIdGlobal1,adminGlobalEmail,IdentityRoleId1);
+        GlobalAdminUserSeed (builder,UserIdGlobal1,adminGlobalEmail,IdentityRoleId1);
 
 
         // UserId2, UserId3, UserId4, UserId5, UserId6, UserId7 
@@ -200,14 +175,14 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         Guid UserId6 = guidArray[9];
         Guid UserId7 = guidArray[10];
 
-        TenantUsers (builder,IdentityRoleId2,UserId2,UserId3,UserId4,
+        TenantUserSeed (builder,IdentityRoleId2,UserId2,UserId3,UserId4,
             UserId5,UserId6,UserId7,TenantId1,TenantId2);
 
     }
 
-    private void TenantUsers (
+    private void TenantUserSeed (
         ModelBuilder builder,
-        Guid globalTenantRoleId,Guid userId2,
+        Guid IdentityRoleId,Guid userId2,
         Guid userId3,Guid userId4,Guid userId5,
         Guid userId6,Guid userId7,Guid tenantId1,
         Guid tenantId2)
@@ -218,69 +193,58 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         {
             new {
                 UserId = userId2.ToString(),
-                RoleId = globalTenantRoleId.ToString(),
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant1.admin@test.com",
                 TenantId = tenantId1 ,
                 TenantRole = "Admin",
-                TenantUserRoleId = 1,
-                EmailConfirmed = true,
-                GlobalRoleId = guidArray[19].ToString()
+                TenantUserRoleId = 2,
+                EmailConfirmed = true
             },
-
             new {
                 UserId = userId3.ToString(),
-                RoleId = globalTenantRoleId.ToString(),
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant1.manager@test.com",
                 TenantId = tenantId1 ,
                 TenantRole = "Manager",
-                TenantUserRoleId = 2,
-                EmailConfirmed = true,
-                GlobalRoleId = guidArray[20].ToString()
+                TenantUserRoleId = 3,
+                EmailConfirmed = true
             },
-
             new
             {
                 UserId = userId4.ToString(),
-                RoleId = globalTenantRoleId.ToString(),
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant1.member@test.com",
                 TenantId = tenantId1 ,
                 TenantRole = "Member",
-                TenantUserRoleId = 3,
-                EmailConfirmed = true,
-                GlobalRoleId = guidArray[21].ToString()
+                TenantUserRoleId = 4,
+                EmailConfirmed = true
             },
-
             new {
                 UserId = userId5.ToString(),
-                RoleId = globalTenantRoleId.ToString(),
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant2.admin@test.com",
                 TenantId = tenantId2  ,
                 TenantRole = "Admin",
-                TenantUserRoleId = 4,
-                EmailConfirmed = true,
-                GlobalRoleId = guidArray[22].ToString()
+                TenantUserRoleId = 5,
+                EmailConfirmed = true
             },
-
             new {
                 UserId = userId6.ToString(),
-                RoleId = globalTenantRoleId.ToString(),
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant2.manager@test.com",
                 TenantId = tenantId2  ,
                 TenantRole = "Manager",
-                TenantUserRoleId = 5,
+                TenantUserRoleId = 6,
                 EmailConfirmed = true,
-                GlobalRoleId = guidArray[23].ToString()
             },
-
             new {
                 UserId = userId7.ToString(),
-                RoleId = globalTenantRoleId.ToString(),
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant2.member@test.com",
                 TenantId = tenantId2 ,
                 TenantRole = "Member",
-                TenantUserRoleId = 6,
-                EmailConfirmed = true  ,
-                GlobalRoleId = guidArray[24].ToString()
+                TenantUserRoleId = 7,
+                EmailConfirmed = true
             }
         };
 
@@ -288,7 +252,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         foreach ( var config in testUsersConfigurationSeed )
         {
 
-            var user = new ApplicationUser(config.UserId)
+            var user = new ApplicationUser (config.UserId)
             {
                 UserName = config.Email,
                 Email = config.Email,
@@ -296,14 +260,15 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
             };
 
             user.PasswordHash = hasher.HashPassword (user,"Focus@1nm");
+
             _ = builder.Entity<ApplicationUser> ().HasData (user);
 
-            _ = builder.Entity<GlobalIentityRole> ().HasData (
-                new GlobalIentityRole ()
-                {
-                    RoleId = config.RoleId.ToString (),
-                    UserId = config.UserId.ToString ()
-                });
+            _ = builder.Entity<IdentityUserRole<string>> ().HasData (
+               new IdentityUserRole<string> ()
+               {
+                   RoleId = config.RoleId.ToString (),
+                   UserId = config.UserId.ToString ()
+               });
 
             _ = builder.Entity<TenantUserRole> ().HasData
                 (new TenantUserRole (config.TenantUserRoleId)
@@ -315,7 +280,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         }
     }
 
-    private void GlobalUsers (ModelBuilder builder,Guid UserIdGlobal1,string adminGlobalEmail,Guid identityRoleId1)
+    private void GlobalAdminUserSeed (ModelBuilder builder,Guid UserIdGlobal1,string adminGlobalEmail,Guid identityRoleId1)
     {
         var hasher = new PasswordHasher<ApplicationUser>();
 
@@ -331,8 +296,8 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
         _ = builder.Entity<ApplicationUser> ().HasData (newAdmin);
 
-        _ = builder.Entity<GlobalIentityRole> ().HasData (
-       new GlobalIentityRole ()
+        _ = builder.Entity<IdentityUserRole<string>> ().HasData (
+       new IdentityUserRole<string> ()
        {
            RoleId = identityRoleId1.ToString (),
            UserId = UserIdGlobal1.ToString ()
@@ -357,7 +322,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         });
     }
 
-    private void GlobalIdentityRoles (ModelBuilder builder,Guid identityRoleId1,Guid identityRoleId2)
+    private void IdentityRolesSeed (ModelBuilder builder,Guid identityRoleId1,Guid identityRoleId2)
     {
         _ = builder.Entity<IdentityRole> ().HasData (
             new IdentityRole
@@ -365,14 +330,16 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 Id = identityRoleId1.ToString (),
                 Name = "GlobalAdmin",
                 NormalizedName = "GLOBALADMIN"
-            },
+            });
+
+
+        _ = builder.Entity<IdentityRole> ().HasData (
             new IdentityRole
             {
                 Id = identityRoleId2.ToString (),
                 Name = "User",
                 NormalizedName = "USER"
-            }
-        );
+            });
     }
 
     private void Tenant1ThemeSeed (ModelBuilder builder,Guid themeId,Guid tenantId)
@@ -405,10 +372,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         };
 
         _ = builder.Entity<TenantTheme> ().HasData (tenantTheme);
-
     }
-
-
 
     private void ApplyBaseDataTenantId ()
     {
@@ -441,7 +405,6 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         }
     }
 
-
     public override int SaveChanges ()
     {
         return base.SaveChanges ();
@@ -449,8 +412,6 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
     public override async Task<int> SaveChangesAsync (CancellationToken cancellationToken = default)
     {
-        ApplyBaseDataTenantId ();
-
         return await base.SaveChangesAsync (true,cancellationToken);
     }
 }

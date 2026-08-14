@@ -4,10 +4,22 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Main.Model.Identity;
 
-public class GlobalIentityRole: IdentityUserRole<string>, INeedRootBaseEntity
+public class IdentityUserRole: IdentityUserRole<string>, INeedRootBaseEntity
 {
-    public GlobalIentityRole ()
+    public IdentityUserRole ()
     {
+    }
+
+
+    public override string UserId
+    {
+        get; set;
+    }
+
+
+    public override string RoleId
+    {
+        get; set;
     }
 
 
@@ -15,13 +27,10 @@ public class GlobalIentityRole: IdentityUserRole<string>, INeedRootBaseEntity
     {
         CreatedBy = modelBase.CreatedBy;
         CreatedDate = modelBase.CreatedDate;
-
         ModifiedBy = null;
         ModifiedDate = null;
-
         DeletedBy = null;
         DeletedDate = null;
-
         IsActive = true;
 
         AddSessionParameters (modelBase);

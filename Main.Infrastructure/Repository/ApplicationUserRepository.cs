@@ -1,4 +1,5 @@
-﻿using Main.Infrastructure.DatabaseContext;
+﻿using Main.Infrastructure;
+using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
 using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -11,42 +12,28 @@ public class ApplicationUserRepository: IApplicationUserRepository
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IdentityAppDbContext _idetityContext;
+    private readonly ITenantSetter _tenantSetter;
 
     public ApplicationUserRepository (UserManager<ApplicationUser> userManager,
-    SignInManager<ApplicationUser> signInManager,IdentityAppDbContext context)
+    SignInManager<ApplicationUser> signInManager,IdentityAppDbContext context,
+     ITenantSetter tenantSetter)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _idetityContext = context;
+        _tenantSetter = tenantSetter;
     }
 
-    private async Task<IdentityRole?> GetTenantIdentityRole ()
-    {
-        IdentityRole? idetityRole = await _idetityContext
-            .IdentityRoles
-            .Where (a => a.Name == "User")
-            .FirstOrDefaultAsync();
-
-        return idetityRole;
-    }
 
     public async Task<bool> AddToRoleAsync (string email)
     {
-        ApplicationUser? applicationUser = await FindByEmailAsync (email);
-        IdentityRole? identityRole = await GetTenantIdentityRole ();
+        ApplicationUser? applicationUser =  await _userManager.FindByEmailAsync (email);
 
-        if ( applicationUser != null && identityRole != null )
+        if ( applicationUser != null )
         {
-            var identiyUserRole = new GlobalIentityRole ()
-            {
-                RoleId = applicationUser.Id.ToString (),
-                UserId = identityRole.Id.ToString ()
-            };
+            IdentityResult result = await _userManager.AddToRoleAsync (applicationUser,"User");
 
-            _ = _idetityContext.IdentityUserRoles.Add (identiyUserRole);
-            int result = _idetityContext.SaveChanges();
-
-            return result > 0;
+            return result.Succeeded;
         }
 
         return false;
@@ -65,14 +52,14 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
         _ = _idetityContext.TenantUserRoles.Add (userTenant);
         var result = await _idetityContext.SaveChangesAsync ();
+
         return result > 0;
     }
 
     public async Task<ApplicationUser?> FindByEmailAsync (string email)
     {
         ApplicationUser? applicationUser
-            = await _idetityContext.IdentityUsers.FirstOrDefaultAsync<ApplicationUser>
-            (a => a.Email == email.ToString() );
+            = await _userManager.FindByEmailAsync(email);
 
         return applicationUser;
     }
@@ -80,8 +67,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
     public async Task<ApplicationUser?> FindByNameIdAsync (string id)
     {
         ApplicationUser?  applicationUser
-            = await _idetityContext.IdentityUsers.FirstOrDefaultAsync<ApplicationUser>
-            (a => a.Id == id.ToString() );
+            = await _userManager.FindByIdAsync (id);
 
         return applicationUser;
     }
@@ -100,13 +86,17 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return result == true;
     }
 
+
     public async Task<bool> CreateAsync (ApplicationUser userIdentityEntity,
     string password)
     {
+        userIdentityEntity.CreateParameters (_tenantSetter.CreateMetaData);
+
         var result = await _userManager.CreateAsync (userIdentityEntity, password);
 
         return result.Succeeded == true;
     }
+
 
     public async Task<bool> ChangePasswordAsync (string email,string password,string rePassword)
     {
@@ -122,6 +112,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return result.Succeeded == true;
     }
 
+
     public async Task<string> GenerateEmailConfirmationTokenAsync (string email)
     {
         ApplicationUser?  applicationUser = await FindByEmailAsync ( email);
@@ -135,6 +126,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
         return code;
     }
+
 
     public async Task<bool> ConfirmEmailAsync (string email,string token)
     {
@@ -150,6 +142,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
         return result.Succeeded == true;
     }
+
 
     public async Task<string> GetRolesAsync (string email)
     {
@@ -170,6 +163,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return roles.First<string> ();
     }
 
+
     public async Task<string> GetTenantRolesAsync (string email,Guid tenantId)
     {
         ApplicationUser?  applicationUser = await FindByEmailAsync ( email);
@@ -186,6 +180,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return userTenants == null ? string.Empty : userTenants.TenantRole;
     }
 
+
     public async Task<bool> SetLockoutEndDateAsync (string email)
     {
         ApplicationUser?  applicationUser = await FindByEmailAsync ( email);
@@ -199,6 +194,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
         return result.Succeeded == true;
     }
+
 
     public async Task<bool> ResetAccessFailedCountAsync (string email)
     {
@@ -214,20 +210,11 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return result.Succeeded == true;
     }
 
-    public async Task<ApplicationUser?> ApplicationUsers (string userId)
-    {
-        ApplicationUser? user = await _idetityContext.IdentityUsers
-        .FirstOrDefaultAsync<ApplicationUser>(a => a.Id == userId);
-
-        return user;
-    }
 
     public async Task<List<ApplicationUser?>> ApplicationUsers ()
     {
-        List<ApplicationUser?> userList = await _idetityContext.IdentityUsers
-        .ToListAsync<ApplicationUser?>();
-
-        return userList;
+        List<ApplicationUser?> userList = await _userManager.Users.ToListAsync<ApplicationUser?>();
+        return userList.ToList ();
     }
 
     public async Task<bool> IsEmailConfirmedAsync (string email)
@@ -270,5 +257,10 @@ public class ApplicationUserRepository: IApplicationUserRepository
         }
 
         return false;
+    }
+
+    public async Task<ApplicationUser?> ApplicationUsers (string userId)
+    {
+        return await _userManager.FindByIdAsync (userId);
     }
 }

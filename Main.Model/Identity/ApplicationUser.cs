@@ -1,7 +1,6 @@
 ﻿using Main.Common;
 using Main.Model.Base;
 using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
 namespace Main.Model.Identity;
 
 public class ApplicationUser: IdentityUser, INeedRootBaseEntity
@@ -16,22 +15,15 @@ public class ApplicationUser: IdentityUser, INeedRootBaseEntity
         Id = Guid.NewGuid ().ToString ();
     }
 
-    [Key]
-    public string Id
-    {
-        get; set;
-    }
 
     public virtual ICollection<TenantUserRole> TenantUsers
     {
         get; set;
-
     } = new HashSet<TenantUserRole> ();
 
     public virtual ICollection<UserRefreshToken> UserRefreshTokens
     {
         get; set;
-
     } = new HashSet<UserRefreshToken> ();
 
     public void CreateParameters (BaseDataModel modelBase)
