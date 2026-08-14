@@ -30,4 +30,9 @@ public class ApplicationUserDataModel
     {
         get; set;
     }
+
+    public bool IsEmailConfirmed
+    {
+        get; set;
+    }
 }

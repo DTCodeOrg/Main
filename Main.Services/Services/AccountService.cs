@@ -22,19 +22,19 @@ public class AccountService: IAccountService
     (string? email)
     {
         ApplicationUser? applicationUser
-        = await _userRepository.FindByEmailAsync ( email ?? "" );
+        = await _userRepository.FindByEmailAsync ( email );
 
         if ( applicationUser == null )
         {
             return null;
         }
 
-        ApplicationUserDataModel? applicationUserDataModel
-        = new ()
+        ApplicationUserDataModel? applicationUserDataModel = new ()
         {
             Id = applicationUser?.Id!,
             UserName = applicationUser?.UserName,
-            Email = applicationUser?.Email
+            Email = applicationUser?.Email,
+            IsEmailConfirmed = applicationUser.EmailConfirmed
         };
 
         return applicationUserDataModel;
@@ -216,10 +216,7 @@ public class AccountService: IAccountService
 
     public async Task<bool> IsEmailConfirmedAsync (string email)
     {
-
-        var result = await _userRepository.IsEmailConfirmedAsync (email);
-
-        return result;
+        return await _userRepository.IsEmailConfirmedAsync (email);
     }
 
     public async Task<bool> PasswordSignInAsync

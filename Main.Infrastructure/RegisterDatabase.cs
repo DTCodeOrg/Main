@@ -30,15 +30,17 @@ public static class RegisterDatabase
         {
             _ = options.UseLazyLoadingProxies ();
             _ = options.UseSqlServer (tenantConnectionString);
+            _ = options.EnableSensitiveDataLogging ();
+            _ = options.EnableDetailedErrors ();
         });
 
         _ = services.AddDbContext<IdentityAppDbContext> (options =>
         {
             _ = options.UseLazyLoadingProxies ();
             _ = options.UseSqlServer (identityConnectionString);
-        });
-
-        _ = services.AddIdentity<ApplicationUser,IdentityRole> (options =>
+            _ = options.EnableSensitiveDataLogging ();
+            _ = options.EnableDetailedErrors ();
+        }).AddIdentity<ApplicationUser,IdentityRole> (options =>
         {
             var identitySettings = configuration.GetSection("IdentitySettings");
             var password = identitySettings.GetSection("Password");

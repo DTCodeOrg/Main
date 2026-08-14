@@ -58,16 +58,14 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<ApplicationUser?> FindByEmailAsync (string email)
     {
-        ApplicationUser? applicationUser
-            = await _userManager.FindByEmailAsync(email);
+        ApplicationUser? applicationUser = await _idetityContext.Users.FirstOrDefaultAsync(u => u.Email == email.Trim());
 
         return applicationUser;
     }
 
     public async Task<ApplicationUser?> FindByNameIdAsync (string id)
     {
-        ApplicationUser?  applicationUser
-            = await _userManager.FindByIdAsync (id);
+        ApplicationUser? applicationUser = await _idetityContext.Users.FirstOrDefaultAsync(u => u.Id == id.Trim());
 
         return applicationUser;
     }
@@ -219,16 +217,16 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
     public async Task<bool> IsEmailConfirmedAsync (string email)
     {
-        ApplicationUser?  applicationUser
-            = await FindByEmailAsync (email);
+        ApplicationUser?  applicationUser = await FindByEmailAsync (email);
+
+        bool result = false;
 
         if ( applicationUser != null )
         {
-            bool result = applicationUser.EmailConfirmed;
-            return result;
+            result = applicationUser.EmailConfirmed;
         }
 
-        return false;
+        return result;
     }
 
     public async Task<string> GeneratePasswordResetTokenAsync (string email)
