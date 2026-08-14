@@ -18,8 +18,7 @@ public class AccountService: IAccountService
         _tenantUserRepository = tenantUserRepository;
     }
 
-    public async Task<ApplicationUserDataModel?> GetApplicationUser
-    (string? email)
+    public async Task<ApplicationUserDataModel?> GetApplicationUser (string email)
     {
         ApplicationUser? applicationUser
         = await _userRepository.FindByEmailAsync ( email );
@@ -31,9 +30,9 @@ public class AccountService: IAccountService
 
         ApplicationUserDataModel? applicationUserDataModel = new ()
         {
-            Id = applicationUser?.Id!,
-            UserName = applicationUser?.UserName,
-            Email = applicationUser?.Email,
+            Id = applicationUser.Id!,
+            UserName = applicationUser.UserName,
+            Email = applicationUser.Email,
             IsEmailConfirmed = applicationUser.EmailConfirmed
         };
 

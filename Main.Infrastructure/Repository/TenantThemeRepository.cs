@@ -14,17 +14,23 @@ public class ThemeRepository: IThemeRepository
         _context = context;
     }
 
-    public async Task<TenantTheme?> GetThemeByTenantAsync (Guid tenantId)
+    public async Task<TenantTheme> GetThemeByTenantAsync (Guid tenantId)
     {
         var tenantTheme =
-            await _context.TenantThemes.FirstOrDefaultAsync (t => t.TenantId == tenantId);
+        await _context.TenantThemes.FirstOrDefaultAsync (t => t.TenantId == tenantId);
 
         if ( tenantTheme == null )
         {
-            return null;
+            return new TenantTheme ()
+            {
+                PrimaryColor = "#000000",
+                SecondaryColor = "#FFFFFF",
+                BackgroundColor = "#F0F0F0",
+                FontStack = "Arial, sans-serif"
+            };
         }
 
-        return tenantTheme!;
+        return tenantTheme;
     }
 
     public async Task<TenantTheme> GetTenantThemeAsync (Guid tenantId)

@@ -4,7 +4,7 @@ namespace Main.IRepository;
 
 public interface IThemeRepository
 {
-    Task<TenantTheme?> GetThemeByTenantAsync (Guid tenantId);
+    Task<TenantTheme> GetThemeByTenantAsync (Guid tenantId);
 
     Task<TenantTheme> GetTenantThemeAsync (Guid tenantId);
 

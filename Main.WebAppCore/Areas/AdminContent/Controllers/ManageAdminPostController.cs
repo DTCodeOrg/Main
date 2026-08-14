@@ -1,5 +1,4 @@
 ﻿using DataTransferModel;
-using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
@@ -16,7 +15,6 @@ namespace Main.WebAppCore;
 public class ManageAdminPostController: BaseController
 {
     private readonly IAdminPostService _adminPostService;
-    private readonly ITenantContext _userContext;
     private readonly ITenantSetter _tenantSetter;
 
     public ManageAdminPostController (
@@ -30,13 +28,11 @@ public class ManageAdminPostController: BaseController
 
     private void SetImageInDataModel (AdminPostDataModel adminPostDataModel)
     {
-        BaseDataModel baseDataModel = _userContext.GetCreateBaseDataModel ( );
-
         List<ImageFile> listSessionImageFiles = GetAllSessionImages();
 
         listSessionImageFiles.ForEach (imgFile =>
         {
-            AdminImageFileDataModel adminImageFileDataModel= new( baseDataModel )
+            AdminImageFileDataModel adminImageFileDataModel= new(  )
             {
                 ImageFileContent = imgFile.FileContent,
                 AdminPostID = imgFile.PostID ?? 0,
@@ -103,9 +99,6 @@ public class ManageAdminPostController: BaseController
 
         try
         {
-
-            AdminPostMapping.MapNewDataModel (collection).BaseDataModel = _userContext.GetCreateBaseDataModel ();
-
             SetImageInDataModel (AdminPostMapping.MapNewDataModel (collection));
 
             bool result = await _adminPostService.SaveNewAdminPost( postDataModel: AdminPostMapping.MapNewDataModel ( collection ) );
@@ -173,8 +166,6 @@ public class ManageAdminPostController: BaseController
             AdminPostDataModel adminPostDataModel = AdminPostMapping.MapAdminPostDataModel ( collection );
 
             SetImageInDataModel (adminPostDataModel);
-
-            adminPostDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ();
 
             bool result = await _adminPostService.UpdateAdminPost(adminPostDataModel);
 

@@ -7,23 +7,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Main.WebAppCore.Controllers;
 
-[Authorize (Roles = "Admin")]
+[Authorize (Policy = "TenantAdmin")]
 public class ThemeController: Controller
 {
     private readonly IStorageService _storageService;
     private readonly ITenantSetter _tenantSetter;
     private readonly IThemeService _themeService;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
     public ThemeController (IStorageService storageService,
-        ITenantSetter tenantSetter,IThemeService themeService)
+        ITenantSetter tenantSetter,IThemeService themeService,
+        IWebHostEnvironment webHostEnvironment)
     {
         _storageService = storageService;
         _tenantSetter = tenantSetter;
         _themeService = themeService;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     [HttpGet]
-    [Authorize (Roles = "Admin")]
     public async Task<IActionResult> UpdateLogo ()
     {
         var theme = await _themeService.GetTenantThemeAsync(_tenantSetter.ResolvedTenantId);
@@ -37,24 +39,15 @@ public class ThemeController: Controller
     }
 
     [HttpPost]
-    [Authorize (Roles = "Admin")]
     public async Task<IActionResult> UpdateLogo (UpdateLogoViewModel model)
     {
-        // Server-side validation check
         if ( !ModelState.IsValid )
         {
             return View (model);
         }
 
+        string? fileName = await _storageService.SaveTenantAssetAsync ( _webHostEnvironment, _tenantSetter.ResolvedTenantId, model.LogoFile,"uploads" );
 
-        // 1. Save file to physical/cloud location via service
-        string? fileName =
-                await _storageService.SaveTenantAssetAsync (
-                    _tenantSetter.ResolvedTenantId,
-                    model.LogoFile,
-                    "logos" );
-
-        // 2. Save filename directly to the tenant theme entity
         var theme = await _themeService.GetTenantThemeAsync(_tenantSetter.ResolvedTenantId);
 
         if ( theme != null )

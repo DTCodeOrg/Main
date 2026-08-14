@@ -69,6 +69,7 @@
 
 	<ItemGroup>
 	  <Folder Include="wwwroot\lib\Images\Home\English\" />
+	  <Folder Include="wwwroot\uploads\" />
 	</ItemGroup>
 
 	<ItemGroup>

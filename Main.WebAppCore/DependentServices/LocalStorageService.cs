@@ -2,9 +2,9 @@
 
 public interface IStorageService
 {
-    Task<string?> SaveTenantAssetAsync (Guid tenantId,IFormFile file,string folderName);
+    Task<string?> SaveTenantAssetAsync
+    (IWebHostEnvironment webHostEnvironment,Guid tenantId,IFormFile file,string folderName);
 }
-
 
 public class LocalStorageService: IStorageService
 {
@@ -15,30 +15,34 @@ public class LocalStorageService: IStorageService
         _env = env;
     }
 
-    public async Task<string?> SaveTenantAssetAsync (Guid tenantId,IFormFile file,string folderName)
+    public async Task<string?> SaveTenantAssetAsync
+    (IWebHostEnvironment webHostEnvironment,Guid tenantId,IFormFile file,string folderName)
     {
         if ( file == null || file.Length == 0 )
         {
-            return null;
+            return string.Empty;
         }
 
-        // Group assets by Tenant ID directory securely
-        string uploadDir = Path.Combine(_env.WebRootPath, "uploads", tenantId.ToString(), folderName);
+        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, folderName);
 
-        if ( !Directory.Exists (uploadDir) )
+        if ( !Directory.Exists (uploadsFolder) )
         {
-            _ = Directory.CreateDirectory (uploadDir);
+            _ = Directory.CreateDirectory (uploadsFolder);
         }
 
-        // Use a unique file name to avoid browser caching issues on updates
-        string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-        string filePath = Path.Combine(uploadDir, uniqueFileName);
+        string uniqueFileName =
+        Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
 
-        using ( var stream = new FileStream (filePath,FileMode.Create) )
+        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+
+        using ( var fileStream = new FileStream (filePath,FileMode.Create) )
         {
-            await file.CopyToAsync (stream);
+            await file.CopyToAsync (fileStream);
         }
 
-        return uniqueFileName;
+        string databaseRelativePath = $"/uploads/{uniqueFileName}";
+
+        return databaseRelativePath;
     }
 }
