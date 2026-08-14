@@ -17,19 +17,14 @@ public class ManageAdminPostController: BaseController
 {
     private readonly IAdminPostService _adminPostService;
     private readonly ITenantContext _userContext;
-    private readonly ILogger<ManageAdminPostController> _logger;
     private readonly ITenantSetter _tenantSetter;
 
     public ManageAdminPostController (
         IAdminPostService adminPostService,
         IMemoryCache cache,
-        ILogger<ManageAdminPostController> logger,
-        ITenantContext userContext,
         ITenantSetter tenantSetter)
     {
         _adminPostService = adminPostService;
-        _logger = logger;
-        _userContext = userContext;
         _tenantSetter = tenantSetter;
     }
 
@@ -57,7 +52,7 @@ public class ManageAdminPostController: BaseController
     }
 
 
-    [Authorize (Policy = "TenantAdmin")]
+
     public async Task<ActionResult> Index ()
     {
         try
@@ -76,7 +71,6 @@ public class ManageAdminPostController: BaseController
     }
 
     [HttpGet]
-    [Authorize (Policy = "TenantAdmin")]
     public IActionResult NewContent ()
     {
         try
@@ -138,7 +132,6 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpGet]
-    [Authorize (Policy = "TenantAdmin")]
     public async Task<ActionResult> Edit (int id)
     {
         try
@@ -168,8 +161,6 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpPost]
-    [Authorize (Policy = "TenantAdmin")]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit (AdminPostViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -206,8 +197,7 @@ public class ManageAdminPostController: BaseController
         }
     }
 
-
-    [Authorize (Policy = "TenantAdmin")]
+    [HttpGet]
     public async Task<ActionResult> Details (int id)
     {
         try
@@ -232,7 +222,6 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpPost]
-    [Authorize (Policy = "TenantAdmin")]
     public JsonResult UploadImage (IFormFile file)
     {
         if ( file != null && file.Length > 0 )
@@ -299,7 +288,6 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpGet]
-    [Authorize (Policy = "TenantAdmin")]
     public PartialViewResult LoadImage ()
     {
         try
@@ -400,4 +388,3 @@ public class ManageAdminPostController: BaseController
         }
     }
 }
-
