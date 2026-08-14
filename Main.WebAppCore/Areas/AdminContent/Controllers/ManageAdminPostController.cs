@@ -213,6 +213,7 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpPost]
+    [IgnoreAntiforgeryToken] // Use only for temporary troubleshooting
     public JsonResult UploadImage (IFormFile file)
     {
         if ( file != null && file.Length > 0 )
@@ -246,7 +247,6 @@ public class ManageAdminPostController: BaseController
         });
     }
 
-
     private ImageFile ReadImage (IFormFile file)
     {
         if ( !string.IsNullOrEmpty (file.ContentType) && file.FileName != null )
@@ -254,29 +254,25 @@ public class ManageAdminPostController: BaseController
             string extension = Path.GetExtension(file.FileName).ToLower();
 
             if ( extension.Equals (".jpg") || extension.Equals (".jpeg")
-
                 || extension.Equals (".png") || extension.Equals (".gif") )
             {
-                var imgByte = new Byte[file.Length];
-
-                var stream = file.OpenReadStream();
-
-                _ = stream.Read (imgByte);
+                // FIX: Safely extract the full byte array without data corruption
+                using var memoryStream = new MemoryStream();
+                file.CopyTo (memoryStream);
+                byte[] imgByte = memoryStream.ToArray();
 
                 ImageFile objFile = new()
                 {
-                    FileContent = imgByte ,
-                    IsNew = true ,
+                    FileContent = imgByte,
+                    IsNew = true,
                     PostID = 0
                 };
 
                 return objFile;
             }
         }
-
         return new ImageFile ();
     }
-
 
     [HttpGet]
     public PartialViewResult LoadImage ()
@@ -299,7 +295,6 @@ public class ManageAdminPostController: BaseController
             return PartialView ("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml",new ImageFile ());
         }
     }
-
 
     [HttpDelete]
     [Authorize (Policy = "TenantAdmin")]

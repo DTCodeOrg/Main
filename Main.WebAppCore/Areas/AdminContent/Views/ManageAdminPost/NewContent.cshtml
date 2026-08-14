@@ -66,32 +66,48 @@
 
         $('#btnUpload').click(function () {
 
-            var fileElement = $('#fileInput')[0];
-            var files = fileElement.files;
-
-
-            if (files.length === 0) {
-                return;
-            }
-                
             var formData = new FormData();
-                
-            formData.append("file", files[0]);
+            formData.append("file", $("#fileInput")[0].files[0]);
 
+            // 1. First AJAX Request: Upload the image
             $.ajax({
-                url: imageUploadURL, 
+                url:  imageUploadURL,
                 type: 'POST',
                 data: formData,
-                processData: false, 
-                contentType: false, 
+                contentType: false, // Required for IFormFile
+                processData: false, // Required for IFormFile
                 success: function (response) {
-                    LoadImageNewAdminContent();   
+                    if (response.success) {
+
+                        // 2. Second AJAX Request: ONLY run this inside the success callback
+                        $.ajax({
+                            url: imageLoadURL,
+                            type: 'GET',        // Force GET explicitly
+                            cache: false,       // Prevent Nginx from caching the partial view
+                            dataType: 'html',   // Expecting HTML back
+                            success: function (htmlResult) {
+                                // Inject your partial view HTML into the DOM container
+                                $("#imageContainer").html(htmlResult);
+                            },
+                            error: function (xhr) {
+                                console.error("LoadImage Failed with status: " + xhr.status);
+                            }
+                        });
+
+                    } else {
+                        alert("Upload failed or file size exceeded.");
+                    }
                 },
-                error: function (error) {
-                    console.log(error);
-                }            
+                error: function (xhr) {
+                    console.error("UploadImage Failed with status: " + xhr.status);
+                }
             });
         });
+
+
+
+
+
 
 
         document.getElementById("myMainForm").addEventListener("submit", function (e) 
