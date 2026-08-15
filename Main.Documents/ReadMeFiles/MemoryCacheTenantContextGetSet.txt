@@ -1,0 +1,138 @@
+﻿To save and retrieve objects using IMemoryCache within your tenant context, you will use the extension methods Set<T>() and TryGetValue<T>() or Get<T>().
+Since you have already configured the tenant-suffixed cookie in your middleware, the best approach is to retrieve the Tenant ID from that cookie (or from HttpContext.Items if your middleware parsed it), build your dynamic cache key, and execute the cache operations.
+
+Here is exactly how to build a helper service and use it in your controllers or minimal APIs.
+------------------------------
+
+## Step 1: Create a Tenant Cache Wrapper
+Create a dedicated service to handle the key-suffixing logic automatically. This keeps your controllers clean and ensures consistency across your app. [1] 
+
+using Microsoft.Extensions.Caching.Memory;using Microsoft.AspNetCore.Http;
+public interface ITenantCacheService
+{
+    void Set<T>(string baseKey, T value, TimeSpan expiration);
+    bool TryGet<T>(string baseKey, out T? value);
+}
+public class TenantCacheService : ITenantCacheService
+{
+    private readonly IMemoryCache _memoryCache;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    
+    // Name of the cookie your middleware configures
+    private const string TenantCookieName = "TenantId"; 
+
+    public TenantCacheService(IMemoryCache memoryCache, IHttpContextAccessor httpContextAccessor)
+    {
+        _memoryCache = memoryCache;
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    // Helper to extract the tenant and build the suffixed key
+    private string BuildTenantKey(string baseKey)
+    {
+        var context = _httpContextAccessor.HttpContext;
+        if (context == null) 
+            throw new InvalidOperationException("HttpContext is not available.");
+
+        // Read the tenant ID directly from the cookie
+        if (!context.Request.Cookies.TryGetValue(TenantCookieName, out var tenantId) || string.IsNullOrEmpty(tenantId))
+        {
+            throw new UnauthorizedAccessException("Tenant context missing from cookies.");
+        }
+
+        // Build the tenant-suffixed key: "myKey:tenant123"
+        return $"{baseKey}:{tenantId}";
+    }
+
+    public void Set<T>(string baseKey, T value, TimeSpan expiration)
+    {
+        string fullKey = BuildTenantKey(baseKey);
+        
+        var cacheOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = expiration
+        };
+
+        _memoryCache.Set(fullKey, value, cacheOptions);
+    }
+
+    public bool TryGet<T>(string baseKey, out T? value)
+    {
+        string fullKey = BuildTenantKey(baseKey);
+        return _memoryCache.TryGetValue(fullKey, out value);
+    }
+}
+
+------------------------------
+## Step 2: Register the Services
+In your Program.cs, you must register your custom service and IHttpContextAccessor so the service can read the active request's cookies.
+
+var builder = WebApplication.CreateBuilder(args);
+// Register standard memory cache
+builder.Services.AddMemoryCache();
+// Required to let your service read HttpContext cookies
+builder.Services.AddHttpContextAccessor();
+// Register your custom tenant cache wrapper
+builder.Services.AddScoped<ITenantCacheService, TenantCacheService>();
+var app = builder.Build();
+
+------------------------------
+## Step 3: Set and Get Objects in Your Controller
+Now, simply inject ITenantCacheService into your controller. The service will seamlessly isolate the object to the current cookie's tenant.
+
+using Microsoft.AspNetCore.Mvc;
+
+[ApiController]
+[Route("api/[controller]")]public class DashboardController : ControllerBase
+{
+    private readonly ITenantCacheService _tenantCache;
+
+    public DashboardController(ITenantCacheService tenantCache)
+    {
+        _tenantCache = tenantCache;
+    }
+
+    [HttpPost("save-settings")]
+    public IActionResult SaveSettings([FromBody] TenantSettings settings)
+    {
+        // Automatically saved under "DashboardSettings:YOUR_COOKIE_TENANT_ID"
+        _tenantCache.Set("DashboardSettings", settings, TimeSpan.FromMinutes(20));
+        
+        return Ok("Settings cached for your tenant successfully.");
+    }
+
+    [HttpGet("settings")]
+    public IActionResult GetSettings()
+    {
+        // Automatically fetches from "DashboardSettings:YOUR_COOKIE_TENANT_ID"
+        if (_tenantCache.TryGet<TenantSettings>("DashboardSettings", out var settings))
+        {
+            return Ok(settings);
+        }
+
+        return NotFound("Cache miss: Settings not found or expired for this tenant.");
+    }
+}
+public class TenantSettings
+{
+    public string Theme { get; set; } = "Light";
+    public List<string> FeaturesEnabled { get; set; } = new();
+}
+
+------------------------------
+## Key Reminders for IMemoryCache
+
+* Object References: Unlike Redis, IMemoryCache stores references to live objects in RAM. If you mutate/change an object after retrieving it from the cache, you are changing the actual cached instance for everyone in that tenant unless you clone it.
+* Server Restarts: Because it is in-memory, restarting your application pool or hosting container will completely wipe the cache. [2, 3, 4] 
+
+------------------------------
+To ensure your code lines up perfectly, let me know:
+
+* What is the exact name of the cookie key your middleware creates to hold the tenant identifier?
+* Are you using standard ASP.NET Core Controllers or Minimal APIs?
+
+
+[1] [https://aldo10012.medium.com](https://aldo10012.medium.com/deep-dive-into-swift-urlcache-cachepolicy-e5528537e16e)
+[2] [https://www.ottorinobruni.com](https://www.ottorinobruni.com/how-to-implement-in-memory-caching-in-dotnet-console-app-using-csharp/)
+[3] [https://docs.hazelcast.org](https://docs.hazelcast.org/docs/3.5-EA/manual/html/map-inmemoryformat.html)
+[4] [https://www.davepaquette.com](https://www.davepaquette.com/archive/2015/06/03/mvc-6-cache-tag-helper.aspx)

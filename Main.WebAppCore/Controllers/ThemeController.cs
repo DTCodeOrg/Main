@@ -39,14 +39,14 @@ public class ThemeController: Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateLogo (UpdateLogoViewModel model)
+    public async Task<IActionResult> UpdateLogo (IFormFile logoFile)
     {
-        if ( !ModelState.IsValid )
+        if ( logoFile == null )
         {
-            return View (model);
+            return View ();
         }
 
-        string? fileName = await _storageService.SaveTenantAssetAsync ( _webHostEnvironment, _tenantSetter.ResolvedTenantId, model.LogoFile,"uploads" );
+        string? fileName = await _storageService.SaveTenantAssetAsync ( _webHostEnvironment, _tenantSetter.ResolvedTenantId, logoFile, "uploads" );
 
         var theme = await _themeService.GetTenantThemeAsync(_tenantSetter.ResolvedTenantId);
 

@@ -1,49 +1,57 @@
-﻿@model UpdateLogoViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Update Tenant Logo";
 }
 
-<h2>Update Logo</h2>
-
 <div class="container">
+
+    
 
     <div class="row">
 
+        <div class="col-md-3">
+        </div>
+
         <div class="col-md-6">
-        
-        <form asp-action="UpdateLogo" 
-            asp-controller="Theme"
-            asp-area=""
-            method="post" 
-            enctype="multipart/form-data">
+
+            <h2>Update Logo</h2>
             
-                <div class="form-group mb-3">
+            <div class="form-group mb-3">
                 
-                    <label for="logoFile" class="form-label">Select New Logo Image</label>
-                
-                    <input type="file" id="logoFile" name="logoFile" class="form-control" accept="image/*" required />
+                    <label for="logoFile" class="form-label">Select New Logo Image:</label>
 
-                </div>
+                    <form asp-action="UpdateLogo"
+                            asp-controller="Theme"
+                            asp-area=""
+                            method="post"
+                            enctype="multipart/form-data">
 
-            @if (Model.CurrentLogoFileName != null)
-            {
-                <div class="mb-3">
+                        <label >Select File:</label>
+                      
+                        <input class="form-control" type="file" id="logoFile" name="logoFile" />
+    
+                        <button type="submit">Upload</button>
 
-                    <p>Current Logo:</p>
+                    </form>
+
+            </div>
+
+           
+            <div class="mb-3">
+
+                <p>Current Logo:</p>
                    
-                    <img src="/uploads/logos/@Model.CurrentLogoFileName" alt="Current Logo" style="max-height: 100px; display: block;" />
+                <img src="@Model.CurrentLogoFileName" 
+                    alt="Current Logo" 
+                    style="max-height: 100px; display: block;" />
 
-                </div>
-            }
+            </div>
+          
 
             <button type="submit" class="btn btn-primary">Upload and Save</button>
            
             <a asp-action="Index" asp-controller="Home" asp-area="" class="btn btn-secondary">Cancel</a>
 
-        </form>
-
-    </div>
+        </div>
 
     </div>
 
