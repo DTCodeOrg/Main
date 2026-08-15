@@ -4,7 +4,6 @@ using Main.Services;
 using Main.WebAppCore.DependentServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
 
@@ -16,19 +15,21 @@ public class ManageAdminPostController: BaseController
 {
     private readonly IAdminPostService _adminPostService;
     private readonly ITenantSetter _tenantSetter;
+    private readonly ITenantCacheService _tenantCacheService;
 
     public ManageAdminPostController (
         IAdminPostService adminPostService,
-        IMemoryCache cache,
-        ITenantSetter tenantSetter)
+        ITenantSetter tenantSetter,
+        ITenantCacheService tenantCacheService)
     {
         _adminPostService = adminPostService;
         _tenantSetter = tenantSetter;
+        _tenantCacheService = tenantCacheService;
     }
 
     private void SetImageInDataModel (AdminPostDataModel adminPostDataModel)
     {
-        List<ImageFile> listSessionImageFiles = GetAllSessionImages();
+        List<ImageFile> listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
 
         listSessionImageFiles.ForEach (imgFile =>
         {
@@ -44,7 +45,7 @@ public class ManageAdminPostController: BaseController
 
         adminPostDataModel.ListAdminPostFileImages = new List<AdminImageFileDataModel> ();
 
-        ClearImageFileListSession ();
+        ClearImageFileListSession (_tenantCacheService);
     }
 
 
@@ -71,7 +72,7 @@ public class ManageAdminPostController: BaseController
     {
         try
         {
-            ClearImageFileListSession ();
+            ClearImageFileListSession (_tenantCacheService);
 
             var objPostViewModel = new AdminPostViewModel
             {
@@ -129,7 +130,7 @@ public class ManageAdminPostController: BaseController
     {
         try
         {
-            ClearImageFileListSession ();
+            ClearImageFileListSession (_tenantCacheService);
 
             AdminPostDataModel adminPostDataModel =
                 await _adminPostService.GetAdminPostForEditPostID(id);
@@ -213,7 +214,7 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpPost]
-    [IgnoreAntiforgeryToken] // Use only for temporary troubleshooting
+    [IgnoreAntiforgeryToken]
     public JsonResult UploadImage (IFormFile file)
     {
         if ( file != null && file.Length > 0 )
@@ -231,7 +232,7 @@ public class ManageAdminPostController: BaseController
 
                 if ( imageFile.IsNew )
                 {
-                    SetSessionImageFile (imageFile);
+                    SetSessionImageFile (imageFile,_tenantCacheService);
                 }
 
                 return Json (new
@@ -256,7 +257,7 @@ public class ManageAdminPostController: BaseController
             if ( extension.Equals (".jpg") || extension.Equals (".jpeg")
                 || extension.Equals (".png") || extension.Equals (".gif") )
             {
-                // FIX: Safely extract the full byte array without data corruption
+
                 using var memoryStream = new MemoryStream();
                 file.CopyTo (memoryStream);
                 byte[] imgByte = memoryStream.ToArray();
@@ -279,7 +280,7 @@ public class ManageAdminPostController: BaseController
     {
         try
         {
-            List<ImageFile> imageFileList = GetAllSessionImages();
+            List<ImageFile> imageFileList = GetAllSessionImages(_tenantCacheService);
 
             if ( imageFileList == null || imageFileList.Count == 0 )
             {
@@ -308,7 +309,7 @@ public class ManageAdminPostController: BaseController
                 result = await _adminPostService.DeleteAdminPostImage (id,postId);
             }
 
-            result = RemoveSessionImageFile (id);
+            result = RemoveSessionImageFile (id,_tenantCacheService);
 
             return Json (new
             {

@@ -20,13 +20,17 @@ public class ManageProductController: BaseController
     private readonly ILogger<ManageProductController> _logger;
     private readonly ITenantSetter _tenantSetter;
 
+    private readonly ITenantCacheService _tenantCacheService;
+
     public ManageProductController (IProductService productService,
         ILogger<ManageProductController> logger,
-        ITenantSetter tenantSetter)
+        ITenantSetter tenantSetter,
+        ITenantCacheService tenantCacheService)
     {
         _productService = productService;
         _logger = logger;
         _tenantSetter = tenantSetter;
+        _tenantCacheService = tenantCacheService;
     }
 
 
@@ -55,7 +59,7 @@ public class ManageProductController: BaseController
 
         ProductFileDataModel productImageFileDataModel;
 
-        List<ImageFile> listSessionImageFiles = GetAllSessionImages();
+        List<ImageFile> listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
 
         listSessionImageFiles.ForEach (imgFile =>
         {
@@ -71,7 +75,7 @@ public class ManageProductController: BaseController
 
         productDataModel.ImageFiles = listProductImageFileDataModels;
 
-        ClearImageFileListSession ();
+        ClearImageFileListSession (_tenantCacheService);
     }
 
 
@@ -80,7 +84,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            ClearImageFileListSession ();
+            ClearImageFileListSession (_tenantCacheService);
 
             ProductViewModel objProductViewModel = new ()
             {
@@ -138,7 +142,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            ClearImageFileListSession ();
+            ClearImageFileListSession (_tenantCacheService);
 
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
@@ -214,34 +218,24 @@ public class ManageProductController: BaseController
     [HttpPost]
     public JsonResult UploadImage (IFormFile file)
     {
-        if ( file != null && file.Length > 0 )
+        if ( file != null && file.Length > 0 && file.Length > AppSettings.Current.PostImageSize )
         {
-            if ( file == null || file.Length > AppSettings.Current.PostImageSize )
+            return Json (new
             {
-                return Json (new
-                {
-                    success = false
-                });
-            }
-            else
-            {
-                ImageFile imageFile = ReadImage ( file );
+                success = false
+            });
+        }
 
-                if ( imageFile.IsNew )
-                {
-                    SetSessionImageFile (imageFile);
-                }
+        ImageFile imageFile = ReadImage ( file ?? file! );
 
-                return Json (new
-                {
-                    success = true
-                });
-            }
+        if ( imageFile.IsNew && imageFile.FileContent.Length > 0 )
+        {
+            SetSessionImageFile (imageFile,_tenantCacheService);
         }
 
         return Json (new
         {
-            success = false
+            success = true
         });
     }
 
@@ -282,7 +276,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            var objImageList = GetAllSessionImages();
+            var objImageList = GetAllSessionImages(_tenantCacheService);
 
             var objImage = objImageList.Last();
 
@@ -306,7 +300,7 @@ public class ManageProductController: BaseController
                 result = await _productService.DeleteProductImage (id,postId);
             }
 
-            result = RemoveSessionImageFile (id);
+            result = RemoveSessionImageFile (id,_tenantCacheService);
 
             return Json (new
             {
