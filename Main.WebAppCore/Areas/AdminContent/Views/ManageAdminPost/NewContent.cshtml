@@ -74,20 +74,19 @@
                 url:  imageUploadURL,
                 type: 'POST',
                 data: formData,
-                contentType: false, // Required for IFormFile
-                processData: false, // Required for IFormFile
+                contentType: false,
+                processData: false,
                 success: function (response) {
                     if (response.success) {
 
                         // 2. Second AJAX Request: ONLY run this inside the success callback
                         $.ajax({
+                            type: "GET",
                             url: imageLoadURL,
-                            type: 'GET',        // Force GET explicitly
-                            cache: false,       // Prevent Nginx from caching the partial view
-                            dataType: 'html',   // Expecting HTML back
+                            cache: false,
+                            async: true,
                             success: function (htmlResult) {
-                                // Inject your partial view HTML into the DOM container
-                                $("#imageContainer").html(htmlResult);
+                              $("#imagePanelContainer").append(htmlResul);
                             },
                             error: function (xhr) {
                                 console.error("LoadImage Failed with status: " + xhr.status);
@@ -103,12 +102,6 @@
                 }
             });
         });
-
-
-
-
-
-
 
         document.getElementById("myMainForm").addEventListener("submit", function (e) 
         {
@@ -151,9 +144,13 @@
 
 
         $(document).on("click", ".btn-remove-image", function () {
+
             var that = this;
+
             var id = $(that).data("id");
+
             var rem = $(that).closest(".image-content");
+
             $(rem).remove();
 
             $.ajax({
