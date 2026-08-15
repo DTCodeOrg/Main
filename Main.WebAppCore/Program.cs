@@ -13,6 +13,12 @@ internal class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        // Ensure Kestrel hooks into your appsettings.json "Kestrel" section
+        _ = builder.WebHost.ConfigureKestrel ((context,options) =>
+        {
+            _ = options.Configure (context.Configuration.GetSection ("Kestrel"));
+        });
+
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
             .Get<ConfigurationSettings> () ?? new ConfigurationSettings ();
 
