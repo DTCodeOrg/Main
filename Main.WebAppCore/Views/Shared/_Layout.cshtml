@@ -1,18 +1,31 @@
 ﻿@{
     var theme = TenantSetter.CurrentTenant.TenantThemeModel;
 }
+
 <!doctype html>
 <html lang="en">
 <head>
+     <style>
+            :root {
+                --brand-primary: "@theme.PrimaryColor !important";
+                --brand-secondary: "@theme.SecondaryColor  !important";
+                --brand-bg: "@theme.BackgroundColor  !important";
+                --brand-font: "@theme.FontStack  !important";
+            }
+    </style>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+
     <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="application-name" content="@TenantSetter.CurrentTenant.TenantName" />
    
           
     <title>
-        @ViewBag.Title | @TenantSetter.CurrentTenant.TenantName 
+        @ViewBag.Title | @TenantSetter.CurrentTenant.TenantName
     </title>
 
     <link rel="shortcut icon"
@@ -31,8 +44,7 @@
     <script type="importmap"></script>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+   
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
@@ -44,18 +56,8 @@
     }
 
     <meta name="xsrf-token" content="@tokens.RequestToken" />
-
-    <style>
-            :root {
-                --brand-primary: "@theme.PrimaryColor !important";
-                --brand-secondary: "@theme.SecondaryColor  !important";
-                --brand-bg: "@theme.BackgroundColor  !important";
-                --brand-font: "@theme.FontStack  !important";
-            }
-    </style>
-
+   
     @RenderSection( "Styles",required: false )
-
 </head>
 
 <body>
