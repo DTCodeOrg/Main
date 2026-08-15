@@ -1,3 +1,8 @@
+# Latest Video (with tenant logo)
+[Latest video](https://1drv.ms/v/c/93d70fb51193cb6b/IQAdpVbw9SSUTIkiv8jbxnrzAWtZcojWwLbMsDhPbqOcFBc?e=bbNRme)
+
+# First Video (technical)
+[From VS and Nginx](https://1drv.ms/v/c/93d70fb51193cb6b/IQA-f-V2ZcA3RKPQmD1k3q_QAaFFDqIFFMMyGS7K9kcHEQ8?e=Z6BhbS)
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
 
