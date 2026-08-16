@@ -19,15 +19,22 @@ if (User.IsInTenantRole(TenantSetter.ResolvedTenantId, "Admin"))
                     
             <ul class="dropdown dropdown-menu" id="divMenuMyHomeSignin">
 
-                <form asp-area="" asp-controller="Theme" asp-action="UpdateLogo" method="get" class="d-inline">
-                    <button type="submit" class="dropdown-item dropdown-item-text icon-button btn btn-link w-100 text-start border-0 bg-transparent p-3">
-                        <i class="fa fa-fw fa-edit"></i>
-                        <span>
-                            Update Logo 
-                        </span>
-                    </button>
-                </form>
+            <li class="dropdown-header"> Configure Pages </li>
 
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text icon-button"
+                   asp-area="" asp-controller="Theme" asp-action="UpdateLogo">
+
+                    <i class="fa fa-fw fa-edit"></i>
+
+                    <span>
+                        Update Logo
+                    </span>
+
+                </a>
+            </li>
+
+           
                 @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuPage.cshtml" )
                
                 @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuProduct.cshtml" )

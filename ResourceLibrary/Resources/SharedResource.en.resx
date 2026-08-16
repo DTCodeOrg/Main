@@ -505,7 +505,7 @@
     <value>FOR GIFT!</value>
   </data>
   <data name="LabelHi" xml:space="preserve">
-    <value>Hi!</value>
+    <value>Account: </value>
   </data>
   <data name="LabelMenAndWomen" xml:space="preserve">
     <value>MEN &amp; WOMEN</value>
@@ -988,7 +988,7 @@
     <value>Agent Number:</value>
   </data>
   <data name="AMyAccount" xml:space="preserve">
-    <value>My Account</value>
+    <value>:</value>
   </data>
   <data name="AMYACCOUNTMobile" xml:space="preserve">
     <value>MY ACCOUNT</value>
@@ -3198,13 +3198,13 @@
   <data name="Fashion" xml:space="preserve">
     <value>Fashion</value>
   </data>
+  <data name="PasswordMatchError" xml:space="preserve">
+    <value>The password and confirmation password do not match.</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>BDT</value>
   </data>
   <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
     <value>Not Urgent Deal</value>
-  </data>
-  <data name="PasswordMatchError" xml:space="preserve">
-    <value>The password and confirmation password do not match.</value>
   </data>
 </root>
