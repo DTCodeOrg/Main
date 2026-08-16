@@ -201,10 +201,10 @@ public class AuthController: BaseController
             // Your native .AddJwtBearer middleware validation parameters (ValidateLifetime = true) 
             // will strictly handle checking and expiring the token after 15 minutes.
             HttpContext.Response.Cookies.Append ($".App.AccessToken.{_tenantSetter.ResolvedTenantId}",accessJwt,
-                new CookieOptions (baseCookieOptions) { Expires = DateTimeOffset.UtcNow.AddDays (maxRefreshDays) });
+                new CookieOptions (baseCookieOptions) { Secure = true, Expires = DateTimeOffset.UtcNow.AddDays (maxRefreshDays) });
 
             HttpContext.Response.Cookies.Append ($".App.RefreshToken.{_tenantSetter.ResolvedTenantId}",refreshTokenStr,
-                new CookieOptions (baseCookieOptions) { Expires = DateTimeOffset.UtcNow.AddDays (maxRefreshDays) });
+                new CookieOptions (baseCookieOptions) { Secure = true, Expires = DateTimeOffset.UtcNow.AddDays (maxRefreshDays) });
 
             return RedirectToAction ("Index","Home",new
             {
