@@ -1,12 +1,15 @@
 # Latest Video (with tenant theme & logo) 🆕🎬
 
-[Video Multi Tenant with Theme and Logo](https://1drv.ms/v/c/93d70fb51193cb6b/IQCbPoQogKj0Sp4JcSrTqlTdAaTPrdYOCt7i2xo-eiRa1Nk?e=zW63vs)
+1. [Video Multi Tenant with Theme and Logo](https://1drv.ms/v/c/93d70fb51193cb6b/IQCbPoQogKj0Sp4JcSrTqlTdAaTPrdYOCt7i2xo-eiRa1Nk?e=zW63vs) NEW!
 
-# Latest Video (with tenant logo)
-[Latest video](https://1drv.ms/v/c/93d70fb51193cb6b/IQAdpVbw9SSUTIkiv8jbxnrzAWtZcojWwLbMsDhPbqOcFBc?e=bbNRme)
+2. [Latest video](https://1drv.ms/v/c/93d70fb51193cb6b/IQAdpVbw9SSUTIkiv8jbxnrzAWtZcojWwLbMsDhPbqOcFBc?e=bbNRme)
 
-# First Video (technical)
-[From VS and Nginx](https://1drv.ms/v/c/93d70fb51193cb6b/IQA-f-V2ZcA3RKPQmD1k3q_QAaFFDqIFFMMyGS7K9kcHEQ8?e=Z6BhbS)
+3. [From VS and Nginx](https://1drv.ms/v/c/93d70fb51193cb6b/IQA-f-V2ZcA3RKPQmD1k3q_QAaFFDqIFFMMyGS7K9kcHEQ8?e=Z6BhbS)
+
+# Seed Database Script for Identity Database:
+
+[Theme Seed & Database SQL Script](https://1drv.ms/u/c/93d70fb51193cb6b/IQAUlLSDaKNySocpGhJc6rwRAZbMUTp5WKFcbGST3aEP4Ak?e=Kl0cxT)
+
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
 
