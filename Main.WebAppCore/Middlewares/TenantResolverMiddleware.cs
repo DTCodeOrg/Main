@@ -50,9 +50,6 @@ public class TenantResolverMiddleware
                 tenantSetter.CurrentTenant.TenantThemeModel = new TenantThemeModel ()
                 {
                     Default = true,
-                    PrimaryColor = tenantTheme?.PrimaryColor ?? "#1B3B2B",
-                    SecondaryColor = tenantTheme?.SecondaryColor ?? "#728C69",
-                    BackgroundColor = tenantTheme?.BackgroundColor ?? "#F4F6F4",
                     FontStack = tenantTheme?.FontStack ?? "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
                     LogoFilePath = tenantTheme?.LogoFilePath ?? ""
                 };

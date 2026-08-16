@@ -347,9 +347,14 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         TenantTheme tenantTheme = new()
         {
             Id = themeId,
-            PrimaryColor = "#122A1E",
-            SecondaryColor = "#879882",
-            BackgroundColor = "#F7F8F5",
+            BodyBackgroundColor = "",
+            BodyColor = "",
+            HeaderColor = "",
+            LogoColor = "",
+            ButtonBGBorderColor ="",
+            MenuBackgroundColor  ="",
+            MenuItemHoverBGColor ="",
+            MenuItemHoverColor ="",
             FontStack = "Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', Georgia, 'Times New Roman', serif",
             LogoFilePath = "~/favicon.ico" ,
             TenantId = tenantId
@@ -363,9 +368,14 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         TenantTheme tenantTheme = new()
         {
             Id = themeId,
-            PrimaryColor = "#1B3B2B",
-            SecondaryColor = "#728C69",
-            BackgroundColor = "#F4F6F4",
+            BodyBackgroundColor = "",
+            BodyColor = "",
+            HeaderColor = "",
+            LogoColor = "",
+            ButtonBGBorderColor ="",
+            MenuBackgroundColor  ="",
+            MenuItemHoverBGColor ="",
+            MenuItemHoverColor ="",
             FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
             LogoFilePath = "~/favicon.ico" ,
             TenantId = tenantId

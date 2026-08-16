@@ -22,16 +22,42 @@ public class TenantThemeModel
         get; set;
     }
 
-    public string? PrimaryColor
-    {
-        get; set;
-    }
-    public string? SecondaryColor
+    public string? ButtonBGBorderColor
     {
         get; set;
     }
 
-    public string? BackgroundColor
+    public string? BodyBackgroundColor
+    {
+        get; set;
+    }
+
+    public string? BodyColor
+    {
+        get; set;
+    }
+
+    public string? MenuBackgroundColor
+    {
+        get; set;
+    }
+
+    public string? LogoColor
+    {
+        get; set;
+    }
+
+    public string? MenuItemHoverBGColor
+    {
+        get; set;
+    }
+
+    public string? MenuItemHoverColor
+    {
+        get; set;
+    }
+
+    public string? HeaderColor
     {
         get; set;
     }
@@ -45,5 +71,4 @@ public class TenantThemeModel
     {
         get; set;
     }
-
 }

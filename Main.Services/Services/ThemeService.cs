@@ -28,9 +28,6 @@ public class ThemeService: IThemeService
         TenantThemeModel themeDataModel = new ()
         {
             Id = theme.Id,
-            PrimaryColor = theme.PrimaryColor,
-            SecondaryColor = theme.SecondaryColor,
-            BackgroundColor = theme.BackgroundColor,
             FontStack = theme.FontStack,
             LogoFilePath = theme.LogoFilePath,
             TenantId = theme.TenantId
@@ -41,17 +38,20 @@ public class ThemeService: IThemeService
 
     public async Task<TenantThemeModel> GetTenantThemeAsync (Guid tenantId)
     {
-        TenantTheme themeEntity = await _themeRepository.GetTenantThemeAsync (tenantId);
+        var themeEntity = await _themeRepository.GetTenantThemeAsync (tenantId);
 
         TenantThemeModel themeDataModel = new()
         {
-            Id = themeEntity.Id,
-            PrimaryColor = themeEntity.PrimaryColor,
-            SecondaryColor = themeEntity.SecondaryColor,
-            BackgroundColor = themeEntity.BackgroundColor,
+            TenantId = themeEntity.TenantId ,
+            BodyBackgroundColor = themeEntity.BodyBackgroundColor,
+            BodyColor = themeEntity.BodyColor,
+            HeaderColor = themeEntity.HeaderColor,
+            LogoColor = themeEntity?.LogoColor,
+            MenuBackgroundColor  =themeEntity.MenuBackgroundColor,
+            MenuItemHoverBGColor = themeEntity.MenuItemHoverBGColor,
+            MenuItemHoverColor = themeEntity.MenuItemHoverColor,
             FontStack = themeEntity.FontStack,
-            LogoFilePath = themeEntity.LogoFilePath,
-            TenantId = themeEntity.TenantId
+            LogoFilePath = themeEntity.LogoFilePath
         };
 
         return themeDataModel;
@@ -62,9 +62,6 @@ public class ThemeService: IThemeService
         TenantTheme existingTheme =
         await _themeRepository.GetThemeByTenantAsync(_tenantSetter.ResolvedTenantId);
 
-        existingTheme.PrimaryColor = theme.PrimaryColor;
-        existingTheme.SecondaryColor = theme.SecondaryColor;
-        existingTheme.BackgroundColor = theme.BackgroundColor;
         existingTheme.FontStack = theme.FontStack;
         existingTheme.LogoFilePath = theme.LogoFilePath;
         existingTheme.TenantId = _tenantSetter.ResolvedTenantId;

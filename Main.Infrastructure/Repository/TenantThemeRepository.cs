@@ -23,9 +23,7 @@ public class ThemeRepository: IThemeRepository
         {
             return new TenantTheme ()
             {
-                PrimaryColor = "#000000",
-                SecondaryColor = "#FFFFFF",
-                BackgroundColor = "#F0F0F0",
+
                 FontStack = "Arial, sans-serif"
             };
         }
@@ -40,20 +38,26 @@ public class ThemeRepository: IThemeRepository
 
         if ( tenantTheme == null )
         {
-            tenantTheme = new TenantTheme
+            tenantTheme = new TenantTheme ()
             {
-                Id = Guid.NewGuid (),
-                TenantId = tenantId,
-                PrimaryColor = "#000000",
-                SecondaryColor = "#FFFFFF",
-                BackgroundColor = "#F0F0F0",
-                FontStack = "Arial, sans-serif",
-                LogoFilePath = null
+                BodyBackgroundColor = "",
+                BodyColor = "",
+                HeaderColor = "",
+                LogoColor = "",
+                ButtonBGBorderColor = "",
+                MenuBackgroundColor = "",
+                MenuItemHoverBGColor = "",
+                MenuItemHoverColor = "",
+                FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+                LogoFilePath = "~/favicon.ico",
+                TenantId = tenantId
             };
 
             _ = _context.TenantThemes.Add (tenantTheme);
 
             _ = await _context.SaveChangesAsync ();
+
+            return tenantTheme;
         }
 
         return tenantTheme;
