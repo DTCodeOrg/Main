@@ -1,20 +1,18 @@
 ﻿
 
 body {
-    background-color: var(--brand-bg);
-    font-family: var(--brand-font);
-    color: var(--brand-secondary);
+    background-color: var(--bs-body-bg);
+    font-family: var(--bs-font-sans-serif);
 }
 
 .btn-primary {
-    background-color: var(--brand-primary);
-    border-color: var(--brand-secondary);
-    color: var(--brand-secondary);
+    background-color: var(--bs-secondary-bg);
+    border-color: var(--bs-secondary-bg);
 }
 
-    .navbar {
-        background-color: var(--brand-bg);
-    }
+.navbar {
+    background-color: var(--bs-secondary-bg);
+}
 
     .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
         padding-left: 5px;
@@ -66,7 +64,7 @@ body {
 
 header .top-header {
     height: 30px;
-    background-color: var(--brand-bg);
+    background-color: var(--bs-secondary-bg);
     /*#689F38;*/
     line-height: 30px;
 }
@@ -77,7 +75,7 @@ header .top-header {
 
 header .main-header {
     min-height: 90px;
-    background-color: var(--brand-bg);
+    background-color: var(--bs-secondary-bg);
     /*#8BC34A;*/
     align-self: center;
     display: flex;
@@ -159,12 +157,12 @@ header .main-header {
 
 header .bottom-header {
     height: 45px;
-    background-color: var(--brand-secondary);
+    background-color: var(--bs-secondary-bg);
     /*#8BC34A;*/
 }
 
     header .bottom-header .header-container {
-        background-color: var(--brand-bg);
+        background-color: var(--bs-secondary-bg);
         /*#424242;*/
         height: inherit;
     }
@@ -187,9 +185,9 @@ header .bottom-header {
             }
 
     header .bottom-header .main-menu {
-        background-color: var(--brand-bg);
+        background-color: var(--bs-body-bg);
         /*#FFC107;*/
-        color: var(--brand-primary);
+        color: var(--bs-link-color);
         /*#424242;*/
         font-weight: 600;
         padding: 0 10px;
