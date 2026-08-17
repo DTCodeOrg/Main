@@ -27,6 +27,8 @@
     var notify = $.notify;
 
     function LoadImageNewAdminContent() {
+        var  SUCCESS = "SUCCESS";
+        var IMAGE_LOAD_SUCCESSFUL= "SUCCESSFULL!"; 
         $.ajax({
             type: "GET",
             url: imageLoadURL,
@@ -77,25 +79,7 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    if (response.success) {
-
-                        // 2. Second AJAX Request: ONLY run this inside the success callback
-                        $.ajax({
-                            type: "GET",
-                            url: imageLoadURL,
-                            cache: false,
-                            async: true,
-                            success: function (htmlResult) {
-                              $("#imagePanelContainer").append(htmlResult);
-                            },
-                            error: function (xhr) {
-                                console.error("LoadImage Failed with status: " + xhr.status);
-                            }
-                        });
-
-                    } else {
-                        alert("Upload failed or file size exceeded.");
-                    }
+                       LoadImageNewAdminContent();
                 },
                 error: function (xhr) {
                     console.error("UploadImage Failed with status: " + xhr.status);

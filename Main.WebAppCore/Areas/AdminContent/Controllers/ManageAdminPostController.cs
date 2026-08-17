@@ -277,6 +277,7 @@ public class ManageAdminPostController: BaseController
     }
 
     [HttpGet]
+    [IgnoreAntiforgeryToken]
     public PartialViewResult LoadImage ()
     {
         try
