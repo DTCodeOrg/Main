@@ -1,6 +1,6 @@
 using Main.Infrastructure;
 using Main.Services;
-using Main.WebAppCore.ViewModels;
+using Main.WebAppCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,5 +1,6 @@
 ﻿using FluentEmail.Core;
 using Main.Common;
+using Main.Common.Models;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
 using Main.Model.Identity;

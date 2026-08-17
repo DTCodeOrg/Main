@@ -1,11 +1,11 @@
 ﻿
 using System.ComponentModel;
 
-namespace WebAppCore.ViewModel;
+namespace Main.WebAppCore.Models;
 
 public class AdminPostDisplayViewModel
 {
-    public AdminPostDisplayViewModel ( )
+    public AdminPostDisplayViewModel ()
     {
     }
 
@@ -15,28 +15,28 @@ public class AdminPostDisplayViewModel
     }
 
 
-    [DisplayName ( "Poster Name" )]
+    [DisplayName ("Poster Name")]
     public string PosterName
     {
         get; set;
     }
 
 
-    [DisplayName ( "Post Title" )]
+    [DisplayName ("Post Title")]
     public string PostTitle
     {
         get; set;
     }
 
 
-    [DisplayName ( "Post Type" )]
+    [DisplayName ("Post Type")]
     public string DiispayPostType
     {
         get; set;
     }
 
 
-    [DisplayName ( "Host Company" )]
+    [DisplayName ("Host Company")]
     public string DisplayCompanyName
     {
         get; set;

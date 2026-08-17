@@ -1,4 +1,6 @@
-﻿namespace Main.Common;
+﻿using Main.Common.Models;
+
+namespace Main.Common;
 
 public static class TenantStoreHelper
 {

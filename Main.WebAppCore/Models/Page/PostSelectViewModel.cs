@@ -1,16 +1,16 @@
 ﻿using Main.Common;
 
 using System.ComponentModel.DataAnnotations;
-namespace WebAppCore.ViewModel;
+namespace Main.WebAppCore.Models;
 
 public class PostSelectViewModel
 {
-    public PostSelectViewModel ( )
+    public PostSelectViewModel ()
     {
     }
 
 
-    public PostSelectViewModel ( EnumPostType enumPostType,int rootId,int imageId,int order )
+    public PostSelectViewModel (EnumPostType enumPostType,int rootId,int imageId,int order)
     {
         EnumPostType = enumPostType;
         RootID = rootId;
@@ -61,7 +61,7 @@ public class PostSelectViewModel
         get; set;
     }
 
-    [DataType ( DataType.Currency )]
+    [DataType (DataType.Currency)]
     public decimal Price
     {
         get; set;

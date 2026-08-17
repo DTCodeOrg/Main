@@ -1,8 +1,8 @@
-﻿namespace WebAppCore.ViewModel;
+﻿namespace Main.WebAppCore.Models;
 
 public class SearchModel
 {
-    public SearchModel()
+    public SearchModel ()
     {
         Category = "Select Category";
         Key = "";
@@ -13,17 +13,38 @@ public class SearchModel
         IsTitleOnly = false;
     }
 
-    public string Category { get; set; }
+    public string Category
+    {
+        get; set;
+    }
 
-    public string Key { get; set; }
+    public string Key
+    {
+        get; set;
+    }
 
-    public string Location { get; set; }
+    public string Location
+    {
+        get; set;
+    }
 
-    public bool IsUrgentDeal { get; set; }
+    public bool IsUrgentDeal
+    {
+        get; set;
+    }
 
-    public bool IsNew { get; set; }
+    public bool IsNew
+    {
+        get; set;
+    }
 
-    public bool IsUsed { get; set; }
+    public bool IsUsed
+    {
+        get; set;
+    }
 
-    public bool IsTitleOnly { get; set; }
+    public bool IsTitleOnly
+    {
+        get; set;
+    }
 }

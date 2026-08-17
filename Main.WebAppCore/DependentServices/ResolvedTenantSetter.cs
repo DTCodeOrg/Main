@@ -1,4 +1,4 @@
-﻿using Main.Common;
+﻿using Main.Common.Models;
 using Main.Infrastructure;
 using System.Security.Claims;
 

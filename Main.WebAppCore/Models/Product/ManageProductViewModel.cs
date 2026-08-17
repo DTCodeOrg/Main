@@ -1,11 +1,14 @@
-﻿namespace WebAppCore.ViewModel;
+﻿namespace Main.WebAppCore.Models;
 
-public class ManageProductViewModel : BaseViewModel
+public class ManageProductViewModel: BaseViewModel
 {
-    public ManageProductViewModel()
+    public ManageProductViewModel ()
     {
-        ListProduct = new List<ProductViewModel>();
+        ListProduct = new List<ProductViewModel> ();
     }
 
-    public List<ProductViewModel> ListProduct { get; set; }
+    public List<ProductViewModel> ListProduct
+    {
+        get; set;
+    }
 }

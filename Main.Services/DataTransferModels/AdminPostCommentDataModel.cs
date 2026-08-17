@@ -1,15 +1,23 @@
-﻿namespace DataTransferModel;
+﻿using Main.Common.Models;
 
-public class AdminPostCommentDataModel : DataModel
+namespace DataTransferModel;
+
+public class AdminPostCommentDataModel: DataModel
 {
-    public AdminPostCommentDataModel()
+    public AdminPostCommentDataModel ()
     {
     }
 
-    public int AdminPostCommentID { get; set; }
-   
+    public int AdminPostCommentID
+    {
+        get; set;
+    }
+
     public string Comment { get; set; } = string.Empty;
 
-    public int AdminPostID { get; set; }
+    public int AdminPostID
+    {
+        get; set;
+    }
 
 }

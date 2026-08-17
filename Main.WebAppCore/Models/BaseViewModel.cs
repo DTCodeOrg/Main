@@ -1,8 +1,8 @@
-﻿namespace WebAppCore.ViewModel;
+﻿namespace Main.WebAppCore.Models;
 
 public class BaseViewModel
 {
-    public BaseViewModel ( )
+    public BaseViewModel ()
     {
     }
 

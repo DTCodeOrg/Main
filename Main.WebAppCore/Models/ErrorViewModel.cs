@@ -1,15 +1,21 @@
-﻿namespace WebAppCore.ViewModel;
+﻿namespace Main.WebAppCore.Models;
 
 public class ErrorViewModel: BaseViewModel
 {
-    public ErrorViewModel ( )
+    public ErrorViewModel ()
     {
         PageName = "Error";
     }
-   
-    public string ErrorMesssgae { get; set; }
-   
-    public string ErrorCode { get; set; }
+
+    public string ErrorMesssgae
+    {
+        get; set;
+    }
+
+    public string ErrorCode
+    {
+        get; set;
+    }
 
     public string StatusCode
     {
@@ -19,5 +25,5 @@ public class ErrorViewModel: BaseViewModel
     public int ErrorNumber
     {
         get; set;
-    } 
+    }
 }

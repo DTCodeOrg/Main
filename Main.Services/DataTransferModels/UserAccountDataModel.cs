@@ -1,4 +1,4 @@
-﻿using DataTransferModel;
+﻿using Main.Common.Models;
 
 namespace Main.Services
 {

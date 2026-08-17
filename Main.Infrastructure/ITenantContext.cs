@@ -1,4 +1,4 @@
-﻿using Main.Common;
+﻿using Main.Common.Models;
 using System.Security.Claims;
 
 namespace Main.Infrastructure;

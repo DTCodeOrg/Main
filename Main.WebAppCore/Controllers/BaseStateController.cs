@@ -1,4 +1,4 @@
-﻿using DataTransferModel;
+﻿using Main.Common.Models;
 using Main.WebAppCore.DependentServices;
 
 namespace Main.WebAppCore;
@@ -8,12 +8,14 @@ public partial class BaseController
     protected void SetSessionImageFile (ImageFile imageFile,
         ITenantCacheService tenantCacheService)
     {
-        _ = tenantCacheService.TryGet<List<ImageFile>?> ("ImageFileList",out var listImageFile);
+        _ = tenantCacheService.TryGet<List<ImageFile>> ("ImageFileList",out var listImageFile);
 
         if ( listImageFile == null )
         {
-            List<ImageFile>? listNewImageFile = new();
+            List<ImageFile> listNewImageFile = new();
             imageFile.FileID = 1;
+            imageFile.FileContent = imageFile.FileContent;
+            imageFile.PostID = imageFile.PostID;
             listNewImageFile.Add (imageFile);
 
             tenantCacheService.Set<List<ImageFile>?> ("ImageFileList",listNewImageFile
@@ -26,29 +28,33 @@ public partial class BaseController
             currentId += 1;
 
             imageFile.FileID = currentId;
+            imageFile.FileContent = imageFile.FileContent;
+            imageFile.PostID = imageFile.PostID;
 
             listImageFile.Add (imageFile);
 
-            tenantCacheService.Set<List<ImageFile>?> ("ImageFileList",listImageFile
+            tenantCacheService.Set<List<ImageFile>> ("ImageFileList",listImageFile
                ,new System.TimeSpan (1200));
         }
     }
 
     protected List<ImageFile> GetAllSessionImages (ITenantCacheService tenantCacheService)
     {
-        _ = tenantCacheService.TryGet<List<ImageFile>?> ("ImageFileList",out var listImageFile);
+        _ = tenantCacheService.TryGet<List<ImageFile>> ("ImageFileList",out var listImageFile);
 
-        if ( listImageFile != null )
+        if ( listImageFile == null )
+        {
+            return new List<ImageFile> ();
+        }
+        else
         {
             return listImageFile.ToList ();
         }
-
-        return new List<ImageFile> ();
     }
 
     protected bool RemoveSessionImageFile (int imageFileId,ITenantCacheService tenantCacheService)
     {
-        _ = tenantCacheService.TryGet<List<ImageFile>?> ("ImageFileList",out var listImageFile);
+        _ = tenantCacheService.TryGet<List<ImageFile>> ("ImageFileList",out var listImageFile);
 
         if ( listImageFile == null )
         {
@@ -64,8 +70,9 @@ public partial class BaseController
         }
 
         bool result = listImageFile.Remove (imageFile);
+        listImageFile = listImageFile.OrderBy (a => a.FileID).ToList ();
 
-        tenantCacheService.Set<List<ImageFile>?>
+        tenantCacheService.Set<List<ImageFile>>
         ("ImageFileList",listImageFile,new System.TimeSpan (1200));
 
         return true;

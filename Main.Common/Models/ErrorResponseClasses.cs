@@ -1,4 +1,4 @@
-namespace Main.Common;
+namespace Main.Common.Models;
 
 /// <summary>
 /// API Exception Response Model - returned to clients on errors

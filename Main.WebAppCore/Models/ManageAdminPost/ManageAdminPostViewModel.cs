@@ -1,11 +1,14 @@
-﻿namespace WebAppCore.ViewModel;
+﻿namespace Main.WebAppCore.Models;
 
-public class ManageAdminPostViewModel : BaseViewModel
+public class ManageAdminPostViewModel: BaseViewModel
 {
-    public ManageAdminPostViewModel()
+    public ManageAdminPostViewModel ()
     {
-        ListAdminPost = new List<AdminPostViewModel>();
+        ListAdminPost = new List<AdminPostViewModel> ();
     }
 
-    public List<AdminPostViewModel> ListAdminPost { get; set; }
+    public List<AdminPostViewModel> ListAdminPost
+    {
+        get; set;
+    }
 }

@@ -1,9 +1,9 @@
 ﻿using DataTransferModel;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.Services;
+using Main.WebAppCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebAppCore.ViewModel;
 
 namespace Main.WebAppCore.Controllers;
 

@@ -2,13 +2,13 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace WebAppCore.ViewModel;
+namespace Main.WebAppCore.Models;
 
 public class PageViewModel: BaseViewModel
 {
-    public PageViewModel ( )
+    public PageViewModel ()
     {
-        ListPagePanels = new List<PanelViewModel> ( );
+        ListPagePanels = new List<PanelViewModel> ();
     }
 
     public int PageID
@@ -23,14 +23,14 @@ public class PageViewModel: BaseViewModel
     }
 
 
-    [Display ( Name = "Configurable Page Name" )]
+    [Display (Name = "Configurable Page Name")]
     public string? PublicPageName
     {
         get; set;
     }
 
 
-    [Display ( Name = "Company Name" )]
+    [Display (Name = "Company Name")]
     public string? CompanyName
     {
         get; set;
@@ -43,16 +43,13 @@ public class PageViewModel: BaseViewModel
     }
 
 
-    public void CreatePageContent ( PanelViewModel pageContentViveModel )
+    public void CreatePageContent (PanelViewModel pageContentViveModel)
     {
-        if ( ListPagePanels == null )
-        {
-            ListPagePanels = new List<PanelViewModel> ( );
-        }
+        ListPagePanels ??= new List<PanelViewModel> ();
 
         if ( pageContentViveModel != null )
         {
-            ListPagePanels.Add ( pageContentViveModel );
+            ListPagePanels.Add (pageContentViveModel);
         }
     }
 }

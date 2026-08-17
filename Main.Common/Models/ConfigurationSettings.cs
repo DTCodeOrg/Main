@@ -1,7 +1,8 @@
-﻿namespace Main.Common;
+﻿namespace Main.Common.Models;
 
 public class ConfigurationSettings
 {
+
     public Country EnumCountry
     {
         get; set;

@@ -1,4 +1,4 @@
-﻿using Main.Common;
+﻿using Main.Common.Models;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
 using Main.Model.Identity;
@@ -39,6 +39,10 @@ public class TokenService: ITokenService
             RoleClaimType = "UserRole",
             NameClaimType = "UserName"
         };
+    }
+
+    public TokenService ()
+    {
     }
 
     public async Task<string> GenerateAccessToken (

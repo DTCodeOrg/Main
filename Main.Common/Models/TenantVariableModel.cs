@@ -1,5 +1,5 @@
 ﻿
-namespace Main.Common;
+namespace Main.Common.Models;
 
 public class TenantVariableModel
 {

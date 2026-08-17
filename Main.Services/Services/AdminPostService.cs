@@ -40,8 +40,7 @@ public class AdminPostService: IAdminPostService
 
     public async Task<AdminPostDataModel> GetAdminPostForEditPostID (int postID)
     {
-        var postEntity = await _AdminPostRepository
-                    .GetAdminPostByPostID(postID);
+        var postEntity = await _AdminPostRepository.GetAdminPostByPostID(postID);
 
 
         AdminPostDataModel objAdminPostDataModel =

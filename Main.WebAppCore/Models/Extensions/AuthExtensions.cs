@@ -1,5 +1,6 @@
 ﻿using Main.Common;
 using Main.Services;
+using Main.WebAppCore.Models;
 
 namespace WebAppCore.ViewModel.Extensions;
 

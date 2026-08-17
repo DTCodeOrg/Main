@@ -1,4 +1,4 @@
-namespace Main.WebAppCore.ViewModels;
+namespace Main.WebAppCore.Models;
 
 public class InviteUserViewModel
 {
@@ -9,5 +9,8 @@ public class InviteUserViewModel
 public class AcceptInvitationViewModel
 {
     public string Token { get; set; } = string.Empty;
-    public string? FullName { get; set; }
+    public string? FullName
+    {
+        get; set;
+    }
 }

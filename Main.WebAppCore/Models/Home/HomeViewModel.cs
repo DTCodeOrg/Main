@@ -1,4 +1,4 @@
-﻿namespace WebAppCore.ViewModel;
+﻿namespace Main.WebAppCore.Models;
 
 public class HomeViewModel: BaseViewModel
 {

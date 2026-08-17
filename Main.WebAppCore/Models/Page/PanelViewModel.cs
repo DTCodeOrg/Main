@@ -6,21 +6,21 @@ using System.ComponentModel.DataAnnotations;
 
 using WebAppCore.Helper;
 
-namespace WebAppCore.ViewModel;
+namespace Main.WebAppCore.Models;
 
 public class PanelViewModel: BaseViewModel
 {
-    public PanelViewModel ( )
+    public PanelViewModel ()
     {
-        ListSelectPosts = new List<PostSelectViewModel> ( );
-        ListPosts = new List<PostViewModel> ( );
-        AV_PanelTemplate = DropDownListItems.GetPanelTempletList ( );
+        ListSelectPosts = new List<PostSelectViewModel> ();
+        ListPosts = new List<PostViewModel> ();
+        AV_PanelTemplate = DropDownListItems.GetPanelTempletList ();
     }
 
-    public PanelViewModel ( EnumPanelTemplate enumPanelTemplate )
+    public PanelViewModel (EnumPanelTemplate enumPanelTemplate)
     {
-        ListPosts = new List<PostViewModel> ( );
-        AV_PanelTemplate = DropDownListItems.GetPanelTempletList ( );
+        ListPosts = new List<PostViewModel> ();
+        AV_PanelTemplate = DropDownListItems.GetPanelTempletList ();
         PanelTemplate = enumPanelTemplate;
     }
 
@@ -40,16 +40,16 @@ public class PanelViewModel: BaseViewModel
     }
 
 
-    [Display ( Name = "Panel Title" )]
-    [Required ( ErrorMessage = "Panel title is required!" )]
+    [Display (Name = "Panel Title")]
+    [Required (ErrorMessage = "Panel title is required!")]
     public string PanelTitle
     {
         get; set;
     }
 
 
-    [Display ( Name = "Panel Template" )]
-    [Required ( ErrorMessage = "Select a template!" )]
+    [Display (Name = "Panel Template")]
+    [Required (ErrorMessage = "Select a template!")]
     public EnumPanelTemplate PanelTemplate
     {
         get; set;
@@ -70,16 +70,13 @@ public class PanelViewModel: BaseViewModel
         get; set;
     }
 
-    public void CreatePanelPost ( PostViewModel postViewModel )
+    public void CreatePanelPost (PostViewModel postViewModel)
     {
-        if ( ListPosts == null )
-        {
-            ListPosts = new List<PostViewModel> ( );
-        }
+        ListPosts ??= new List<PostViewModel> ();
 
         if ( postViewModel != null )
         {
-            ListPosts.Add ( postViewModel );
+            ListPosts.Add (postViewModel);
         }
     }
 }

@@ -6,10 +6,10 @@ using Main.Infrastructure.ICrosscuttingServices;
 using Main.Services;
 using Main.WebAppCore.Controllers.Extensions;
 using Main.WebAppCore.Filters;
+using Main.WebAppCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
 
 namespace Main.WebAppCore.Controllers;

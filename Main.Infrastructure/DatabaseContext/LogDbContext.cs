@@ -1,4 +1,4 @@
-﻿using Main.Common;
+﻿using Main.Common.Models;
 using Main.Model.Base;
 using Main.Model.Log;
 using Microsoft.EntityFrameworkCore;

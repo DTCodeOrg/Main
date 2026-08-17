@@ -1,4 +1,4 @@
-﻿using Main.Common;
+﻿using Main.Common.Models;
 using Main.Infrastructure;
 using Main.IRepository;
 using Main.Model.Identity;
@@ -18,12 +18,7 @@ public class ThemeService: IThemeService
 
     public async Task<TenantThemeModel?> GetThemeByTenantAsync (Guid tenantId)
     {
-        TenantTheme? theme = await _themeRepository.GetThemeByTenantAsync (tenantId);
-
-        if ( theme == null )
-        {
-            return null;
-        }
+        TenantTheme theme = await _themeRepository.GetThemeByTenantAsync (tenantId);
 
         TenantThemeModel themeDataModel = new ()
         {
@@ -38,7 +33,7 @@ public class ThemeService: IThemeService
 
     public async Task<TenantThemeModel> GetTenantThemeAsync (Guid tenantId)
     {
-        var themeEntity = await _themeRepository.GetTenantThemeAsync (tenantId);
+        TenantTheme themeEntity = await _themeRepository.GetTenantThemeAsync (tenantId);
 
         TenantThemeModel themeDataModel = new()
         {

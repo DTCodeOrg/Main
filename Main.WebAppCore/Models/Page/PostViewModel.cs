@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 using WebAppCore.Helper;
 
-namespace WebAppCore.ViewModel;
+namespace Main.WebAppCore.Models;
 
 public class PostViewModel: BaseViewModel
 {

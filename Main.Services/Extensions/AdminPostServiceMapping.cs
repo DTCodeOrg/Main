@@ -1,4 +1,5 @@
 ﻿using DataTransferModel;
+using Main.Common.Models;
 using Main.Model.Tenant;
 
 namespace Services.Extensions;

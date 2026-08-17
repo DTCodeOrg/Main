@@ -23,7 +23,6 @@ public class ThemeRepository: IThemeRepository
         {
             return new TenantTheme ()
             {
-
                 FontStack = "Arial, sans-serif"
             };
         }

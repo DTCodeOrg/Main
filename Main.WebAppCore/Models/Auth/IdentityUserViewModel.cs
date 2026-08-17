@@ -1,12 +1,14 @@
-﻿namespace WebAppCore.ViewModel;
+﻿namespace Main.WebAppCore.Models;
 
 public class IdentityUserViewModel
 {
-    public IdentityUserViewModel ( ) { }
+    public IdentityUserViewModel ()
+    {
+    }
 
     public string UserId
     {
-        get; set;   
+        get; set;
     }
 
     public string? UserName
@@ -16,6 +18,6 @@ public class IdentityUserViewModel
 
     public DateTimeOffset? LockoutEnd
     {
-        get; set;   
+        get; set;
     }
 }

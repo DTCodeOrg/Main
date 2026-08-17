@@ -1,14 +1,21 @@
-﻿namespace WebAppCore.ViewModel;
-public class AdminPostCommentViewModel : BaseViewModel
+﻿namespace Main.WebAppCore.Models;
+
+public class AdminPostCommentViewModel: BaseViewModel
 {
-    public AdminPostCommentViewModel()
+    public AdminPostCommentViewModel ()
     {
     }
 
-    public int AdminPostCommentID { get; set; }
-   
+    public int AdminPostCommentID
+    {
+        get; set;
+    }
+
     public string Comment { get; set; } = string.Empty;
 
-    public int AdminPostID { get; set; }
+    public int AdminPostID
+    {
+        get; set;
+    }
 
 }

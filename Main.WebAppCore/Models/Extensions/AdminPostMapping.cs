@@ -1,14 +1,15 @@
 ﻿using DataTransferModel;
-
 using Main.Common;
+using Main.Common.Models;
+using Main.WebAppCore.Models;
 
 namespace WebAppCore.ViewModel.Extensions;
 
 public static class AdminPostMapping
 {
-    public static AdminPostDataModel MapNewDataModel ( AdminPostViewModel adminPostViewModel )
+    public static AdminPostDataModel MapNewDataModel (AdminPostViewModel adminPostViewModel)
     {
-        AdminPostDataModel adminPostDataModel = new AdminPostDataModel
+        AdminPostDataModel adminPostDataModel = new ()
         {
             AdminPostID = adminPostViewModel.AdminPostID ?? 0,
             PostTitle = adminPostViewModel.PostTitle,
@@ -23,14 +24,14 @@ public static class AdminPostMapping
         return adminPostDataModel;
     }
 
-    public static AdminPostDataModel MapAdminPostDataModel ( AdminPostViewModel adminPostViewModel )
+    public static AdminPostDataModel MapAdminPostDataModel (AdminPostViewModel adminPostViewModel)
     {
         if ( adminPostViewModel == null )
         {
-            return new AdminPostDataModel ( );
+            return new AdminPostDataModel ();
         }
 
-        AdminPostDataModel adminPostDataModel = new AdminPostDataModel()
+        AdminPostDataModel adminPostDataModel = new()
         {
             AdminPostID = adminPostViewModel.AdminPostID ?? 0,
             PosterName = adminPostViewModel.PosterName,
@@ -45,19 +46,19 @@ public static class AdminPostMapping
         return adminPostDataModel;
     }
 
-    public static List<AdminImageFileDataModel> MapAdminFileDataModel ( AdminPostViewModel adminFileViewModel )
+    public static List<AdminImageFileDataModel> MapAdminFileDataModel (AdminPostViewModel adminFileViewModel)
     {
-        List<AdminImageFileDataModel> listAdminImageFileDataModel = new List<AdminImageFileDataModel>();
+        List<AdminImageFileDataModel> listAdminImageFileDataModel = new();
 
-        adminFileViewModel.ListAdminPostFileImages.ForEach ( fileViewModel =>
+        adminFileViewModel.ListAdminPostFileImages.ForEach (fileViewModel =>
         {
-            listAdminImageFileDataModel.Add ( new AdminImageFileDataModel ( fileViewModel.FileContent ) );
-        } );
+            listAdminImageFileDataModel.Add (new AdminImageFileDataModel (fileViewModel.FileContent));
+        });
 
         return listAdminImageFileDataModel;
     }
 
-    public static void MapAdminPostViewModel ( AdminPostDataModel adminPostDatatModel,AdminPostViewModel adminPostViewModel )
+    public static void MapAdminPostViewModel (AdminPostDataModel adminPostDatatModel,AdminPostViewModel adminPostViewModel)
     {
         adminPostViewModel.AdminPostID = adminPostDatatModel.AdminPostID;
         adminPostViewModel.PostTitle = adminPostDatatModel.PostTitle;
@@ -67,40 +68,40 @@ public static class AdminPostMapping
         adminPostViewModel.PostType = adminPostDatatModel.PostType;
         adminPostViewModel.SearchTag = adminPostDatatModel.SearchTag;
         adminPostViewModel.ShortNote = adminPostDatatModel.ShortNote;
-        adminPostViewModel.DisplayPostType = EnumDescription.GetDescription ( adminPostDatatModel.PostType );
+        adminPostViewModel.DisplayPostType = EnumDescription.GetDescription (adminPostDatatModel.PostType);
     }
 
-    public static List<AdminPostDisplayViewModel> MapAdminPostDisplayViewModelList ( List<AdminPostDisplayModel> adminPostDisplayModelList,string company )
+    public static List<AdminPostDisplayViewModel> MapAdminPostDisplayViewModelList (List<AdminPostDisplayModel> adminPostDisplayModelList,string company)
     {
         var displayViewModels = new List<AdminPostDisplayViewModel>();
 
         foreach ( var model in adminPostDisplayModelList )
         {
-            displayViewModels.Add ( new AdminPostDisplayViewModel
+            displayViewModels.Add (new AdminPostDisplayViewModel
             {
                 AdminPostID = model.AdminPostID,
                 PosterName = model.PosterName,
                 PostTitle = model.PostTitle,
-                DiispayPostType = EnumDescription.GetDescription ( model.PostType ),
+                DiispayPostType = EnumDescription.GetDescription (model.PostType),
                 DisplayCompanyName = company
-            } );
+            });
         }
 
         return displayViewModels;
     }
 
-    public static List<ImageFile> MapAdminImageFileViewModelList ( List<AdminImageFileDataModel> adminImageFileList )
+    public static List<ImageFile> MapAdminImageFileViewModelList (List<AdminImageFileDataModel> adminImageFileList)
     {
         var imageFileViewModels = new List<ImageFile>();
 
         foreach ( var model in adminImageFileList )
         {
-            imageFileViewModels.Add ( new ImageFile
+            imageFileViewModels.Add (new ImageFile
             {
                 FileContent = model.ImageFileContent,
                 FileID = model.AdminImageFileID,
                 PostID = model.AdminPostID
-            } );
+            });
         }
 
         return imageFileViewModels;

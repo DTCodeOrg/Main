@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WebAppCore.ViewModel;
-
 namespace Main.WebAppCore.Models;
 
 public class UpdateLogoViewModel: BaseViewModel

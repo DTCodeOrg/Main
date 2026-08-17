@@ -1,12 +1,11 @@
-﻿using DataTransferModel;
-
+﻿using Main.Common.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using System.ComponentModel.DataAnnotations;
 
 using WebAppCore.Helper;
 
-namespace WebAppCore.ViewModel;
+namespace Main.WebAppCore.Models;
 
 public class ProductViewModel: BaseViewModel
 {

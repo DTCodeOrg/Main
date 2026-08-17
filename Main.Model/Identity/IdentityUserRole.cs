@@ -1,4 +1,5 @@
 ﻿using Main.Common;
+using Main.Common.Models;
 using Main.Model.Base;
 using Microsoft.AspNetCore.Identity;
 

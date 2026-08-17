@@ -1,10 +1,11 @@
 ﻿using DataTransferModel;
+using Main.Common.Models;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
+using Main.WebAppCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
 
 namespace Main.WebAppCore;
@@ -30,25 +31,26 @@ public class ManageAdminPostController: BaseController
     private void SetImageInDataModel (AdminPostDataModel adminPostDataModel)
     {
         List<ImageFile> listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
+        List<AdminImageFileDataModel> listAdminPostDataModel = new();
 
-        listSessionImageFiles.ForEach (imgFile =>
+        if ( listSessionImageFiles.Count > 0 )
         {
-            AdminImageFileDataModel adminImageFileDataModel= new(  )
+            listSessionImageFiles.ForEach (imgFile =>
             {
-                ImageFileContent = imgFile.FileContent,
-                AdminPostID = imgFile.PostID ?? 0,
-                AdminImageFileID = 0
-            };
+                AdminImageFileDataModel adminImageFileDataModel= new()
+                {
+                    ImageFileContent = imgFile.FileContent,
+                    AdminPostID = imgFile.PostID ?? 0,
+                    AdminImageFileID = 0
+                };
 
-            new List<AdminImageFileDataModel> ().Add (adminImageFileDataModel);
-        });
+                listAdminPostDataModel.Add (adminImageFileDataModel);
+            });
 
-        adminPostDataModel.ListAdminPostFileImages = new List<AdminImageFileDataModel> ();
-
-        ClearImageFileListSession (_tenantCacheService);
+            adminPostDataModel.ListAdminPostFileImages = listAdminPostDataModel;
+            ClearImageFileListSession (_tenantCacheService);
+        }
     }
-
-
 
     public async Task<ActionResult> Index ()
     {
@@ -57,9 +59,8 @@ public class ManageAdminPostController: BaseController
             List<AdminPostDisplayModel> listAdminPosts = await _adminPostService.GetAllAdminPosts();
 
             return View (model: AdminPostMapping
-                .MapAdminPostDisplayViewModelList (
-                listAdminPosts,
-                _tenantSetter.CurrentTenant.TenantName));
+                .MapAdminPostDisplayViewModelList
+                (listAdminPosts,_tenantSetter.CurrentTenant.TenantName));
         }
         catch
         {
@@ -100,9 +101,11 @@ public class ManageAdminPostController: BaseController
 
         try
         {
-            SetImageInDataModel (AdminPostMapping.MapNewDataModel (collection));
+            AdminPostDataModel adminPostDataModel = AdminPostMapping.MapNewDataModel (collection);
 
-            bool result = await _adminPostService.SaveNewAdminPost( postDataModel: AdminPostMapping.MapNewDataModel ( collection ) );
+            SetImageInDataModel (adminPostDataModel);
+
+            bool result = await _adminPostService.SaveNewAdminPost( adminPostDataModel );
 
             string? redirectUrl = Url.Action("Index", "ManageAdminPost", new
             {
@@ -123,8 +126,6 @@ public class ManageAdminPostController: BaseController
         }
     }
 
-
-
     [HttpGet]
     public async Task<ActionResult> Edit (int id)
     {
@@ -133,8 +134,7 @@ public class ManageAdminPostController: BaseController
             ClearImageFileListSession (_tenantCacheService);
 
             AdminPostDataModel adminPostDataModel =
-                await _adminPostService.GetAdminPostForEditPostID(id);
-
+            await _adminPostService.GetAdminPostForEditPostID (id);
 
             var adminPostViewModel = new AdminPostViewModel();
 
@@ -230,7 +230,7 @@ public class ManageAdminPostController: BaseController
             {
                 ImageFile imageFile = ReadImage ( file );
 
-                if ( imageFile.IsNew )
+                if ( imageFile.FileContent.Length > 0 )
                 {
                     SetSessionImageFile (imageFile,_tenantCacheService);
                 }
@@ -250,7 +250,7 @@ public class ManageAdminPostController: BaseController
 
     private ImageFile ReadImage (IFormFile file)
     {
-        if ( !string.IsNullOrEmpty (file.ContentType) && file.FileName != null )
+        if ( file != null && !string.IsNullOrEmpty (file.ContentType) && file.FileName != null )
         {
             string extension = Path.GetExtension(file.FileName).ToLower();
 
@@ -272,6 +272,7 @@ public class ManageAdminPostController: BaseController
                 return objFile;
             }
         }
+
         return new ImageFile ();
     }
 
@@ -286,10 +287,12 @@ public class ManageAdminPostController: BaseController
             {
                 return PartialView ("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml",new ImageFile ());
             }
+            else
+            {
+                ImageFile imageFile = imageFileList.Last<ImageFile >();
 
-            ImageFile imageFile = imageFileList.Last();
-
-            return PartialView ("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml",imageFile);
+                return PartialView ("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml",imageFile);
+            }
         }
         catch
         {

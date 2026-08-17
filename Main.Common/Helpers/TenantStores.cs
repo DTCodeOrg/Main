@@ -1,4 +1,5 @@
-﻿using ResourceLibrary.Resources;
+﻿using Main.Common.Models;
+using ResourceLibrary.Resources;
 namespace Main.Common;
 
 public class TenantStores

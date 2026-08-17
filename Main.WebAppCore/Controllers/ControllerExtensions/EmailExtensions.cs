@@ -1,4 +1,5 @@
 ﻿using Main.Common;
+using Main.Common.Models;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.Services;
 using Microsoft.AspNetCore.Mvc;

@@ -1,17 +1,18 @@
 ﻿using Main.Common;
+using Main.Common.Models;
 
 namespace DataTransferModel;
 
 public class PanelDataModel: DataModel
 {
-    public PanelDataModel ( )
+    public PanelDataModel ()
     {
-        ListPosts = new List<PostDataModel> ( );
+        ListPosts = new List<PostDataModel> ();
     }
 
-    public PanelDataModel ( EnumPanelTemplate enumPanelTemplate,int pageId,string panelTitle )
+    public PanelDataModel (EnumPanelTemplate enumPanelTemplate,int pageId,string panelTitle)
     {
-        ListPosts = new List<PostDataModel> ( );
+        ListPosts = new List<PostDataModel> ();
 
         PanelTemplate = enumPanelTemplate;
 
@@ -51,16 +52,13 @@ public class PanelDataModel: DataModel
         get; set;
     }
 
-    public void CreatePost ( PostDataModel panelPost )
+    public void CreatePost (PostDataModel panelPost)
     {
-        if ( ListPosts == null )
-        {
-            ListPosts = new List<PostDataModel> ( );
-        }
+        ListPosts ??= new List<PostDataModel> ();
 
         if ( panelPost != null )
         {
-            ListPosts.Add ( panelPost );
+            ListPosts.Add (panelPost);
         }
     }
 }

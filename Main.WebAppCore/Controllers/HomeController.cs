@@ -1,9 +1,9 @@
 ﻿using Main.Infrastructure;
 using Main.Services;
+using Main.WebAppCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
-using WebAppCore.ViewModel;
 
 namespace Main.WebAppCore.Controllers;
 

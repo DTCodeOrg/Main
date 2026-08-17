@@ -1,4 +1,4 @@
-﻿using Main.Common;
+﻿using Main.Common.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 

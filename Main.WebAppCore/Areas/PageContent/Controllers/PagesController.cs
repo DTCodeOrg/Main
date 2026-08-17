@@ -1,11 +1,12 @@
 ﻿using DataTransferModel;
 using Main.Common;
+using Main.Common.Models;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
+using Main.WebAppCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
 
 namespace Main.WebAppCore;

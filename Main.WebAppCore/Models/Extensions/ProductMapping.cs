@@ -1,7 +1,7 @@
 ﻿using DataTransferModel;
-
 using Main.Common;
-
+using Main.Common.Models;
+using Main.WebAppCore.Models;
 using WebAppCore.Helper;
 
 namespace WebAppCore.ViewModel.Extensions;

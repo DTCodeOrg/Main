@@ -54,7 +54,6 @@ public class TenantCacheService: ITenantCacheService
         return _memoryCache.TryGetValue (fullKey,out value);
     }
 
-
     public void Clear (string baseKey)
     {
         string fullKey = BuildTenantKey(baseKey);

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebAppCore.ViewModel;
+namespace Main.WebAppCore.Models;
 
 public class PageDisplayViewModel
 {
-    public PageDisplayViewModel ( )
+    public PageDisplayViewModel ()
     {
     }
 
@@ -14,28 +14,28 @@ public class PageDisplayViewModel
     }
 
 
-    [Display ( Name = "Page Name" )]
+    [Display (Name = "Page Name")]
     public string PageName
     {
         get; set;
     }
 
 
-    [Display ( Name = "Company Name" )]
+    [Display (Name = "Company Name")]
     public string CompanyName
     {
         get; set;
     }
 
 
-    [Display ( Name = "Add Product | Ads (PANEL)" )]
+    [Display (Name = "Add Product | Ads (PANEL)")]
     public string AddPanelButtons
     {
         get; set;
     }
 
 
-    [Display ( Name = "Edit | View Page" )]
+    [Display (Name = "Edit | View Page")]
     public string ViewEditButtons
     {
         get; set;

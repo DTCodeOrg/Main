@@ -1,4 +1,5 @@
 ﻿using Main.Common;
+using Main.Common.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebAppCore.Helper;

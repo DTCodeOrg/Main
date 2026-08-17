@@ -1,30 +1,32 @@
-﻿namespace DataTransferModel;
+﻿using Main.Common.Models;
 
-public class ImageFile
+namespace DataTransferModel;
+
+public class AdminImageFileDataModel: DataModel
 {
-    public ImageFile ( )
+    public AdminImageFileDataModel ()
     {
+        BaseDataModel = new BaseDataModel ();
     }
 
-    public ImageFile ( byte[] fileContent)
+    public AdminImageFileDataModel (byte[] imageFileContent)
     {
-        FileContent = fileContent;
-        IsNew = true;
+        ImageFileContent = imageFileContent;
+        BaseDataModel = new BaseDataModel ();
     }
 
-    public ImageFile ( byte[] fileContent, int? postId, int fileId )
+    public int AdminImageFileID
     {
-        FileContent = fileContent;
-        IsNew = false;
-        FileID = fileId;
-        PostID = postId;
+        get; set;
     }
 
-    public int FileID { get; set; } 
-   
-    public byte[] FileContent { get; set; }
-   
-    public int? PostID { get; set; }
+    public byte[] ImageFileContent
+    {
+        get; set;
+    }
 
-    public bool IsNew { get; set; }
+    public int AdminPostID
+    {
+        get; set;
+    }
 }

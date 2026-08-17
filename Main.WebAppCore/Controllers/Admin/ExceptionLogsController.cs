@@ -1,4 +1,5 @@
 using Main.Common;
+using Main.Common.Models;
 using Main.Infrastructure.DatabaseContext;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.Model.Log;
