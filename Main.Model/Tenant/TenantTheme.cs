@@ -1,4 +1,4 @@
-﻿using Main.Model.DomainModel;
+﻿using Main.Model.Base;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Model;

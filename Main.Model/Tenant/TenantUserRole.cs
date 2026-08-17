@@ -1,5 +1,6 @@
 ﻿using Main.Common;
-using Main.Model.DomainModel;
+using Main.Model.Base;
+using Main.Model.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

@@ -88,8 +88,6 @@ public class ApplicationUserRepository: IApplicationUserRepository
     public async Task<bool> CreateAsync (ApplicationUser userIdentityEntity,
     string password)
     {
-        userIdentityEntity.CreateParameters (_tenantSetter.CreateMetaData);
-
         var result = await _userManager.CreateAsync (userIdentityEntity, password);
 
         return result.Succeeded == true;
