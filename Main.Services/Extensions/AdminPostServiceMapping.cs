@@ -1,6 +1,5 @@
 ﻿using DataTransferModel;
-
-using Domain.Model;
+using Main.Model.Tenant;
 
 namespace Services.Extensions;
 

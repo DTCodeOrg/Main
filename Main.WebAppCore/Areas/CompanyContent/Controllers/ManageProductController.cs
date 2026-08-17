@@ -1,5 +1,4 @@
 ﻿using DataTransferModel;
-using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
@@ -13,27 +12,28 @@ using WebAppCore.ViewModel.Extensions;
 namespace Main.WebAppCore;
 
 [Area ("CompanyContent")]
+[Authorize (Policy = "TenantAdmin")]
 public class ManageProductController: BaseController
 {
 
     private readonly IProductService _productService;
     private readonly ILogger<ManageProductController> _logger;
-    private readonly ITenantContext _userContext;
     private readonly ITenantSetter _tenantSetter;
+
+    private readonly ITenantCacheService _tenantCacheService;
 
     public ManageProductController (IProductService productService,
         ILogger<ManageProductController> logger,
-        ITenantContext userContext,
-        ITenantSetter tenantSetter)
+        ITenantSetter tenantSetter,
+        ITenantCacheService tenantCacheService)
     {
         _productService = productService;
         _logger = logger;
-        _userContext = userContext;
         _tenantSetter = tenantSetter;
+        _tenantCacheService = tenantCacheService;
     }
 
 
-    [Authorize (Roles = "Company,Admin")]
     public async Task<IActionResult> Index ()
     {
         try
@@ -57,15 +57,13 @@ public class ManageProductController: BaseController
         List<ProductFileDataModel> listProductImageFileDataModels
                                       = new();
 
-        BaseDataModel baseDataModel = _userContext.GetCreateBaseDataModel ( );
-
         ProductFileDataModel productImageFileDataModel;
 
-        List<ImageFile> listSessionImageFiles = GetAllSessionImages();
+        List<ImageFile> listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
 
         listSessionImageFiles.ForEach (imgFile =>
         {
-            productImageFileDataModel = new ProductFileDataModel (baseDataModel)
+            productImageFileDataModel = new ProductFileDataModel ()
             {
                 ImageFileContent = imgFile.FileContent,
                 ProductID = imgFile.PostID ?? 0,
@@ -77,7 +75,7 @@ public class ManageProductController: BaseController
 
         productDataModel.ImageFiles = listProductImageFileDataModels;
 
-        ClearImageFileListSession ();
+        ClearImageFileListSession (_tenantCacheService);
     }
 
 
@@ -86,12 +84,15 @@ public class ManageProductController: BaseController
     {
         try
         {
-            ClearImageFileListSession ();
+            ClearImageFileListSession (_tenantCacheService);
 
             ProductViewModel objProductViewModel = new ()
             {
                 PageName = "New Product"
             };
+
+            objProductViewModel.AV_Category = DropDownListItems.GetCategoryList ();
+            objProductViewModel.AV_SubCategory = DropDownListItems.GetSubCategoryList ();
 
             return View (objProductViewModel);
         }
@@ -102,7 +103,6 @@ public class ManageProductController: BaseController
     }
 
     [HttpPost]
-
     public async Task<IActionResult> SaveProduct (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -113,8 +113,6 @@ public class ManageProductController: BaseController
         try
         {
             ProductDataModel productDataModel = ProductMapping.NewProductDataModel ( collection );
-
-            productDataModel.BaseDataModel = _userContext.GetCreateBaseDataModel ();
 
             SetImageInDataModel (productDataModel);
 
@@ -144,7 +142,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            ClearImageFileListSession ();
+            ClearImageFileListSession (_tenantCacheService);
 
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
@@ -162,7 +160,6 @@ public class ManageProductController: BaseController
 
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -173,8 +170,6 @@ public class ManageProductController: BaseController
         try
         {
             ProductDataModel productDataModel = ProductMapping.MapProductDataModel ( collection );
-
-            productDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ();
 
             SetImageInDataModel (productDataModel);
 
@@ -223,34 +218,24 @@ public class ManageProductController: BaseController
     [HttpPost]
     public JsonResult UploadImage (IFormFile file)
     {
-        if ( file != null && file.Length > 0 )
+        if ( file != null && file.Length > 0 && file.Length > AppSettings.Current.PostImageSize )
         {
-            if ( file == null || file.Length > AppSettings.Current.PostImageSize )
+            return Json (new
             {
-                return Json (new
-                {
-                    success = false
-                });
-            }
-            else
-            {
-                ImageFile imageFile = ReadImage ( file );
+                success = false
+            });
+        }
 
-                if ( imageFile.IsNew )
-                {
-                    SetSessionImageFile (imageFile);
-                }
+        ImageFile imageFile = ReadImage ( file ?? file! );
 
-                return Json (new
-                {
-                    success = true
-                });
-            }
+        if ( imageFile.IsNew && imageFile.FileContent.Length > 0 )
+        {
+            SetSessionImageFile (imageFile,_tenantCacheService);
         }
 
         return Json (new
         {
-            success = false
+            success = true
         });
     }
 
@@ -291,7 +276,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            var objImageList = GetAllSessionImages();
+            var objImageList = GetAllSessionImages(_tenantCacheService);
 
             var objImage = objImageList.Last();
 
@@ -305,7 +290,6 @@ public class ManageProductController: BaseController
 
 
     [HttpDelete]
-
     public async Task<JsonResult> ImageRemove (int id,int postId)
     {
         try
@@ -316,7 +300,7 @@ public class ManageProductController: BaseController
                 result = await _productService.DeleteProductImage (id,postId);
             }
 
-            result = RemoveSessionImageFile (id);
+            result = RemoveSessionImageFile (id,_tenantCacheService);
 
             return Json (new
             {

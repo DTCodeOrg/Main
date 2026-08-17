@@ -2,10 +2,15 @@
 
 <div id="header-main" class="main-header">
     <div class="header-container">
+
         <a class="logo" 
-           id="ancor_Index_Home" 
+           id="ancor_Index_Home"
            href="@Url.Action("Index", "Home")">
-            @TenantSetter.CurrentTenant.TenantName
+
+               <img src="@TenantSetter.CurrentTenant.TenantThemeModel.LogoFilePath" />
+
+                @TenantSetter.CurrentTenant.TenantName
+
         </a>
 
         @await Html.PartialAsync("_SimpleSearch")

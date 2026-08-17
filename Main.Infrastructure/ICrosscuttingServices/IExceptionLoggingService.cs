@@ -1,4 +1,4 @@
-﻿using Domain.Model;
+﻿using Main.Model.Log;
 
 namespace Main.Infrastructure.ICrosscuttingServices;
 
@@ -20,7 +20,7 @@ public interface IExceptionLoggingService
         string source = "API");
 
 
-    Task<List<ExceptionLog>> GetExceptionsAsync (
+    Task<List<ExceptionLogs>> GetExceptionsAsync (
         int? statusCode = null,
         string? errorCode = null,
         DateTime? startDate = null,
@@ -34,5 +34,5 @@ public interface IExceptionLoggingService
 
     Task MarkAsResolvedAsync (long exceptionId,string? notes = null);
 
-    Task<ExceptionLog?> GetExceptionByIdAsync (long id);
+    Task<ExceptionLogs?> GetExceptionByIdAsync (long id);
 }

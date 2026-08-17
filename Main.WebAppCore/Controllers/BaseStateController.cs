@@ -1,176 +1,14 @@
 ﻿using DataTransferModel;
-using System.Text.Json;
-using WebAppCore.ViewModel;
+using Main.WebAppCore.DependentServices;
 
 namespace Main.WebAppCore;
 
 public partial class BaseController
 {
-    protected void SetSessionXIdentityId (string identityId)
+    protected void SetSessionImageFile (ImageFile imageFile,
+        ITenantCacheService tenantCacheService)
     {
-        HttpContext.Session.SetString ("X-Identity-ID",identityId);
-    }
-
-    public void SetSessionTenantId (string resolvedTenantId)
-    {
-        HttpContext.Session.SetString ("X-Tenant-ID",resolvedTenantId);
-    }
-
-    public void SetSessionTenantUserRole (string resolvedTenantRole)
-    {
-        HttpContext.Session.SetString ("X-Tenant-User-Role",resolvedTenantRole);
-    }
-
-
-    protected void SetSessionRechargeSubCategoryID (int? subCategoryID)
-    {
-        HttpContext.Session.SetInt32 ("SubCategoryID",subCategoryID.HasValue ? subCategoryID.Value : -1);
-    }
-
-    protected int GetSessionRechargeSubCategoryID ()
-
-    {
-        var SubCatID = HttpContext.Session.GetInt32("SubCategoryID");
-        return SubCatID.HasValue ? SubCatID.Value : -1;
-    }
-
-    protected void ClearSessionRechargeSubCategoryID ()
-    {
-        HttpContext.Session.Remove ("SubCategoryID");
-    }
-
-    #region search model
-    protected void SetSessionSearchModel (SearchModel searchModel)
-    {
-        SessionExtensions.SetObject<SearchModel> (HttpContext.Session,"search",searchModel);
-    }
-
-    protected SearchModel? GetSessionSearchModel ()
-    {
-        var objSessionSearchModel = SessionExtensions.GetObject<SearchModel>(HttpContext.Session, "search");
-        if ( objSessionSearchModel != null )
-        {
-            return objSessionSearchModel;
-        }
-
-        return null;
-    }
-
-    protected void ClearSessionSearchModel ()
-    {
-        HttpContext.Session.Remove ("search");
-    }
-
-    #endregion 
-
-    #region Sarcch Image Session
-    protected void SetSearchResultListPostVM (List<ProductViewModel> listPostVM)
-    {
-        SessionExtensions.SetObject<List<ProductViewModel>> (HttpContext.Session,"SearchResultListPostVM",listPostVM);
-    }
-
-    protected List<ProductViewModel> GetSearchResultListPostVM ()
-    {
-        var result = SessionExtensions.GetObject<List<ProductViewModel>>(HttpContext.Session, "SearchResultListPostVM");
-
-        if ( result != null )
-        {
-            return result;
-        }
-        return new List<ProductViewModel> ();
-    }
-
-    protected void ClearSearchResultListPostVM ()
-    {
-        HttpContext.Session.Remove ("SearchResultListPostVM");
-    }
-
-    protected void SetSearchPostViewModel (ProductViewModel searchModel)
-    {
-        SessionExtensions.SetObject<ProductViewModel> (HttpContext.Session,"searchpostvm",searchModel);
-    }
-
-    protected ProductViewModel? GetSearchPostViewModel ()
-    {
-        var objSearchPostViewModel = SessionExtensions.GetObject<ProductViewModel>(HttpContext.Session, "searchpostvm");
-
-        if ( objSearchPostViewModel != null )
-        {
-            return objSearchPostViewModel;
-        }
-
-        return null;
-    }
-
-    protected void ClearSearchPostViewModel ()
-    {
-        HttpContext.Session.Remove ("searchpostvm");
-    }
-    #endregion
-
-    #region Product Image Session
-    protected void SetSessionNewProductImage (ProductFileViewModel file)
-    {
-        var list = SessionExtensions.GetObject<List<ProductFileViewModel>>(HttpContext.Session, "NewProductImageList");
-        if ( list != null )
-        {
-            int count = list.Count;
-            count++;
-            file.ProductImageFileID = count;
-
-            list.Add (file);
-            SessionExtensions.SetObject<List<ProductFileViewModel>> (HttpContext.Session,"NewProductImageList",list);
-        }
-        else
-        {
-            file.ProductImageFileID = 1;
-            List<ProductFileViewModel> objListFiles = new();
-            objListFiles.Add (file);
-            SessionExtensions.SetObject<List<ProductFileViewModel>> (HttpContext.Session,"NewProductImageList",objListFiles);
-        }
-    }
-
-    protected List<ProductFileViewModel> GetSessionNewProductImage ()
-    {
-        var list = SessionExtensions.GetObject<List<ProductFileViewModel>>(HttpContext.Session, "NewProductImageList");
-        if ( list != null )
-        {
-            return list.ToList ();
-        }
-        else
-        {
-            return new List<ProductFileViewModel> ();
-        }
-    }
-
-    protected bool RemoveSessionNewProductImage (int id)
-    {
-        var list = SessionExtensions.GetObject<List<ProductFileViewModel>>(HttpContext.Session, "NewProductImageList");
-        if ( list != null )
-        {
-            var obj = list.Where(a => a.ProductImageFileID == id).FirstOrDefault();
-            if ( obj != null )
-            {
-                _ = list.Remove (obj);
-                SessionExtensions.SetObject<List<ProductFileViewModel>> (HttpContext.Session,"NewProductImageList",list);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected void ClearNewProductImageSessions ()
-    {
-        HttpContext.Session.Remove ("NewProductImageList");
-    }
-
-    #endregion
-
-
-    protected void SetSessionImageFile (ImageFile imageFile)
-    {
-        List<ImageFile>? listImageFile = SessionExtensions.GetObject<List<ImageFile>?>
-                                                (HttpContext.Session, "ImageFileList");
+        _ = tenantCacheService.TryGet<List<ImageFile>?> ("ImageFileList",out var listImageFile);
 
         if ( listImageFile == null )
         {
@@ -178,8 +16,8 @@ public partial class BaseController
             imageFile.FileID = 1;
             listNewImageFile.Add (imageFile);
 
-            SessionExtensions.SetObject<List<ImageFile>>
-               (HttpContext.Session,"ImageFileList",listNewImageFile);
+            tenantCacheService.Set<List<ImageFile>?> ("ImageFileList",listNewImageFile
+                ,new System.TimeSpan (1200));
         }
         else
         {
@@ -191,68 +29,50 @@ public partial class BaseController
 
             listImageFile.Add (imageFile);
 
-            SessionExtensions.SetObject<List<ImageFile>>
-               (HttpContext.Session,"ImageFileList",listImageFile);
+            tenantCacheService.Set<List<ImageFile>?> ("ImageFileList",listImageFile
+               ,new System.TimeSpan (1200));
         }
     }
 
-    protected List<ImageFile> GetAllSessionImages ()
+    protected List<ImageFile> GetAllSessionImages (ITenantCacheService tenantCacheService)
     {
-        List<ImageFile>? listImageFiles = SessionExtensions.GetObject<List<ImageFile>?>(
-            HttpContext.Session, "ImageFileList");
+        _ = tenantCacheService.TryGet<List<ImageFile>?> ("ImageFileList",out var listImageFile);
 
-        if ( listImageFiles != null )
+        if ( listImageFile != null )
         {
-            return listImageFiles.ToList ();
+            return listImageFile.ToList ();
         }
 
         return new List<ImageFile> ();
     }
 
-    protected bool RemoveSessionImageFile (int iageFileId)
+    protected bool RemoveSessionImageFile (int imageFileId,ITenantCacheService tenantCacheService)
     {
-        List<ImageFile>? listImageFiles = SessionExtensions.GetObject<List<ImageFile>?>
-                                (HttpContext.Session, "ImageFileList");
+        _ = tenantCacheService.TryGet<List<ImageFile>?> ("ImageFileList",out var listImageFile);
 
-        if ( listImageFiles == null )
+        if ( listImageFile == null )
         {
             return false;
         }
 
-        ImageFile? imageFile = listImageFiles.Where(a => a.FileID == iageFileId)
-                                             .FirstOrDefault();
+        ImageFile? imageFile =
+        listImageFile.Where(a => a.FileID == imageFileId).FirstOrDefault();
 
         if ( imageFile == null )
         {
             return false;
         }
 
-        _ = listImageFiles.Remove (imageFile);
+        bool result = listImageFile.Remove (imageFile);
 
-        SessionExtensions.SetObject<List<ImageFile>?>
-            (HttpContext.Session,"ImageFileList",listImageFiles);
+        tenantCacheService.Set<List<ImageFile>?>
+        ("ImageFileList",listImageFile,new System.TimeSpan (1200));
 
         return true;
-
     }
 
-    protected void ClearImageFileListSession ()
+    protected void ClearImageFileListSession (ITenantCacheService tenantCacheService)
     {
-        HttpContext.Session.Remove ("ImageFileList");
-    }
-}
-
-
-public static class SessionExtensions
-{
-    public static void SetObject<T> (this ISession session,string key,T value)
-    {
-        session.SetString (key,JsonSerializer.Serialize (value));
-    }
-
-    public static T? GetObject<T> (this ISession session,string key)
-    {
-        var value = session.GetString(key);
-        return value == null ? default : JsonSerializer.Deserialize<T> (value);
+        tenantCacheService.Clear ("ImageFileList");
     }
 }

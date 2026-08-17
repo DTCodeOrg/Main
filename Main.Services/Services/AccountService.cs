@@ -1,7 +1,7 @@
 ﻿using DataTransferModel;
-using Domain.Model;
 using Main.Common;
 using Main.IRepository;
+using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
 namespace Main.Services;
 
@@ -18,23 +18,22 @@ public class AccountService: IAccountService
         _tenantUserRepository = tenantUserRepository;
     }
 
-    public async Task<ApplicationUserDataModel?> GetApplicationUser
-    (string? email)
+    public async Task<ApplicationUserDataModel?> GetApplicationUser (string email)
     {
         ApplicationUser? applicationUser
-        = await _userRepository.FindByEmailAsync ( email ?? "" );
+        = await _userRepository.FindByEmailAsync ( email );
 
         if ( applicationUser == null )
         {
             return null;
         }
 
-        ApplicationUserDataModel? applicationUserDataModel
-        = new ()
+        ApplicationUserDataModel? applicationUserDataModel = new ()
         {
-            Id = applicationUser?.Id!,
-            UserName = applicationUser?.UserName,
-            Email = applicationUser?.Email
+            Id = applicationUser.Id!,
+            UserName = applicationUser.UserName,
+            Email = applicationUser.Email,
+            IsEmailConfirmed = applicationUser.EmailConfirmed
         };
 
         return applicationUserDataModel;
@@ -44,49 +43,30 @@ public class AccountService: IAccountService
     {
         ApplicationUser userIdentityEntity = CreateApplicationUser(userAccountDataModel);
 
-        bool resultCreateIdentityUser = await
-        _userRepository.CreateAsync(userIdentityEntity, userAccountDataModel.Password);
+        _ = await
+        _userRepository.CreateAsync (userIdentityEntity,userAccountDataModel.Password);
 
-        if ( resultCreateIdentityUser )
+        _ = await _userRepository.AddToRoleAsync (userIdentityEntity.Email!);
+
+        Tenant? tenant = new ()
         {
-            _ = await _userRepository.AddToRoleAsync (userIdentityEntity.Email!,"User");
+            TenantName = userAccountDataModel.TenantName,
+            HostType = HostType.SubDomain,
+            Host = StringRelated.GetTrimmedRemovedSpaseString(userAccountDataModel.UserName.Trim())
+        };
 
-            Tenant? tenant = new ()
-            {
-                TenantName = userAccountDataModel.TenantName,
-                HostType = HostType.SubDomain,
-                Host = userAccountDataModel.TenantName.Replace(" ", "-").ToLower()
-            };
+        Tenant? tenantEntity = await _tenantRepository.CreateTenantAsync (tenant);
 
-
-            tenant = await _tenantRepository.CreateTenantAsync (tenant);
-
-            if ( tenant == null )
-            {
-                IdentityError[] errors = [];
-                IdentityResult result = IdentityResult
-                    .Failed( errors );
-                return result;
-            }
-
-
-            TenantUserRole tenantUser = new ()
-            {
-                UserId =  userIdentityEntity.Id ,
-                TenantRole = "Admin"
-            };
-
-            await _tenantUserRepository.AddAsync (tenantUser);
-
-            return IdentityResult.Success;
-        }
-        else
+        TenantUserRole tenantUser = new()
         {
-            IdentityError[] errors = [];
-            IdentityResult result = IdentityResult
-                .Failed( errors );
-            return result;
-        }
+            TenantId = tenantEntity?.TenantId ?? Guid.Empty,
+            UserId =  userIdentityEntity.Id,
+            TenantRole = "Admin"
+        };
+
+        _ = await _tenantUserRepository.AddAsync (tenantUser);
+
+        return IdentityResult.Success;
     }
 
 
@@ -235,10 +215,7 @@ public class AccountService: IAccountService
 
     public async Task<bool> IsEmailConfirmedAsync (string email)
     {
-
-        var result = await _userRepository.IsEmailConfirmedAsync (email);
-
-        return result;
+        return await _userRepository.IsEmailConfirmedAsync (email);
     }
 
     public async Task<bool> PasswordSignInAsync

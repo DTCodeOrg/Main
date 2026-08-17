@@ -1,11 +1,9 @@
 ﻿using DataTransferModel;
-using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
 
@@ -16,32 +14,26 @@ namespace Main.WebAppCore;
 public class ManageAdminPostController: BaseController
 {
     private readonly IAdminPostService _adminPostService;
-    private readonly ITenantContext _userContext;
-    private readonly ILogger<ManageAdminPostController> _logger;
     private readonly ITenantSetter _tenantSetter;
+    private readonly ITenantCacheService _tenantCacheService;
 
     public ManageAdminPostController (
         IAdminPostService adminPostService,
-        IMemoryCache cache,
-        ILogger<ManageAdminPostController> logger,
-        ITenantContext userContext,
-        ITenantSetter tenantSetter)
+        ITenantSetter tenantSetter,
+        ITenantCacheService tenantCacheService)
     {
         _adminPostService = adminPostService;
-        _logger = logger;
-        _userContext = userContext;
         _tenantSetter = tenantSetter;
+        _tenantCacheService = tenantCacheService;
     }
 
     private void SetImageInDataModel (AdminPostDataModel adminPostDataModel)
     {
-        BaseDataModel baseDataModel = _userContext.GetCreateBaseDataModel ( );
-
-        List<ImageFile> listSessionImageFiles = GetAllSessionImages();
+        List<ImageFile> listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
 
         listSessionImageFiles.ForEach (imgFile =>
         {
-            AdminImageFileDataModel adminImageFileDataModel= new( baseDataModel )
+            AdminImageFileDataModel adminImageFileDataModel= new(  )
             {
                 ImageFileContent = imgFile.FileContent,
                 AdminPostID = imgFile.PostID ?? 0,
@@ -53,11 +45,11 @@ public class ManageAdminPostController: BaseController
 
         adminPostDataModel.ListAdminPostFileImages = new List<AdminImageFileDataModel> ();
 
-        ClearImageFileListSession ();
+        ClearImageFileListSession (_tenantCacheService);
     }
 
 
-    [Authorize (Policy = "TenantAdmin")]
+
     public async Task<ActionResult> Index ()
     {
         try
@@ -76,12 +68,11 @@ public class ManageAdminPostController: BaseController
     }
 
     [HttpGet]
-    [Authorize (Policy = "TenantAdmin")]
     public IActionResult NewContent ()
     {
         try
         {
-            ClearImageFileListSession ();
+            ClearImageFileListSession (_tenantCacheService);
 
             var objPostViewModel = new AdminPostViewModel
             {
@@ -109,9 +100,6 @@ public class ManageAdminPostController: BaseController
 
         try
         {
-
-            AdminPostMapping.MapNewDataModel (collection).BaseDataModel = _userContext.GetCreateBaseDataModel ();
-
             SetImageInDataModel (AdminPostMapping.MapNewDataModel (collection));
 
             bool result = await _adminPostService.SaveNewAdminPost( postDataModel: AdminPostMapping.MapNewDataModel ( collection ) );
@@ -138,12 +126,11 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpGet]
-    [Authorize (Policy = "TenantAdmin")]
     public async Task<ActionResult> Edit (int id)
     {
         try
         {
-            ClearImageFileListSession ();
+            ClearImageFileListSession (_tenantCacheService);
 
             AdminPostDataModel adminPostDataModel =
                 await _adminPostService.GetAdminPostForEditPostID(id);
@@ -168,8 +155,6 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpPost]
-    [Authorize (Policy = "TenantAdmin")]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit (AdminPostViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -182,8 +167,6 @@ public class ManageAdminPostController: BaseController
             AdminPostDataModel adminPostDataModel = AdminPostMapping.MapAdminPostDataModel ( collection );
 
             SetImageInDataModel (adminPostDataModel);
-
-            adminPostDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ();
 
             bool result = await _adminPostService.UpdateAdminPost(adminPostDataModel);
 
@@ -206,8 +189,7 @@ public class ManageAdminPostController: BaseController
         }
     }
 
-
-    [Authorize (Policy = "TenantAdmin")]
+    [HttpGet]
     public async Task<ActionResult> Details (int id)
     {
         try
@@ -232,7 +214,7 @@ public class ManageAdminPostController: BaseController
 
 
     [HttpPost]
-    [Authorize (Policy = "TenantAdmin")]
+    [IgnoreAntiforgeryToken]
     public JsonResult UploadImage (IFormFile file)
     {
         if ( file != null && file.Length > 0 )
@@ -250,7 +232,7 @@ public class ManageAdminPostController: BaseController
 
                 if ( imageFile.IsNew )
                 {
-                    SetSessionImageFile (imageFile);
+                    SetSessionImageFile (imageFile,_tenantCacheService);
                 }
 
                 return Json (new
@@ -266,7 +248,6 @@ public class ManageAdminPostController: BaseController
         });
     }
 
-
     private ImageFile ReadImage (IFormFile file)
     {
         if ( !string.IsNullOrEmpty (file.ContentType) && file.FileName != null )
@@ -274,37 +255,32 @@ public class ManageAdminPostController: BaseController
             string extension = Path.GetExtension(file.FileName).ToLower();
 
             if ( extension.Equals (".jpg") || extension.Equals (".jpeg")
-
                 || extension.Equals (".png") || extension.Equals (".gif") )
             {
-                var imgByte = new Byte[file.Length];
 
-                var stream = file.OpenReadStream();
-
-                _ = stream.Read (imgByte);
+                using var memoryStream = new MemoryStream();
+                file.CopyTo (memoryStream);
+                byte[] imgByte = memoryStream.ToArray();
 
                 ImageFile objFile = new()
                 {
-                    FileContent = imgByte ,
-                    IsNew = true ,
+                    FileContent = imgByte,
+                    IsNew = true,
                     PostID = 0
                 };
 
                 return objFile;
             }
         }
-
         return new ImageFile ();
     }
 
-
     [HttpGet]
-    [Authorize (Policy = "TenantAdmin")]
     public PartialViewResult LoadImage ()
     {
         try
         {
-            List<ImageFile> imageFileList = GetAllSessionImages();
+            List<ImageFile> imageFileList = GetAllSessionImages(_tenantCacheService);
 
             if ( imageFileList == null || imageFileList.Count == 0 )
             {
@@ -321,7 +297,6 @@ public class ManageAdminPostController: BaseController
         }
     }
 
-
     [HttpDelete]
     [Authorize (Policy = "TenantAdmin")]
     public async Task<JsonResult> ImageRemove (int id,int postId)
@@ -334,7 +309,7 @@ public class ManageAdminPostController: BaseController
                 result = await _adminPostService.DeleteAdminPostImage (id,postId);
             }
 
-            result = RemoveSessionImageFile (id);
+            result = RemoveSessionImageFile (id,_tenantCacheService);
 
             return Json (new
             {
@@ -400,4 +375,3 @@ public class ManageAdminPostController: BaseController
         }
     }
 }
-

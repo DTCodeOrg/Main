@@ -1,6 +1,6 @@
-﻿using Domain.Model;
-using Main.Infrastructure.DatabaseContext;
+﻿using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
+using Main.Model.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Main.Repository;
@@ -14,28 +14,53 @@ public class ThemeRepository: IThemeRepository
         _context = context;
     }
 
-    public async Task<TenantTheme> GetTenantThemeAsync (Guid themeId)
+    public async Task<TenantTheme> GetThemeByTenantAsync (Guid tenantId)
     {
-        var TenantTheme = await _context.TenantThemes.FirstOrDefaultAsync (t => t.Id == themeId);
+        var tenantTheme =
+        await _context.TenantThemes.FirstOrDefaultAsync (t => t.TenantId == tenantId);
 
-        if ( TenantTheme == null )
+        if ( tenantTheme == null )
         {
-            TenantTheme = new TenantTheme
+            return new TenantTheme ()
             {
-                Id = Guid.NewGuid (),
-                PrimaryColor = "#000000",
-                SecondaryColor = "#FFFFFF",
-                BackgroundColor = "#F0F0F0",
-                FontStack = "Arial, sans-serif",
-                LogoFileName = null
+
+                FontStack = "Arial, sans-serif"
             };
-
-            _ = _context.TenantThemes.Add (TenantTheme);
-
-            _ = await _context.SaveChangesAsync ();
         }
 
-        return TenantTheme;
+        return tenantTheme;
+    }
+
+    public async Task<TenantTheme> GetTenantThemeAsync (Guid tenantId)
+    {
+        var tenantTheme = await _context.TenantThemes.FirstOrDefaultAsync
+        (t => t.TenantId == tenantId);
+
+        if ( tenantTheme == null )
+        {
+            tenantTheme = new TenantTheme ()
+            {
+                BodyBackgroundColor = "",
+                BodyColor = "",
+                HeaderColor = "",
+                LogoColor = "",
+                ButtonBGBorderColor = "",
+                MenuBackgroundColor = "",
+                MenuItemHoverBGColor = "",
+                MenuItemHoverColor = "",
+                FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+                LogoFilePath = "~/favicon.ico",
+                TenantId = tenantId
+            };
+
+            _ = _context.TenantThemes.Add (tenantTheme);
+
+            _ = await _context.SaveChangesAsync ();
+
+            return tenantTheme;
+        }
+
+        return tenantTheme;
     }
 
     public async Task UpdateTenantThemeAsync (TenantTheme theme)
@@ -44,5 +69,4 @@ public class ThemeRepository: IThemeRepository
 
         _ = await _context.SaveChangesAsync ();
     }
-
 }

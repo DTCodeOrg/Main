@@ -13,10 +13,13 @@ internal class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
-            .Get<ConfigurationSettings> () ?? new ConfigurationSettings ();
+        // Ensure Kestrel hooks into your appsettings.json "Kestrel" section
+        _ = builder.WebHost.ConfigureKestrel ((context,options) =>
+        {
+            _ = options.Configure (context.Configuration.GetSection ("Kestrel"));
+        });
 
-        // --- Core Infrastructure & DI Services ---
+
         _ = builder.Services.AddHttpContextAccessor ();
         _ = builder.Services.AddDistributedMemoryCache ();
 
@@ -29,13 +32,11 @@ internal class Program
         _ = builder.Services.AddScoped<ITenantSetter,ResolvedTenantSetter> ();
         _ = builder.Services.AddScoped<IStorageService,LocalStorageService> ();
         _ = builder.Services.AddScoped<ITenantAssetResolver,TenantAssetResolver> ();
+        _ = builder.Services.AddScoped<ITenantCacheService,TenantCacheService> ();
 
-        // --- Logging & Configuration ---
         _ = builder.AddSerilogConfiguration ();
         _ = builder.Host.UseSerilog ();
         _ = builder.Services.AddExceptionLoggingMiddleware (builder.Configuration);
-
-
 
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddRepository (builder.Configuration);
@@ -54,6 +55,8 @@ internal class Program
         {
             _ = pipeline.CompileLessFiles ();
         });
+
+        _ = builder.Services.AddControllersWithViews ();
 
         _ = builder.Services.AddControllers (options =>
         {
@@ -80,7 +83,7 @@ internal class Program
 
         _ = app.UseForwardedHeaders (forwardedHeadersOptions);
 
-        // 5. Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
+        // Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
         _ = app.UseMiddleware<TenantResolverMiddleware> ();
 
         if ( app.Environment.IsDevelopment () )
@@ -93,36 +96,36 @@ internal class Program
             _ = app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();
         }
 
-        // 1. Error handling must sit at the absolute top to catch failures down the line
+        // Error handling must sit at the absolute top to catch failures down the line
         _ = app.UseStatusCodePages ();
         _ = app.UseHttpsRedirection ();
 
-        // 2. Global CORS policy (Must be evaluated BEFORE static files and routing)
+        // Global CORS policy (Must be evaluated BEFORE static files and routing)
         _ = app.UseCors ();
 
-        // 3. Static Assets Optimization Compiler & Handlers (Bypass tenancy/session overhead)
+        // Static Assets Optimization Compiler & Handlers (Bypass tenancy/session overhead)
         _ = app.UseWebOptimizer ();
         _ = app.UseStaticFiles ();
 
-        // 4. Multi-Tenant Boundary Identification Routing
+        // Multi-Tenant Boundary Identification Routing
         _ = app.UseRouting ();
 
-        // 6. Session Management Configuration (Tenant-Scoped Setup)
+        // Session Management Configuration (Tenant-Scoped Setup)
         _ = app.UseMiddleware<TenantSessionMiddleware> ();
         _ = app.UseSession ();
 
         _ = app.UseCustomLocalization ();
 
-        // 2. Step 2: Intercept expired tokens and rotate them
+        // Step 2: Intercept expired tokens and rotate them
         _ = app.UseMiddleware<TokenRefreshMiddleware> ();
 
-        // 3. Step 3: Authenticate the user (Unpacks the valid JWT into context.User)
+        // Step 3: Authenticate the user (Unpacks the valid JWT into context.User)
         _ = app.UseAuthentication ();
 
-        // 4. Step 4: Validate cross-tenant access (Your TenantValidationMiddleware runs safely here!)
+        // Step 4: Validate cross-tenant access (Your TenantValidationMiddleware runs safely here!)
         _ = app.UseMiddleware<TenantValidationMiddleware> ();
 
-        // 5. Step 5: Authorize roles and handle antiforgery
+        // Step 5: Authorize roles and handle antiforgery
         _ = app.UseAuthorization ();
 
         _ = app.UseAntiforgery ();

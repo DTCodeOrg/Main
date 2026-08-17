@@ -1,25 +1,88 @@
 ﻿@{
     var theme = TenantSetter.CurrentTenant.TenantThemeModel;
 }
+
 <!doctype html>
 <html lang="en">
 <head>
+     <style>
+            :root {
+                 /* bootstrap-reboot.css */
+                /* site.css */
+                /* header */
+                --bs-gray-dark: "@theme.HeaderColor !important"; 
+                /* #3b3c3d !important; */
+
+                /* bootstrap-reboot.css */
+                /* body */
+                --bs-font-sans-serif: "@theme.FontStack  !important";
+
+                 /* site.css */
+                /* header .top-header .top-header .dropdown .dropdown-menu */
+                /* color */
+                /* .icon-button, color */
+                /* bootstrap.css --bs-dropdown-color   */
+                /* HeaderMenuColor */
+                --bs-code-color: "@theme.LogoColor !important";
+                /* "#3b3c3d !important"; */
+
+                /* Body Backgroud */
+                /* header .top-header */
+                /* background-color */
+                /* header .main-header */
+                /* background-color */
+                /* header .bottom-header .header-container */
+                /* background-color */
+                /* bootstrap-reboot.css */
+                /* body kbd */
+                /* BodyColor: */
+                --bs-body-color: "@theme.BodyBackgroundColor  !important";
+                /* #494d52 !important; */
+
+                /* header .bottom-header .main-menu */
+                /* MenuBackgroundColor */
+                --bs-dropdown-bg: "@theme.MenuBackgroundColor !important";
+                /* #240202 !important; */
+
+                /* btn-primary */
+                /* background-color */
+                /* border-color */
+                --bs-secondary-bg: "@theme.ButtonBGBorderColor  !important";
+                
+                /* site.css */
+                /* header .dropdown li > a:hover  */
+                --bs-black: "@theme.MenuItemHoverBGColor !important";
+                /* darkgray !important; */
+
+                /* bootstrap.css */
+                /* site.css */
+                /* header .dropdown li > a:hover  , color */
+                --bs-white: "@theme.MenuItemHoverColor !important";
+                /* white !important;  */
+
+                /* Log out */
+                --bs-red: "#950606 !important";
+    </style>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+
     <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="application-name" content="@TenantSetter.CurrentTenant.TenantName" />
    
           
     <title>
-        @ViewBag.Title | @TenantSetter.CurrentTenant.TenantName 
+        @ViewBag.Title | @TenantSetter.CurrentTenant.TenantName
     </title>
 
     <link rel="shortcut icon"
-          href="~/favicon.ico"
+          href="@theme.LogoFilePath"
           type="image/x-icon" />
 
-    <link href="~/favicon.ico"
+    <link href="@theme.LogoFilePath"
           rel="icon"
           type="image/x-icon" />
 
@@ -31,8 +94,7 @@
     <script type="importmap"></script>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+   
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
@@ -44,18 +106,8 @@
     }
 
     <meta name="xsrf-token" content="@tokens.RequestToken" />
-
-    <style>
-            :root {
-                --brand-primary: "@theme.PrimaryColor !important";
-                --brand-secondary: "@theme.SecondaryColor  !important";
-                --brand-bg: "@theme.BackgroundColor  !important";
-                --brand-font: "@theme.FontStack  !important";
-            }
-    </style>
-
+   
     @RenderSection( "Styles",required: false )
-
 </head>
 
 <body>

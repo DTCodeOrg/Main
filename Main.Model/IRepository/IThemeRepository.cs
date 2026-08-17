@@ -1,10 +1,12 @@
-﻿using Domain.Model;
+﻿using Main.Model.Identity;
 
 namespace Main.IRepository;
 
 public interface IThemeRepository
 {
-    Task<TenantTheme> GetTenantThemeAsync (Guid themeId);
+    Task<TenantTheme> GetThemeByTenantAsync (Guid tenantId);
+
+    Task<TenantTheme> GetTenantThemeAsync (Guid tenantId);
 
     Task UpdateTenantThemeAsync (TenantTheme theme);
 }

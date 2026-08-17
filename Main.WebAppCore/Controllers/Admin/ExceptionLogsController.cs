@@ -1,7 +1,7 @@
-using Domain.Model;
 using Main.Common;
 using Main.Infrastructure.DatabaseContext;
 using Main.Infrastructure.ICrosscuttingServices;
+using Main.Model.Log;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -368,7 +368,7 @@ public class ExceptionLogsController: ControllerBase
     }
 
 
-    private static ExceptionLogViewModel MapToViewModel (ExceptionLog log)
+    private static ExceptionLogViewModel MapToViewModel (ExceptionLogs log)
     {
         return new ExceptionLogViewModel
         {

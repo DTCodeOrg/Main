@@ -1,6 +1,7 @@
-﻿using Domain.Model;
-using Main.Infrastructure.DatabaseContext;
+﻿using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
+using Main.Model.Identity;
+using Main.Model.Tenant;
 using Microsoft.EntityFrameworkCore;
 namespace Main.Repository;
 

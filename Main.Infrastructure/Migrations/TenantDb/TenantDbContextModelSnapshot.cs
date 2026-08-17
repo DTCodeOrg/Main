@@ -25,240 +25,7 @@ namespace Main.Infrastructure.Migrations.TenantDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Model.AdminImageFile", b =>
-                {
-                    b.Property<int>("AdminImageFileID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminImageFileID"));
-
-                    b.Property<int>("AdminPostID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte[]>("ImageFileContent")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("MyTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TenantContinent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TenantCountry")
-                        .HasColumnType("int");
-
-                    b.HasKey("AdminImageFileID");
-
-                    b.HasIndex("AdminPostID");
-
-                    b.HasIndex("MyTenantId");
-
-                    b.ToTable("AdminImageFiles");
-                });
-
-            modelBuilder.Entity("Domain.Model.AdminPost", b =>
-                {
-                    b.Property<int>("AdminPostID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminPostID"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("MyTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("PostType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PosterContactNumber")
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
-
-                    b.Property<string>("PosterName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SearchTag")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShortNote")
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
-                    b.Property<string>("TenantContinent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TenantCountry")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WebsiteUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AdminPostID");
-
-                    b.HasIndex("MyTenantId");
-
-                    b.ToTable("AdminPosts");
-                });
-
-            modelBuilder.Entity("Domain.Model.AdminPostComment", b =>
-                {
-                    b.Property<int>("AdminPostCommentID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminPostCommentID"));
-
-                    b.Property<int>("AdminPostID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("MyTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TenantContinent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TenantCountry")
-                        .HasColumnType("int");
-
-                    b.HasKey("AdminPostCommentID");
-
-                    b.HasIndex("AdminPostID");
-
-                    b.HasIndex("MyTenantId");
-
-                    b.ToTable("AdminPostComments");
-                });
-
-            modelBuilder.Entity("Domain.Model.AllowedValue", b =>
-                {
-                    b.Property<long>("ValueID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ValueID"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("MyTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("ParentValueId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("TenantContinent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TenantCountry")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Variable")
-                        .HasColumnType("int");
-
-                    b.HasKey("ValueID");
-
-                    b.HasIndex("MyTenantId");
-
-                    b.ToTable("AllowedValues");
-                });
-
-            modelBuilder.Entity("Domain.Model.Page", b =>
+            modelBuilder.Entity("Main.Model.Identity.Page", b =>
                 {
                     b.Property<int>("PageID")
                         .ValueGeneratedOnAdd()
@@ -436,7 +203,240 @@ namespace Main.Infrastructure.Migrations.TenantDb
                         });
                 });
 
-            modelBuilder.Entity("Domain.Model.Panel", b =>
+            modelBuilder.Entity("Main.Model.Tenant.AdminImageFile", b =>
+                {
+                    b.Property<int>("AdminImageFileID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminImageFileID"));
+
+                    b.Property<int>("AdminPostID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("ImageFileContent")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
+                    b.HasKey("AdminImageFileID");
+
+                    b.HasIndex("AdminPostID");
+
+                    b.HasIndex("MyTenantId");
+
+                    b.ToTable("AdminImageFiles");
+                });
+
+            modelBuilder.Entity("Main.Model.Tenant.AdminPost", b =>
+                {
+                    b.Property<int>("AdminPostID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminPostID"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("PostType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PosterContactNumber")
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("PosterName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SearchTag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortNote")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WebsiteUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AdminPostID");
+
+                    b.HasIndex("MyTenantId");
+
+                    b.ToTable("AdminPosts");
+                });
+
+            modelBuilder.Entity("Main.Model.Tenant.AdminPostComment", b =>
+                {
+                    b.Property<int>("AdminPostCommentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminPostCommentID"));
+
+                    b.Property<int>("AdminPostID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
+                    b.HasKey("AdminPostCommentID");
+
+                    b.HasIndex("AdminPostID");
+
+                    b.HasIndex("MyTenantId");
+
+                    b.ToTable("AdminPostComments");
+                });
+
+            modelBuilder.Entity("Main.Model.Tenant.AllowedValue", b =>
+                {
+                    b.Property<long>("ValueID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ValueID"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("ParentValueId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Variable")
+                        .HasColumnType("int");
+
+                    b.HasKey("ValueID");
+
+                    b.HasIndex("MyTenantId");
+
+                    b.ToTable("AllowedValues");
+                });
+
+            modelBuilder.Entity("Main.Model.Tenant.Panel", b =>
                 {
                     b.Property<int>("PanelID")
                         .ValueGeneratedOnAdd()
@@ -496,7 +496,7 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.ToTable("Panels");
                 });
 
-            modelBuilder.Entity("Domain.Model.Post", b =>
+            modelBuilder.Entity("Main.Model.Tenant.Post", b =>
                 {
                     b.Property<int>("PostID")
                         .ValueGeneratedOnAdd()
@@ -570,7 +570,7 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("Domain.Model.Product", b =>
+            modelBuilder.Entity("Main.Model.Tenant.Product", b =>
                 {
                     b.Property<int>("ProductID")
                         .ValueGeneratedOnAdd()
@@ -647,7 +647,7 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Domain.Model.ProductComment", b =>
+            modelBuilder.Entity("Main.Model.Tenant.ProductComment", b =>
                 {
                     b.Property<int>("ProductCommentID")
                         .ValueGeneratedOnAdd()
@@ -701,7 +701,7 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.ToTable("ProductComments");
                 });
 
-            modelBuilder.Entity("Domain.Model.ProductImageFile", b =>
+            modelBuilder.Entity("Main.Model.Tenant.ProductImageFile", b =>
                 {
                     b.Property<int>("ProductImageFileID")
                         .ValueGeneratedOnAdd()
@@ -755,9 +755,9 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.ToTable("ProductImageFiles");
                 });
 
-            modelBuilder.Entity("Domain.Model.AdminImageFile", b =>
+            modelBuilder.Entity("Main.Model.Tenant.AdminImageFile", b =>
                 {
-                    b.HasOne("Domain.Model.AdminPost", "AdminPost")
+                    b.HasOne("Main.Model.Tenant.AdminPost", "AdminPost")
                         .WithMany("ListAdminImageFiles")
                         .HasForeignKey("AdminPostID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -766,9 +766,9 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Navigation("AdminPost");
                 });
 
-            modelBuilder.Entity("Domain.Model.AdminPostComment", b =>
+            modelBuilder.Entity("Main.Model.Tenant.AdminPostComment", b =>
                 {
-                    b.HasOne("Domain.Model.AdminPost", "AdminPost")
+                    b.HasOne("Main.Model.Tenant.AdminPost", "AdminPost")
                         .WithMany("ListAdminPostComments")
                         .HasForeignKey("AdminPostID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -777,9 +777,9 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Navigation("AdminPost");
                 });
 
-            modelBuilder.Entity("Domain.Model.Panel", b =>
+            modelBuilder.Entity("Main.Model.Tenant.Panel", b =>
                 {
-                    b.HasOne("Domain.Model.Page", "Page")
+                    b.HasOne("Main.Model.Identity.Page", "Page")
                         .WithMany("ListPanels")
                         .HasForeignKey("PageID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -788,9 +788,9 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Navigation("Page");
                 });
 
-            modelBuilder.Entity("Domain.Model.Post", b =>
+            modelBuilder.Entity("Main.Model.Tenant.Post", b =>
                 {
-                    b.HasOne("Domain.Model.Panel", "Panel")
+                    b.HasOne("Main.Model.Tenant.Panel", "Panel")
                         .WithMany("ListPosts")
                         .HasForeignKey("PanelID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -799,9 +799,9 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Navigation("Panel");
                 });
 
-            modelBuilder.Entity("Domain.Model.ProductComment", b =>
+            modelBuilder.Entity("Main.Model.Tenant.ProductComment", b =>
                 {
-                    b.HasOne("Domain.Model.Product", "Product")
+                    b.HasOne("Main.Model.Tenant.Product", "Product")
                         .WithMany("ListComments")
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -810,9 +810,9 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain.Model.ProductImageFile", b =>
+            modelBuilder.Entity("Main.Model.Tenant.ProductImageFile", b =>
                 {
-                    b.HasOne("Domain.Model.Product", "Product")
+                    b.HasOne("Main.Model.Tenant.Product", "Product")
                         .WithMany("ListImageFiles")
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -821,24 +821,24 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain.Model.AdminPost", b =>
+            modelBuilder.Entity("Main.Model.Identity.Page", b =>
+                {
+                    b.Navigation("ListPanels");
+                });
+
+            modelBuilder.Entity("Main.Model.Tenant.AdminPost", b =>
                 {
                     b.Navigation("ListAdminImageFiles");
 
                     b.Navigation("ListAdminPostComments");
                 });
 
-            modelBuilder.Entity("Domain.Model.Page", b =>
-                {
-                    b.Navigation("ListPanels");
-                });
-
-            modelBuilder.Entity("Domain.Model.Panel", b =>
+            modelBuilder.Entity("Main.Model.Tenant.Panel", b =>
                 {
                     b.Navigation("ListPosts");
                 });
 
-            modelBuilder.Entity("Domain.Model.Product", b =>
+            modelBuilder.Entity("Main.Model.Tenant.Product", b =>
                 {
                     b.Navigation("ListComments");
 

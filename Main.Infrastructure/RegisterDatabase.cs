@@ -1,5 +1,6 @@
 ﻿using Domain.Model;
 using Main.Infrastructure.DatabaseContext;
+using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,15 +30,17 @@ public static class RegisterDatabase
         {
             _ = options.UseLazyLoadingProxies ();
             _ = options.UseSqlServer (tenantConnectionString);
+            _ = options.EnableSensitiveDataLogging ();
+            _ = options.EnableDetailedErrors ();
         });
 
         _ = services.AddDbContext<IdentityAppDbContext> (options =>
         {
             _ = options.UseLazyLoadingProxies ();
             _ = options.UseSqlServer (identityConnectionString);
-        });
-
-        _ = services.AddIdentity<ApplicationUser,IdentityRole> (options =>
+            _ = options.EnableSensitiveDataLogging ();
+            _ = options.EnableDetailedErrors ();
+        }).AddIdentity<ApplicationUser,IdentityRole> (options =>
         {
             var identitySettings = configuration.GetSection("IdentitySettings");
             var password = identitySettings.GetSection("Password");
@@ -61,6 +64,9 @@ public static class RegisterDatabase
 
         _ = services.Configure<DataProtectionTokenProviderOptions>
         (options => options.TokenLifespan = TimeSpan.FromHours (2));
+
+        // Crucial: Register Unit of Work
+        _ = services.AddScoped<IUnitOfWork,UnitOfWork> ();
 
         return services;
     }

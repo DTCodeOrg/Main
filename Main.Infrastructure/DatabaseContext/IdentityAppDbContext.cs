@@ -1,6 +1,6 @@
-﻿using Domain.Model;
-using Main.Common;
-using Main.Model.DomainModel;
+﻿using Main.Common;
+using Main.Model.Base;
+using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -23,30 +23,25 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
     public static readonly Guid[] guidArray = new[]
     {
-        new Guid(1, 0, 0, new byte[8]),
-        new Guid(2, 0, 0, new byte[8]),
-        new Guid(3, 0, 0, new byte[8]),
-        new Guid(1, 0, 0, new byte[8]),
-        new Guid(2, 0, 0, new byte[8]),
-        new Guid(3, 0, 0, new byte[8]),
-        new Guid(4, 0, 0, new byte[8]),
-        new Guid(5, 0, 0, new byte[8]),
-        new Guid(6, 0, 0, new byte[8]),
-        new Guid(7, 0, 0, new byte[8]),
-        new Guid(8, 0, 0, new byte[8]),
-        new Guid(9, 0, 0, new byte[8]),
-        new Guid(10, 0, 0, new byte[8]),
-        new Guid(11, 0, 0, new byte[8]),
-        new Guid(12, 0, 0, new byte[8]),
-        new Guid(13, 0, 0, new byte[8]),
-        new Guid(14, 0, 0, new byte[8]),
-        new Guid(15, 0, 0, new byte[8])
+        new Guid(1, 0, 0, new byte[8]),   // Tenant 1                              // index 0
+        new Guid(2, 0, 0, new byte[8]),   // Tenant 2                              // index 1
+        new Guid(3, 0, 0, new byte[8]),   // IdentityRole (ID)                     // index 2
+        new Guid(4, 0, 0, new byte[8]),   // IdentityRole (ID)                     // index 3
+        new Guid(5, 0, 0, new byte[8]),   // Global Admin (ID of User)             // index 4
+        new Guid(6, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 5
+        new Guid(7, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 6
+        new Guid(8, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 7
+        new Guid(9, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 8
+        new Guid(10, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 9
+        new Guid(11, 0, 0, new byte[8]),   //                                       // index 10
+        new Guid(12, 0, 0, new byte[8]),   //                                       // index 11
+        new Guid(13, 0, 0, new byte[8]),  //                                       // index 12
+        new Guid(14, 0, 0, new byte[8]),  //                                       // index 13
+        new Guid(15, 0, 0, new byte[8]),  //                                       // index 14
+        new Guid(16, 0, 0, new byte[8]),  //                                       // index 15
+        new Guid(17, 0, 0, new byte[8]),  // (Tenant 1 Theme)                      // index 16
+        new Guid(18, 0, 0, new byte[8]),  // (Tenant 2 Theme)                      // index 17
     };
-
-    public DbSet<ApplicationUser> ApplicationUsers
-    {
-        get; set;
-    }
 
     public DbSet<UserRefreshToken> ApplicationUserRefreshTokens
     {
@@ -96,15 +91,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
     private void ConfigureIndexes (ModelBuilder builder)
     {
-        _ = builder.Entity<ApplicationUser> ()
-            .HasIndex (u => u.Email)
-            .IsUnique ();
 
-        _ = builder.Entity<TenantInvitation> ()
-         .HasIndex (ut => ut.TenantId);
-
-        _ = builder.Entity<UserRefreshToken> ()
-            .HasIndex (e => new { e.TenantId,e.Token });
     }
 
     private void ConfigureEntitiesWithFluent (ModelBuilder builder)
@@ -160,25 +147,27 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
     public void SeedData (ModelBuilder builder)
     {
-        GlobalIdentityRoles (builder);
+        Guid TenantId1 = guidArray[0];
+        Guid TenantId2 = guidArray[1];
+        TenantSeed1 (builder,TenantId1);
+        TenantSeed2 (builder,TenantId2);
+
+        Guid IdentityRoleId1 = guidArray[2];
+        Guid IdentityRoleId2 = guidArray[3];
+        IdentityRolesSeed (builder,IdentityRoleId1,IdentityRoleId2);
 
         Guid ThemeId1 = guidArray[16];
         Guid ThemeId2 = guidArray[17];
-
-        _ = Tenant1ThemeSeed (builder,ThemeId1);
-        _ = Tenant2ThemeSeed (builder,ThemeId2);
-
-        Guid TenantId1 = guidArray[0];
-        Guid TenantId2 = guidArray[1];
-
-        TenantSeed1 (builder,TenantId1,ThemeId1);
-        TenantSeed2 (builder,TenantId2,ThemeId2);
+        Tenant1ThemeSeed (builder,ThemeId1,TenantId1);
+        Tenant2ThemeSeed (builder,ThemeId2,TenantId2);
 
         Guid UserIdGlobal1 = guidArray[4];
         var adminGlobalEmail = "admin@system.com";
-        GlobalUsers (builder,UserIdGlobal1,adminGlobalEmail);
+        GlobalAdminUserSeed (builder,UserIdGlobal1,adminGlobalEmail,IdentityRoleId1);
 
-        // UserId2, UserId3, UserId4, UserId5, UserId6, UserId7 are used for tenant users
+
+        // UserId2, UserId3, UserId4, UserId5, UserId6, UserId7 
+        // Tenant Users (Global Role: User)
         Guid UserId2 = guidArray[5];
         Guid UserId3 = guidArray[6];
         Guid UserId4 = guidArray[7];
@@ -186,83 +175,75 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         Guid UserId6 = guidArray[9];
         Guid UserId7 = guidArray[10];
 
-        string GlobalTenantRole = "User";
-
-        TenantUsers (builder,GlobalTenantRole,UserId2,UserId3,UserId4,
+        TenantUserSeed (builder,IdentityRoleId2,UserId2,UserId3,UserId4,
             UserId5,UserId6,UserId7,TenantId1,TenantId2);
 
     }
 
-    private void TenantUsers (
+    private void TenantUserSeed (
         ModelBuilder builder,
-        string globalTenantRole,Guid userId2,
+        Guid IdentityRoleId,Guid userId2,
         Guid userId3,Guid userId4,Guid userId5,
         Guid userId6,Guid userId7,Guid tenantId1,
         Guid tenantId2)
     {
         var hasher = new PasswordHasher<ApplicationUser>();
 
-        // For each tenant create 3 users seed
-        var testUsersConfigurationSeed = new[]
+        var testUsersConfigurationSeed = new []
         {
             new {
                 UserId = userId2.ToString(),
-                RoleId = globalTenantRole,
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant1.admin@test.com",
                 TenantId = tenantId1 ,
                 TenantRole = "Admin",
-                TenantRoleId = 1,
+                TenantUserRoleId = 2,
                 EmailConfirmed = true
             },
-
             new {
                 UserId = userId3.ToString(),
-                RoleId = globalTenantRole,
-                Email = "tenant1.content@test.com",
+                RoleId = IdentityRoleId.ToString(),
+                Email = "tenant1.manager@test.com",
                 TenantId = tenantId1 ,
-                TenantRole = "ContentManager",
-                TenantRoleId = 2,
+                TenantRole = "Manager",
+                TenantUserRoleId = 3,
                 EmailConfirmed = true
             },
-
             new
             {
                 UserId = userId4.ToString(),
-                RoleId = globalTenantRole,
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant1.member@test.com",
                 TenantId = tenantId1 ,
                 TenantRole = "Member",
-                TenantRoleId = 3,
+                TenantUserRoleId = 4,
                 EmailConfirmed = true
             },
-
             new {
                 UserId = userId5.ToString(),
-                RoleId = globalTenantRole,
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant2.admin@test.com",
                 TenantId = tenantId2  ,
                 TenantRole = "Admin",
-                TenantRoleId = 4,
+                TenantUserRoleId = 5,
                 EmailConfirmed = true
             },
-
             new {
                 UserId = userId6.ToString(),
-                RoleId = globalTenantRole,
-                Email = "tenant2.content@test.com",
+                RoleId = IdentityRoleId.ToString(),
+                Email = "tenant2.manager@test.com",
                 TenantId = tenantId2  ,
-                TenantRole = "ContentManager",
-                TenantRoleId = 5,
-                EmailConfirmed = true
+                TenantRole = "Manager",
+                TenantUserRoleId = 6,
+                EmailConfirmed = true,
             },
-
             new {
                 UserId = userId7.ToString(),
-                RoleId = globalTenantRole,
+                RoleId = IdentityRoleId.ToString(),
                 Email = "tenant2.member@test.com",
                 TenantId = tenantId2 ,
                 TenantRole = "Member",
-                TenantRoleId = 6,
+                TenantUserRoleId = 7,
                 EmailConfirmed = true
             }
         };
@@ -271,7 +252,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         foreach ( var config in testUsersConfigurationSeed )
         {
 
-            var user = new ApplicationUser(config.UserId)
+            var user = new ApplicationUser (config.UserId)
             {
                 UserName = config.Email,
                 Email = config.Email,
@@ -279,18 +260,27 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
             };
 
             user.PasswordHash = hasher.HashPassword (user,"Focus@1nm");
+
             _ = builder.Entity<ApplicationUser> ().HasData (user);
 
-            _ = builder.Entity<TenantUserRole> ().HasData (new TenantUserRole (config.TenantRoleId)
-            {
-                UserId = config.UserId,
-                TenantRole = config.TenantRole,
-                TenantId = config.TenantId
-            });
+            _ = builder.Entity<IdentityUserRole<string>> ().HasData (
+               new IdentityUserRole<string> ()
+               {
+                   RoleId = config.RoleId.ToString (),
+                   UserId = config.UserId.ToString ()
+               });
+
+            _ = builder.Entity<TenantUserRole> ().HasData
+                (new TenantUserRole (config.TenantUserRoleId)
+                {
+                    UserId = config.UserId,
+                    TenantRole = config.TenantRole,
+                    TenantId = config.TenantId
+                });
         }
     }
 
-    private void GlobalUsers (ModelBuilder builder,Guid UserIdGlobal1,string adminGlobalEmail)
+    private void GlobalAdminUserSeed (ModelBuilder builder,Guid UserIdGlobal1,string adminGlobalEmail,Guid identityRoleId1)
     {
         var hasher = new PasswordHasher<ApplicationUser>();
 
@@ -307,86 +297,92 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<ApplicationUser> ().HasData (newAdmin);
 
         _ = builder.Entity<IdentityUserRole<string>> ().HasData (
-       new IdentityUserRole<string>
+       new IdentityUserRole<string> ()
        {
-           RoleId = "GlobalAdmin",
+           RoleId = identityRoleId1.ToString (),
            UserId = UserIdGlobal1.ToString ()
        });
     }
 
-    private void TenantSeed1 (ModelBuilder builder,Guid tenantId1,Guid themeId1)
+    private void TenantSeed1 (ModelBuilder builder,Guid tenantId1)
     {
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId1)
         {
             TenantName = "Tenant 1",
-            Host = "tenant1",
-            TenantThemeId = themeId1
+            Host = "tenant1"
         });
     }
 
-    private void TenantSeed2 (ModelBuilder builder,Guid tenantId2,Guid themeId2)
+    private void TenantSeed2 (ModelBuilder builder,Guid tenantId2)
     {
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId2)
         {
             TenantName = "Tenant 2",
-            Host = "tenant2",
-            TenantThemeId = themeId2
+            Host = "tenant2"
         });
     }
 
-    private void GlobalIdentityRoles (ModelBuilder builder)
+    private void IdentityRolesSeed (ModelBuilder builder,Guid identityRoleId1,Guid identityRoleId2)
     {
         _ = builder.Entity<IdentityRole> ().HasData (
             new IdentityRole
             {
-                Id = "GlobalAdmin",
+                Id = identityRoleId1.ToString (),
                 Name = "GlobalAdmin",
                 NormalizedName = "GLOBALADMIN"
-            },
+            });
+
+
+        _ = builder.Entity<IdentityRole> ().HasData (
             new IdentityRole
             {
-                Id = "User",
+                Id = identityRoleId2.ToString (),
                 Name = "User",
                 NormalizedName = "USER"
-            }
-        );
+            });
     }
 
-    private TenantTheme Tenant1ThemeSeed (ModelBuilder builder,Guid theme)
+    private void Tenant1ThemeSeed (ModelBuilder builder,Guid themeId,Guid tenantId)
     {
         TenantTheme tenantTheme = new()
         {
-            Id = theme,
-            PrimaryColor = "#122A1E",
-            SecondaryColor = "#879882",
-            BackgroundColor = "#F7F8F5",
+            Id = themeId,
+            BodyBackgroundColor = "",
+            BodyColor = "",
+            HeaderColor = "",
+            LogoColor = "",
+            ButtonBGBorderColor ="",
+            MenuBackgroundColor  ="",
+            MenuItemHoverBGColor ="",
+            MenuItemHoverColor ="",
             FontStack = "Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', Georgia, 'Times New Roman', serif",
-            LogoFileName = ""
+            LogoFilePath = "~/favicon.ico" ,
+            TenantId = tenantId
         };
 
         _ = builder.Entity<TenantTheme> ().HasData (tenantTheme);
-
-        return tenantTheme;
     }
 
-    private TenantTheme Tenant2ThemeSeed (ModelBuilder builder,Guid theme)
+    private void Tenant2ThemeSeed (ModelBuilder builder,Guid themeId,Guid tenantId)
     {
         TenantTheme tenantTheme = new()
         {
-            Id = theme,
-            PrimaryColor = "#1B3B2B",
-            SecondaryColor = "#728C69",
-            BackgroundColor = "#F4F6F4",
+            Id = themeId,
+            BodyBackgroundColor = "",
+            BodyColor = "",
+            HeaderColor = "",
+            LogoColor = "",
+            ButtonBGBorderColor ="",
+            MenuBackgroundColor  ="",
+            MenuItemHoverBGColor ="",
+            MenuItemHoverColor ="",
             FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-            LogoFileName = ""
+            LogoFilePath = "~/favicon.ico" ,
+            TenantId = tenantId
         };
 
         _ = builder.Entity<TenantTheme> ().HasData (tenantTheme);
-
-        return tenantTheme;
     }
-
-
 
     private void ApplyBaseDataTenantId ()
     {
@@ -419,17 +415,13 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         }
     }
 
-    public override int SaveChanges (bool acceptAllChangesOnSuccess)
+    public override int SaveChanges ()
     {
-        ApplyBaseDataTenantId ();
-
-        return base.SaveChanges (acceptAllChangesOnSuccess);
+        return base.SaveChanges ();
     }
 
     public override async Task<int> SaveChangesAsync (CancellationToken cancellationToken = default)
     {
-        ApplyBaseDataTenantId ();
-
         return await base.SaveChangesAsync (true,cancellationToken);
     }
 }

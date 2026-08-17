@@ -15,6 +15,8 @@ public static class RegisterServices
         _ = services.AddScoped<IPageService,PageService> ();
         _ = services.AddScoped<IThemeService,ThemeService> ();
 
+
+
         return services;
     }
 }

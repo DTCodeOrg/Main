@@ -1,6 +1,6 @@
-using Domain.Model;
 using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
+using Main.Model.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Main.Repository;
@@ -14,10 +14,11 @@ public class TenantUserRepository: ITenantUserRepository
         _db = db;
     }
 
-    public async Task AddAsync (TenantUserRole membership,CancellationToken ct = default)
+    public async Task<bool> AddAsync (TenantUserRole membership,CancellationToken ct = default)
     {
-        _ = await _db.TenantUserRoles.AddAsync (membership,ct);
-        _ = await _db.SaveChangesAsync (ct);
+        _ = _db.TenantUserRoles.Add (membership);
+        int result = await _db.SaveChangesAsync (ct);
+        return result > 0;
     }
 
     public async Task<bool> ExistsAsync (Guid tenantId,string userId,CancellationToken ct = default)

@@ -25,7 +25,7 @@ namespace Main.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Model.ApplicationUser", b =>
+            modelBuilder.Entity("Main.Model.Identity.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -37,6 +37,18 @@ namespace Main.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -44,11 +56,20 @@ namespace Main.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -70,6 +91,12 @@ namespace Main.Infrastructure.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -78,10 +105,6 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -96,105 +119,112 @@ namespace Main.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "00000002-0000-0000-0000-000000000000",
+                            Id = "00000005-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7692c3a9-9658-4de1-807e-86bb0320aa37",
+                            ConcurrencyStamp = "b2eca9aa-19a8-4712-88ed-e02549b3bcee",
                             Email = "admin@system.com",
                             EmailConfirmed = true,
+                            IsActive = false,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEADFqPLP8N6HZdn2Exe/QXL9K1jXOyvYsX3gtqwyqVzXyjOQR9QwqcGM/T73DtgjvQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAED2Qx93jDLF+JrDlWv18UPmQSgG1lp+N/3B9OTtY8NGz5DHwSicbY5a139s1PrAzjQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "db4354f3-641c-42c0-9aea-14868e211be2",
+                            SecurityStamp = "a5547d16-219c-4d03-8159-82b85404de48",
                             TwoFactorEnabled = false,
                             UserName = "admin@system.com"
                         },
                         new
                         {
-                            Id = "00000003-0000-0000-0000-000000000000",
+                            Id = "00000006-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3a53eef8-37b1-42d0-aa27-d74ed3a8e9b3",
+                            ConcurrencyStamp = "de6afe88-bbd2-40ae-a942-ab08d70af99b",
                             Email = "tenant1.admin@test.com",
                             EmailConfirmed = true,
+                            IsActive = false,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEBEpJNNPvM+I5CrKTw0E3M7gPinEWMwN8hv/TJztnW+2QYC7GE/eOz9IhpYfHBg7KA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMGus4iUzQHXHR5jFYSZDqvLKRkoBkioXLuQQAMA+PMy23JNnsJjWZIIQHGMO7sH9w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "094c1bc6-fb11-4580-b442-696f1480b418",
+                            SecurityStamp = "08947f6f-1a4e-4483-8def-2a922f1f2155",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.admin@test.com"
                         },
                         new
                         {
-                            Id = "00000004-0000-0000-0000-000000000000",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "56d0feb3-9262-485d-bb78-3a2479e95bf5",
-                            Email = "tenant1.content@test.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEEFoKtlfiTyv1PnW5KBvzScVUO9bmSySlCii8MtGTxvi5SUUI0Kuj1keUqkMhN7qVw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "2d34099e-f142-4079-8a85-32bae1215fe3",
-                            TwoFactorEnabled = false,
-                            UserName = "tenant1.content@test.com"
-                        },
-                        new
-                        {
-                            Id = "00000005-0000-0000-0000-000000000000",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "b4ccedad-d4e7-4239-a0f6-01b9551963a6",
-                            Email = "tenant1.member@test.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEGnU8oo9ILgxCvRAArg+zzQAhzFhCGgesuCTMb1j+jq2BAqLH5aSpm6N8MsEpY4Ijw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "ff0bbdf2-d017-44b2-a797-f300c80af676",
-                            TwoFactorEnabled = false,
-                            UserName = "tenant1.member@test.com"
-                        },
-                        new
-                        {
-                            Id = "00000006-0000-0000-0000-000000000000",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "bbcff812-37e9-4f65-be8b-a89e2d5d4a96",
-                            Email = "tenant2.admin@test.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEINKa8K3S/vtWCn1dBkwYkCeckBcu4QRqf6U3yKVvGfq1BE6Bb8wFfeYcRvhc+JbUQ==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "34965b6e-5e96-42c6-a0d8-e1a83d33c7be",
-                            TwoFactorEnabled = false,
-                            UserName = "tenant2.admin@test.com"
-                        },
-                        new
-                        {
                             Id = "00000007-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "60a35e77-8696-43d7-8e7e-932649744697",
-                            Email = "tenant2.content@test.com",
+                            ConcurrencyStamp = "c343f8a0-23cb-48c7-a770-19fdd22ff308",
+                            Email = "tenant1.manager@test.com",
                             EmailConfirmed = true,
+                            IsActive = false,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAECTKY18u5/clnRi1gQ38ZJxZmrSdG2X6cNA2rmi6E9sRONZwU0TdAT12QbRpZNdLcg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENXG5pEZHmPpsax/X/QZtVXGg6QSZMX5DElF0kIrSyRhr0ZFtFTMsY3ldOGyZPjvTQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fa0d9bf7-f077-4fca-b7f1-7912af637a07",
+                            SecurityStamp = "460d2567-4461-4502-91ad-7a08c19ea0e3",
                             TwoFactorEnabled = false,
-                            UserName = "tenant2.content@test.com"
+                            UserName = "tenant1.manager@test.com"
                         },
                         new
                         {
                             Id = "00000008-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ed2ed7b9-9a16-4f8c-a58b-740d02a16aa6",
+                            ConcurrencyStamp = "1b4cc0c3-e23b-46f7-99ed-bd884f0bde55",
+                            Email = "tenant1.member@test.com",
+                            EmailConfirmed = true,
+                            IsActive = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEIyOw7CTwyLN195v/WiOWcYscb5Bov3AMFHuLZk3fp7BcSufMdY3TCEwyYBMVa847A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "95df8190-ecf0-4085-b91a-f71591533e08",
+                            TwoFactorEnabled = false,
+                            UserName = "tenant1.member@test.com"
+                        },
+                        new
+                        {
+                            Id = "00000009-0000-0000-0000-000000000000",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "80999a9b-58f6-44c7-b0a8-3bd296d3b720",
+                            Email = "tenant2.admin@test.com",
+                            EmailConfirmed = true,
+                            IsActive = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEDyyd8DAlDlxBP7UgSsyCPDuD+cviq6QIzhkZZKnvh8UdBjJOvsQBZepZW9f2ywPHA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "ab29ce73-4f09-4e58-8187-2ce7636bd790",
+                            TwoFactorEnabled = false,
+                            UserName = "tenant2.admin@test.com"
+                        },
+                        new
+                        {
+                            Id = "0000000a-0000-0000-0000-000000000000",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "50d9e9ef-894d-41a4-bcea-b94bde6e63e7",
+                            Email = "tenant2.manager@test.com",
+                            EmailConfirmed = true,
+                            IsActive = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEMhi0C5Uvpp0D/UzbIReou6IKiHUPkC51BAT86CNPBt/nuH0EybfUmEvLU2LADYOVQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "aa19674c-4906-4b5a-b937-7cedb034349b",
+                            TwoFactorEnabled = false,
+                            UserName = "tenant2.manager@test.com"
+                        },
+                        new
+                        {
+                            Id = "0000000b-0000-0000-0000-000000000000",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "08da5486-b466-4a0d-9fd4-1006b4ece9ba",
                             Email = "tenant2.member@test.com",
                             EmailConfirmed = true,
+                            IsActive = false,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEK/nHs3q96/6Uc3O0Vmr0MBwZ5IBlMP6oFm8Hs7q49E3c7t9toMhRdae8Qdwa5yMiw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDHo/Vv7abLV+/F1JtSgPTnMILcq9wNrEI5ddoETZZEtYEL8ohSO1KRHQPxDb0t5GA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7254e249-e000-4959-88c9-41277b4a6c5b",
+                            SecurityStamp = "ec281ccf-140c-4d75-9000-04cf69d0b952",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.member@test.com"
                         });
                 });
 
-            modelBuilder.Entity("Domain.Model.EmailOutboxMessage", b =>
+            modelBuilder.Entity("Main.Model.Identity.EmailOutboxMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -265,7 +295,7 @@ namespace Main.Infrastructure.Migrations
                     b.ToTable("EmailOutboxMessages");
                 });
 
-            modelBuilder.Entity("Domain.Model.Tenant", b =>
+            modelBuilder.Entity("Main.Model.Identity.Tenant", b =>
                 {
                     b.Property<Guid>("TenantId")
                         .ValueGeneratedOnAdd()
@@ -312,12 +342,7 @@ namespace Main.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("TenantThemeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("TenantId");
-
-                    b.HasIndex("TenantThemeId");
 
                     b.ToTable("Tenants");
 
@@ -328,8 +353,7 @@ namespace Main.Infrastructure.Migrations
                             Host = "tenant1",
                             HostType = 0,
                             IsActive = true,
-                            TenantName = "Tenant 1",
-                            TenantThemeId = new Guid("0000000e-0000-0000-0000-000000000000")
+                            TenantName = "Tenant 1"
                         },
                         new
                         {
@@ -337,330 +361,11 @@ namespace Main.Infrastructure.Migrations
                             Host = "tenant2",
                             HostType = 0,
                             IsActive = true,
-                            TenantName = "Tenant 2",
-                            TenantThemeId = new Guid("0000000f-0000-0000-0000-000000000000")
+                            TenantName = "Tenant 2"
                         });
                 });
 
-            modelBuilder.Entity("Domain.Model.TenantSmtpServer", b =>
-                {
-                    b.Property<int>("SmtpServerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SmtpServerId"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Port")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SmtpEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SmtpHostServer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantContinent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TenantCountry")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SmtpServerId");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("TenantSmtpServers");
-                });
-
-            modelBuilder.Entity("Domain.Model.TenantTheme", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("BackgroundColor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FontStack")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LogoFileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PrimaryColor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SecondaryColor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantContinent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TenantCountry")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TenantThemes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("0000000e-0000-0000-0000-000000000000"),
-                            BackgroundColor = "#F7F8F5",
-                            FontStack = "Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', Georgia, 'Times New Roman', serif",
-                            IsActive = false,
-                            LogoFileName = "",
-                            PrimaryColor = "#122A1E",
-                            SecondaryColor = "#879882"
-                        },
-                        new
-                        {
-                            Id = new Guid("0000000f-0000-0000-0000-000000000000"),
-                            BackgroundColor = "#F4F6F4",
-                            FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-                            IsActive = false,
-                            LogoFileName = "",
-                            PrimaryColor = "#1B3B2B",
-                            SecondaryColor = "#728C69"
-                        });
-                });
-
-            modelBuilder.Entity("Domain.Model.TenantUserRole", b =>
-                {
-                    b.Property<int>("TenantUserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TenantUserId"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TenantContinent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TenantCountry")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TenantRole")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("TenantUserId");
-
-                    b.HasIndex("TenantId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TenantUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            TenantUserId = 1,
-                            IsActive = true,
-                            TenantCountry = 1,
-                            TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            TenantRole = "Admin",
-                            UserId = "00000003-0000-0000-0000-000000000000"
-                        },
-                        new
-                        {
-                            TenantUserId = 2,
-                            IsActive = true,
-                            TenantCountry = 1,
-                            TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            TenantRole = "ContentManager",
-                            UserId = "00000004-0000-0000-0000-000000000000"
-                        },
-                        new
-                        {
-                            TenantUserId = 3,
-                            IsActive = true,
-                            TenantCountry = 1,
-                            TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
-                            TenantRole = "Member",
-                            UserId = "00000005-0000-0000-0000-000000000000"
-                        },
-                        new
-                        {
-                            TenantUserId = 4,
-                            IsActive = true,
-                            TenantCountry = 1,
-                            TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            TenantRole = "Admin",
-                            UserId = "00000006-0000-0000-0000-000000000000"
-                        },
-                        new
-                        {
-                            TenantUserId = 5,
-                            IsActive = true,
-                            TenantCountry = 1,
-                            TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            TenantRole = "ContentManager",
-                            UserId = "00000007-0000-0000-0000-000000000000"
-                        },
-                        new
-                        {
-                            TenantUserId = 6,
-                            IsActive = true,
-                            TenantCountry = 1,
-                            TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
-                            TenantRole = "Member",
-                            UserId = "00000008-0000-0000-0000-000000000000"
-                        });
-                });
-
-            modelBuilder.Entity("Domain.Model.UserRefreshToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReplacedByToken")
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
-                    b.Property<string>("TenantContinent")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("TenantCountry")
-                        .HasMaxLength(100)
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("TenantId", "Token");
-
-                    b.ToTable("ApplicationUserRefreshTokens");
-                });
-
-            modelBuilder.Entity("Main.Model.DomainModel.TenantInvitation", b =>
+            modelBuilder.Entity("Main.Model.Identity.TenantInvitation", b =>
                 {
                     b.Property<Guid>("InviteId")
                         .ValueGeneratedOnAdd()
@@ -731,6 +436,356 @@ namespace Main.Infrastructure.Migrations
                     b.ToTable("TenantInvitations");
                 });
 
+            modelBuilder.Entity("Main.Model.Identity.TenantSmtpServer", b =>
+                {
+                    b.Property<int>("SmtpServerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SmtpServerId"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Port")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SmtpEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SmtpHostServer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SmtpServerId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("TenantSmtpServers");
+                });
+
+            modelBuilder.Entity("Main.Model.Identity.TenantTheme", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BodyBackgroundColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BodyColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ButtonBGBorderColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FontStack")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeaderColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LogoColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoFilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MenuBackgroundColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MenuItemHoverBGColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MenuItemHoverColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("TenantThemes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("00000011-0000-0000-0000-000000000000"),
+                            BodyBackgroundColor = "",
+                            BodyColor = "",
+                            ButtonBGBorderColor = "",
+                            FontStack = "Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', Georgia, 'Times New Roman', serif",
+                            HeaderColor = "",
+                            IsActive = false,
+                            LogoColor = "",
+                            LogoFilePath = "~/favicon.ico",
+                            MenuBackgroundColor = "",
+                            MenuItemHoverBGColor = "",
+                            MenuItemHoverColor = "",
+                            TenantId = new Guid("00000001-0000-0000-0000-000000000000")
+                        },
+                        new
+                        {
+                            Id = new Guid("00000012-0000-0000-0000-000000000000"),
+                            BodyBackgroundColor = "",
+                            BodyColor = "",
+                            ButtonBGBorderColor = "",
+                            FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+                            HeaderColor = "",
+                            IsActive = false,
+                            LogoColor = "",
+                            LogoFilePath = "~/favicon.ico",
+                            MenuBackgroundColor = "",
+                            MenuItemHoverBGColor = "",
+                            MenuItemHoverColor = "",
+                            TenantId = new Guid("00000002-0000-0000-0000-000000000000")
+                        });
+                });
+
+            modelBuilder.Entity("Main.Model.Identity.TenantUserRole", b =>
+                {
+                    b.Property<int>("TenantUserRoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TenantUserRoleId"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TenantRole")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TenantUserRoleId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TenantUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            TenantUserRoleId = 2,
+                            IsActive = true,
+                            TenantCountry = 1,
+                            TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
+                            TenantRole = "Admin",
+                            UserId = "00000006-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            TenantUserRoleId = 3,
+                            IsActive = true,
+                            TenantCountry = 1,
+                            TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
+                            TenantRole = "Manager",
+                            UserId = "00000007-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            TenantUserRoleId = 4,
+                            IsActive = true,
+                            TenantCountry = 1,
+                            TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
+                            TenantRole = "Member",
+                            UserId = "00000008-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            TenantUserRoleId = 5,
+                            IsActive = true,
+                            TenantCountry = 1,
+                            TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
+                            TenantRole = "Admin",
+                            UserId = "00000009-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            TenantUserRoleId = 6,
+                            IsActive = true,
+                            TenantCountry = 1,
+                            TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
+                            TenantRole = "Manager",
+                            UserId = "0000000a-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            TenantUserRoleId = 7,
+                            IsActive = true,
+                            TenantCountry = 1,
+                            TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
+                            TenantRole = "Member",
+                            UserId = "0000000b-0000-0000-0000-000000000000"
+                        });
+                });
+
+            modelBuilder.Entity("Main.Model.Identity.UserRefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("TenantContinent")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasMaxLength(100)
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ApplicationUserRefreshTokens");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -760,13 +815,13 @@ namespace Main.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "GlobalAdmin",
+                            Id = "00000003-0000-0000-0000-000000000000",
                             Name = "GlobalAdmin",
                             NormalizedName = "GLOBALADMIN"
                         },
                         new
                         {
-                            Id = "User",
+                            Id = "00000004-0000-0000-0000-000000000000",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -861,8 +916,38 @@ namespace Main.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "00000002-0000-0000-0000-000000000000",
-                            RoleId = "GlobalAdmin"
+                            UserId = "00000005-0000-0000-0000-000000000000",
+                            RoleId = "00000003-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            UserId = "00000006-0000-0000-0000-000000000000",
+                            RoleId = "00000004-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            UserId = "00000007-0000-0000-0000-000000000000",
+                            RoleId = "00000004-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            UserId = "00000008-0000-0000-0000-000000000000",
+                            RoleId = "00000004-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            UserId = "00000009-0000-0000-0000-000000000000",
+                            RoleId = "00000004-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            UserId = "0000000a-0000-0000-0000-000000000000",
+                            RoleId = "00000004-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            UserId = "0000000b-0000-0000-0000-000000000000",
+                            RoleId = "00000004-0000-0000-0000-000000000000"
                         });
                 });
 
@@ -885,9 +970,9 @@ namespace Main.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Model.EmailOutboxMessage", b =>
+            modelBuilder.Entity("Main.Model.Identity.EmailOutboxMessage", b =>
                 {
-                    b.HasOne("Domain.Model.Tenant", "Tenant")
+                    b.HasOne("Main.Model.Identity.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -896,20 +981,9 @@ namespace Main.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("Domain.Model.Tenant", b =>
+            modelBuilder.Entity("Main.Model.Identity.TenantInvitation", b =>
                 {
-                    b.HasOne("Domain.Model.TenantTheme", "TenantTheme")
-                        .WithMany()
-                        .HasForeignKey("TenantThemeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TenantTheme");
-                });
-
-            modelBuilder.Entity("Domain.Model.TenantSmtpServer", b =>
-                {
-                    b.HasOne("Domain.Model.Tenant", "Tenant")
+                    b.HasOne("Main.Model.Identity.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -918,15 +992,37 @@ namespace Main.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("Domain.Model.TenantUserRole", b =>
+            modelBuilder.Entity("Main.Model.Identity.TenantSmtpServer", b =>
                 {
-                    b.HasOne("Domain.Model.Tenant", "Tenant")
+                    b.HasOne("Main.Model.Identity.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.ApplicationUser", "User")
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("Main.Model.Identity.TenantTheme", b =>
+                {
+                    b.HasOne("Main.Model.Identity.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("Main.Model.Identity.TenantUserRole", b =>
+                {
+                    b.HasOne("Main.Model.Identity.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Main.Model.Identity.ApplicationUser", "User")
                         .WithMany("TenantUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -937,15 +1033,15 @@ namespace Main.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Model.UserRefreshToken", b =>
+            modelBuilder.Entity("Main.Model.Identity.UserRefreshToken", b =>
                 {
-                    b.HasOne("Domain.Model.Tenant", "Tenant")
+                    b.HasOne("Main.Model.Identity.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.ApplicationUser", "User")
+                    b.HasOne("Main.Model.Identity.ApplicationUser", "User")
                         .WithMany("UserRefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -954,17 +1050,6 @@ namespace Main.Infrastructure.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Main.Model.DomainModel.TenantInvitation", b =>
-                {
-                    b.HasOne("Domain.Model.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -978,7 +1063,7 @@ namespace Main.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Domain.Model.ApplicationUser", null)
+                    b.HasOne("Main.Model.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -987,7 +1072,7 @@ namespace Main.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Domain.Model.ApplicationUser", null)
+                    b.HasOne("Main.Model.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1002,7 +1087,7 @@ namespace Main.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.ApplicationUser", null)
+                    b.HasOne("Main.Model.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1011,14 +1096,14 @@ namespace Main.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Domain.Model.ApplicationUser", null)
+                    b.HasOne("Main.Model.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Model.ApplicationUser", b =>
+            modelBuilder.Entity("Main.Model.Identity.ApplicationUser", b =>
                 {
                     b.Navigation("TenantUsers");
 

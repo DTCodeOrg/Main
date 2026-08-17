@@ -12,12 +12,8 @@ public class ProductViewModel: BaseViewModel
 {
     public ProductViewModel ()
     {
-        AV_Category = DropDownListItems.GetCategoryList
-                ();
-
-        AV_SubCategory = DropDownListItems.GetSubCategoryList
-                ();
-
+        AV_Category = new List<SelectListItem> ();
+        AV_SubCategory = new List<SelectListItem> ();
     }
 
     public int ProductID
@@ -28,7 +24,7 @@ public class ProductViewModel: BaseViewModel
 
     [Display (Name = "Product Category ")]
     [Required (ErrorMessage = "Category is required!")]
-    public int CategoryID
+    public string CategoryID
     {
         get; set;
     }
@@ -36,7 +32,7 @@ public class ProductViewModel: BaseViewModel
 
     [Display (Name = "Product Sub Category")]
     [Required (ErrorMessage = "Sub category is required!")]
-    public int SubCategoryID
+    public string SubCategoryID
     {
         get; set;
     }

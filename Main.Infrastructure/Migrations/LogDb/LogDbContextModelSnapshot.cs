@@ -25,7 +25,7 @@ namespace Main.Infrastructure.Migrations.LogDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Model.ExceptionLog", b =>
+            modelBuilder.Entity("Main.Model.Log.ExceptionLogs", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,6 +47,7 @@ namespace Main.Infrastructure.Migrations.LogDb
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CustomData")
+                        .HasMaxLength(6000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeletedBy")
@@ -57,7 +58,8 @@ namespace Main.Infrastructure.Migrations.LogDb
 
                     b.Property<string>("DetailedMessage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)");
 
                     b.Property<string>("Environment")
                         .HasMaxLength(50)
@@ -78,6 +80,7 @@ namespace Main.Infrastructure.Migrations.LogDb
                         .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("InnerException")
+                        .HasMaxLength(6000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -99,9 +102,11 @@ namespace Main.Infrastructure.Migrations.LogDb
                         .HasColumnType("int");
 
                     b.Property<string>("RequestBody")
+                        .HasMaxLength(6000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RequestHeaders")
+                        .HasMaxLength(6000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RequestUrl")
@@ -109,6 +114,7 @@ namespace Main.Infrastructure.Migrations.LogDb
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ResolutionNotes")
+                        .HasMaxLength(6000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ResolvedAt")
@@ -119,6 +125,7 @@ namespace Main.Infrastructure.Migrations.LogDb
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("StackTrace")
+                        .HasMaxLength(6000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StatusCode")

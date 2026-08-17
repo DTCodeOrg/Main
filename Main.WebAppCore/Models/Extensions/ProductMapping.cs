@@ -17,8 +17,8 @@ public static class ProductMapping
             UnitPrice = productViewModel.UnitPrice,
             Discount = productViewModel.Discount,
             SaleCommission = productViewModel.SaleCommission,
-            CategoryID = productViewModel.CategoryID,
-            SubCategoryID = productViewModel.SubCategoryID,
+            CategoryID = int.Parse (productViewModel.CategoryID),
+            SubCategoryID = int.Parse (productViewModel.SubCategoryID),
             Description = productViewModel.Description,
             PostType = EnumPostType.Product,
             ProductID = 0
@@ -30,8 +30,8 @@ public static class ProductMapping
         ProductViewModel productViewModel = new();
 
         productViewModel.ProductID = productDataModel.ProductID;
-        productViewModel.CategoryID = productDataModel.CategoryID;
-        productViewModel.SubCategoryID = productDataModel.SubCategoryID;
+        productViewModel.CategoryID = productDataModel.CategoryID.ToString ();
+        productViewModel.SubCategoryID = productDataModel.SubCategoryID.ToString ();
         productViewModel.ProductName = productDataModel.ProductName;
         productViewModel.UnitPrice = productDataModel.UnitPrice;
         productViewModel.Discount = productDataModel.Discount;
@@ -65,8 +65,8 @@ public static class ProductMapping
         ProductDataModel productDataModel = new();
 
         productDataModel.ProductID = productViewModel.ProductID;
-        productDataModel.CategoryID = productViewModel.CategoryID;
-        productDataModel.SubCategoryID = productViewModel.SubCategoryID;
+        productDataModel.CategoryID = int.Parse (productViewModel.CategoryID);
+        productDataModel.SubCategoryID = int.Parse (productViewModel.SubCategoryID);
         productDataModel.ProductName = productViewModel.ProductName;
         productDataModel.UnitPrice = productViewModel.UnitPrice;
         productDataModel.Discount = productViewModel.Discount;
@@ -88,9 +88,9 @@ public static class ProductMapping
             productDisplayViewModel = new ProductDisplayViewModel ()
             {
                 ProductID = model.ProductID,
-                DisplayCategory = DropDownListItems.GetCategoryText (model.CategoryID),
+                DisplayCategory = DropDownListItems.GetCategoryText (model.CategoryID.ToString ()),
                 ProductName = model.ProductName,
-                DisplaySubCategory = DropDownListItems.GetSubCategoryText (model.SubCategoryID),
+                DisplaySubCategory = DropDownListItems.GetSubCategoryText (model.SubCategoryID.ToString ()),
                 UnitPrice = model.UnitPrice
             };
 

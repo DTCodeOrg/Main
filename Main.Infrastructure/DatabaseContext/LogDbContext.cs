@@ -1,5 +1,6 @@
-﻿using Domain.Model;
-using Main.Common;
+﻿using Main.Common;
+using Main.Model.Base;
+using Main.Model.Log;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
@@ -19,7 +20,7 @@ public class LogDbContext: DbContext
         _tenantSetter = tenantSetter;
     }
 
-    public DbSet<ExceptionLog> ExceptionLogs
+    public DbSet<ExceptionLogs> ExceptionLogs
     {
         get; set;
     }
@@ -39,7 +40,7 @@ public class LogDbContext: DbContext
         .Where(e =>
                e.State == EntityState.Added
                || e.State == EntityState.Modified
-               || e.State == EntityState.Detached).ToArray();
+               || e.State == EntityState.Deleted).ToArray();
 
         foreach ( var entry in entries )
         {
@@ -51,12 +52,13 @@ public class LogDbContext: DbContext
             }
             else if ( entry.State == EntityState.Deleted )
             {
-                tenantEntity.ModifyParameters (deleteDataModel);
+                tenantEntity.DeleteParameters (deleteDataModel);
             }
             else if ( entry.State == EntityState.Modified )
             {
                 tenantEntity.ModifyParameters (updateDataModel);
             }
+
         }
     }
 

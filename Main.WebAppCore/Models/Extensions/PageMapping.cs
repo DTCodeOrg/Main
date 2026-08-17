@@ -48,7 +48,7 @@ public static class PageMapping
                 dataModel.RootID,dataModel.ImageFileID,dataModel.ImageOrderID)
             {
                 ImageFileContent = dataModel.ImageFileContent,
-                CategoryName = DropDownListItems.GetCategoryText (dataModel.CategoryID),
+                CategoryName = DropDownListItems.GetCategoryText (dataModel.CategoryID.ToString ()),
 
                 PostTitle = dataModel.PostTitle,
                 Price = dataModel.Price,

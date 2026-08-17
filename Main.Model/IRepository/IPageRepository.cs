@@ -1,4 +1,5 @@
-﻿using Domain.Model;
+﻿using Main.Model.Identity;
+using Main.Model.Tenant;
 
 namespace Main.IRepository;
 

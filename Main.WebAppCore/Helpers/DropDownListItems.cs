@@ -140,8 +140,6 @@ public class DropDownListItems
 
     public static IEnumerable<SelectListItem> GetSubCategoryList ()
     {
-        _ = new List<TenantVariableModel> ();
-
         return GetSelectList (TenantStoreHelper.GetSubCategoryList (),"");
     }
 
@@ -180,12 +178,12 @@ public class DropDownListItems
             new()
             {
                 new SelectListItem() {
-                    Text = selectText,
-                    Value = null,
+                    Text = "",
+                    Value = "",
                     Selected = true
                 } };
 
-        listTenantVariableModel.ForEach (a =>
+        listTenantVariableModel.ToList ().ForEach (a =>
         {
             SelectListItem objItem = new ()
             {
@@ -228,12 +226,12 @@ public class DropDownListItems
         return GetSelectList (TenantStoreHelper.GetCategoryList ());
     }
 
-    public static string GetCategoryText (int categoryId)
+    public static string GetCategoryText (string categoryId)
     {
         return TenantStoreHelper.GetTextForCategoryId (categoryId);
     }
 
-    public static string GetSubCategoryText (int subCategoryId)
+    public static string GetSubCategoryText (string subCategoryId)
     {
         return TenantStoreHelper.GetTextForSubCategoryId (subCategoryId);
     }

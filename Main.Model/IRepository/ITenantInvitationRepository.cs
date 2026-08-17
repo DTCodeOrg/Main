@@ -1,4 +1,4 @@
-using Main.Model.DomainModel;
+using Main.Model.Identity;
 
 namespace Main.IRepository;
 
@@ -9,9 +9,9 @@ public interface ITenantInvitationRepository
     Task<TenantInvitation?> GetByEmailAndTenantAsync
     (Guid tenantId,string email,CancellationToken ct = default);
 
-    Task AddAsync (TenantInvitation invitation,CancellationToken ct = default);
+    Task<bool> AddAsync (TenantInvitation invitation,CancellationToken ct = default);
 
-    Task UpdateAsync (TenantInvitation invitation,CancellationToken ct = default);
+    Task<bool> UpdateAsync (TenantInvitation invitation,CancellationToken ct = default);
 
     Task<bool> ExistsAsync (Guid tenantId,string email,CancellationToken ct = default);
 }

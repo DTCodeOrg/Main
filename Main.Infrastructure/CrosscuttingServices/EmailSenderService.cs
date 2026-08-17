@@ -1,8 +1,8 @@
-﻿using Domain.Model;
-using FluentEmail.Core;
+﻿using FluentEmail.Core;
 using Main.Common;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
+using Main.Model.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Main.Infrastructure.CrosscuttingHelperServices;
