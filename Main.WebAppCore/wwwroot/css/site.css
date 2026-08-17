@@ -18,6 +18,22 @@ a.logo {
     color: var( --bs-red);
 }
 
+a.icon-button {
+    font-weight: 600;
+    background-color: transparent;
+    color: var(--bs-gray-dark);
+    padding: 0 10px !important;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    a.icon-button:hover {
+        opacity: 0.4;
+        background-color: rgba(0, 0, 0, 0.04); /* Subtle background pill effect */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04); /* Soft shadow */
+        border-radius: 4px; /* Keeps the background and shadow shapes clean */
+    }
+
+
 .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
     padding-left: 5px;
     padding-right: 5px;
@@ -37,6 +53,7 @@ a.logo {
 header {
     color: var(--bs-gray-dark);
     /*#fff;*/
+    margin-bottom: 5px;
 }
 
         header .top-header {
@@ -291,9 +308,13 @@ header .bottom-header {
         text-align: left !important;
     }
 
-        header .dropdown li > a:hover {
+        header .dropdown li > a:hover  {
             text-align: left !important;
             background-color: var(--bs-black);
+            color: var(--bs-white);
+        }
+
+        header .dropdown li > i:hover {
             color: var(--bs-white);
         }
 

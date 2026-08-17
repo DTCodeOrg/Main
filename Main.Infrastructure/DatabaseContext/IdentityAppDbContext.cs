@@ -156,10 +156,10 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         Guid IdentityRoleId2 = guidArray[3];
         IdentityRolesSeed (builder,IdentityRoleId1,IdentityRoleId2);
 
-        Guid ThemeId1 = guidArray[16];
-        Guid ThemeId2 = guidArray[17];
-        Tenant1ThemeSeed (builder,ThemeId1,TenantId1);
-        Tenant2ThemeSeed (builder,ThemeId2,TenantId2);
+        //Guid ThemeId1 = guidArray[16];
+        //Guid ThemeId2 = guidArray[17];
+        //Tenant1ThemeSeed (builder,ThemeId1,TenantId1);
+        //Tenant2ThemeSeed (builder,ThemeId2,TenantId2);
 
         Guid UserIdGlobal1 = guidArray[4];
         var adminGlobalEmail = "admin@system.com";
