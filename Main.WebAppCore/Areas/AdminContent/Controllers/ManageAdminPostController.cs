@@ -30,10 +30,10 @@ public class ManageAdminPostController: BaseController
 
     private void SetImageInDataModel (AdminPostDataModel adminPostDataModel)
     {
-        List<ImageFile> listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
+        List<ImageFile>? listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
         List<AdminImageFileDataModel> listAdminPostDataModel = new();
 
-        if ( listSessionImageFiles.Count > 0 )
+        if ( listSessionImageFiles?.Count > 0 )
         {
             listSessionImageFiles.ForEach (imgFile =>
             {
@@ -213,11 +213,13 @@ public class ManageAdminPostController: BaseController
     }
 
 
+
+
     [HttpPost]
     [IgnoreAntiforgeryToken]
     public IActionResult UploadImage (IFormFile file)
     {
-        if ( file == null && file.Length == 0 )
+        if ( file == null )
         {
             // Log exception here
             // Return 500 Internal Server Error with a generic message
@@ -229,6 +231,10 @@ public class ManageAdminPostController: BaseController
         else
         {
             ImageFile imageFile = ReadImage ( file );
+
+            _ = GetAllSessionImages (_tenantCacheService);
+
+            imageFile ??= 1;
 
             SetSessionImageFile (imageFile,_tenantCacheService);
 
@@ -276,9 +282,9 @@ public class ManageAdminPostController: BaseController
     public IActionResult LoadImage ()
     {
 
-        List<ImageFile> imageFileList = GetAllSessionImages(_tenantCacheService);
+        List<ImageFile>? imageFileList = GetAllSessionImages(_tenantCacheService)!;
 
-        ImageFile imageFile = imageFileList.LastOrDefault<ImageFile >();
+        ImageFile imageFile = imageFileList?.LastOrDefault<ImageFile >()!;
 
         return PartialView ("_Image",imageFile);
 
@@ -291,12 +297,13 @@ public class ManageAdminPostController: BaseController
         try
         {
             bool result;
+
             if ( postId != 0 )
             {
                 result = await _adminPostService.DeleteAdminPostImage (id,postId);
             }
 
-            result = RemoveSessionImageFile (id,_tenantCacheService);
+            result = DeleteSessionImage (id,_tenantCacheService);
 
             return Json (new
             {
@@ -333,6 +340,9 @@ public class ManageAdminPostController: BaseController
             });
         }
     }
+
+    [HttpPost]
+
 
 
     [Authorize (Policy = "TenantAdmin")]

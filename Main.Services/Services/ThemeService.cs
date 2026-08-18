@@ -42,7 +42,7 @@ public class ThemeService: IThemeService
             BodyColor = themeEntity.BodyColor,
             HeaderColor = themeEntity.HeaderColor,
             LogoColor = themeEntity?.LogoColor,
-            MenuBackgroundColor  =themeEntity.MenuBackgroundColor,
+            MenuBackgroundColor  =themeEntity!.MenuBackgroundColor,
             MenuItemHoverBGColor = themeEntity.MenuItemHoverBGColor,
             MenuItemHoverColor = themeEntity.MenuItemHoverColor,
             FontStack = themeEntity.FontStack,

@@ -33,22 +33,28 @@ public class TenantCacheService: ITenantCacheService
         }
 
         // Build the tenant-suffixed key: "myKey:tenant123"
-        return $"{baseKey}:{_tenantSetter.ResolvedTenantId}";
+        return $"{baseKey}:{_tenantSetter.ResolvedTenantId}:{_tenantSetter.HttpContextUserId}";
     }
 
     public void Set<T> (string baseKey,T value,TimeSpan expiration)
     {
         string fullKey = BuildTenantKey(baseKey);
 
-        _memoryCache.Remove (fullKey);
+        // 🛡️ Prevent the ArgumentOutOfRangeException (00:00:00 value)
+        if ( expiration <= TimeSpan.Zero )
+        {
+            expiration = TimeSpan.FromMinutes (20); // Safe fallback default
+        }
 
         var cacheOptions = new MemoryCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = expiration
+            // 🔄 SlidingExpiration resets the timer every time you call Set or TryGet
+            SlidingExpiration = expiration
         };
 
         _ = _memoryCache.Set (fullKey,value,cacheOptions);
     }
+
 
     public bool TryGet<T> (string baseKey,out T? value)
     {

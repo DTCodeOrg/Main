@@ -1,101 +1,93 @@
 ﻿using Main.Common.Models;
 using Main.WebAppCore.DependentServices;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Main.WebAppCore;
 
 public partial class BaseController
 {
-    protected void SetSessionImageFile (ImageFile imageFile,
-        ITenantCacheService tenantCacheService)
+
+    [NonAction]
+    public void SetSessionImageFile (ImageFile imageFile,ITenantCacheService tenantCacheService)
     {
-        _ = tenantCacheService.TryGet<List<ImageFile>> ("ImageFileList",out var listImageFile);
-
-        if ( listImageFile == null || listImageFile.Count == 0 )
+        // 🛡️ Guard Clause 1: Ensure the service was passed correctly
+        if ( tenantCacheService == null )
         {
-            List<ImageFile> listNewImageFile = new();
-            imageFile.FileID = 1;
-            imageFile.FileContent = imageFile.FileContent;
-            imageFile.PostID = imageFile.PostID;
-            listNewImageFile.Add (imageFile);
-
-            tenantCacheService.Set<List<ImageFile>> ("ImageFileList",listNewImageFile
-                ,new System.TimeSpan (1200));
-        }
-        else
-        {
-            listImageFile = listImageFile.OrderBy (a => a.FileID).ToList ();
-            int currentId = listImageFile.Last ( ).FileID;
-            currentId += 1;
-
-            imageFile.FileID = currentId;
-            imageFile.FileContent = imageFile.FileContent;
-            imageFile.PostID = imageFile.PostID;
-
-            listImageFile.Add (imageFile);
-
-            tenantCacheService.Set<List<ImageFile>>
-            ("ImageFileList",listImageFile,new System.TimeSpan (1200));
-
-        }
-    }
-
-    protected List<ImageFile> GetAllSessionImages (ITenantCacheService tenantCacheService)
-    {
-        _ = tenantCacheService.TryGet<List<ImageFile>> ("ImageFileList",out var listImageFile);
-
-        if ( listImageFile == null || listImageFile.Count == 0 )
-        {
-            listImageFile = new List<ImageFile> ();
-
-            tenantCacheService.Set<List<ImageFile>>
-           ("ImageFileList",listImageFile,new System.TimeSpan (1200));
-
-            return listImageFile.ToList ();
-        }
-        else
-        {
-            listImageFile = listImageFile.OrderBy (a => a.FileID).ToList ();
-
-            tenantCacheService.Set<List<ImageFile>>
-            ("ImageFileList",listImageFile,new System.TimeSpan (1200));
-
-            return listImageFile.ToList ();
-        }
-    }
-
-    protected bool RemoveSessionImageFile (int imageFileId,ITenantCacheService tenantCacheService)
-    {
-        _ = tenantCacheService.TryGet<List<ImageFile>> ("ImageFileList",out var listImageFile);
-
-        if ( listImageFile == null || listImageFile.Count == 0 )
-        {
-            listImageFile = new List<ImageFile> ();
-
-            tenantCacheService.Set<List<ImageFile>>
-           ("ImageFileList",listImageFile,new System.TimeSpan (1200));
-
-            return false;
+            throw new ArgumentNullException (nameof (tenantCacheService),"Cache service is not initialized.");
         }
 
-        ImageFile? imageFile =
-        listImageFile.Where(a => a.FileID == imageFileId).FirstOrDefault();
-
+        // 🛡️ Guard Clause 2: Ensure the image data isn't null
         if ( imageFile == null )
         {
+            throw new ArgumentNullException (nameof (imageFile),"The uploaded image file object cannot be null.");
+        }
+
+        const string baseKey = "UploadedSessionImages";
+        TimeSpan cacheDuration = TimeSpan.FromMinutes(30);
+
+        // 🛡️ Guard Clause 3: Safely fetch or initialize the list
+        // This ensures imageList is NEVER null when we reach the .Add() step
+        if ( !tenantCacheService.TryGet<List<ImageFile>> (baseKey,out var imageList) || imageList == null )
+        {
+            imageList = [];
+        }
+
+        // Line 23 (or nearby): This will now safely execute
+        imageList.Add (imageFile);
+
+        // Update the cache
+        tenantCacheService.Set (baseKey,imageList,cacheDuration);
+    }
+
+
+    protected List<ImageFile>? GetAllSessionImages (ITenantCacheService tenantCacheService)
+    {
+        if ( tenantCacheService.TryGet<List<ImageFile>>
+        ("UploadedSessionImages",out var finalImages) && finalImages != null )
+        {
+            finalImages = finalImages.OrderBy (a => a.FileID).ToList ();
+        }
+
+        return [.. finalImages!];
+    }
+
+    protected bool DeleteSessionImage (int fileId,ITenantCacheService tenantCacheService)
+    {
+        const string baseKey = "UploadedSessionImages";
+        TimeSpan cacheDuration = TimeSpan.FromMinutes(30);
+
+        // 1. Get the existing list from the cache
+        if ( !tenantCacheService.TryGet<List<ImageFile>> (baseKey,out var imageList) || imageList == null )
+        {
             return false;
         }
 
-        bool result = listImageFile.Remove (imageFile);
-        listImageFile = listImageFile.OrderBy (a => a.FileID).ToList ();
+        // 2. Find and remove the matching file from the list
+        // (Assuming ImageFile has a FileName or Id property)
+        ImageFile? itemToRemove = imageList.FirstOrDefault(img => img.FileID == fileId);
 
-        tenantCacheService.Set<List<ImageFile>>
-        ("ImageFileList",listImageFile,new System.TimeSpan (1200));
+        if ( itemToRemove != null )
+        {
+            _ = imageList.Remove (itemToRemove);
 
-        return true;
+            // Optional: If the list is now empty, just clear the cache entirely to save memory
+            if ( imageList.Count != 0 )
+            {
+                // 3. Set the modified list back to cache (This overwrites it and resets the timer)
+                tenantCacheService.Set (baseKey,imageList,cacheDuration);
+            }
+            else
+            {
+                tenantCacheService.Clear (baseKey);
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
-    protected void ClearImageFileListSession (ITenantCacheService tenantCacheService)
-    {
-        tenantCacheService.Clear ("ImageFileList");
-    }
+    protected void ClearImageFileListSession (ITenantCacheService tenantCacheService) =>
+        // Clear the cache afterwards so memory is freed up immediately
+        tenantCacheService.Clear ("UploadedSessionImages");
 }

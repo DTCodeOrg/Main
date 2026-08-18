@@ -60,9 +60,9 @@ public class ManageProductController: BaseController
 
         ProductFileDataModel productImageFileDataModel;
 
-        List<ImageFile> listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
+        List<ImageFile>? listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
 
-        listSessionImageFiles.ForEach (imgFile =>
+        listSessionImageFiles?.ForEach (imgFile =>
         {
             productImageFileDataModel = new ProductFileDataModel ()
             {
@@ -217,33 +217,36 @@ public class ManageProductController: BaseController
 
 
     [HttpPost]
-    public JsonResult UploadImage (IFormFile file)
+    public IActionResult UploadImage (IFormFile file)
     {
-        if ( file != null && file.Length > 0 && file.Length > AppSettings.Current.PostImageSize )
+        if ( file == null )
         {
-            return Json (new
+            // Log exception here
+            // Return 500 Internal Server Error with a generic message
+            return StatusCode (500,new
             {
-                success = false
+                success = false,message = "An error occurred during upload."
             });
         }
-
-        ImageFile imageFile = ReadImage ( file ?? file! );
-
-        if ( imageFile.IsNew && imageFile.FileContent.Length > 0 )
+        else
         {
+            ImageFile imageFile = ReadImage ( file );
+
             SetSessionImageFile (imageFile,_tenantCacheService);
-        }
 
-        return Json (new
-        {
-            success = true
-        });
+
+            // Return 200 OK with a JSON success payload
+            return Ok (new
+            {
+                success = true,message = "File uploaded successfully!"
+            });
+        }
     }
 
 
     private ImageFile ReadImage (IFormFile file)
     {
-        if ( !string.IsNullOrEmpty (file.ContentType) && file.FileName != null )
+        if ( file.FileName != null )
         {
             string extension = Path.GetExtension(file.FileName).ToLower();
 
@@ -272,21 +275,14 @@ public class ManageProductController: BaseController
     }
 
     [HttpGet]
-    [Authorize (Roles = "Company,Admin")]
-    public PartialViewResult LoadImage ()
+    public IActionResult LoadImage ()
     {
-        try
-        {
-            var objImageList = GetAllSessionImages(_tenantCacheService);
+        List<ImageFile>? imageFileList = GetAllSessionImages(_tenantCacheService)!;
 
-            var objImage = objImageList.Last();
+        ImageFile imageFile = imageFileList?.LastOrDefault<ImageFile >()!;
 
-            return PartialView ("~/Areas/CompanyContent/Views/ManageProduct/_Image.cshtml",objImage);
-        }
-        catch
-        {
-            return PartialView ("~/Areas/CompanyContent/Views/ManageProduct/_Image.cshtml",new ImageFile ());
-        }
+        return PartialView ("_Image",imageFile);
+
     }
 
 
@@ -301,7 +297,7 @@ public class ManageProductController: BaseController
                 result = await _productService.DeleteProductImage (id,postId);
             }
 
-            result = RemoveSessionImageFile (id,_tenantCacheService);
+            result = DeleteSessionImage (id,_tenantCacheService);
 
             return Json (new
             {

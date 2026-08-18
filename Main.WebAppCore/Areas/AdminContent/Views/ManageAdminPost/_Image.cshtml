@@ -3,7 +3,9 @@
 <div class="image-content">
     <div>
         <a class="thumbnail">
-            @if (Model != null && Model.FileContent != null && Model.FileContent.Length > 1)
+            @if (Model != null && 
+            Model.FileContent != null && 
+            Model.FileContent.Length > 0)
             {
                 string imageBase64 = Convert.ToBase64String(Model!.FileContent!);
                 string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);

@@ -16,7 +16,7 @@ _ = builder.WebHost.ConfigureKestrel ((context,options) =>
 });
 
 // Corrected syntax using .Get<T>()
-AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings").Get<ConfigurationSettings> ();
+AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings").Get<ConfigurationSettings> ()!;
 
 
 _ = builder.Services.AddHttpContextAccessor ();

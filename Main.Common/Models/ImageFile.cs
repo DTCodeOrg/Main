@@ -27,4 +27,9 @@ public class ImageFile
     public int? PostID { get; set; }
 
     public bool IsNew { get; set; }
+
+    public static implicit operator ImageFile (int v)
+    {
+        throw new NotImplementedException ();
+    }
 }
