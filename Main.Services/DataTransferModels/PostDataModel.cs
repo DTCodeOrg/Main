@@ -45,7 +45,12 @@ public class PostDataModel: DataModel
         get; set;
     }
 
-    public byte[] ImageFileContent
+    public byte[]? FileContent
+    {
+        get; set;
+    }
+
+    public string FilePath
     {
         get; set;
     }

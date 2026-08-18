@@ -88,7 +88,7 @@ public static class ProductServiceMapping
         ProductImageFile productImageFile;
         productDataModel.ImageFiles.ForEach (fileDataModel =>
         {
-            productImageFile = new ProductImageFile (fileDataModel.ImageFileContent);
+            productImageFile = new ProductImageFile (fileDataModel.FileContent);
             productImageFile.ProductID = fileDataModel.ProductID;
             productImageFile.CreateParameters (fileDataModel.BaseDataModel);
             listProductFileEntity.Add (productImageFile);
@@ -116,7 +116,8 @@ public static class ProductServiceMapping
                     ProductFileDataModel fileDataModel = new()
                     {
                         ProductImageFileID = fileEntity.ProductImageFileID,
-                        ImageFileContent = fileEntity.ImageFileContent,
+                        FileContent = fileEntity.FileContent!,
+                        FilePath = fileEntity.FiePath,
                         ProductID = fileEntity.ProductID
                     };
 
@@ -176,7 +177,7 @@ public static class ProductServiceMapping
 
         productDataModel.ImageFiles.ForEach (fileDataModel =>
         {
-            fileEntity = new ProductImageFile (fileDataModel.ImageFileContent);
+            fileEntity = new ProductImageFile (fileDataModel.FileContent);
 
             fileEntity.CreateParameters (fileDataModel.BaseDataModel);
 

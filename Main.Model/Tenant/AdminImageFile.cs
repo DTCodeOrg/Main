@@ -23,8 +23,14 @@ public class AdminImageFile: BaseEntity
     }
 
 
+
+    public byte[]? ImageFileContent
+    {
+        get; set;
+    }
+
     [Required]
-    public byte[] ImageFileContent
+    public string FilePath
     {
         get; set;
     }

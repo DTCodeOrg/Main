@@ -2,17 +2,17 @@
 
 public class ImageFile
 {
-    public ImageFile ( )
+    public ImageFile ()
     {
     }
 
-    public ImageFile ( byte[] fileContent)
+    public ImageFile (byte[] fileContent)
     {
         FileContent = fileContent;
         IsNew = true;
     }
 
-    public ImageFile ( byte[] fileContent, int? postId, int fileId )
+    public ImageFile (byte[] fileContent,int? postId,int fileId)
     {
         FileContent = fileContent;
         IsNew = false;
@@ -20,16 +20,38 @@ public class ImageFile
         PostID = postId;
     }
 
-    public int FileID { get; set; } 
-   
-    public byte[] FileContent { get; set; }
-   
-    public int? PostID { get; set; }
-
-    public bool IsNew { get; set; }
-
-    public static implicit operator ImageFile (int v)
+    public int FileID
     {
-        throw new NotImplementedException ();
+        get; set;
+    }
+
+    public byte[] FileContent
+    {
+        get; set;
+    }
+
+    public string SessionRelativeFilePath
+    {
+        get; set;
+    }
+
+    public string RelativeFilePath
+    {
+        get; set;
+    }
+
+    public string FileName
+    {
+        get; set;
+    }
+
+    public int? PostID
+    {
+        get; set;
+    }
+
+    public bool IsNew
+    {
+        get; set;
     }
 }

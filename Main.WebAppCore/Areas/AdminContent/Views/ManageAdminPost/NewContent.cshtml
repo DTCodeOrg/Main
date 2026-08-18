@@ -73,46 +73,35 @@
 
         $('#btnUpload').click ( function () {
 
-            var formData = new FormData();
-            formData.append("file", $("#fileInput")[0].files[0]);
+                var fileInput = $('#yourFileInputId')[0].files[0]; // Get the raw file object
+                var formData = new FormData();
 
-            // 2. Execute the AJAX request
-            $.ajax({
-                url: imageUploadURL, // Update with your actual Area/Controller path
-                type: 'POST',
-                data: formData,
-                processData: false, // Prevents jQuery from converting the FormData object into a query string
-                contentType: false, // Prevents jQuery from setting a default Content-Type header (forces multipart/form-data)
-                dataType: 'json',   // Tells jQuery to automatically parse the response text into a JavaScript JSON object
-                success: function (response) {
-                    // Triggers when .NET returns an Ok() (HTTP 200) response
-                    // .NET 8 automatically lowercases the properties to camelCase ("success" and "message")
-                    if (response.success) {
+                // ⚠️ Crucial: The string key 'file' must EXACTLY match your C# parameter name: UploadImage(IFormFile file)
+                formData.append('file', fileInput);
 
-                        LoadImageNewAdminContent();
-
-                        console.log("Success message from server:", response.message);
-
-                        alert("Perfect! " + response.message);
-                        // Your logic here (e.g., refresh a list, clear the input)
-                    } else {
-                        // Backup validation check
-                        alert("Upload failed: " + response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    // Triggers when .NET returns BadRequest() (HTTP 400) or StatusCode(500)
-                    // Access the JSON payload stored inside the xhr (XMLHttpRequest) object
-                    var errorResponse = xhr.responseJSON;
-
-                    if (errorResponse && errorResponse.message) {
-                        //console.error("Server validation error:", errorResponse.message);
-                        alert("Error: " + errorResponse.message);
-                    } else {
-                        //console.error("Critical error:", error);
-                        alert("A critical system error occurred. Please try again.");
-                    }
-            }
+                // 2. Execute the AJAX request
+                $.ajax({
+                    url: imageUploadURL, // Update with your actual Area/Controller path
+                  type: 'POST',
+                  data: formData,
+                  processData: false,  // 🔍 REQUIRED: Prevents jQuery from transforming the FormData object
+                  contentType: false,  // 🔍 REQUIRED: Forces browser to set correct multipart/form-data boundary
+                  success: function (response) {
+                      if (response.success) {
+                          alert("Upload successful!");
+                          LoadImageNewAdminContent();
+                      } else {
+                          alert("Upload failed: " + response.message);
+                      }
+                  },
+                  error: function (xhr, status, error) {
+                      var errorResponse = xhr.responseJSON;
+                      if (errorResponse && errorResponse.message) {
+                          alert("Error: " + errorResponse.message);
+                      } else {
+                          alert("A critical system error occurred. Please try again.");
+                      }
+                  }
         });
         });
 

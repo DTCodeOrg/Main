@@ -50,8 +50,14 @@ public class Post: BaseEntity
         get; set;
     }
 
+
+    public byte[]? FileContent
+    {
+        get; set;
+    }
+
     [Required]
-    public byte[] FileContent
+    public string FilePath
     {
         get; set;
     }

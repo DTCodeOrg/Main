@@ -4,29 +4,44 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Main.Model.Tenant;
 
-public class ProductImageFile : BaseEntity
+public class ProductImageFile: BaseEntity
 {
-    public ProductImageFile()
+    public ProductImageFile ()
     {
     }
 
-    public ProductImageFile(byte[] imageFileContent) 
+    public ProductImageFile (byte[] imageFileContent)
     {
-        ImageFileContent = imageFileContent;
+        FileContent = imageFileContent;
     }
 
     [Key]
-    public int ProductImageFileID { get; set; }
+    public int ProductImageFileID
+    {
+        get; set;
+    }
 
+    public byte[]? FileContent
+    {
+        get; set;
+    }
 
     [Required]
-    public byte[] ImageFileContent { get; set; }
+    public string FiePath
+    {
+        get; set;
+    }
+
+    public int ProductID
+    {
+        get; set;
+    }
 
 
-    public int ProductID { get; set; }
-
-
-    [ForeignKey("ProductID")]
-    public virtual Product Product { get; set; }
+    [ForeignKey ("ProductID")]
+    public virtual Product Product
+    {
+        get; set;
+    }
 
 }

@@ -45,7 +45,8 @@ public static class ProductMapping
 
         productDataModel.ImageFiles.ForEach (file =>
         {
-            imageFile = new ImageFile (file.ImageFileContent,file.ProductID,file.ProductImageFileID);
+            imageFile = new ImageFile (file.FileContent,file.ProductID,file.ProductImageFileID);
+            imageFile.FilePath = file.FilePath;
             imageFiles.Add (imageFile);
         });
 

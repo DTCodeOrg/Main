@@ -28,7 +28,7 @@ public static class PageServiceMapping
             post =
             new Post (postDataModel.EnumPostType,postDataModel.Price,postDataModel.RootID)
             {
-                FileContent = postDataModel.ImageFileContent,
+                FileContent = postDataModel.FileContent,
                 Title = postDataModel.PostTitle,
                 Order = order
             };
@@ -72,8 +72,9 @@ public static class PageServiceMapping
                     EnumPostType = productEntity.PostType,
                     Price = productEntity.Price,
                     PostTitle = productEntity.ProductName,
-                    ImageFileContent = file.ImageFileContent,
-                    ImageFileID = file.ProductImageFileID
+                    FileContent = file.FileContent!,
+                    ImageFileID = file.ProductImageFileID,
+                    FilePath = file.FiePath
                 };
 
                 id += 1;
@@ -118,7 +119,8 @@ public static class PageServiceMapping
                         PanelPostID = panelPost.PostID,
                         PostTitle = panelPost.Title ?? "",
                         Price = panelPost.Price,
-                        ImageFileContent = panelPost.FileContent,
+                        FileContent = panelPost.FileContent!,
+                        FilePath = panelPost.FilePath,
                         PostOrder = panelPost.Order,
                         PageID = panelDataModel.PageID
                     };
@@ -178,8 +180,9 @@ public static class PageServiceMapping
                     RootID = adminPostEntity.AdminPostID,
                     EnumPostType = adminPostEntity.PostType,
                     PostTitle = adminPostEntity.Title,
-                    ImageFileContent = fileEntity.ImageFileContent,
-                    WebsiteUrl = adminPostEntity.WebsiteUrl
+                    FileContent = fileEntity.ImageFileContent!,
+                    WebsiteUrl = adminPostEntity.WebsiteUrl,
+                    FilePath = fileEntity.FilePath
                 };
 
                 listPostDataModels.Add (postDataModel);

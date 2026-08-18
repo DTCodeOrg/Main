@@ -11,7 +11,7 @@ public class AdminImageFileDataModel: DataModel
 
     public AdminImageFileDataModel (byte[] imageFileContent)
     {
-        ImageFileContent = imageFileContent;
+        FileContent = imageFileContent;
         BaseDataModel = new BaseDataModel ();
     }
 
@@ -20,7 +20,17 @@ public class AdminImageFileDataModel: DataModel
         get; set;
     }
 
-    public byte[] ImageFileContent
+    public byte[] FileContent
+    {
+        get; set;
+    }
+
+    public string FilePath
+    {
+        get; set;
+    }
+
+    public string FileName
     {
         get; set;
     }

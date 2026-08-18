@@ -1,5 +1,4 @@
 ﻿using DataTransferModel;
-using Main.Common.Models;
 using Main.Model.Tenant;
 
 namespace Services.Extensions;
@@ -50,8 +49,9 @@ public static class AdminPostServiceMappings
                 AdminImageFileDataModel objFileDM = new()
                 {
                     AdminImageFileID = fileEntity.AdminImageFileID,
-                    ImageFileContent = fileEntity.ImageFileContent,
-                    AdminPostID = fileEntity.AdminPostID
+                    FileContent = fileEntity.ImageFileContent!,
+                    AdminPostID = fileEntity.AdminPostID ,
+                    FilePath = fileEntity.FilePath
                 };
 
                 objDMListFiles.Add (objFileDM);
@@ -145,7 +145,7 @@ public static class AdminPostServiceMappings
 
         adminPostDataModel.ListAdminPostFileImages.ForEach (fileDataModel =>
         {
-            adminFileEntity = new AdminImageFile (fileDataModel.ImageFileContent);
+            adminFileEntity = new AdminImageFile (fileDataModel.FileContent);
 
             adminFileEntity.CreateParameters (fileDataModel.BaseDataModel);
 
@@ -166,7 +166,7 @@ public static class AdminPostServiceMappings
 
         adminPostDataModel.ListAdminPostFileImages.ForEach (fileDataModel =>
         {
-            AdminImageFile adminImageFile = new(fileDataModel.ImageFileContent);
+            AdminImageFile adminImageFile = new(fileDataModel.FileContent);
             adminImageFile.AdminPostID = adminPostDataModel.AdminPostID;
 
             adminImageFile.CreateParameters (fileDataModel.BaseDataModel);

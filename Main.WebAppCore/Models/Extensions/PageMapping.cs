@@ -46,7 +46,7 @@ public static class PageMapping
             postSelectViewModel = new PostSelectViewModel (dataModel.EnumPostType,
                 dataModel.RootID,dataModel.ImageFileID,dataModel.ImageOrderID)
             {
-                ImageFileContent = dataModel.ImageFileContent,
+                ImageFileContent = dataModel.FileContent,
                 CategoryName = DropDownListItems.GetCategoryText (dataModel.CategoryID.ToString ()),
 
                 PostTitle = dataModel.PostTitle,
@@ -87,7 +87,7 @@ public static class PageMapping
                 postViewModel = new PostViewModel
                 {
                     PanelPostID = panelPostDataModel.PanelPostID,
-                    ImageFileContent = panelPostDataModel.ImageFileContent,
+                    ImageFileContent = panelPostDataModel.FileContent,
                     ImageFileID = panelPostDataModel.ImageFileID,
                     Price = panelPostDataModel.Price,
                     PageID = panelViewModel.PageID,

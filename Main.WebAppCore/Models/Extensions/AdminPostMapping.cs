@@ -98,7 +98,7 @@ public static class AdminPostMapping
         {
             imageFileViewModels.Add (new ImageFile
             {
-                FileContent = model.ImageFileContent,
+                FileContent = model.FileContent,
                 FileID = model.AdminImageFileID,
                 PostID = model.AdminPostID
             });

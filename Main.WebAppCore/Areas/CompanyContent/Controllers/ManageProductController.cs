@@ -16,22 +16,26 @@ namespace Main.WebAppCore;
 [Authorize (Policy = "TenantAdmin")]
 public class ManageProductController: BaseController
 {
-
+    private readonly IStorageService _storageService;
+    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IProductService _productService;
     private readonly ILogger<ManageProductController> _logger;
     private readonly ITenantSetter _tenantSetter;
-
     private readonly ITenantCacheService _tenantCacheService;
 
     public ManageProductController (IProductService productService,
         ILogger<ManageProductController> logger,
         ITenantSetter tenantSetter,
-        ITenantCacheService tenantCacheService)
+        ITenantCacheService tenantCacheService,
+        IWebHostEnvironment webHostEnvironment,
+        IStorageService storageService)
     {
         _productService = productService;
         _logger = logger;
         _tenantSetter = tenantSetter;
         _tenantCacheService = tenantCacheService;
+        _webHostEnvironment = webHostEnvironment;
+        _storageService = storageService;
     }
 
 
@@ -55,8 +59,7 @@ public class ManageProductController: BaseController
 
     private void SetImageInDataModel (ProductDataModel productDataModel)
     {
-        List<ProductFileDataModel> listProductImageFileDataModels
-                                      = new();
+        List<ProductFileDataModel> listProductImageFileDataModels = new();
 
         ProductFileDataModel productImageFileDataModel;
 
@@ -66,7 +69,7 @@ public class ManageProductController: BaseController
         {
             productImageFileDataModel = new ProductFileDataModel ()
             {
-                ImageFileContent = imgFile.FileContent,
+                FileContent = imgFile.FileContent,
                 ProductID = imgFile.PostID ?? 0,
                 ProductImageFileID = 0
             };
@@ -217,30 +220,32 @@ public class ManageProductController: BaseController
 
 
     [HttpPost]
-    public IActionResult UploadImage (IFormFile file)
+    [RequestSizeLimit (52428800)]
+    public async Task<IActionResult> UploadImage (IFormFile file)
     {
         if ( file == null )
         {
-            // Log exception here
-            // Return 500 Internal Server Error with a generic message
             return StatusCode (500,new
             {
                 success = false,message = "An error occurred during upload."
             });
         }
-        else
+
+        _ = await _storageService.SaveTenantAssetAsync (_webHostEnvironment,_tenantSetter.ResolvedTenantId,file,"products");
+
+
+
+        ImageFile imageFile = ReadImage ( file );
+
+        SetSessionImageFile (imageFile,_tenantCacheService);
+
+
+        // Return 200 OK with a JSON success payload
+        return Ok (new
         {
-            ImageFile imageFile = ReadImage ( file );
+            success = true,message = "File uploaded successfully!"
+        });
 
-            SetSessionImageFile (imageFile,_tenantCacheService);
-
-
-            // Return 200 OK with a JSON success payload
-            return Ok (new
-            {
-                success = true,message = "File uploaded successfully!"
-            });
-        }
     }
 
 
