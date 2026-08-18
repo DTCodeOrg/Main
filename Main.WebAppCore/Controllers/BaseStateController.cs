@@ -10,7 +10,7 @@ public partial class BaseController
     {
         _ = tenantCacheService.TryGet<List<ImageFile>> ("ImageFileList",out var listImageFile);
 
-        if ( listImageFile == null )
+        if ( listImageFile == null || listImageFile.Count == 0 )
         {
             List<ImageFile> listNewImageFile = new();
             imageFile.FileID = 1;
@@ -18,7 +18,7 @@ public partial class BaseController
             imageFile.PostID = imageFile.PostID;
             listNewImageFile.Add (imageFile);
 
-            tenantCacheService.Set<List<ImageFile>?> ("ImageFileList",listNewImageFile
+            tenantCacheService.Set<List<ImageFile>> ("ImageFileList",listNewImageFile
                 ,new System.TimeSpan (1200));
         }
         else
@@ -33,8 +33,9 @@ public partial class BaseController
 
             listImageFile.Add (imageFile);
 
-            tenantCacheService.Set<List<ImageFile>> ("ImageFileList",listImageFile
-               ,new System.TimeSpan (1200));
+            tenantCacheService.Set<List<ImageFile>>
+            ("ImageFileList",listImageFile,new System.TimeSpan (1200));
+
         }
     }
 
@@ -42,12 +43,22 @@ public partial class BaseController
     {
         _ = tenantCacheService.TryGet<List<ImageFile>> ("ImageFileList",out var listImageFile);
 
-        if ( listImageFile == null )
+        if ( listImageFile == null || listImageFile.Count == 0 )
         {
-            return new List<ImageFile> ();
+            listImageFile = new List<ImageFile> ();
+
+            tenantCacheService.Set<List<ImageFile>>
+           ("ImageFileList",listImageFile,new System.TimeSpan (1200));
+
+            return listImageFile.ToList ();
         }
         else
         {
+            listImageFile = listImageFile.OrderBy (a => a.FileID).ToList ();
+
+            tenantCacheService.Set<List<ImageFile>>
+            ("ImageFileList",listImageFile,new System.TimeSpan (1200));
+
             return listImageFile.ToList ();
         }
     }
@@ -56,8 +67,13 @@ public partial class BaseController
     {
         _ = tenantCacheService.TryGet<List<ImageFile>> ("ImageFileList",out var listImageFile);
 
-        if ( listImageFile == null )
+        if ( listImageFile == null || listImageFile.Count == 0 )
         {
+            listImageFile = new List<ImageFile> ();
+
+            tenantCacheService.Set<List<ImageFile>>
+           ("ImageFileList",listImageFile,new System.TimeSpan (1200));
+
             return false;
         }
 

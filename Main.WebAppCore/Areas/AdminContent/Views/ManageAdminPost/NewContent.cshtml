@@ -18,6 +18,10 @@
 
     var PAGE_NAME = '@Model.PageName';
 
+    var  SUCCESS = "SUCCESS";
+            
+    var IMAGE_LOAD_SUCCESSFUL= "SUCCESSFULL!";
+
     var imageLoadURL = '@Url.Action( "LoadImage","ManageAdminPost" )';
 
     var imageUploadURL = '@Url.Action( "UploadImage","ManageAdminPost" )';
@@ -27,16 +31,17 @@
     var notify = $.notify;
 
     function LoadImageNewAdminContent() {
-        var  SUCCESS = "SUCCESS";
-        var IMAGE_LOAD_SUCCESSFUL= "SUCCESSFULL!"; 
+        
         $.ajax({
-            type: "GET",
-            url: imageLoadURL,
-            cache: false,
-            async: true,
-            success: function (result) {
-
-                $("#imagePanelContainer").append(result);
+                type: 'GET',
+                url: imageLoadURL,
+                dataType: 'html', // Tells jQuery to expect raw HTML string output from the partial view
+                success: function (htmlResult) {
+                    console.log(htmlResult);
+                    // htmlResult contains the compiled HTML markup of your "_Image" partial view
+        
+                    // Option A: Append the image markup to the bottom of the container
+                    $('#imageContainerDiv').append(htmlResult);
 
                 notify({
                     type: 'success',
@@ -66,32 +71,58 @@
 
         $("#myMainForm").valid();
 
-        $('#btnUpload').click(function () {
+        $('#btnUpload').click ( function () {
 
             var formData = new FormData();
             formData.append("file", $("#fileInput")[0].files[0]);
 
-            // 1. First AJAX Request: Upload the image
+            // 2. Execute the AJAX request
             $.ajax({
-                url:  imageUploadURL,
+                url: imageUploadURL, // Update with your actual Area/Controller path
                 type: 'POST',
                 data: formData,
-                contentType: false,
-                processData: false,
+                processData: false, // Prevents jQuery from converting the FormData object into a query string
+                contentType: false, // Prevents jQuery from setting a default Content-Type header (forces multipart/form-data)
+                dataType: 'json',   // Tells jQuery to automatically parse the response text into a JavaScript JSON object
                 success: function (response) {
-                       LoadImageNewAdminContent();
+                    // Triggers when .NET returns an Ok() (HTTP 200) response
+                    // .NET 8 automatically lowercases the properties to camelCase ("success" and "message")
+                    if (response.success) {
+
+                        LoadImageNewAdminContent();
+
+                        console.log("Success message from server:", response.message);
+
+                        alert("Perfect! " + response.message);
+                        // Your logic here (e.g., refresh a list, clear the input)
+                    } else {
+                        // Backup validation check
+                        alert("Upload failed: " + response.message);
+                    }
                 },
-                error: function (xhr) {
-                    console.error("UploadImage Failed with status: " + xhr.status);
-                }
-            });
+                error: function (xhr, status, error) {
+                    // Triggers when .NET returns BadRequest() (HTTP 400) or StatusCode(500)
+                    // Access the JSON payload stored inside the xhr (XMLHttpRequest) object
+                    var errorResponse = xhr.responseJSON;
+
+                    if (errorResponse && errorResponse.message) {
+                        //console.error("Server validation error:", errorResponse.message);
+                        alert("Error: " + errorResponse.message);
+                    } else {
+                        //console.error("Critical error:", error);
+                        alert("A critical system error occurred. Please try again.");
+                    }
+            }
+        });
         });
 
+           
         document.getElementById("myMainForm").addEventListener("submit", function (e) 
         {
             e.preventDefault(); 
 
             const form = e.target;
+
             const formData = new FormData(form);
              
             fetch(form.action, 
@@ -122,8 +153,7 @@
             .catch(error => {
                 console.error("Network or parsing error:", error);
                 return;
-            }
-            );
+            } );
         });
 
 

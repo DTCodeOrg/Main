@@ -40,6 +40,8 @@ public class TenantCacheService: ITenantCacheService
     {
         string fullKey = BuildTenantKey(baseKey);
 
+        _memoryCache.Remove (fullKey);
+
         var cacheOptions = new MemoryCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = expiration

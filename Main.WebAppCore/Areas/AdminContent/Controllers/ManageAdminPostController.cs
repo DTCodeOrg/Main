@@ -215,50 +215,46 @@ public class ManageAdminPostController: BaseController
 
     [HttpPost]
     [IgnoreAntiforgeryToken]
-    public JsonResult UploadImage (IFormFile file)
+    public IActionResult UploadImage (IFormFile file)
     {
-        if ( file != null && file.Length > 0 )
+        if ( file == null && file.Length == 0 )
         {
-            if ( file == null || file.Length > AppSettings.Current.PostImageSize )
+            // Log exception here
+            // Return 500 Internal Server Error with a generic message
+            return StatusCode (500,new
             {
-                return Json (new
-                {
-                    success = false
-                });
-            }
-            else
-            {
-                ImageFile imageFile = ReadImage ( file );
-
-                if ( imageFile.FileContent.Length > 0 )
-                {
-                    SetSessionImageFile (imageFile,_tenantCacheService);
-                }
-
-                return Json (new
-                {
-                    success = true
-                });
-            }
+                success = false,message = "An error occurred during upload."
+            });
         }
-
-        return Json (new
+        else
         {
-            success = false
-        });
+            ImageFile imageFile = ReadImage ( file );
+
+            SetSessionImageFile (imageFile,_tenantCacheService);
+
+
+            // Return 200 OK with a JSON success payload
+            return Ok (new
+            {
+                success = true,message = "File uploaded successfully!"
+            });
+        }
     }
 
     private ImageFile ReadImage (IFormFile file)
     {
-        if ( file != null && !string.IsNullOrEmpty (file.ContentType) && file.FileName != null )
+        if ( file != null && file.FileName != null )
         {
-            string extension = Path.GetExtension(file.FileName).ToLower();
+            string extension = Path.GetExtension(file.FileName).ToLowerInvariant ();
 
-            if ( extension.Equals (".jpg") || extension.Equals (".jpeg")
-                || extension.Equals (".png") || extension.Equals (".gif") )
+            if ( extension.Equals (".jpg",StringComparison.Ordinal)
+                || extension.Equals (".jpeg",StringComparison.Ordinal)
+                || extension.Equals (".png",StringComparison.Ordinal)
+                || extension.Equals (".gif",StringComparison.Ordinal) )
             {
 
                 using var memoryStream = new MemoryStream();
+
                 file.CopyTo (memoryStream);
                 byte[] imgByte = memoryStream.ToArray();
 
@@ -277,28 +273,15 @@ public class ManageAdminPostController: BaseController
     }
 
     [HttpGet]
-    [IgnoreAntiforgeryToken]
-    public PartialViewResult LoadImage ()
+    public IActionResult LoadImage ()
     {
-        try
-        {
-            List<ImageFile> imageFileList = GetAllSessionImages(_tenantCacheService);
 
-            if ( imageFileList == null || imageFileList.Count == 0 )
-            {
-                return PartialView ("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml",new ImageFile ());
-            }
-            else
-            {
-                ImageFile imageFile = imageFileList.Last<ImageFile >();
+        List<ImageFile> imageFileList = GetAllSessionImages(_tenantCacheService);
 
-                return PartialView ("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml",imageFile);
-            }
-        }
-        catch
-        {
-            return PartialView ("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml",new ImageFile ());
-        }
+        ImageFile imageFile = imageFileList.LastOrDefault<ImageFile >();
+
+        return PartialView ("_Image",imageFile);
+
     }
 
     [HttpDelete]
