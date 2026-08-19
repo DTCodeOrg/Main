@@ -11,7 +11,7 @@ public class AdminImageFileViewModel
         get; set;
     }
 
-    public byte[] ImageFileContent
+    public byte[]? ImageFileContent
     {
         get; set;
     }

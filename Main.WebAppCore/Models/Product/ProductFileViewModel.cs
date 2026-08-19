@@ -1,5 +1,4 @@
-﻿
-namespace Main.WebAppCore.Models;
+﻿namespace Main.WebAppCore.Models.Product;
 
 public class ProductFileViewModel
 {

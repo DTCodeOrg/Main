@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Main.WebAppCore.Controllers;
 
-[Authorize (Roles = "Admin")]
+[Authorize (Policy = "TenantAdmin")]
 public class AdminController: Controller
 {
     private readonly IAccountService _accountService;

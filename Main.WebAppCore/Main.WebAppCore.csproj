@@ -13,8 +13,7 @@
 		<EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
 		<ContainerBaseImage>://microsoft.com</ContainerBaseImage>
 
-		<!-- Keeps your project explorer fast by ignoring unused folders at the MSBuild level -->
-		<DefaultItemExcludes>$(DefaultItemExcludes);Area.Data\**;Areas\Identity\**;Service\**;Temporary\**</DefaultItemExcludes>
+		
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<StartupObject></StartupObject>
 	</PropertyGroup>
@@ -53,7 +52,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentEmail.Core" Version="3.0.2" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.3" />
+		<PackageReference Include="MailKit" Version="4.17.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -62,9 +62,10 @@
 
 		<PackageReference Include="NETCore.MailKit" Version="2.1.0" />
 
-		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
 		<PackageReference Include="snipervld.WebOptimizer.Dotless" Version="3.3.0" />
 		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>

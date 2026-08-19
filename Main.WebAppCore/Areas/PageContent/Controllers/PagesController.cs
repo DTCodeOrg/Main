@@ -5,14 +5,14 @@ using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
 using Main.WebAppCore.Models;
+using Main.WebAppCore.Models.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebAppCore.ViewModel.Extensions;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers;
 
 [Area ("PageContent")]
-[Authorize (Roles = "Admin")]
+[Authorize (Policy = "TenantAdmin")]
 public class PagesController: BaseController
 {
     private readonly IPageService _pageService;

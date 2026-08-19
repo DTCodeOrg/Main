@@ -4,13 +4,13 @@ using Main.Infrastructure;
 using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.Services;
-using Main.WebAppCore.Controllers.Extensions;
+using Main.WebAppCore.Controllers.ControllerExtensions;
 using Main.WebAppCore.Filters;
 using Main.WebAppCore.Models;
+using Main.WebAppCore.Models.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using WebAppCore.ViewModel.Extensions;
 
 namespace Main.WebAppCore.Controllers;
 

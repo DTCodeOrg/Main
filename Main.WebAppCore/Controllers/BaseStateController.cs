@@ -2,7 +2,7 @@
 using Main.WebAppCore.DependentServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers;
 
 public partial class BaseController
 {

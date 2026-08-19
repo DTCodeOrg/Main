@@ -1,10 +1,10 @@
 ﻿using DataTransferModel;
 using Main.Common;
 using Main.Common.Models;
-using Main.WebAppCore.Models;
-using WebAppCore.Helper;
+using Main.WebAppCore.Helpers;
+using Main.WebAppCore.Models.Product;
 
-namespace WebAppCore.ViewModel.Extensions;
+namespace Main.WebAppCore.Models.Extensions;
 
 public static class ProductMapping
 {

@@ -1,8 +1,8 @@
 ﻿using DataTransferModel;
 using Main.Common;
-using Main.WebAppCore.Models;
-using WebAppCore.Helper;
-namespace WebAppCore.ViewModel.Extensions;
+using Main.WebAppCore.Helpers;
+
+namespace Main.WebAppCore.Models.Extensions;
 
 public static class PageMapping
 {

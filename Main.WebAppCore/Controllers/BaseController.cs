@@ -1,24 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers;
 
-public partial class BaseController : Controller
+public partial class BaseController: Controller
 {
-    public BaseController()
-    { 
-    }
-
-    public ActionResult UnwantedAccessError()
+    public BaseController ()
     {
-        return View("UnwantedAccessError");
     }
 
-    public ActionResult CheckLogoutRequirements()
+    public ActionResult UnwantedAccessError ()
     {
-        return RedirectToAction("Index", "Home");
+        return View ("UnwantedAccessError");
     }
 
-    public HttpContext GetHttpContext ( )
+    public ActionResult CheckLogoutRequirements ()
+    {
+        return RedirectToAction ("Index","Home");
+    }
+
+    public HttpContext GetHttpContext ()
     {
         return HttpContext;
     }

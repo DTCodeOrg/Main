@@ -1,10 +1,8 @@
 ﻿using Main.Common;
-
+using Main.WebAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using System.ComponentModel.DataAnnotations;
-
-using WebAppCore.Helper;
 
 namespace Main.WebAppCore.Models;
 
@@ -14,13 +12,13 @@ public class PanelViewModel: BaseViewModel
     {
         ListSelectPosts = new List<PostSelectViewModel> ();
         ListPosts = new List<PostViewModel> ();
-        AV_PanelTemplate = DropDownListItems.GetPanelTempletList ();
+        AVPanelTemplate = DropDownListItems.GetPanelTempletList ();
     }
 
     public PanelViewModel (EnumPanelTemplate enumPanelTemplate)
     {
         ListPosts = new List<PostViewModel> ();
-        AV_PanelTemplate = DropDownListItems.GetPanelTempletList ();
+        AVPanelTemplate = DropDownListItems.GetPanelTempletList ();
         PanelTemplate = enumPanelTemplate;
     }
 
@@ -55,7 +53,7 @@ public class PanelViewModel: BaseViewModel
         get; set;
     }
 
-    public IEnumerable<SelectListItem> AV_PanelTemplate
+    public IEnumerable<SelectListItem> AVPanelTemplate
     {
         get; set;
     }

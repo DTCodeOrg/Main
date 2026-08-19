@@ -1,7 +1,7 @@
 ﻿using Main.Common.Models;
 using Main.Infrastructure.ICrosscuttingServices;
 
-namespace Main.WebAppCore.Controllers.Extensions;
+namespace Main.WebAppCore.Controllers.ControllerExtensions;
 
 public static class AuthorizationExtensions
 {

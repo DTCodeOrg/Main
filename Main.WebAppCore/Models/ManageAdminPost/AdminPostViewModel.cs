@@ -1,8 +1,8 @@
 ﻿using Main.Common;
 using Main.Common.Models;
+using Main.WebAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
-using WebAppCore.Helper;
 
 namespace Main.WebAppCore.Models;
 
@@ -10,7 +10,7 @@ public class AdminPostViewModel: BaseViewModel
 {
     public AdminPostViewModel ()
     {
-        AV_PostType = DropDownListItems.GetAdminPostTypeList ();
+        AVPostType = DropDownListItems.GetAdminPostTypeList ();
 
         ListAdminPostFileImages = new List<ImageFile> ();
     }
@@ -67,7 +67,7 @@ public class AdminPostViewModel: BaseViewModel
         get; set;
     }
 
-    public List<ImageFile> ListAdminPostFileImages { get; set; } = new List<ImageFile> ();
+    public List<ImageFile> ListAdminPostFileImages { get; set; } = [];
 
 
     [Display (Name = "Post Type")]
@@ -77,7 +77,7 @@ public class AdminPostViewModel: BaseViewModel
         get; set;
     }
 
-    public IEnumerable<SelectListItem> AV_PostType
+    public IEnumerable<SelectListItem> AVPostType
     {
         get; set;
     }

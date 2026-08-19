@@ -1,9 +1,11 @@
-﻿@model AdminPostViewModel
+﻿@using Main.WebAppCore.Models
+@model AdminPostViewModel
 
 @{
     ViewBag.Title = SharedLocalizer["ViewBagTitleNewPost"];
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
+    var PAGE_NAME = @Model.PageName;
 }
 
 <div id="newAdminPostMainView" class="container">
@@ -16,7 +18,7 @@
 
 <script>
 
-    var PAGE_NAME = '@Model.PageName';
+    
 
     var  SUCCESS = "SUCCESS";
             

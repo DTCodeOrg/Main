@@ -4,7 +4,7 @@ using Main.Infrastructure.ICrosscuttingServices;
 using Main.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Main.WebAppCore.Controllers.Extensions;
+namespace Main.WebAppCore.Controllers.ControllerExtensions;
 
 public static class EmailExtensions
 {

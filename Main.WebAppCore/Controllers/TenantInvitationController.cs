@@ -4,7 +4,7 @@ using Main.WebAppCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers;
 
 [Authorize]
 public class TenantInvitationController: BaseController

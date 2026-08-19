@@ -1,5 +1,4 @@
 ﻿using Main.Common;
-
 using System.ComponentModel.DataAnnotations;
 
 namespace Main.WebAppCore.Models;

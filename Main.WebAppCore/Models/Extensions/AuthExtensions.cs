@@ -1,8 +1,7 @@
 ﻿using Main.Common;
 using Main.Services;
-using Main.WebAppCore.Models;
 
-namespace WebAppCore.ViewModel.Extensions;
+namespace Main.WebAppCore.Models.Extensions;
 
 
 public static class AuthExtensions

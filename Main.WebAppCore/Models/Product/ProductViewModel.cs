@@ -1,9 +1,8 @@
 ﻿using Main.Common.Models;
+using Main.WebAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using System.ComponentModel.DataAnnotations;
-
-using WebAppCore.Helper;
 
 namespace Main.WebAppCore.Models;
 
@@ -11,8 +10,8 @@ public class ProductViewModel: BaseViewModel
 {
     public ProductViewModel ()
     {
-        AV_Category = new List<SelectListItem> ();
-        AV_SubCategory = new List<SelectListItem> ();
+        AVCategory = new List<SelectListItem> ();
+        AVSubCategory = new List<SelectListItem> ();
     }
 
     public int ProductID
@@ -117,12 +116,12 @@ public class ProductViewModel: BaseViewModel
         SubCategoryText = DropDownListItems.GetCategoryText (SubCategoryID);
     }
 
-    public IEnumerable<SelectListItem> AV_Category
+    public IEnumerable<SelectListItem> AVCategory
     {
         get; set;
     }
 
-    public IEnumerable<SelectListItem> AV_SubCategory
+    public IEnumerable<SelectListItem> AVSubCategory
     {
         get; set;
     }

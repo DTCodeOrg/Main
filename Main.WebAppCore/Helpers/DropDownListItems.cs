@@ -2,7 +2,7 @@
 using Main.Common.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace WebAppCore.Helper;
+namespace Main.WebAppCore.Helpers;
 
 public class DropDownListItems
 {
@@ -10,13 +10,13 @@ public class DropDownListItems
     {
     }
 
-
-
     public static IEnumerable<SelectListItem> GetPostTypeList ()
     {
         var listCountries = ListEnum.GetPostTypeList().OrderBy(a => a.Text).ToList();
+
         List<SelectListItem> objOfferTypeListItems = new();
-        foreach ( var item in listCountries )
+
+        foreach ( var item in listCountries.ToList () )
         {
             SelectListItem objItem = new ()
             {
@@ -25,10 +25,9 @@ public class DropDownListItems
             };
             objOfferTypeListItems.Add (objItem);
         }
+
         return objOfferTypeListItems.AsEnumerable ();
     }
-
-
 
     public static IEnumerable<SelectListItem> GetAdminPostTypeList ()
     {
@@ -37,7 +36,7 @@ public class DropDownListItems
         List<SelectListItem> objOfferTypeListItems = new();
         SelectListItem objItem;
 
-        foreach ( var item in listCountries )
+        foreach ( var item in listCountries.ToList () )
         {
             objItem = new SelectListItem
             {
@@ -106,11 +105,12 @@ public class DropDownListItems
 
         foreach ( TenantVariableModel? item in listCurrency )
         {
-            SelectListItem objItem = new ()
+            SelectListItem objItem = new()
             {
                 Text = item.Text,
                 Value = item.ValueID.ToString ( )
             };
+
             objCurrencyListItems.Add (objItem);
         }
 
@@ -124,9 +124,9 @@ public class DropDownListItems
 
         List<SelectListItem> objCountryListItems = new();
 
-        foreach ( TenantVariableModel? item in listCountries )
+        foreach ( TenantVariableModel? item in listCountries.ToList () )
         {
-            SelectListItem objItem = new ()
+            SelectListItem objItem = new()
             {
                 Text = item.Text,
                 Value = item.ValueID.ToString ( )

@@ -1,9 +1,8 @@
 ﻿using DataTransferModel;
 using Main.Common;
 using Main.Common.Models;
-using Main.WebAppCore.Models;
 
-namespace WebAppCore.ViewModel.Extensions;
+namespace Main.WebAppCore.Models.Extensions;
 
 public static class AdminPostMapping
 {

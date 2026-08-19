@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers.Admin;
 
 [ApiController]
 [Route ("api/[controller]")]

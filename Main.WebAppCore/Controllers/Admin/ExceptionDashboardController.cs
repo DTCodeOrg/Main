@@ -3,7 +3,7 @@ using Main.Infrastructure.ICrosscuttingServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers.Admin;
 
 /// <summary>
 /// Admin dashboard controller for viewing exception logs UI

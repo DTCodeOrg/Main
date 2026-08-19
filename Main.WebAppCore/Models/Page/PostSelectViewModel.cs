@@ -1,5 +1,4 @@
 ﻿using Main.Common;
-
 using System.ComponentModel.DataAnnotations;
 namespace Main.WebAppCore.Models;
 
@@ -53,7 +52,10 @@ public class PostSelectViewModel
     }
 
 
-    public byte[]? ImageFileContent { get; set; } = null;
+    public byte[]? ImageFileContent
+    {
+        get; set;
+    }
 
 
     public string PostTitle

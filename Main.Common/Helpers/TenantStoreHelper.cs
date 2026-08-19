@@ -2,8 +2,12 @@
 
 namespace Main.Common;
 
-public static class TenantStoreHelper
+public class TenantStoreHelper
 {
+    public TenantStoreHelper ()
+    {
+    }
+
     public static List<TenantVariableModel> GetCategoryList ()
     {
         List<TenantVariableModel> listCategory  = new List<TenantVariableModel> ();
@@ -25,8 +29,7 @@ public static class TenantStoreHelper
     }
 
 
-    public static List<TenantVariableModel>
-    GetSubCategoryListByID (int categoryId)
+    public static List<TenantVariableModel> GetSubCategoryListByID (int categoryId)
     {
         List<TenantVariableModel>  listSubCategory = new  List<TenantVariableModel> ();
         listSubCategory =
@@ -38,8 +41,7 @@ public static class TenantStoreHelper
         return listSubCategory.ToList ();
     }
 
-    public static string GetTextForCategoryId
-    (string categoryId)
+    public static string GetTextForCategoryId (string categoryId)
     {
         List<TenantVariableModel> listCategory = GetCategoryList (  );
 

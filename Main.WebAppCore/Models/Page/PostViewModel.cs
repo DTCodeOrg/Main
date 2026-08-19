@@ -1,8 +1,6 @@
 ﻿using Main.Common;
-
+using Main.WebAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
-using WebAppCore.Helper;
 
 namespace Main.WebAppCore.Models;
 
@@ -14,13 +12,13 @@ public class PostViewModel: BaseViewModel
 
     public PostViewModel (StoreType shopType)
     {
-        AV_Category = DropDownListItems.GetCategoryList ();
+        AVCategory = DropDownListItems.GetCategoryList ();
     }
 
 
     public PostViewModel (StoreType shopType,EnumPostType enumPostType,int rootId,int imageId,int order)
     {
-        AV_Category = DropDownListItems.GetCategoryList ();
+        AVCategory = DropDownListItems.GetCategoryList ();
 
         EnumPostType = enumPostType;
         RootID = rootId;
@@ -68,7 +66,7 @@ public class PostViewModel: BaseViewModel
     {
         var CategoryText = string.Empty;
 
-        AV_Category.ToList ().ForEach (x =>
+        AVCategory.ToList ().ForEach (x =>
         {
             if ( x.Value == CategoryID.ToString () )
             {
@@ -80,7 +78,7 @@ public class PostViewModel: BaseViewModel
     }
 
 
-    public IEnumerable<SelectListItem> AV_Category
+    public IEnumerable<SelectListItem> AVCategory
     {
         get; set;
     }
@@ -95,7 +93,10 @@ public class PostViewModel: BaseViewModel
     }
 
 
-    public byte[]? ImageFileContent { get; set; } = null;
+    public byte[]? ImageFileContent
+    {
+        get; set;
+    }
 
 
     public string PostTitle

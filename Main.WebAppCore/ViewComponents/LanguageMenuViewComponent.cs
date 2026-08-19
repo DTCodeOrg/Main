@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.ViewComponents;
 
 public class LanguageMenuViewComponent: ViewComponent
 {

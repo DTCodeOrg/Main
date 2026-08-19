@@ -25,12 +25,14 @@
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
     <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Main.Common\Main.Common.csproj" />
     <ProjectReference Include="..\Main.Infrastructure\Main.Infrastructure.csproj" />
     <ProjectReference Include="..\Main.Model\Main.Model.csproj" />
+    <ProjectReference Include="..\ResourceLibrary\ResourceLibrary.csproj" />
   </ItemGroup>
 
 </Project>

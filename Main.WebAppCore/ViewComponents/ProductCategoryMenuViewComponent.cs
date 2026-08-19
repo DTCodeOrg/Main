@@ -1,7 +1,6 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.ViewComponents;
 
 public class ProductCategoryMenuViewComponent: ViewComponent
 {

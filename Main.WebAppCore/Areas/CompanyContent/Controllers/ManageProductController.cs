@@ -3,14 +3,14 @@ using Main.Common.Models;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.DependentServices;
+using Main.WebAppCore.Helpers;
 using Main.WebAppCore.Models;
+using Main.WebAppCore.Models.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using WebAppCore.Helper;
-using WebAppCore.ViewModel.Extensions;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers;
 
 [Area ("CompanyContent")]
 [Authorize (Policy = "TenantAdmin")]
@@ -99,8 +99,8 @@ public class ManageProductController: BaseController
                 PageName = "New Product"
             };
 
-            objProductViewModel.AV_Category = DropDownListItems.GetCategoryList ();
-            objProductViewModel.AV_SubCategory = DropDownListItems.GetSubCategoryList ();
+            objProductViewModel.AVCategory = DropDownListItems.GetCategoryList ();
+            objProductViewModel.AVSubCategory = DropDownListItems.GetSubCategoryList ();
 
             return View (objProductViewModel);
         }

@@ -1,4 +1,6 @@
-﻿
+﻿@using Main.Common.Models;
+@using Main.WebAppCore.Models;
+
 @model AdminPostViewModel
 
 @{
@@ -28,17 +30,30 @@
                 <div data-label="Action" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12">
 
                     <a title="List Admin Content"
-                            class="icon-button btn-lg flex link-dark"
-                            href="@Url.Action("Index", "ManageAdminPost", new { Area = "AdminContent" })">
-                        <i class="fa fa-list"></i>
-                        <span class="action-text">List</span>
+                       class="dropdown-item dropdown-item-text icon-button"
+
+                       @* class="icon-button btn-lg flex link-dark" *@
+
+                       asp-area="AdminContent"
+                       asp-controller="ManageAdminPost"
+                       asp-action="Index">
+
+                            <i class="fa fa-list"></i>
+                            <span class="action-text">List</span>
+
                     </a>
 
-                    <a title="Remove Admin Content"
-                        class="icon-button btn-lg flex link-dark"
-                            href="@Url.Action("DeleteContent", "ManageAdminPost", new { Area = "AdminContent", id = Model.AdminPostID, fakeId = 1  })">
-                        <i class="fa fa-trash"></i>
-                        <span class="action-text">Delete</span>
+                   <a title="Remove Admin Content"
+                       class="icon-button btn-lg flex link-dark"
+                       asp-area="AdminContent"
+                       asp-controller="ManageAdminPost"
+                       asp-action="DeleteContent"
+                       asp-route-id="@Model.AdminPostID"
+                       asp-route-fakeId="1">
+                            
+                            <i class="fa fa-trash"></i>
+                            <span class="action-text">Delete</span>
+
                     </a>
 
                 </div>
@@ -50,4 +65,3 @@
     </div>
 
 </div>
-

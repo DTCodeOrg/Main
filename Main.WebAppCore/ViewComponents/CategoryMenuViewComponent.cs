@@ -1,8 +1,7 @@
-﻿
-using Main.WebAppCore.Models;
+﻿using Main.WebAppCore.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.ViewComponents;
 
 public class CategoryMenuViewComponent: ViewComponent
 {
