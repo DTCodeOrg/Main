@@ -357,7 +357,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
             MenuItemHoverBGColor ="",
             MenuItemHoverColor ="",
             FontStack = "Garamond, Baskerville, 'Baskerville Old Face', 'Hoefler Text', Georgia, 'Times New Roman', serif",
-            LogoFilePath = "~/favicon.ico" ,
+            LogoRelativeFilePath = "~/favicon.ico" ,
             TenantId = tenantId
         };
 
@@ -378,7 +378,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
             MenuItemHoverBGColor ="",
             MenuItemHoverColor ="",
             FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-            LogoFilePath = "~/favicon.ico" ,
+            LogoRelativeFilePath = "~/favicon.ico" ,
             TenantId = tenantId
         };
 

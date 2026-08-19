@@ -27,17 +27,18 @@ public static class ProductMapping
 
     public static ProductViewModel MapProductViewModel (ProductDataModel productDataModel)
     {
-        ProductViewModel productViewModel = new();
-
-        productViewModel.ProductID = productDataModel.ProductID;
-        productViewModel.CategoryID = productDataModel.CategoryID.ToString ();
-        productViewModel.SubCategoryID = productDataModel.SubCategoryID.ToString ();
-        productViewModel.ProductName = productDataModel.ProductName;
-        productViewModel.UnitPrice = productDataModel.UnitPrice;
-        productViewModel.Discount = productDataModel.Discount;
-        productViewModel.SaleCommission = productDataModel.SaleCommission;
-        productViewModel.Description = productDataModel.Description;
-        productViewModel.SearchTag = productDataModel.SearchTag;
+        ProductViewModel productViewModel = new ()
+        {
+            ProductID = productDataModel.ProductID,
+            CategoryID = productDataModel.CategoryID.ToString (),
+            SubCategoryID = productDataModel.SubCategoryID.ToString (),
+            ProductName = productDataModel.ProductName,
+            UnitPrice = productDataModel.UnitPrice,
+            Discount = productDataModel.Discount,
+            SaleCommission = productDataModel.SaleCommission,
+            Description = productDataModel.Description,
+            SearchTag = productDataModel.SearchTag
+        };
 
 
         List <ImageFile> imageFiles = new();
@@ -45,8 +46,10 @@ public static class ProductMapping
 
         productDataModel.ImageFiles.ForEach (file =>
         {
-            imageFile = new ImageFile (file.FileContent,file.ProductID,file.ProductImageFileID);
-            imageFile.FilePath = file.FilePath;
+            imageFile = new ImageFile (file.FileContent!,file.ProductID,file.ProductImageFileID)
+            {
+                RelativeFilePath = file.FilePath
+            };
             imageFiles.Add (imageFile);
         });
 
@@ -63,17 +66,18 @@ public static class ProductMapping
             return new ProductDataModel ();
         }
 
-        ProductDataModel productDataModel = new();
-
-        productDataModel.ProductID = productViewModel.ProductID;
-        productDataModel.CategoryID = int.Parse (productViewModel.CategoryID);
-        productDataModel.SubCategoryID = int.Parse (productViewModel.SubCategoryID);
-        productDataModel.ProductName = productViewModel.ProductName;
-        productDataModel.UnitPrice = productViewModel.UnitPrice;
-        productDataModel.Discount = productViewModel.Discount;
-        productDataModel.SaleCommission = productViewModel.SaleCommission;
-        productDataModel.Description = productViewModel.Description;
-        productDataModel.PostType = EnumPostType.Product;
+        ProductDataModel productDataModel = new ()
+        {
+            ProductID = productViewModel.ProductID,
+            CategoryID = int.Parse (productViewModel.CategoryID),
+            SubCategoryID = int.Parse (productViewModel.SubCategoryID),
+            ProductName = productViewModel.ProductName,
+            UnitPrice = productViewModel.UnitPrice,
+            Discount = productViewModel.Discount,
+            SaleCommission = productViewModel.SaleCommission,
+            Description = productViewModel.Description,
+            PostType = EnumPostType.Product
+        };
 
         return productDataModel;
     }

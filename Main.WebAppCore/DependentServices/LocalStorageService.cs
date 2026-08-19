@@ -1,239 +1,187 @@
 ﻿namespace Main.WebAppCore.DependentServices;
 
-
 public interface IStorageService
 {
-    Task<string?> SaveTenantAssetAsync
-   (IWebHostEnvironment webHostEnvironment,Guid tenantId,IFormFile file,string folderName);
+    Task<string?> SaveTenantLogoAsync (Guid tenantId,IFormFile file);
 
-    Task<string?> SaveSessionTenantProductFileAsync
-    (IWebHostEnvironment webHostEnvironment,
-        Guid tenantId,
-        string userId,
-        bool active,
-        IFormFile file,
-        string folderName);
+    Task<string?> SaveSessionFileAsync
+    (Guid tenantId,string userId,IFormFile file,bool isProduct);
 
-    Task<string?> SaveTenantProductFileAsync
-   (IWebHostEnvironment webHostEnvironment,
+    string CopyFileToDestinationFolder (
        Guid tenantId,
        string userId,
-       bool active,
-       IFormFile file);
-
-    Task<string?> SaveTenantSessionAdsFileAsync
-    (IWebHostEnvironment webHostEnvironment,
-        Guid tenantId,
-        string userId,
-        bool active,
-        IFormFile file);
-
-    Task<string?> SaveTenantAdsFileAsync
-   (IWebHostEnvironment webHostEnvironment,
-       Guid tenantId,
-       string userId,
-       bool active,
-       IFormFile file);
-
-    string ProductCopyFileToSiblingFolder (
-         IWebHostEnvironment webHostEnvironment,
-         Guid tenantId,
-         string userId,
-         bool active,
-         string sessionFileName);
-
-    string AdsCopyFileToSiblingFolder (
-       IWebHostEnvironment webHostEnvironment,
-       Guid tenantId,
-       string userId,
-       bool active,
-       string sessionFileName);
+       string fullPathFile,
+       bool product);
 }
 
 public class LocalStorageService: IStorageService
 {
+    private const string ChildFolderProducts = "\\Products";
+    private const string ChildFolderAdminAds = "\\AdminAds";
     private readonly IWebHostEnvironment _env;
+
+    private string SessionRootFolder
+    {
+        get; set;
+    }
+    private string SessionChildFolderProduct
+    {
+        get; set;
+    }
+    private string SessionChildFolderAdminAds
+    {
+        get; set;
+    }
+    private string TenantLogos
+    {
+        get; set;
+    }
+    private string TenantProducts
+    {
+        get; set;
+    }
+    private string TenantAdminAds
+    {
+        get; set;
+    }
 
     public LocalStorageService (IWebHostEnvironment env)
     {
         _env = env;
+
+        SessionRootFolder = Path.Combine (env.WebRootPath,"TenantFileSessionRoot");
+        TenantProducts = Path.Combine (env.WebRootPath,"TenantProducts");
+        TenantAdminAds = Path.Combine (env.WebRootPath,"TenantAdminAds");
+        TenantLogos = Path.Combine (env.WebRootPath,"TenantLogoUploads");
+        SessionChildFolderProduct = SessionRootFolder + ChildFolderProducts;
+        SessionChildFolderAdminAds = SessionRootFolder + ChildFolderAdminAds;
     }
 
-    public async Task<string?> SaveTenantAssetAsync
-    (IWebHostEnvironment webHostEnvironment,Guid tenantId,IFormFile file,string folderName)
+    public async Task<string?> SaveTenantLogoAsync (Guid tenantId,IFormFile file)
     {
         if ( file == null || file.Length == 0 )
         {
             return string.Empty;
         }
 
-        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, folderName);
-
-        if ( !Directory.Exists (uploadsFolder) )
+        if ( !Directory.Exists (TenantLogos) )
         {
-            _ = Directory.CreateDirectory (uploadsFolder);
+            _ = Directory.CreateDirectory (TenantLogos);
         }
 
-        string uniqueFileName =
-        Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
+        string uniqueLogoFileName =
+        $"{Guid.NewGuid().ToString()}:{tenantId.ToString()}:{Path.GetFileName(file.FileName)}";
 
-        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+        string logoFilePath = Path.Combine(TenantLogos, uniqueLogoFileName);
 
 
-        using ( var fileStream = new FileStream (filePath,FileMode.Create) )
+        using ( var fileStream = new FileStream (logoFilePath,FileMode.Create) )
         {
             await file.CopyToAsync (fileStream);
         }
 
-        string databaseRelativePath = $"/uploads/{uniqueFileName}";
+        string logoFileRelativePath = $"/{TenantLogos}/{uniqueLogoFileName}";
 
-        return databaseRelativePath;
+        return logoFileRelativePath;
     }
 
-    public async Task<string?> SaveSessionTenantProductFileAsync
-    (IWebHostEnvironment webHostEnvironment,
-        Guid tenantId,
-        string userId,
-        bool active,
-        IFormFile file,
-        string folderName)
+    public async Task<string?> SaveSessionFileAsync
+    (Guid tenantId,string userId,IFormFile file,bool isProduct)
     {
         if ( file == null || file.Length == 0 )
         {
             return string.Empty;
         }
 
-        string uploadsFolderSession = Path.Combine(webHostEnvironment.WebRootPath, "ProductsSession");
-        string uploadsFolderProducts = Path.Combine(webHostEnvironment.WebRootPath, "Products");
+        CreateFolders ("Products","AdminAds");
 
-        if ( !Directory.Exists (uploadsFolderSession) )
+        if ( isProduct )
         {
-            _ = Directory.CreateDirectory (uploadsFolderSession);
-        }
+            string sessionProductFileName =
+                 $"{tenantId}:{"Product"}:{userId}:{Guid.NewGuid().ToString()}:{Path.GetFileName(file.FileName)}";
 
-        if ( !Directory.Exists (uploadsFolderProducts) )
+            string filePathProduct = Path.Combine (SessionChildFolderProduct,sessionProductFileName);
+
+            using ( var fileStream = new FileStream (filePathProduct,FileMode.Create) )
+            {
+                await file.CopyToAsync (fileStream);
+            }
+
+            return filePathProduct;
+        }
+        else
         {
-            _ = Directory.CreateDirectory (uploadsFolderProducts);
+            string sessionAdminAdFileName =
+                 $"{tenantId}:{"AdminAd"}:{userId}:{Guid.NewGuid().ToString()}:{Path.GetFileName(file.FileName)}";
+
+            string filePathAdminAd = Path.Combine (SessionChildFolderAdminAds,sessionAdminAdFileName);
+
+            using ( var fileStream = new FileStream (filePathAdminAd,FileMode.Create) )
+            {
+                await file.CopyToAsync (fileStream);
+            }
+
+            return filePathAdminAd;
         }
-
-        string uniqueSessionFileName =
-        $"{active}:{tenantId}:{userId}:{"Product"}:{Path.GetFileName(file.FileName)}";
-
-        string filePath = Path.Combine(uploadsFolderSession, uniqueSessionFileName);
-
-
-        using ( var fileStream = new FileStream (filePath,FileMode.Create) )
-        {
-            await file.CopyToAsync (fileStream);
-        }
-
-        string databaseRelativePath = $"/ProductsSession/{uniqueSessionFileName}";
-
-        return databaseRelativePath;
     }
 
-    public async Task<string?> SaveTenantSessionAdsFileAsync
-    (IWebHostEnvironment webHostEnvironment,
-        Guid tenantId,
-        string userId,
-        bool active,
-        IFormFile file)
+    private void CreateFolders (string baseFolderProduct,string baseFolderAds)
     {
-        if ( file == null || file.Length == 0 )
+        if ( !Directory.Exists (SessionRootFolder) )
         {
-            return string.Empty;
+            _ = Directory.CreateDirectory (SessionRootFolder);
         }
 
-        string uploadsFolderSession = Path.Combine(webHostEnvironment.WebRootPath, "AdminAdsSession");
-        string uploadsFolderProducts = Path.Combine(webHostEnvironment.WebRootPath, "AdminAds");
-
-        if ( !Directory.Exists (uploadsFolderSession) )
+        if ( !Directory.Exists (SessionChildFolderProduct) )
         {
-            _ = Directory.CreateDirectory (uploadsFolderSession);
+            _ = Directory.CreateDirectory (SessionChildFolderProduct);
         }
 
-        if ( !Directory.Exists (uploadsFolderProducts) )
+        if ( !Directory.Exists (SessionChildFolderAdminAds) )
         {
-            _ = Directory.CreateDirectory (uploadsFolderProducts);
+            _ = Directory.CreateDirectory (SessionChildFolderAdminAds);
         }
 
-        string uniqueProductFileName =
-        $"{active}:{tenantId}:{userId}:{"Ads"}:{Path.GetFileName(file.FileName)}";
-
-        string filePath = Path.Combine(uploadsFolderSession, uniqueProductFileName);
-
-
-        using ( var fileStream = new FileStream (filePath,FileMode.Create) )
+        if ( !Directory.Exists (TenantProducts) )
         {
-            await file.CopyToAsync (fileStream);
+            _ = Directory.CreateDirectory (TenantProducts);
         }
 
-
-        return filePath;
+        if ( !Directory.Exists (TenantAdminAds) )
+        {
+            _ = Directory.CreateDirectory (TenantAdminAds);
+        }
     }
 
-    public string ProductCopyFileToSiblingFolder (
-        IWebHostEnvironment webHostEnvironment,
-        Guid tenantId,
-        string userId,
-        bool active,
-        string sessionFileName)
-    {
-        string uploadsFolderSession = Path.Combine(webHostEnvironment.WebRootPath, "ProductsSession");
-
-        string siblingFolder = Path.Combine(webHostEnvironment.WebRootPath, "Products");
-
-        string sourceFileName = $"{active}:{tenantId}:{userId}:{"Product"}:{sessionFileName}";
-
-        string sourceFilePath = Path.Combine (uploadsFolderSession,sourceFileName);
-
-        if ( !File.Exists (sourceFilePath) )
-        {
-            throw new FileNotFoundException ("The source file could not be found.",sourceFilePath);
-        }
-
-        if ( !Directory.Exists (siblingFolder) )
-        {
-            _ = Directory.CreateDirectory (siblingFolder);
-        }
-
-        var destinationFilePath = Path.Combine(siblingFolder, sessionFileName);
-
-        File.Copy (sourceFilePath,destinationFilePath,overwrite: true);
-
-        return destinationFilePath;
-    }
-
-
-    public string AdsCopyFileToSiblingFolder (
-       IWebHostEnvironment webHostEnvironment,
+    public string CopyFileToDestinationFolder (
        Guid tenantId,
        string userId,
-       bool active,
-       string sessionFileName)
+       string fullPathFile,
+       bool product)
     {
-        string uploadsFolderSession = Path.Combine(webHostEnvironment.WebRootPath, "AdminAdsSession");
+        string fileName = Path.GetFileName(fullPathFile);
 
-        string siblingFolder = Path.Combine(webHostEnvironment.WebRootPath, "AdminAds");
-
-        string sourceFileName = $"{active}:{tenantId}:{userId}:{"Ads"}:{sessionFileName}";
-
-        string sourceFilePath = Path.Combine (uploadsFolderSession,sourceFileName);
-
-        if ( !File.Exists (sourceFilePath) )
+        if ( product )
         {
-            throw new FileNotFoundException ("The source file could not be found.",sourceFilePath);
-        }
+            string destFolderFileFull = Path.Combine(TenantProducts , fileName);
 
-        if ( !Directory.Exists (siblingFolder) )
+            if ( File.Exists (fullPathFile) )
+            {
+                File.Move (fullPathFile,destFolderFileFull,overwrite: true);
+            }
+
+            return $"/{TenantProducts}/{fileName}";
+        }
+        else
         {
-            _ = Directory.CreateDirectory (siblingFolder);
+            string destFolderFileFull = Path.Combine(TenantAdminAds , fileName);
+
+            if ( File.Exists (fullPathFile) )
+            {
+                File.Move (fullPathFile,destFolderFileFull,overwrite: true);
+            }
+
+            return $"/{TenantAdminAds}/{fileName}";
         }
-
-        var destinationFilePath = Path.Combine(siblingFolder, sessionFileName);
-
-        File.Copy (sourceFilePath,destinationFilePath,overwrite: true);
-
-        return destinationFilePath;
     }
 }

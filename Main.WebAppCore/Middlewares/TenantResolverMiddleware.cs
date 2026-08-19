@@ -51,7 +51,7 @@ public class TenantResolverMiddleware
                 {
                     Default = true,
                     FontStack = tenantTheme?.FontStack ?? "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-                    LogoFilePath = tenantTheme?.LogoFilePath ?? ""
+                    LogoRelativeFilePath = tenantTheme?.LogoRelativeFilePath ?? ""
                 };
             }
         }

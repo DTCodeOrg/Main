@@ -48,7 +48,7 @@ public class ThemeRepository: IThemeRepository
                 MenuItemHoverBGColor = "",
                 MenuItemHoverColor = "",
                 FontStack = "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-                LogoFilePath = "~/favicon.ico",
+                LogoRelativeFilePath = "~/favicon.ico",
                 TenantId = tenantId
             };
 

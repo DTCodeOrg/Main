@@ -59,7 +59,8 @@ public class ManageProductController: BaseController
 
     private void SetImageInDataModel (ProductDataModel productDataModel)
     {
-        List<ProductFileDataModel> listProductImageFileDataModels = new();
+        List<ProductFileDataModel> listProductImageFileDataModels
+            = new();
 
         ProductFileDataModel productImageFileDataModel;
 
@@ -67,11 +68,16 @@ public class ManageProductController: BaseController
 
         listSessionImageFiles?.ForEach (imgFile =>
         {
+            var fileRelativePath  =
+                    _storageService.CopyFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
+                    _tenantSetter.HttpContextUserId,
+                    imgFile.SessionFilePath, true);
+
             productImageFileDataModel = new ProductFileDataModel ()
             {
-                FileContent = imgFile.FileContent,
                 ProductID = imgFile.PostID ?? 0,
-                ProductImageFileID = 0
+                ProductImageFileID = 0,
+                FilePath = fileRelativePath
             };
 
             listProductImageFileDataModels.Add (productImageFileDataModel);
@@ -81,8 +87,6 @@ public class ManageProductController: BaseController
 
         ClearImageFileListSession (_tenantCacheService);
     }
-
-
 
     public IActionResult NewProduct ()
     {
@@ -231,23 +235,19 @@ public class ManageProductController: BaseController
             });
         }
 
-        _ = await _storageService.SaveTenantAssetAsync (_webHostEnvironment,_tenantSetter.ResolvedTenantId,file,"products");
-
-
+        var sessionFileAbsolutePath = await _storageService.SaveSessionFileAsync
+            (_tenantSetter.ResolvedTenantId, _tenantSetter.HttpContextUserId, file, true);
 
         ImageFile imageFile = ReadImage ( file );
+        imageFile.SessionFilePath = sessionFileAbsolutePath!;
 
         SetSessionImageFile (imageFile,_tenantCacheService);
 
-
-        // Return 200 OK with a JSON success payload
         return Ok (new
         {
             success = true,message = "File uploaded successfully!"
         });
-
     }
-
 
     private ImageFile ReadImage (IFormFile file)
     {
@@ -334,7 +334,6 @@ public class ManageProductController: BaseController
         }
     }
 
-
     [HttpGet]
     public async Task<IActionResult> Delete (int id)
     {
@@ -353,7 +352,6 @@ public class ManageProductController: BaseController
             });
         }
     }
-
 
     [HttpGet]
     public async Task<IActionResult> DeleteProduct (int id,int fakeId)

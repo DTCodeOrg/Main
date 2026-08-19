@@ -30,7 +30,7 @@ public class ImageFile
         get; set;
     }
 
-    public string SessionRelativeFilePath
+    public string SessionFilePath
     {
         get; set;
     }

@@ -68,7 +68,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="wwwroot\TenantFileSessionRoot\AdminAds\" />
+	  <Folder Include="wwwroot\TenantFileSessionRoot\Products\" />
 	  <Folder Include="wwwroot\lib\Images\Home\English\" />
+	  <Folder Include="wwwroot\TenantLogos\" />
+	  <Folder Include="wwwroot\TenantAdminAds\" />
+	  <Folder Include="wwwroot\TenantProducts\" />
 	  <Folder Include="wwwroot\uploads\" />
 	</ItemGroup>
 

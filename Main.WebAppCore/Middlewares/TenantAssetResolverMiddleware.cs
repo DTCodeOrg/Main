@@ -19,12 +19,12 @@ public class TenantAssetResolver: ITenantAssetResolver
     public string GetLogoUrl ()
     {
         // Fallback to a default logo if tenant or theme logo isn't set yet
-        if ( _tenantSetter.CurrentTenant.TenantThemeModel?.LogoFilePath == null )
+        if ( _tenantSetter.CurrentTenant.TenantThemeModel?.LogoRelativeFilePath == null )
         {
             return "~/favicon.ico";
         }
 
         // Return the clean, resolved path
-        return $"~/uploads/{_tenantSetter.ResolvedTenantId.ToString ()}/logos/{_tenantSetter.CurrentTenant.TenantThemeModel?.LogoFilePath!}";
+        return $"~/uploads/{_tenantSetter.ResolvedTenantId.ToString ()}/logos/{_tenantSetter.CurrentTenant.TenantThemeModel?.LogoRelativeFilePath!}";
     }
 }

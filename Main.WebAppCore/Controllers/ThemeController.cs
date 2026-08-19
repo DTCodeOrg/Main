@@ -13,7 +13,6 @@ public class ThemeController: Controller
     private readonly IStorageService _storageService;
     private readonly ITenantSetter _tenantSetter;
     private readonly IThemeService _themeService;
-    private readonly IWebHostEnvironment _webHostEnvironment;
 
     public ThemeController (IStorageService storageService,
         ITenantSetter tenantSetter,IThemeService themeService,
@@ -22,20 +21,20 @@ public class ThemeController: Controller
         _storageService = storageService;
         _tenantSetter = tenantSetter;
         _themeService = themeService;
-        _webHostEnvironment = webHostEnvironment;
     }
 
     [HttpGet]
     public async Task<IActionResult> UpdateLogo ()
     {
-        var theme = await _themeService.GetTenantThemeAsync(_tenantSetter.ResolvedTenantId);
+        var themeDataModel
+            = await _themeService.GetTenantThemeAsync(_tenantSetter.ResolvedTenantId);
 
-        var viewModel = new UpdateLogoViewModel
+        var logoViewModel = new UpdateLogoViewModel
         {
-            CurrentLogoFileName = theme?.LogoFilePath
+            CurrentLogoFileName = themeDataModel?.LogoRelativeFilePath
         };
 
-        return View (viewModel);
+        return View (logoViewModel);
     }
 
     [HttpPost]
@@ -46,14 +45,17 @@ public class ThemeController: Controller
             return View ();
         }
 
-        string? fileName = await _storageService.SaveTenantAssetAsync ( _webHostEnvironment, _tenantSetter.ResolvedTenantId, logoFile, "uploads" );
+        var logoRelativeFilePath  =
+            await _storageService.SaveTenantLogoAsync (_tenantSetter.ResolvedTenantId,logoFile);
 
-        var theme = await _themeService.GetTenantThemeAsync(_tenantSetter.ResolvedTenantId);
+        var themeDataModel =
+            await _themeService.GetTenantThemeAsync (_tenantSetter.ResolvedTenantId);
 
-        if ( theme != null )
+        if ( themeDataModel != null )
         {
-            theme.LogoFilePath = fileName;
-            await _themeService.UpdateTenantThemeAsync (theme);
+            themeDataModel.LogoRelativeFilePath = logoRelativeFilePath;
+
+            await _themeService.UpdateTenantThemeAsync (themeDataModel);
         }
 
         return RedirectToAction ("Index","Home",new

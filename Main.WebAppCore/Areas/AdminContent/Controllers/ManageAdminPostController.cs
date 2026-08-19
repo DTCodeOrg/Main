@@ -19,20 +19,16 @@ public class ManageAdminPostController: BaseController
     private readonly ITenantCacheService _tenantCacheService;
     private readonly IStorageService _storageService;
 
-    private readonly IWebHostEnvironment _webHostEnvironment;
-
     public ManageAdminPostController (
         IAdminPostService adminPostService,
         ITenantSetter tenantSetter,
         ITenantCacheService tenantCacheService,
-        IStorageService storageService,
-        IWebHostEnvironment webHostEnvironment)
+        IStorageService storageService)
     {
         _adminPostService = adminPostService;
         _tenantSetter = tenantSetter;
         _tenantCacheService = tenantCacheService;
         _storageService = storageService;
-        _webHostEnvironment = webHostEnvironment;
     }
 
     private void SetImageInDataModel (AdminPostDataModel adminPostDataModel)
@@ -44,24 +40,24 @@ public class ManageAdminPostController: BaseController
         {
             listSessionImageFiles.ForEach (imgFile =>
             {
+                var relativeFilePath =
+                            _storageService.CopyFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
+                            _tenantSetter.HttpContextUserId,
+                            imgFile.SessionFilePath,false);
+
                 AdminImageFileDataModel adminImageFileDataModel= new ()
                 {
-                    FileContent = imgFile.FileContent,
                     AdminPostID = imgFile.PostID ?? 0,
                     AdminImageFileID = 0 ,
                     FileName = imgFile.FileName,
-                    FilePath = imgFile.FilePath
+                    FilePath = relativeFilePath
                 };
 
-                adminImageFileDataModel.FilePath = _storageService.CopyFileToSiblingFolder (_webHostEnvironment,_tenantSetter.ResolvedTenantId,
-                    _tenantSetter.HttpContextUserId,true,imgFile.FileName);
-
                 listAdminPostDataModel.Add (adminImageFileDataModel);
-
-
             });
 
             adminPostDataModel.ListAdminPostFileImages = listAdminPostDataModel;
+
             ClearImageFileListSession (_tenantCacheService);
         }
     }
@@ -242,10 +238,10 @@ public class ManageAdminPostController: BaseController
             });
         }
 
-        string? filePath = await _storageService.SaveSessionTenantProductFileAsync(webHostEnvironment,_tenantSetter.ResolvedTenantId,_tenantSetter.HttpContextUserId,true,file);
+        string? fileAbsoluteSessionPath = await _storageService.SaveSessionFileAsync(_tenantSetter.ResolvedTenantId,_tenantSetter.HttpContextUserId,file,false);
 
         ImageFile imageFile = ReadImage (file);
-        imageFile.SessionRelativeFilePath = filePath;
+        imageFile.SessionFilePath = fileAbsoluteSessionPath!;
 
         SetSessionImageFile (imageFile,_tenantCacheService);
 
@@ -278,7 +274,10 @@ public class ManageAdminPostController: BaseController
 
                 ImageFile objFile = new()
                 {
-                    FileContent = imgByte,FileName = file.FileName,IsNew = true,PostID = 0
+                    FileContent = imgByte,
+                    FileName = file.FileName,
+                    IsNew = true,
+                    PostID = 0
                 };
 
                 return objFile;

@@ -24,7 +24,7 @@ public class ThemeService: IThemeService
         {
             Id = theme.Id,
             FontStack = theme.FontStack,
-            LogoFilePath = theme.LogoFilePath,
+            LogoRelativeFilePath = theme.LogoRelativeFilePath,
             TenantId = theme.TenantId
         };
 
@@ -46,7 +46,7 @@ public class ThemeService: IThemeService
             MenuItemHoverBGColor = themeEntity.MenuItemHoverBGColor,
             MenuItemHoverColor = themeEntity.MenuItemHoverColor,
             FontStack = themeEntity.FontStack,
-            LogoFilePath = themeEntity.LogoFilePath
+            LogoRelativeFilePath = themeEntity.LogoRelativeFilePath
         };
 
         return themeDataModel;
@@ -58,7 +58,7 @@ public class ThemeService: IThemeService
         await _themeRepository.GetThemeByTenantAsync(_tenantSetter.ResolvedTenantId);
 
         existingTheme.FontStack = theme.FontStack;
-        existingTheme.LogoFilePath = theme.LogoFilePath;
+        existingTheme.LogoRelativeFilePath = theme.LogoRelativeFilePath;
         existingTheme.TenantId = _tenantSetter.ResolvedTenantId;
 
         await _themeRepository.UpdateTenantThemeAsync (existingTheme);
