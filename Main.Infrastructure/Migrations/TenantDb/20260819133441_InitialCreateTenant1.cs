@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Main.Infrastructure.Migrations.TenantDb
 {
     /// <inheritdoc />
-    public partial class InitialCreateTenant : Migration
+    public partial class InitialCreateTenant1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -127,7 +127,8 @@ namespace Main.Infrastructure.Migrations.TenantDb
                 {
                     AdminImageFileID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ImageFileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    ImageFileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AdminPostID = table.Column<int>(type: "int", nullable: false),
                     TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -249,7 +250,8 @@ namespace Main.Infrastructure.Migrations.TenantDb
                 {
                     ProductImageFileID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ImageFileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    FileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    FiePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductID = table.Column<int>(type: "int", nullable: false),
                     TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -282,7 +284,8 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     Order = table.Column<int>(type: "int", nullable: false),
                     EnumPostType = table.Column<int>(type: "int", nullable: false),
                     RootID = table.Column<int>(type: "int", nullable: false),
-                    FileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    FileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     WebsiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),

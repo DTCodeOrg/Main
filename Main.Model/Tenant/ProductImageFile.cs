@@ -10,7 +10,7 @@ public class ProductImageFile: BaseEntity
     {
     }
 
-    public ProductImageFile (byte[] imageFileContent)
+    public ProductImageFile (byte[]? imageFileContent)
     {
         FileContent = imageFileContent;
     }

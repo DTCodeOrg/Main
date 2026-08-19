@@ -48,8 +48,4 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\..\..\..\OneDrive\Documents\IdentityDatabase.sql" Link="DatabaseContext\IdentityDatabase.sql" />
-  </ItemGroup>
-
 </Project>

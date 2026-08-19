@@ -226,8 +226,11 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("ImageFileContent")
+                    b.Property<string>("FilePath")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ImageFileContent")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("IsActive")
@@ -520,8 +523,11 @@ namespace Main.Infrastructure.Migrations.TenantDb
                         .HasColumnType("int");
 
                     b.Property<byte[]>("FileContent")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -721,8 +727,11 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("ImageFileContent")
+                    b.Property<string>("FiePath")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("FileContent")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("IsActive")

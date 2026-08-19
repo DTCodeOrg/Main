@@ -74,7 +74,6 @@
 	  <Folder Include="wwwroot\TenantLogos\" />
 	  <Folder Include="wwwroot\TenantAdminAds\" />
 	  <Folder Include="wwwroot\TenantProducts\" />
-	  <Folder Include="wwwroot\uploads\" />
 	</ItemGroup>
 
 	<ItemGroup>

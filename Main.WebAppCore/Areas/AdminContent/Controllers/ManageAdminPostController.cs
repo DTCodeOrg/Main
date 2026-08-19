@@ -41,7 +41,7 @@ public class ManageAdminPostController: BaseController
             listSessionImageFiles.ForEach (imgFile =>
             {
                 var relativeFilePath =
-                            _storageService.CopyFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
+                            _storageService.MoveFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
                             _tenantSetter.HttpContextUserId,
                             imgFile.SessionFilePath,false);
 
@@ -238,10 +238,10 @@ public class ManageAdminPostController: BaseController
             });
         }
 
-        string? fileAbsoluteSessionPath = await _storageService.SaveSessionFileAsync(_tenantSetter.ResolvedTenantId,_tenantSetter.HttpContextUserId,file,false);
+        string fileAbsoluteSessionPath = await _storageService.SaveSessionFileAsync(_tenantSetter.ResolvedTenantId,_tenantSetter.HttpContextUserId,file,false);
 
         ImageFile imageFile = ReadImage (file);
-        imageFile.SessionFilePath = fileAbsoluteSessionPath!;
+        imageFile.SessionFilePath = fileAbsoluteSessionPath;
 
         SetSessionImageFile (imageFile,_tenantCacheService);
 

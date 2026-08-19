@@ -70,11 +70,8 @@ public static class ProductServiceMapping
             SaleCommission = productDataModel.SaleCommission,
             CategoryID = productDataModel.CategoryID,
             SubCategoryID = productDataModel.SubCategoryID,
-            Description = string
-                    .IsNullOrWhiteSpace (productDataModel.Description)
-                    ? null
-                    : productDataModel.Description,
-
+            Description = string.IsNullOrWhiteSpace (productDataModel.Description)
+                            ? null : productDataModel.Description,
             PostType = EnumPostType.Product
         };
     }
@@ -82,15 +79,18 @@ public static class ProductServiceMapping
     private static List<ProductImageFile> MapProductFileEntity
         (ProductDataModel productDataModel)
     {
-        List<ProductImageFile> listProductFileEntity
-            = new();
+        List<ProductImageFile> listProductFileEntity = new();
 
         ProductImageFile productImageFile;
+
         productDataModel.ImageFiles.ForEach (fileDataModel =>
         {
             productImageFile = new ProductImageFile (fileDataModel.FileContent);
+
             productImageFile.ProductID = fileDataModel.ProductID;
+
             productImageFile.CreateParameters (fileDataModel.BaseDataModel);
+
             listProductFileEntity.Add (productImageFile);
         });
 
@@ -104,11 +104,9 @@ public static class ProductServiceMapping
             return new ProductDataModel ();
         }
 
-        List<ProductFileDataModel> listProductFilesDataModel =
-            new();
+        List<ProductFileDataModel> listProductFilesDataModel = new();
 
-        if ( productEntity.ListImageFiles != null
-            && productEntity.ListImageFiles.Count > 0 )
+        if ( productEntity.ListImageFiles != null && productEntity.ListImageFiles.Count > 0 )
         {
 
             productEntity.ListImageFiles.ToList ().ForEach (fileEntity =>

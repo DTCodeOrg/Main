@@ -69,7 +69,7 @@ public class ManageProductController: BaseController
         listSessionImageFiles?.ForEach (imgFile =>
         {
             var fileRelativePath  =
-                    _storageService.CopyFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
+                    _storageService.MoveFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
                     _tenantSetter.HttpContextUserId,
                     imgFile.SessionFilePath, true);
 
@@ -235,7 +235,7 @@ public class ManageProductController: BaseController
             });
         }
 
-        var sessionFileAbsolutePath = await _storageService.SaveSessionFileAsync
+        string sessionFileAbsolutePath = await _storageService.SaveSessionFileAsync
             (_tenantSetter.ResolvedTenantId, _tenantSetter.HttpContextUserId, file, true);
 
         ImageFile imageFile = ReadImage ( file );
