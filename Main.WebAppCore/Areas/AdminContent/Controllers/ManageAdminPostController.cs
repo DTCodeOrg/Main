@@ -41,16 +41,16 @@ public class ManageAdminPostController: BaseController
             listSessionImageFiles.ForEach (imgFile =>
             {
                 var relativeFilePath =
-                            _storageService.MoveFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
-                            _tenantSetter.HttpContextUserId,
-                            imgFile.SessionFilePath,false);
+                    _storageService.MoveFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
+                    _tenantSetter.HttpContextUserId,
+                    imgFile.SessionFilePath,false);
 
                 AdminImageFileDataModel adminImageFileDataModel= new ()
                 {
                     AdminPostID = imgFile.PostID ?? 0,
-                    AdminImageFileID = 0 ,
+                    AdminImageFileID = 0,
                     FileName = imgFile.FileName,
-                    FilePath = relativeFilePath
+                    FilePath = imgFile.RelativeFilePath
                 };
 
                 listAdminPostDataModel.Add (adminImageFileDataModel);
@@ -229,32 +229,27 @@ public class ManageAdminPostController: BaseController
     [IgnoreAntiforgeryToken]
     public async Task<IActionResult> UploadImage (IFormFile file)
     {
-        if ( file == null )
+        if ( !ReadImage (file) )
         {
-
             return StatusCode (500,new
             {
                 success = false,message = "An error occurred during upload."
             });
         }
 
-        string fileAbsoluteSessionPath = await _storageService.SaveSessionFileAsync(_tenantSetter.ResolvedTenantId,_tenantSetter.HttpContextUserId,file,false);
-
-        ImageFile imageFile = ReadImage (file);
-        imageFile.SessionFilePath = fileAbsoluteSessionPath;
+        ImageFile imageFile = await _storageService.SaveSessionFileAsync
+            (_tenantSetter.ResolvedTenantId, _tenantSetter.HttpContextUserId, file, false);
 
         SetSessionImageFile (imageFile,_tenantCacheService);
 
-
-        // Return 200 OK with a JSON success payload
         return Ok (new
         {
-            success = true,message = "File uploaded successfully!"
+            success = true,
+            message = "File uploaded successfully!"
         });
-
     }
 
-    private ImageFile ReadImage (IFormFile file)
+    private bool ReadImage (IFormFile file)
     {
         if ( file != null && file.FileName != null )
         {
@@ -265,26 +260,11 @@ public class ManageAdminPostController: BaseController
                 || extension.Equals (".png",StringComparison.Ordinal)
                 || extension.Equals (".gif",StringComparison.Ordinal) )
             {
-
-                using var memoryStream = new MemoryStream();
-
-                file.CopyTo (memoryStream);
-
-                byte[] imgByte = memoryStream.ToArray();
-
-                ImageFile objFile = new()
-                {
-                    FileContent = imgByte,
-                    FileName = file.FileName,
-                    IsNew = true,
-                    PostID = 0
-                };
-
-                return objFile;
+                return true;
             }
         }
 
-        return new ImageFile ();
+        return false;
     }
 
     [HttpGet]
@@ -301,7 +281,7 @@ public class ManageAdminPostController: BaseController
 
     [HttpDelete]
     [Authorize (Policy = "TenantAdmin")]
-    public async Task<JsonResult> ImageRemove (int id,int postId)
+    public async Task<JsonResult> ImageRemove (string name,int id,int postId)
     {
         try
         {
@@ -312,7 +292,7 @@ public class ManageAdminPostController: BaseController
                 result = await _adminPostService.DeleteAdminPostImage (id,postId);
             }
 
-            result = DeleteSessionImage (id,_tenantCacheService);
+            result = DeleteSessionImage (name,_tenantCacheService);
 
             return Json (new
             {

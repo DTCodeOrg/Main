@@ -1,17 +1,17 @@
-﻿namespace Main.WebAppCore.DependentServices;
+﻿using Main.Common;
+using Main.Common.Models;
+
+namespace Main.WebAppCore.DependentServices;
 
 public interface IStorageService
 {
     Task<string> SaveTenantLogoAsync (Guid tenantId,IFormFile file);
 
-    Task<string> SaveSessionFileAsync
+    Task<ImageFile> SaveSessionFileAsync
     (Guid tenantId,string userId,IFormFile file,bool isProduct);
 
-    public string MoveFileToDestinationFolder (
-       Guid tenantId,
-       string userId,
-       string fileName,
-       bool product);
+    ImageFile MoveFileToDestinationFolder
+    (Guid tenantId,string userId,string fileName,bool product);
 }
 
 public class LocalStorageService: IStorageService
@@ -41,7 +41,6 @@ public class LocalStorageService: IStorageService
         SessionChildFolderProduct = Path.Combine (SessionRootFolder,ChildFolderProducts);
 
         SessionChildFolderAdminAds = Path.Combine (SessionRootFolder,ChildFolderAdminAds);
-
     }
 
     public async Task<string> SaveTenantLogoAsync (Guid tenantId,IFormFile file)
@@ -64,49 +63,63 @@ public class LocalStorageService: IStorageService
 
         await file.CopyToAsync (fileStream);
 
-        // FIX: Return a clean, relative web-ready URL path with forward slashes
         string urlFile = $"/TenantLogos/{uniqueLogoFileName}";
 
         return urlFile;
     }
 
-    public async Task<string> SaveSessionFileAsync
+    public async Task<ImageFile> SaveSessionFileAsync
     (Guid tenantId,string userId,IFormFile file,bool isProduct)
     {
         if ( file == null || file.Length == 0 )
         {
-            return string.Empty;
+            return new ImageFile ();
         }
 
         CreateFolders ("Products","AdminAds");
 
         if ( isProduct )
         {
-            string sessionProductFileName =
-                 $"{tenantId}-{"Product"}-{userId}-{Guid.NewGuid().ToString()}-{Path.GetFileName(file.FileName)}";
+            string sessionProductFileName
+            = $"{tenantId}-{"Product"}-{userId}-{Guid.NewGuid()}-{Path.GetFileName(file.FileName)}";
 
-            string filePathProduct = Path.Combine (SessionChildFolderProduct,sessionProductFileName);
+            string filePathProduct
+            = Path.Combine(SessionChildFolderProduct,sessionProductFileName);
 
-            using ( var fileStream = new FileStream (filePathProduct,FileMode.Create) )
+            using ( var fileStream
+            = new FileStream (filePathProduct,FileMode.Create) )
             {
                 await file.CopyToAsync (fileStream);
             }
 
-            return sessionProductFileName;
+            ImageFile imageFile = new()
+            {
+                SessionFilePath = $"/TenantFileSessionRoot/Products/{sessionProductFileName}",
+                FileName = sessionProductFileName,
+                PostType = EnumPostType.Product
+            };
+            return imageFile;
         }
         else
         {
-            string sessionAdminAdFileName =
-                 $"{tenantId}-{"AdminAd"}-{userId}-{Guid.NewGuid().ToString()}-{Path.GetFileName(file.FileName)}";
+            string sessionAdminAdFileName
+            = $"{tenantId}-{"AdminAd"}-{userId}-{Guid.NewGuid()}-{Path.GetFileName(file.FileName)}";
 
-            string filePathAdminAd = Path.Combine (SessionChildFolderAdminAds,sessionAdminAdFileName);
+            string filePathAdminAd
+            = Path.Combine(SessionChildFolderAdminAds,sessionAdminAdFileName);
 
             using ( var fileStream = new FileStream (filePathAdminAd,FileMode.Create) )
             {
                 await file.CopyToAsync (fileStream);
             }
 
-            return sessionAdminAdFileName;
+            ImageFile imageFile = new()
+            {
+                SessionFilePath = $"/TenantFileSessionRoot/AdminAds/{sessionAdminAdFileName}",
+                FileName = sessionAdminAdFileName,
+                PostType = EnumPostType.AdSpace
+            };
+            return imageFile;
         }
     }
 
@@ -138,36 +151,40 @@ public class LocalStorageService: IStorageService
         }
     }
 
-    public string MoveFileToDestinationFolder
+    public ImageFile MoveFileToDestinationFolder
     (Guid tenantId,string userId,string fileName,bool product)
     {
         if ( product )
         {
-            string sourceFolderFileFull = Path.Combine(SessionChildFolderProduct, fileName);
-            string destFolderFileFull = Path.Combine(TenantProducts, fileName);
-
-            // FIX: Check if the SOURCE FILE exists before moving it
+            string sourceFolderFileFull = Path.Combine(SessionChildFolderProduct,fileName);
+            string destFolderFileFull = Path.Combine(TenantProducts,fileName);
             if ( File.Exists (sourceFolderFileFull) )
             {
                 File.Move (sourceFolderFileFull,destFolderFileFull,overwrite: true);
-                return $"/TenantProducts/{fileName}";
+                ImageFile imageFile = new ()
+                {
+                    FileName = fileName,
+                    RelativeFilePath = $"/TenantProducts/{fileName}"
+                };
+                return imageFile;
             }
-
-            return string.Empty; // Return empty if source file wasn't found
+            return new ImageFile ();
         }
         else
         {
-            string sourceFolderFileFull = Path.Combine(SessionChildFolderAdminAds, fileName);
-            string destFolderFilePath = Path.Combine(TenantAdminAds, fileName);
-
-            // FIX: Check if the SOURCE FILE exists before moving it
+            string sourceFolderFileFull = Path.Combine(SessionChildFolderAdminAds,fileName);
+            string destFolderFilePath = Path.Combine(TenantAdminAds,fileName);
             if ( File.Exists (sourceFolderFileFull) )
             {
                 File.Move (sourceFolderFileFull,destFolderFilePath,overwrite: true);
-                return $"/TenantAdminAds/{fileName}";
+                ImageFile imageFile = new ()
+                {
+                    FileName = fileName,
+                    RelativeFilePath = $"/TenantAdminAds/{fileName}"
+                };
+                return imageFile;
             }
-
-            return string.Empty; // Return empty if source file wasn't found
+            return new ImageFile ();
         }
     }
 }

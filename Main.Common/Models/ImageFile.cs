@@ -1,4 +1,6 @@
-﻿namespace Main.Common.Models;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Main.Common.Models;
 
 public class ImageFile
 {
@@ -9,14 +11,11 @@ public class ImageFile
     public ImageFile (byte[] fileContent)
     {
         FileContent = fileContent;
-        IsNew = true;
     }
 
     public ImageFile (byte[] fileContent,int? postId,int fileId)
     {
         FileContent = fileContent;
-        IsNew = false;
-        FileID = fileId;
         PostID = postId;
     }
 
@@ -45,12 +44,17 @@ public class ImageFile
         get; set;
     }
 
+    public IFormFile File
+    {
+        get; set;
+    }
+
     public int? PostID
     {
         get; set;
     }
 
-    public bool IsNew
+    public EnumPostType PostType
     {
         get; set;
     }

@@ -46,10 +46,10 @@ public class ThemeController: Controller
         }
 
         var logoRelativeFilePath  =
-            await _storageService.SaveTenantLogoAsync (_tenantSetter.ResolvedTenantId,logoFile);
+            await _storageService.SaveTenantLogoAsync ( _tenantSetter.ResolvedTenantId,logoFile );
 
         var themeDataModel =
-            await _themeService.GetTenantThemeAsync (_tenantSetter.ResolvedTenantId);
+            await _themeService.GetTenantThemeAsync ( _tenantSetter.ResolvedTenantId );
 
         if ( themeDataModel != null )
         {

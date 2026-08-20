@@ -77,7 +77,7 @@ public class ManageProductController: BaseController
             {
                 ProductID = imgFile.PostID ?? 0,
                 ProductImageFileID = 0,
-                FilePath = fileRelativePath
+                FilePath = imgFile.RelativeFilePath
             };
 
             listProductImageFileDataModels.Add (productImageFileDataModel);
@@ -227,7 +227,7 @@ public class ManageProductController: BaseController
     [RequestSizeLimit (52428800)]
     public async Task<IActionResult> UploadImage (IFormFile file)
     {
-        if ( file == null )
+        if ( !ReadImage (file) )
         {
             return StatusCode (500,new
             {
@@ -235,11 +235,8 @@ public class ManageProductController: BaseController
             });
         }
 
-        string sessionFileAbsolutePath = await _storageService.SaveSessionFileAsync
+        ImageFile imageFile = await _storageService.SaveSessionFileAsync
             (_tenantSetter.ResolvedTenantId, _tenantSetter.HttpContextUserId, file, true);
-
-        ImageFile imageFile = ReadImage ( file );
-        imageFile.SessionFilePath = sessionFileAbsolutePath!;
 
         SetSessionImageFile (imageFile,_tenantCacheService);
 
@@ -249,9 +246,9 @@ public class ManageProductController: BaseController
         });
     }
 
-    private ImageFile ReadImage (IFormFile file)
+    private bool ReadImage (IFormFile file)
     {
-        if ( file.FileName != null )
+        if ( file != null && file.FileName != null )
         {
             string extension = Path.GetExtension(file.FileName).ToLower();
 
@@ -259,24 +256,11 @@ public class ManageProductController: BaseController
 
                 || extension.Equals (".png") || extension.Equals (".gif") )
             {
-                var imgByte = new Byte[file.Length];
-
-                var stream = file.OpenReadStream();
-
-                _ = stream.Read (imgByte);
-
-                ImageFile objFile = new()
-                {
-                    FileContent = imgByte ,
-                    IsNew = true ,
-                    PostID = 0
-                };
-
-                return objFile;
+                return true;
             }
         }
 
-        return new ImageFile ();
+        return false;
     }
 
     [HttpGet]
@@ -292,7 +276,7 @@ public class ManageProductController: BaseController
 
 
     [HttpDelete]
-    public async Task<JsonResult> ImageRemove (int id,int postId)
+    public async Task<JsonResult> ImageRemove (string fileName,int id,int postId)
     {
         try
         {
@@ -302,7 +286,7 @@ public class ManageProductController: BaseController
                 result = await _productService.DeleteProductImage (id,postId);
             }
 
-            result = DeleteSessionImage (id,_tenantCacheService);
+            result = DeleteSessionImage (fileName,_tenantCacheService);
 
             return Json (new
             {
