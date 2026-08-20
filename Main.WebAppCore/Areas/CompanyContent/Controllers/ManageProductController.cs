@@ -89,27 +89,21 @@ public class ManageProductController: BaseController
 
     public IActionResult NewProduct ()
     {
-        try
+
+        ClearImageFileListSession (_tenantCacheService);
+
+        ProductViewModel objProductViewModel = new ()
         {
-            ClearImageFileListSession (_tenantCacheService);
+            AVCategory = DropDownListItems.GetCategoryList (),
+            AVSubCategory = DropDownListItems.GetSubCategoryList (),
+            PageName = "Product Page"
+        };
 
-            ProductViewModel objProductViewModel = new ()
-            {
-                PageName = "New Product"
-            };
-
-            objProductViewModel.AVCategory = DropDownListItems.GetCategoryList ();
-            objProductViewModel.AVSubCategory = DropDownListItems.GetSubCategoryList ();
-
-            return View (objProductViewModel);
-        }
-        catch
-        {
-            return View (new ProductViewModel ());
-        }
+        return View (objProductViewModel);
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveProduct (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )

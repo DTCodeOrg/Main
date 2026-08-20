@@ -44,14 +44,12 @@
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
                     @Html.LabelFor( a => a.CategoryID )
                     @Html.DropDownListFor(a => a.CategoryID, Model.AVCategory, new { @class = "fff" })
-                    @Html.ValidationMessageFor(m => m.CategoryID, "", new { @class = "text-danger" })
                 </div>
 
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
                     @Html.LabelFor( a => a.SubCategoryID )
                     @Html.DropDownListFor(a => a.SubCategoryID, Model.AVSubCategory, new { @class = "fff" })
-                    @Html.ValidationMessageFor(m => m.SubCategoryID, "", new { @class = "text-danger" })
                 </div>
 
 
@@ -98,13 +96,11 @@
                  <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
                     @Html.LabelFor( a => a.Discount )
                     @Html.EditorFor(a => a.Discount, new { htmlAttributes = new { @class = "fff" } })
-                    @Html.ValidationMessageFor(m => m.Discount, "", new { @class = "text-danger" })
                 </div>
 
                  <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
                     @Html.LabelFor( a => a.SaleCommission )
                     @Html.EditorFor(a => a.SaleCommission, new { htmlAttributes = new { @class = "fff" } })
-                    @Html.ValidationMessageFor(m => m.SaleCommission, "", new { @class = "text-danger" })
                 </div>
 
             </form>
@@ -131,13 +127,9 @@
 
                  <label>Select File:</label>
                  <input class="form-control" type="file" id="fileInput" name="fileInput" />
-                 <br /><br />
+                 
                  <button type="submit">Upload</button>
              </form>
-         </div>
-
-         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-             <button type="button" id="btnLoadImage" class="light-button btn-sm">Add New Picture</button> 
          </div>
 
          <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>

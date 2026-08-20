@@ -107,7 +107,7 @@ public enum StoreType
     LifeStyles = 1,
     FineArts = 2,
     Sports = 3,
-    Defaut = 4
+    Default = 4
 }
 
 public enum EnumTenantVariable
@@ -140,43 +140,44 @@ public enum EnumStoreMenu
     CRAFTS = 6,
 
     [Description("Collectibles")]
-    COLLECTIBLES = 7
+    COLLECTIBLES = 7,
+
+    [Description("Make up")]
+    Makeup = 8,
+
+    [Description("Skin care")]
+    SkinCare = 9,
+
+    [Description("Beauty tools")]
+    BeautyTools = 10,
+
+    [Description("Wellbeing")]
+    Wellbeing = 11,
+
+    [Description("Pharmacy product")]
+    PharmacyProduct = 12,
+
+    [Description("Medical supplies")]
+    MedicalSupplies = 13,
+
+    [Description("Sculpture")]
+    Sculpture = 14,
+
+    [Description("Drawing")]
+    Drawing = 15,
+
+    [Description("Water color")]
+    WaterColor = 16,
+
+    [Description("Photography")]
+    Photography = 17,
+
+    [Description("Painting")]
+    Painting = 18
 }
 
 public enum EnumStoreSubMenu
 {
-    [Description("Make up")]
-    Makeup = 1,
-
-    [Description("Skin care")]
-    SkinCare = 2,
-
-    [Description("Beauty tools")]
-    BeautyTools = 3,
-
-    [Description("Wellbeing")]
-    Wellbeing = 4,
-
-    [Description("Pharmacy product")]
-    PharmacyProduct = 5,
-
-    [Description("Medical supplies")]
-    MedicalSupplies = 6,
-
-    [Description("Sculpture")]
-    Sculpture = 7,
-
-    [Description("Drawing")]
-    Drawing = 8,
-
-    [Description("Water color")]
-    WaterColor = 9,
-
-    [Description("Photography")]
-    Photography = 10,
-
-    [Description("Painting")]
-    Painting = 11
 }
 
 public enum EnumPostCount

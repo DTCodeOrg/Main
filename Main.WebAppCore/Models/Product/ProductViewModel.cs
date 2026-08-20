@@ -11,6 +11,7 @@ public class ProductViewModel: BaseViewModel
     {
         AVCategory = new List<SelectListItem> ();
         AVSubCategory = new List<SelectListItem> ();
+        PageName = "Product Page";
     }
 
     public int ProductID

@@ -6,7 +6,7 @@ public class BaseViewModel
     {
     }
 
-    public string PageName
+    public string? PageName
     {
         get; set;
     }
