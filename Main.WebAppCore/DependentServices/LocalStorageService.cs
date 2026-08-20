@@ -96,7 +96,8 @@ public class LocalStorageService: IStorageService
             {
                 SessionFilePath = $"/TenantFileSessionRoot/Products/{sessionProductFileName}",
                 FileName = sessionProductFileName,
-                PostType = EnumPostType.Product
+                PostType = EnumPostType.Product,
+                RelativeFilePath = $"/TenantFileSessionRoot/Products/{sessionProductFileName}"
             };
             return imageFile;
         }
@@ -117,7 +118,8 @@ public class LocalStorageService: IStorageService
             {
                 SessionFilePath = $"/TenantFileSessionRoot/AdminAds/{sessionAdminAdFileName}",
                 FileName = sessionAdminAdFileName,
-                PostType = EnumPostType.AdSpace
+                PostType = EnumPostType.AdSpace,
+                RelativeFilePath = $"/TenantFileSessionRoot/AdminAds/{sessionAdminAdFileName}"
             };
             return imageFile;
         }

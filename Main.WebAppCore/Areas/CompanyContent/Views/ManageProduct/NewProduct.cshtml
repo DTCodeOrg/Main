@@ -55,89 +55,78 @@
         });
     }
 
+
+
 $(document).ready(function () {
 
-    var categorySelector = $("#newProductMainContainer").find("#CategoryID");
-    var subCategorySelector = $("#newProductMainContainer").find("#SubCategoryID");
-    var spanCategoryDropdown = $("#newProductMainContainer").find("#spanCategoryDropdown");
 
-
-    function ResetSubCategory() {
-        subCategorySelector.val("");
-        spanCategoryDropdown.text("");
-        subCategorySelector.empty();
-        return true;
-    }
-
-    function PopulateSubCategory(items) {
-
-        subCategorySelector.empty();
-
-        $.each(items, function (i, item) {
-            if (item.text != null) {
-                subCategorySelector.append(
-                    "<option value='" + item.value + "'>" + item.text + "</option>"
-                );
-            } else {
-                subCategorySelector.append(
-                    "<option value='" + item.value + "'>Select</option>"
-                );
-            }
-        });
-    }
-
-
-    categorySelector.on("change", function () {
-
-        var category = $(this).val();
-
-        if (ResetSubCategory()) {
-
-            $.ajax({
-                url: getSubCategoryURL + "?id=" + category,
-                type: 'GET',
-                dataType: 'json',
-                cache: true,
-                async: true,
-                error: function (xhr) {
-                    console.log(xhr);
-                },
-                success: function (items) {
-                    PopulateSubCategory(items);
-                }
+     // Optional enhancement: Make "Add New Picture" button trigger the file input
+            $('#btnLoadImage').on('click', function () {
+                $('#fileInput').click();
             });
-        }
-    });
 
-    var btnUploadSelector = $("#newProductMainContainer").find("#btnUpload");
+            // Handle the asynchronous form upload
+            $('.upload-container form').on('submit', function (e) {
+                e.preventDefault(); 
+
+                var formData = new FormData(this);
+                var $form = $(this);
+
+                $.ajax({
+                    url: $form.attr('action'),
+                    type: $form.attr('method'),
+                    data: formData,
+                    contentType: false, 
+                    processData: false, 
+                    success: function (responseHtml) {
+                        // Injects the partial view HTML returned by the controller
+                        $('#imagePanelContainer').html(responseHtml);
+                        
+                        // Clear the input field so users can pick another image later
+                        $('#fileInput').val(''); 
+                    },
+                    error: function (xhr) {
+                        alert("An error occurred during upload. Please ensure it is a valid image file.");
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+    // var btnLoadImage = $("#newProductMainContainer").find("#btnLoadImage");
+
+    // btnLoadImage.on("click", function () {
+    //     LoadImageNewAdminContent();
+    // });
+
+    // var btnUploadSelector = $("#newProductMainContainer").find("#btnUpload");
             
-    btnUploadSelector.on("click", function () {
+    // btnUploadSelector.on("click", function () {
 
-        var fileElement = $('#fileInput')[0];
-        var files = fileElement.files;
+    //     var fileElement = $('#fileInput')[0];
+    //     var files = fileElement.files;
 
-        if (files.length === 0) {
-            return;
-        }
+    //     if (files.length === 0) {
+    //         return;
+    //     }
 
-        var formData = new FormData();
+    //     var formData = new FormData();
                 
-        formData.append("file", files[0]);
+    //     formData.append("file", files[0]);
 
-        $.ajax({
-            url: uploadImageURL, 
-            type: 'POST',
-            data: formData,
-            processData: false, 
-            contentType: false, 
-            success: function (response) {
-                LoadImageNewAdminContent();
-            },
-            error: function (error) { 
-                console.log(error);
-            }
-        });
-    });
+    //     $.ajax({
+    //         url: uploadImageURL, 
+    //         type: 'POST',
+    //         data: formData,
+    //         processData: false, 
+    //         contentType: false, 
+    //         success: function (response) {
+    //             LoadImageNewAdminContent();
+    //         },
+    //         error: function (error) { 
+    //             console.log(error);
+    //         }
+    //     });
+    // });
 
             
     document.getElementById("myMainForm").addEventListener("submit", function (e) {
@@ -174,7 +163,7 @@ $(document).ready(function () {
         .catch(error => {
             console.error("Network or parsing error:", error);
             return;
-        });   
+        });
     });
 
 
