@@ -10,8 +10,8 @@ public interface IStorageService
     Task<ImageFile> SaveSessionFileAsync
     (Guid tenantId,string userId,IFormFile file,bool isProduct);
 
-    ImageFile MoveFileToDestinationFolder
-    (Guid tenantId,string userId,string fileName,bool product);
+    Task<ImageFile> MoveFileToDestinationFolderAsync
+    (string fileName,bool product);
 }
 
 public class LocalStorageService: IStorageService
@@ -76,7 +76,7 @@ public class LocalStorageService: IStorageService
             return new ImageFile ();
         }
 
-        CreateFolders ("Products","AdminAds");
+        await CreateFolders ("Products","AdminAds");
 
         if ( isProduct )
         {
@@ -125,7 +125,7 @@ public class LocalStorageService: IStorageService
         }
     }
 
-    private void CreateFolders (string baseFolderProduct,string baseFolderAds)
+    private async Task CreateFolders (string baseFolderProduct,string baseFolderAds)
     {
         if ( !Directory.Exists (SessionRootFolder) )
         {
@@ -153,40 +153,69 @@ public class LocalStorageService: IStorageService
         }
     }
 
-    public ImageFile MoveFileToDestinationFolder
-    (Guid tenantId,string userId,string fileName,bool product)
+    public async Task<ImageFile> MoveFileToDestinationFolderAsync
+    (string fileName,bool product)
     {
         if ( product )
         {
-            string sourceFolderFileFull = Path.Combine(SessionChildFolderProduct,fileName);
-            string destFolderFileFull = Path.Combine(TenantProducts,fileName);
-            if ( File.Exists (sourceFolderFileFull) )
+            string sourceFolderFilePath = Path.Combine(SessionChildFolderProduct, fileName);
+            string destFolderFilePath = Path.Combine(TenantProducts, fileName);
+
+            if ( System.IO.File.Exists (sourceFolderFilePath) )
             {
-                File.Move (sourceFolderFileFull,destFolderFileFull,overwrite: true);
+
+                string? destDirectory = Path.GetDirectoryName(destFolderFilePath);
+                if ( !Directory.Exists (destDirectory) )
+                {
+                    _ = Directory.CreateDirectory (destDirectory!);
+                }
+
+                System.IO.File.Copy (sourceFolderFilePath,destFolderFilePath,true);
+
+                System.IO.File.Delete (sourceFolderFilePath);
+
                 ImageFile imageFile = new ()
                 {
                     FileName = fileName,
-                    RelativeFilePath = $"/TenantProducts/{fileName}"
+                    PostType = EnumPostType.Product,
+                    RelativeFilePath = $"/TenantProducts/{fileName}",
+                    SessionFilePath = $"/TenantFileSessionRoot/Products/"
                 };
+
                 return imageFile;
             }
-            return new ImageFile ();
         }
         else
         {
-            string sourceFolderFileFull = Path.Combine(SessionChildFolderAdminAds,fileName);
+            string sourceFolderFilePath = Path.Combine(SessionChildFolderAdminAds,fileName);
             string destFolderFilePath = Path.Combine(TenantAdminAds,fileName);
-            if ( File.Exists (sourceFolderFileFull) )
+
+            if ( System.IO.File.Exists (sourceFolderFilePath) )
             {
-                File.Move (sourceFolderFileFull,destFolderFilePath,overwrite: true);
+
+                string? destDirectory = Path.GetDirectoryName(destFolderFilePath);
+
+                if ( !Directory.Exists (destDirectory) )
+                {
+                    _ = Directory.CreateDirectory (destDirectory!);
+                }
+
+                System.IO.File.Copy (sourceFolderFilePath,destFolderFilePath,true);
+
+                System.IO.File.Delete (sourceFolderFilePath);
+
                 ImageFile imageFile = new ()
                 {
                     FileName = fileName,
-                    RelativeFilePath = $"/TenantAdminAds/{fileName}"
+                    PostType = EnumPostType.AdSpace,
+                    RelativeFilePath = $"/TenantAdminAds/{fileName}",
+                    SessionFilePath = $"/TenantFileSessionRoot/AdminAds/"
                 };
+
                 return imageFile;
             }
-            return new ImageFile ();
         }
+
+        return new ImageFile ();
     }
 }

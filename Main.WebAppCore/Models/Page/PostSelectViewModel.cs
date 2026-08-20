@@ -64,7 +64,7 @@ public class PostSelectViewModel
     }
 
     [DataType (DataType.Currency)]
-    public decimal Price
+    public decimal? Price
     {
         get; set;
     }

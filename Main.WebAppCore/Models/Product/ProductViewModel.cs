@@ -1,5 +1,4 @@
 ﻿using Main.Common.Models;
-using Main.WebAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using System.ComponentModel.DataAnnotations;
@@ -21,16 +20,14 @@ public class ProductViewModel: BaseViewModel
 
 
     [Display (Name = "Product Category ")]
-    [Required (ErrorMessage = "Category is required!")]
-    public string CategoryID
+    public string? CategoryID
     {
         get; set;
     }
 
 
     [Display (Name = "Product Sub Category")]
-    [Required (ErrorMessage = "Sub category is required!")]
-    public string SubCategoryID
+    public string? SubCategoryID
     {
         get; set;
     }
@@ -53,9 +50,8 @@ public class ProductViewModel: BaseViewModel
 
 
     [Display (Name = "Price (Taka)")]
-    [Required (ErrorMessage = "Price is required!")]
     [DataType (DataType.Currency)]
-    public decimal UnitPrice
+    public decimal? UnitPrice
     {
         get; set;
     }
@@ -63,7 +59,7 @@ public class ProductViewModel: BaseViewModel
 
     [Display (Name = "Discount")]
     [DataType (DataType.Currency)]
-    public decimal Discount
+    public decimal? Discount
     {
         get; set;
     }
@@ -71,7 +67,7 @@ public class ProductViewModel: BaseViewModel
 
     [Display (Name = "Sales Commission")]
     [DataType (DataType.Currency)]
-    public decimal SaleCommission
+    public decimal? SaleCommission
     {
         get; set;
     }
@@ -111,9 +107,9 @@ public class ProductViewModel: BaseViewModel
 
     public void SetDisplaytext ()
     {
-        CategoryText = DropDownListItems.GetCategoryText (CategoryID);
+        CategoryText = "";//DropDownListItems.GetCategoryText (CategoryID);
 
-        SubCategoryText = DropDownListItems.GetCategoryText (SubCategoryID);
+        SubCategoryText = "";//DropDownListItems.GetCategoryText (SubCategoryID);
     }
 
     public IEnumerable<SelectListItem> AVCategory

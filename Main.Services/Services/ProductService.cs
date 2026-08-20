@@ -35,7 +35,7 @@ public class ProductService: IProductService
                     .SaveNewProduct (productEntity);
     }
 
-    public async Task<ProductDataModel> GetProductForEditProductID (int productID)
+    public async Task<ProductDataModel> GetProductForEditProductID (int? productID)
     {
         var productEntity
             = await _ProductRepository
@@ -52,8 +52,7 @@ public class ProductService: IProductService
     {
 
         Product productEntity
-            = await _ProductRepository
-            .GetProductByProductID(productDataModel.ProductID);
+            = await _ProductRepository.GetProductByProductID(productDataModel.ProductID);
 
         productEntity
             = ProductServiceMapping.MapProductUpdateEntity
@@ -65,8 +64,7 @@ public class ProductService: IProductService
 
     public async Task<bool> DeleteProductImage (int id,int postId)
     {
-        return await _ProductRepository
-                    .DeleteProductImage (id,postId);
+        return await _ProductRepository.DeleteProductImage (id,postId);
     }
 
 

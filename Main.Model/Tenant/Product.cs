@@ -28,26 +28,26 @@ public class Product: BaseEntity
         get; set;
     }
 
-    [MaxLength (1000)]
+    [MaxLength (4000)]
     public string? Description
     {
         get; set;
     }
 
-    [Required]
-    public int CategoryID
+
+    public int? CategoryID
     {
         get; set;
     }
 
-    [Required]
-    public int SubCategoryID
+
+    public int? SubCategoryID
     {
         get; set;
     }
 
-    [Required]
-    public decimal Price
+
+    public decimal? Price
     {
         get; set;
     }

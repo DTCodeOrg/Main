@@ -46,6 +46,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Main.Common\Main.Common.csproj" />
+		<ProjectReference Include="..\Main.Infrastructure\Main.Infrastructure.csproj" />
 		<ProjectReference Include="..\Main.Services\Main.Services.csproj" />
 		<ProjectReference Include="..\ResourceLibrary\ResourceLibrary.csproj" />
 	</ItemGroup>
@@ -53,7 +54,7 @@
 	<ItemGroup>
 		<PackageReference Include="FluentEmail.Core" Version="3.0.2" />
 		<PackageReference Include="MailKit" Version="4.17.0" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

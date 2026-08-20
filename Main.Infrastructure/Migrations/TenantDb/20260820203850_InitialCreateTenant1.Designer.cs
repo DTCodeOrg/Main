@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Main.Infrastructure.Migrations.TenantDb
 {
     [DbContext(typeof(TenantDbContext))]
-    [Migration("20260819133441_InitialCreateTenant1")]
+    [Migration("20260820203850_InitialCreateTenant1")]
     partial class InitialCreateTenant1
     {
         /// <inheritdoc />
@@ -529,7 +529,6 @@ namespace Main.Infrastructure.Migrations.TenantDb
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("FilePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
@@ -544,13 +543,14 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Property<Guid>("MyTenantId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Order")
+                    b.Property<int?>("Order")
                         .HasColumnType("int");
 
                     b.Property<int>("PanelID")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("RootID")
@@ -587,7 +587,7 @@ namespace Main.Infrastructure.Migrations.TenantDb
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductID"));
 
-                    b.Property<int>("CategoryID")
+                    b.Property<int?>("CategoryID")
                         .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
@@ -603,8 +603,8 @@ namespace Main.Infrastructure.Migrations.TenantDb
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<decimal?>("Discount")
                         .HasPrecision(18, 2)
@@ -625,7 +625,7 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Property<int>("PostType")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -640,7 +640,7 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Property<string>("SearchTag")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SubCategoryID")
+                    b.Property<int?>("SubCategoryID")
                         .HasColumnType("int");
 
                     b.Property<string>("TenantContinent")

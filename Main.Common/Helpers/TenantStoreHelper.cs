@@ -10,57 +10,47 @@ public class TenantStoreHelper
 
     public static List<TenantVariableModel> GetCategoryList ()
     {
-        List<TenantVariableModel> listCategory  = new List<TenantVariableModel> ();
-
-        listCategory = TenantStores.ListTenantStoreMenu ().Where<TenantVariableModel>
-                                    (m => m.Variable == EnumTenantVariable.ProductCategory).ToList ();
-
-        return listCategory.ToList ();
+        return TenantStores.ListTenantStoreMenu ();
     }
 
     public static List<TenantVariableModel> GetSubCategoryList ()
     {
-        List<TenantVariableModel> listCategory  = new List<TenantVariableModel> ();
-
-        List<TenantVariableModel> listSubCategory = TenantStores.ListTenantStoreMenu ().Where<TenantVariableModel>
-                                                    (m =>  m.Variable == EnumTenantVariable.ProductSubCategory).ToList ();
-
-        return listSubCategory.ToList ();
+        return TenantStores.ListTenantStoreMenu ();
     }
 
 
-    public static List<TenantVariableModel> GetSubCategoryListByID (int categoryId)
-    {
-        List<TenantVariableModel>  listSubCategory = new  List<TenantVariableModel> ();
-        listSubCategory =
-            TenantStores.ListTenantStoreMenu ().Where<TenantVariableModel>
-            (m =>
-                m.Variable == EnumTenantVariable.ProductSubCategory &&
-                m.ParentID == categoryId).ToList ();
+    //public static List<TenantVariableModel>? GetSubCategoryListByID (int categoryId)
+    //{
+    //    List<TenantVariableModel>?  listSubCategory = new  List<TenantVariableModel>? ();
+    //    listSubCategory =
+    //        TenantStores.ListTenantStoreMenu ().Where<TenantVariableModel>
+    //        (m =>
+    //            m.Variable == EnumTenantVariable.ProductSubCategory &&
+    //            m.ParentID == categoryId).ToList ();
 
-        return listSubCategory.ToList ();
-    }
+    //    return listSubCategory?.ToList () ?? null;
+    //}
 
-    public static string GetTextForCategoryId (string categoryId)
-    {
-        List<TenantVariableModel> listCategory = GetCategoryList (  );
+    //public static string? GetTextForCategoryId (string categoryId)
+    //{
+    //    List<TenantVariableModel>? listCategory = GetCategoryList (  );
 
-        TenantVariableModel? tenantVariableModel =
-                listCategory.FirstOrDefault<TenantVariableModel>
-                ( m =>  m.ValueID == int.Parse (categoryId));
+    //    TenantVariableModel? tenantVariableModel =
+    //            listCategory?.FirstOrDefault<TenantVariableModel>
+    //            ( m =>  m.ValueID == int.Parse (categoryId)) ?? null;
 
-        return tenantVariableModel!.Text;
-    }
+    //    return tenantVariableModel!.Text ?? null;
+    //}
 
-    public static string GetTextForSubCategoryId (string subCategoryId)
-    {
-        List<TenantVariableModel>  listSubCategory = new  List<TenantVariableModel> ();
-        listSubCategory = GetSubCategoryList ();
+    //public static string? GetTextForSubCategoryId (string? subCategoryId)
+    //{
+    //    List<TenantVariableModel>?  listSubCategory = new List<TenantVariableModel>? ();
+    //    listSubCategory = GetSubCategoryList ();
 
-        TenantVariableModel? tenantVariableModel =
-                listSubCategory.FirstOrDefault<TenantVariableModel>
-                ( m =>  m.ValueID == int.Parse(subCategoryId));
+    //    TenantVariableModel? tenantVariableModel =
+    //            listSubCategory.FirstOrDefault<TenantVariableModel>
+    //            ( m =>  m.ValueID == int.Parse(subCategoryId!) ?? -1);
 
-        return tenantVariableModel!.Text;
-    }
+    //    return tenantVariableModel?.Text! ?? null;
+    //}
 }

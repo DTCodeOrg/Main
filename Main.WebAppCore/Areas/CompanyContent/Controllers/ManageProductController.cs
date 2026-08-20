@@ -66,18 +66,17 @@ public class ManageProductController: BaseController
 
         List<ImageFile>? listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
 
-        listSessionImageFiles?.ForEach (imgFile =>
+        listSessionImageFiles?.ForEach (async sessionImageFile =>
         {
             var fileRelativePath  =
-                    _storageService.MoveFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
-                    _tenantSetter.HttpContextUserId,
-                    imgFile.SessionFilePath, true);
+                    await _storageService.MoveFileToDestinationFolderAsync (
+                    sessionImageFile.FileName, true);
 
             productImageFileDataModel = new ProductFileDataModel ()
             {
-                ProductID = imgFile.PostID ?? 0,
+                ProductID = sessionImageFile.PostID ?? 0,
                 ProductImageFileID = 0,
-                FilePath = imgFile.RelativeFilePath
+                FilePath = sessionImageFile.RelativeFilePath
             };
 
             listProductImageFileDataModels.Add (productImageFileDataModel);
@@ -228,10 +227,8 @@ public class ManageProductController: BaseController
     {
         if ( !ReadImage (fileInput) )
         {
-            return StatusCode (500,new
-            {
-                success = false,message = "An error occurred during upload."
-            });
+            // Return the image URL to the frontend
+            return PartialView ("_Image",new ImageFile ());
         }
 
         ImageFile imageFile = await _storageService.SaveSessionFileAsync
@@ -307,7 +304,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            var listSubCategories = DropDownListItems.GetSubCategories( id );
+            var listSubCategories = DropDownListItems.GetSubCategoryList();
 
             return Json (listSubCategories);
         }

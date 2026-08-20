@@ -25,7 +25,7 @@ public class PostDataModel: DataModel
         get; set;
     }
 
-    public int PostOrder
+    public int? PostOrder
     {
         get; set;
     }
@@ -40,7 +40,7 @@ public class PostDataModel: DataModel
         get; set;
     }
 
-    public int CategoryID
+    public int? CategoryID
     {
         get; set;
     }
@@ -50,7 +50,7 @@ public class PostDataModel: DataModel
         get; set;
     }
 
-    public string FilePath
+    public string? FilePath
     {
         get; set;
     }
@@ -65,7 +65,7 @@ public class PostDataModel: DataModel
         get; set;
     }
 
-    public decimal Price
+    public decimal? Price
     {
         get; set;
     }

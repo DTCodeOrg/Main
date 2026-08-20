@@ -55,7 +55,7 @@ public class ProductRepository: IProductRepository
         return result > 0;
     }
 
-    public async Task<Product> GetProductByProductID (int postId)
+    public async Task<Product> GetProductByProductID (int? postId)
     {
         Product? product = await _tenantContext.Products.FirstOrDefaultAsync<Product>
                                                    (a => a.ProductID == postId);

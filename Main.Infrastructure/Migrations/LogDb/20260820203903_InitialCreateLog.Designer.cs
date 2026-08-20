@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Main.Infrastructure.Migrations.LogDb
 {
     [DbContext(typeof(LogDbContext))]
-    [Migration("20260819133452_InitialCreateLog")]
+    [Migration("20260820203903_InitialCreateLog")]
     partial class InitialCreateLog
     {
         /// <inheritdoc />

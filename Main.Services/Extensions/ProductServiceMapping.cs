@@ -58,36 +58,23 @@ public static class ProductServiceMapping
     {
         return new Product ()
         {
-            ProductName = productDataModel.ProductName,
-            SearchTag =
-                string
-                .IsNullOrWhiteSpace (productDataModel.SearchTag)
-                ? null
-                : productDataModel.SearchTag,
-
-            Price = productDataModel.UnitPrice,
-            Discount = productDataModel.Discount,
-            SaleCommission = productDataModel.SaleCommission,
-            CategoryID = productDataModel.CategoryID,
-            SubCategoryID = productDataModel.SubCategoryID,
-            Description = string.IsNullOrWhiteSpace (productDataModel.Description)
-                            ? null : productDataModel.Description,
-            PostType = EnumPostType.Product
+            ProductName = productDataModel.ProductName!.ToString (),
         };
     }
 
     private static List<ProductImageFile> MapProductFileEntity
         (ProductDataModel productDataModel)
     {
-        List<ProductImageFile> listProductFileEntity = new();
+        List<ProductImageFile> listProductFileEntity = [];
 
         ProductImageFile productImageFile;
 
         productDataModel.ImageFiles.ForEach (fileDataModel =>
         {
-            productImageFile = new ProductImageFile (fileDataModel.FileContent);
-
-            productImageFile.ProductID = fileDataModel.ProductID;
+            productImageFile = new ProductImageFile (fileDataModel.FileContent)
+            {
+                ProductID = fileDataModel.ProductID
+            };
 
             productImageFile.CreateParameters (fileDataModel.BaseDataModel);
 
@@ -149,8 +136,8 @@ public static class ProductServiceMapping
         {
             ProductID = productEntity.ProductID,
             ProductName = productEntity.ProductName,
-            Discount = productEntity.Discount.HasValue ? productEntity.Discount.Value : 0,
-            SaleCommission = productEntity.SaleCommission.HasValue ? productEntity.SaleCommission.Value : 0,
+            Discount = productEntity.Discount,
+            SaleCommission = productEntity.SaleCommission,
             SearchTag = productEntity.SearchTag,
             PostType =   productEntity.PostType ,
             Description = productEntity.Description,
@@ -193,15 +180,16 @@ public static class ProductServiceMapping
 
         productDataModel.ListComments.ForEach (commentDataModel =>
         {
-            var commentEntity = new ProductComment();
-
-            commentEntity.ProductID = productEntity.ProductID;
+            var commentEntity = new ProductComment
+            {
+                ProductID = productEntity.ProductID
+            };
             commentEntity.Comment = commentEntity.Comment;
 
             listProductCommentsEntity.Add (commentEntity);
         });
 
-        productEntity.ProductName = productDataModel.ProductName;
+        productEntity.ProductName = productDataModel.ProductName!;
         productEntity.Discount = productDataModel.Discount;
         productEntity.SaleCommission = productDataModel.SaleCommission;
         productEntity.SearchTag = productDataModel.SearchTag;

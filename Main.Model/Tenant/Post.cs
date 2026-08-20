@@ -9,13 +9,11 @@ public class Post: BaseEntity
 {
     public Post ()
     {
-        Price = 0;
-        WebsiteUrl = "www.dummy.com";
     }
 
     public Post (
         EnumPostType postType,
-        decimal price,
+        decimal? price,
         int rootId
         )
     {
@@ -31,8 +29,8 @@ public class Post: BaseEntity
         get; set;
     }
 
-    [Required]
-    public int Order
+
+    public int? Order
     {
         get; set;
     }
@@ -56,8 +54,8 @@ public class Post: BaseEntity
         get; set;
     }
 
-    [Required]
-    public string FilePath
+
+    public string? FilePath
     {
         get; set;
     }
@@ -68,15 +66,15 @@ public class Post: BaseEntity
         get; set;
     }
 
-    [Required]
+
     [DataType (DataType.Currency)]
-    public decimal Price
+    public decimal? Price
     {
         get; set;
     }
 
     [Required, DataType (DataType.Url)]
-    public string WebsiteUrl
+    public string? WebsiteUrl
     {
         get; set;
     }

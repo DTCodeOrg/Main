@@ -22,7 +22,7 @@ public class ProductDisplayViewModel
 
 
     [Display (Name = "Sub Category")]
-    public string DisplaySubCategory
+    public string? DisplaySubCategory
     {
         get; set;
     }
@@ -36,7 +36,7 @@ public class ProductDisplayViewModel
 
     [Display (Name = "Price (Taka)")]
     [DataType (DataType.Currency)]
-    public decimal UnitPrice
+    public decimal? UnitPrice
     {
         get; set;
     }

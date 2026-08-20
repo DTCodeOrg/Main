@@ -38,19 +38,18 @@ public class ManageAdminPostController: BaseController
 
         if ( listSessionImageFiles?.Count > 0 )
         {
-            listSessionImageFiles.ForEach (imgFile =>
+            listSessionImageFiles.ForEach (async sessionImageFile =>
             {
-                var relativeFilePath =
-                    _storageService.MoveFileToDestinationFolder(_tenantSetter.ResolvedTenantId,
-                    _tenantSetter.HttpContextUserId,
-                    imgFile.SessionFilePath,false);
+                ImageFile imageFile =
+                    await _storageService.MoveFileToDestinationFolderAsync(
+                    sessionImageFile.FileName, false);
 
                 AdminImageFileDataModel adminImageFileDataModel= new ()
                 {
-                    AdminPostID = imgFile.PostID ?? 0,
+                    AdminPostID = sessionImageFile.PostID ?? 0,
                     AdminImageFileID = 0,
-                    FileName = imgFile.FileName,
-                    FilePath = imgFile.RelativeFilePath
+                    FileName = imageFile.FileName,
+                    FilePath = imageFile.RelativeFilePath
                 };
 
                 listAdminPostDataModel.Add (adminImageFileDataModel);

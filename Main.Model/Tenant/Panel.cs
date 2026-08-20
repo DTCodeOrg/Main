@@ -71,7 +71,9 @@ public class Panel: BaseEntity
 
         if ( ListPosts.Any () )
         {
-            int order = ListPosts.ToList<Post>().OrderBy (a=> a.Order).Last<Post>().Order;
+            int? order = ListPosts.ToList<Post>().OrderBy
+                (a=> a.Order).Last<Post>().Order;
+
             post.Order = order + 1;
             post.PanelID = PanelID;
         }

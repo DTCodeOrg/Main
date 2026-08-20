@@ -8,7 +8,7 @@ public static class PageMapping
 {
     public static List<PageDisplayViewModel> PageDisplayMapping (List<PageDisplayDataModel> listPageDisplayDataModel,string company)
     {
-        List<PageDisplayViewModel> listPageDisplayViewModels = new();
+        List<PageDisplayViewModel> listPageDisplayViewModels = [];
 
         PageDisplayViewModel pageDisplayViewModel;
 
@@ -36,8 +36,7 @@ public static class PageMapping
             return new List<PostSelectViewModel> ();
         }
 
-        List<PostSelectViewModel> listPostSelectViewModels =
-            new();
+        List<PostSelectViewModel> listPostSelectViewModels = [];
 
         PostSelectViewModel postSelectViewModel;
 
@@ -47,11 +46,17 @@ public static class PageMapping
                 dataModel.RootID,dataModel.ImageFileID,dataModel.ImageOrderID)
             {
                 ImageFileContent = dataModel.FileContent,
-                CategoryName = DropDownListItems.GetCategoryText (dataModel.CategoryID.ToString ()),
+
+                CategoryName = DropDownListItems.GetCategoryList ().ToList ()
+                    .FirstOrDefault (a => a.Value == ( dataModel.CategoryID.HasValue
+                    ? dataModel.CategoryID.Value.ToString () : "" ))!.Text,
 
                 PostTitle = dataModel.PostTitle,
+
                 Price = dataModel.Price,
+
                 Currency = ListEnum.GetCurrencyDescription (currency),
+
                 PanelPostID = dataModel.PanelPostID
             };
 
@@ -87,11 +92,18 @@ public static class PageMapping
                 postViewModel = new PostViewModel
                 {
                     PanelPostID = panelPostDataModel.PanelPostID,
+
                     ImageFileContent = panelPostDataModel.FileContent,
+
                     ImageFileID = panelPostDataModel.ImageFileID,
+
                     Price = panelPostDataModel.Price,
+
                     PageID = panelViewModel.PageID,
-                    CategoryID = panelPostDataModel.CategoryID,
+
+                    CategoryID
+                        = panelPostDataModel.CategoryID.HasValue ? panelPostDataModel.CategoryID.Value : 0,
+
                     PanelID = panelViewModel.PanelID
                 };
 
@@ -106,7 +118,8 @@ public static class PageMapping
         PageViewModel pageViewModel = new ()
         {
             ListPagePanels =
-                listPanelViewModel.ToList<PanelViewModel> ( ).OrderBy ( a => a.PanelPosition ).ToList ( )
+                listPanelViewModel.ToList<PanelViewModel> ( )
+                .OrderBy ( a => a.PanelPosition ).ToList ( )
         };
 
         return pageViewModel;

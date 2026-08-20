@@ -24,15 +24,11 @@
         </a>
     </div>
 
-    @{
-        int postId = Model?.PostID ?? 0;
-        string fileName = Model.FileName!;
-    }
-
+    
     <button type="button"
             class="light-button btn-remove-image"
-            data-fileName="@fileName"
-            data-postid="@postId"
+            data-fileName="@Model.FileName"
+            data-postid="@Model.PostID"
             data-id="@Model.FileID">
         REMOVE
     </button>

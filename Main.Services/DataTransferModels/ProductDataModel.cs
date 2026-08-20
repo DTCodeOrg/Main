@@ -9,24 +9,24 @@ public class ProductDataModel: DataModel
     {
     }
 
-    public int ProductID
+    public int? ProductID
     {
         get; set;
     }
 
-    public int CategoryID
+    public int? CategoryID
     {
         get; set;
     }
 
-    public int SubCategoryID
+    public int? SubCategoryID
     {
         get; set;
     }
 
     public EnumPostType PostType { get; set; } = EnumPostType.Product;
 
-    public string ProductName
+    public string? ProductName
     {
         get; set;
     }
@@ -36,17 +36,17 @@ public class ProductDataModel: DataModel
         get; set;
     }
 
-    public decimal UnitPrice
+    public decimal? UnitPrice
     {
         get; set;
     }
 
-    public decimal Discount
+    public decimal? Discount
     {
         get; set;
     }
 
-    public decimal SaleCommission
+    public decimal? SaleCommission
     {
         get; set;
     }
@@ -66,17 +66,17 @@ public class ProductDataModel: DataModel
         get; set;
     }
 
-    public int UserID
+    public int? UserID
     {
         get; set;
     }
 
-    public string CategoryText
+    public string? CategoryText
     {
         get; set;
     }
 
-    public string SubCategoryText
+    public string? SubCategoryText
     {
         get; set;
     }

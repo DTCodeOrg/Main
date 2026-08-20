@@ -25,8 +25,9 @@ public static class PageServiceMapping
         int order = 1;
         panelDataModel.ListPosts.ForEach (postDataModel =>
         {
-            post =
-            new Post (postDataModel.EnumPostType,postDataModel.Price,postDataModel.RootID)
+            post = new Post (postDataModel.EnumPostType,
+            postDataModel.Price!,
+            postDataModel.RootID)
             {
                 FileContent = postDataModel.FileContent,
                 Title = postDataModel.PostTitle,

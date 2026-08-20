@@ -49,8 +49,6 @@ public class DropDownListItems
         return objOfferTypeListItems.AsEnumerable ();
     }
 
-
-
     public static IEnumerable<SelectListItem> GetPageList ()
     {
         var listCountries = ListEnum.GetPublicPages().OrderBy(a => a.Text).ToList();
@@ -66,8 +64,6 @@ public class DropDownListItems
         }
         return objCoutryListItems.AsEnumerable ();
     }
-
-
 
     public static IEnumerable<SelectListItem> GetPanelTempletList ()
     {
@@ -95,7 +91,6 @@ public class DropDownListItems
 
         return objCurrencyListItems.AsEnumerable ();
     }
-
 
     public static IEnumerable<SelectListItem> GetCurrencyList ()
     {
@@ -138,20 +133,17 @@ public class DropDownListItems
         return objCountryListItems.AsEnumerable ();
     }
 
-
     public static IEnumerable<SelectListItem> GetSubCategoryList ()
     {
-        return GetSelectList (TenantStoreHelper.GetSubCategoryList (),"");
+        var listCategory = GetSelectList (TenantStoreHelper.GetSubCategoryList (), "");
+        return listCategory;
     }
 
-
-    public static IEnumerable<SelectListItem> GetSubCategories
-    (int categoryId)
+    public static IEnumerable<SelectListItem> GetCategoryList ()
     {
-        return GetSelectList
-        (TenantStoreHelper.GetSubCategoryListByID (categoryId),"");
+        var listCategory = GetSelectList (TenantStoreHelper.GetCategoryList (),"");
+        return listCategory;
     }
-
 
     public static IEnumerable<SelectListItem> GetShowHideList ()
     {
@@ -170,70 +162,36 @@ public class DropDownListItems
             objListItems.Add (objItem);
         });
 
-        return objListItems.AsEnumerable ();
+        return objListItems.ToList ();
     }
 
-    private static IEnumerable<SelectListItem> GetSelectList (List<TenantVariableModel> listTenantVariableModel,string selectText)
+    private static IEnumerable<SelectListItem>
+        GetSelectList (List<TenantVariableModel> listTenantVariableModel,string selectText)
     {
-        List<SelectListItem> objList =
-            new()
-            {
-                new SelectListItem() {
-                    Text = "",
-                    Value = "",
-                    Selected = true
-                } };
+        List<SelectListItem> objList = [];
+
+        SelectListItem objItem;
 
         listTenantVariableModel.ToList ().ForEach (a =>
         {
-            SelectListItem objItem = new ()
+            objItem = new SelectListItem ()
             {
-                Text = a.Text.Trim(),
-                Value = a.ValueID.ToString().Trim()
+                Text = a.Text.Trim (),
+                Value = a.ValueID.ToString ().Trim ()
             };
 
             objList.Add (objItem);
         });
 
-        return objList.AsEnumerable ();
-    }
-
-    public static IEnumerable<SelectListItem> GetSelectList (List<TenantVariableModel> listTenantVariableModel)
-    {
-        List<SelectListItem> objList =
-                            new ()
-                            {
-                                new SelectListItem() { Text = "", Value = "" }
-                            };
-
-        listTenantVariableModel.ForEach (a =>
+        objItem = new SelectListItem ()
         {
-            SelectListItem objItem = new ()
-            {
-                Text = a.Text.Trim ( ),
-                Value = a.ValueID.ToString ( ).Trim ( )
-            };
+            Text = "",
+            Value = "",
+            Selected = true
+        };
 
-            objList.Add (objItem);
+        objList.Add (objItem);
 
-        });
-
-        return objList.AsEnumerable ();
-    }
-
-
-    public static IEnumerable<SelectListItem> GetCategoryList ()
-    {
-        return GetSelectList (TenantStoreHelper.GetCategoryList ());
-    }
-
-    public static string GetCategoryText (string categoryId)
-    {
-        return TenantStoreHelper.GetTextForCategoryId (categoryId);
-    }
-
-    public static string GetSubCategoryText (string subCategoryId)
-    {
-        return TenantStoreHelper.GetTextForSubCategoryId (subCategoryId);
+        return objList.AsEnumerable<SelectListItem> ();
     }
 }
