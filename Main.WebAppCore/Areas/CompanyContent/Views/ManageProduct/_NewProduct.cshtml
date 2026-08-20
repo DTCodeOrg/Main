@@ -121,21 +121,35 @@
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
            
 
-            <div class="upload-container image-field  col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    <!-- YOUR HTML REMAINS THE SAME (with the typo fixed) -->
+        <div class="upload-container image-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
+             <form asp-action="UploadImage"
+                 asp-controller="ManageProduct"
+                 asp-area="CompanyContent"
+                 method="post" 
+                 enctype="multipart/form-data">
 
-                <input type="file" id="fileInput" class="light-button btn-sm" name="myFile" />
+                 <label>Select File:</label>
+                 <input class="form-control" type="file" id="fileInput" name="fileInput" />
+                 <br /><br />
+                 <button type="submit">Upload</button>
+             </form>
+         </div>
 
-                <button type="button" id="btnUpload" class="light-button btn-sm">Add New Picture</button>
+         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+             <button type="button" id="btnLoadImage" class="light-button btn-sm">Add New Picture</button> 
+         </div>
+
+         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
+
+         <!-- The partial view HTML will land directly inside this div -->
+         <div id="imagePanelContainer" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12"></div>
+
+        <!-- PLACE THE SCRIPT RIGHT BELOW THE HTML OR IN YOUR SCRIPTS SECTION -->
+
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap">
 
             </div>
-
-            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-
-            <div id="imagePanelContainer" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12">
-
-            </div>
-
-            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
@@ -143,7 +157,9 @@
                         class="primary-button max"
                         type="submit"
                         form="myMainForm">
+
                     @SharedLocalizer["NewPostButtonSUBMITAD"]
+
                 </button>
 
             </div>

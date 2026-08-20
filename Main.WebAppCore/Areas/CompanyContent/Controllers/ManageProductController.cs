@@ -224,10 +224,9 @@ public class ManageProductController: BaseController
 
 
     [HttpPost]
-    [RequestSizeLimit (52428800)]
-    public async Task<IActionResult> UploadImage (IFormFile file)
+    public async Task<IActionResult> UploadImage (IFormFile fileInput)
     {
-        if ( !ReadImage (file) )
+        if ( !ReadImage (fileInput) )
         {
             return StatusCode (500,new
             {
@@ -236,21 +235,20 @@ public class ManageProductController: BaseController
         }
 
         ImageFile imageFile = await _storageService.SaveSessionFileAsync
-            (_tenantSetter.ResolvedTenantId, _tenantSetter.HttpContextUserId, file, true);
+        (_tenantSetter.ResolvedTenantId, _tenantSetter.HttpContextUserId, fileInput, true);
 
         SetSessionImageFile (imageFile,_tenantCacheService);
 
-        return Ok (new
-        {
-            success = true,message = "File uploaded successfully!"
-        });
+        // Return the image URL to the frontend
+        return PartialView ("_Image",imageFile);
     }
 
-    private bool ReadImage (IFormFile file)
+
+    private bool ReadImage (IFormFile fileInput)
     {
-        if ( file != null && file.FileName != null )
+        if ( fileInput != null && fileInput.FileName != null )
         {
-            string extension = Path.GetExtension(file.FileName).ToLower();
+            string extension = Path.GetExtension(fileInput.FileName).ToLower();
 
             if ( extension.Equals (".jpg") || extension.Equals (".jpeg")
 
@@ -263,16 +261,17 @@ public class ManageProductController: BaseController
         return false;
     }
 
-    [HttpGet]
-    public IActionResult LoadImage ()
-    {
-        List<ImageFile>? imageFileList = GetAllSessionImages(_tenantCacheService)!;
 
-        ImageFile imageFile = imageFileList?.LastOrDefault<ImageFile >()!;
+    //[HttpGet]
+    //public IActionResult LoadImage ()
+    //{
+    //    List<ImageFile>? imageFileList = GetAllSessionImages(_tenantCacheService)!;
 
-        return PartialView ("_Image",imageFile);
+    //    ImageFile imageFile = imageFileList?.LastOrDefault<ImageFile >()!;
 
-    }
+    //    return PartialView ("_Image",imageFile);
+
+    //}
 
 
     [HttpDelete]

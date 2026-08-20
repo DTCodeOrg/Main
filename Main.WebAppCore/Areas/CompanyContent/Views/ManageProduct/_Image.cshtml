@@ -3,11 +3,10 @@
 <div class="image-content">
     <div title="Product Image">
         <a class="thumbnail">
-            @if (Model != null && Model.FileContent != null && Model.FileContent.Length > 1)
+            @if (Model != null && Model.RelativeFilePath.Length > 0)
             {
-                string imageBase64 = Convert.ToBase64String(Model.FileContent);
-                string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);
-                <img src="@imageSrc"
+                
+                <img src="@Model.RelativeFilePath"
                      class="img-responsive new-post-mobile-image"
                      alt="Product image"
                      style="max-height:140px; max-width:100%;width:100%;" />
@@ -27,13 +26,14 @@
 
     @{
         int postId = Model?.PostID ?? 0;
-        int fileId = Model?.FileID ?? 0;
+        string fileName = Model.FileName!;
     }
 
     <button type="button"
             class="light-button btn-remove-image"
-            data-id="@fileId"
-            data-postid="@postId">
+            data-fileName="@fileName"
+            data-postid="@postId"
+            data-id="@Model.FileID">
         REMOVE
     </button>
 </div>
