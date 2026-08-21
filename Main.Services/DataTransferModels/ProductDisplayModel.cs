@@ -57,6 +57,11 @@ public class ProductDisplayModel
         get; set;
     }
 
+    public string TenantNane
+    {
+        get; set;
+    }
+
 }
 
 

@@ -1,7 +1,9 @@
-# Latest Video (with tenant theme & logo) 🆕🎬
+# Latest Video (Tenant Product & Photos) 🆕🎬
+**22 Aug 2026** 
+[Video - Tenant Product & Photos](https://1drv.ms/v/c/93d70fb51193cb6b/IQDVNYSAQMf8Rb45NWgIdiaHAVuqanStaSjo0pe7yMQjdio?e=GJ37yG) **NEW!**
 
 **17 Aug 2026** 
-[Video - Refined Theme](https://1drv.ms/v/c/93d70fb51193cb6b/IQBmlArEE1UzTYF15imEdp-7AV6PBRUxTHaiPr0GXF_nPm4?e=0O69CQ) **NEW!**
+[Video - Refined Theme](https://1drv.ms/v/c/93d70fb51193cb6b/IQBmlArEE1UzTYF15imEdp-7AV6PBRUxTHaiPr0GXF_nPm4?e=0O69CQ)
 
 
 ____

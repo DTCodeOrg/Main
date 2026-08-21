@@ -21,6 +21,19 @@ public class TenantStoreHelper
         return TenantStores.ListTenantStoreMenu (localizer);
     }
 
+    public static string GetTextForCategoryId (string categoryId,IStringLocalizer<SharedResource> localizer)
+    {
+        List<TenantVariableModel>? listCategory = TenantStores.ListTenantStoreMenu (localizer);
+
+        int.TryParse (categoryId,out var result);
+
+        TenantVariableModel? tenantVariableModel =
+                listCategory?.FirstOrDefault<TenantVariableModel>
+                ( m =>  m.ValueID == result);
+
+        return tenantVariableModel?.Text ?? string.Empty;
+    }
+
 
     //public static List<TenantVariableModel>? GetSubCategoryListByID (int categoryId)
     //{
@@ -34,16 +47,7 @@ public class TenantStoreHelper
     //    return listSubCategory?.ToList () ?? null;
     //}
 
-    //public static string? GetTextForCategoryId (string categoryId)
-    //{
-    //    List<TenantVariableModel>? listCategory = GetCategoryList (  );
 
-    //    TenantVariableModel? tenantVariableModel =
-    //            listCategory?.FirstOrDefault<TenantVariableModel>
-    //            ( m =>  m.ValueID == int.Parse (categoryId)) ?? null;
-
-    //    return tenantVariableModel!.Text ?? null;
-    //}
 
     //public static string? GetTextForSubCategoryId (string? subCategoryId)
     //{

@@ -59,7 +59,7 @@ public class ManageProductController: BaseController
             List<ProductDisplayModel> productDataModels = await _productService.GetAllProducts();
 
             List<ProductDisplayViewModel> displayProductViewModels = ProductMapping.MapDisplayProductViewModel
-                ( productDataModels );
+                ( productDataModels, _localizer, _tenantSetter );
 
             return View (displayProductViewModels);
         }

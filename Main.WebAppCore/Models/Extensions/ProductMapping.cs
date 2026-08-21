@@ -1,6 +1,9 @@
 ﻿using DataTransferModel;
 using Main.Common;
 using Main.Common.Models;
+using Main.Infrastructure;
+using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 
 namespace Main.WebAppCore.Models.Extensions;
 
@@ -101,9 +104,9 @@ public static class ProductMapping
         return productDataModel;
     }
 
-    public static List<ProductDisplayViewModel> MapDisplayProductViewModel (List<ProductDisplayModel> productDataModels)
+    public static List<ProductDisplayViewModel> MapDisplayProductViewModel (List<ProductDisplayModel> productDataModels,IStringLocalizer<SharedResource> localizer,ITenantSetter tenantSetter)
     {
-        List<ProductDisplayViewModel> dispayProductViewModels = new();
+        List<ProductDisplayViewModel> dispayProductViewModels = [];
 
         ProductDisplayViewModel productDisplayViewModel;
 
@@ -113,13 +116,15 @@ public static class ProductMapping
             {
                 ProductID = model.ProductID.HasValue ? model.ProductID.Value : 0,
 
-                DisplayCategory = "",
+                DisplayCategory = TenantStoreHelper.GetTextForCategoryId (model.CategoryID.ToString () ?? string.Empty,localizer),
 
                 ProductName = model.ProductName!,
 
-                DisplaySubCategory = "",
+                DisplaySubCategory = TenantStoreHelper.GetTextForCategoryId (model.SubCategoryID.ToString () ?? string.Empty,localizer),
 
-                UnitPrice = model.UnitPrice
+                UnitPrice = model.UnitPrice,
+
+                TenantName = tenantSetter.CurrentTenant.TenantName
             };
 
             dispayProductViewModels.Add (productDisplayViewModel);

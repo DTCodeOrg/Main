@@ -1,8 +1,28 @@
-﻿@{
-    ViewData["Title"] = "Update Tenant Logo";
+﻿
+@{
+    var tenantName = TenantSetter.CurrentTenant.TenantName;
+    var title = $"{ tenantName } Logo";
+    ViewData["Title"] = title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ExcludeHeader = true;
 }
 
+
 <div class="container">
+
+    <div class="gap"></div>
+
+     <div class="page-header">
+
+        <div class="header-text">
+
+            <h1>Manage Tenant Logo</h1>
+
+            <p>View, update logo for @tenantName.</p>
+
+        </div>
+
+    </div>
 
     <div class="row">
 
@@ -11,44 +31,68 @@
 
         <div class="col-md-6">
 
-            <h2>Update Logo</h2>
-            
-            <div class="form-group mb-3">
-                
-                    <label for="logoFile" class="form-label">Select New Logo Image:</label>
+            <h5>Update Logo</h2>
 
-                    <form asp-action="UpdateLogo"
-                            asp-controller="Theme"
-                            asp-area=""
-                            method="post"
-                            enctype="multipart/form-data">
-
-                        <label >Select File:</label>
-                      
-                        <input class="form-control" type="file" id="logoFile" name="logoFile" />
-                        <br />
-                        <br />
-                        <button type="submit">Upload</button>
-
-                    </form>
-
+            <div class="gap">
             </div>
-
-           
-            <div class="mb-3">
-
-                <p>Current Logo:</p>
+               
+            <p>Current Logo:</p>
                    
-                <img src="@Model.CurrentLogoFileName" 
-                    alt="Current Logo" 
-                    style="max-height: 100px; display: block;" />
+            <img src="@Model.CurrentLogoFileName" 
+                alt="Current Logo" 
+                style="max-height: 100px; display: block;" />
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+            
+            <div class="form-group">
+                
+                <label for="logoFile" class="form-label">
+                    Select New Logo Image:
+                </label>
+
+                <br />
+                <br />
+
+                <form asp-action="UpdateLogo"
+                        asp-controller="Theme"
+                        asp-area=""
+                        method="post"
+                        enctype="multipart/form-data">
+
+                   
+
+                    <input class="form-control" type="file" id="logoFile" name="logoFile" />
+
+                    <br />
+                    
+
+                    <button type="submit">
+
+                        <a class="dropdown-item dropdown-item-text icon-button" >
+
+                            <span>
+                                Upload
+                            </span>
+
+                        </a>
+
+                    </button>
+                   
+                    <a class="dropdown-item dropdown-item-text icon-button"
+                        asp-action="Index" 
+                        asp-controller="Home" 
+                        asp-area="" >
+
+                        <span>
+                            Cancel
+                        </span>
+
+                    </a>
+
+                </form>
 
             </div>
-          
-
-            <button type="submit" class="btn btn-primary">Upload and Save</button>
-           
-            <a asp-action="Index" asp-controller="Home" asp-area="" class="btn btn-secondary">Cancel</a>
 
         </div>
 

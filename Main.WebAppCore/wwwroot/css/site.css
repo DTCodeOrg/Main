@@ -19,19 +19,85 @@ a.logo {
 }
 
 a.icon-button {
-    font-weight: 600;
+    font-weight: 500;
+    background-color: var(--bs-secondary-bg);
+    border-color: transparent;
     background-color: transparent;
+    text-decoration: none;
+    border-style:none;
     color: var(--bs-gray-dark);
-    padding: 0 10px !important;
+    padding: 10px !important;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
     a.icon-button:hover {
-        opacity: 0.4;
-        background-color: rgba(0, 0, 0, 0.04); /* Subtle background pill effect */
+        opacity: 0.3;
+        color:white;
+        background-color: var(--bs-gray-dark);
+        /*rgba(0, 0, 0, 0.04);  Subtle background pill effect */
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04); /* Soft shadow */
         border-radius: 4px; /* Keeps the background and shadow shapes clean */
     }
+
+button.icon-button {
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--bs-gray-dark);
+    padding: 10px !important;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    button.icon-button:hover {
+        opacity: 0.3;
+        color: white;
+        background-color: var(--bs-gray-dark);
+        /*rgba(0, 0, 0, 0.04);  Subtle background pill effect */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04); /* Soft shadow */
+        border-radius: 4px; /* Keeps the background and shadow shapes clean */
+    }
+
+/* Layout Wrapper */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb; /* Light grey divider */
+}
+
+/* Title Styling */
+.header-text h1 {
+    font-size: 1.75rem; /* Bold, readable size */
+    font-weight: 700;
+    color: #111827; /* Deep professional slate/black */
+    letter-spacing: -0.025em;
+    margin: 0 0 0.25rem 0;
+}
+
+/* Subtitle/Description Styling */
+.header-text p {
+    font-size: 0.875rem;
+    color: #6b7280; /* Muted grey text */
+    margin: 0;
+}
+
+a.ads-button {
+    background-color: var(--bs-gray-dark);
+    border: 1px solid var(--bs-gray);
+    border-radius: 3px;
+    color: white;
+    text-decoration: none; /* Prevents underline on links */
+    transition: background-color 0.15s ease-in-out; /* Smooth transition */
+}
+
+
+    a.ads-button:hover {
+        background-color: transparent;
+        color: var(--bs-gray-dark);
+        border-color: var(--bs-gray-dark);
+    }
+
 
 
 .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {

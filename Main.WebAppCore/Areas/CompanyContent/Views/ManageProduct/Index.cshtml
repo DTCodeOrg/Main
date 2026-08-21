@@ -1,56 +1,98 @@
-﻿
-@model List<ProductDisplayViewModel>
+﻿@model List<ProductDisplayViewModel>
 
 @{
-    ViewData["Title"] = "Manage Products";
+    var tenantName = TenantSetter.CurrentTenant.TenantName;
+    var title = $"{ tenantName } Products";
+    ViewData["Title"] = title;
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
 }
 
 <div id="manageAdminProduct" class="container">
 
-    <div class="card-form">
+    <div class="gap"></div>
 
-        <h4 class="card-title">MANAGE YOUR PRODUCTS</h4>
+    <div class="page-header">
+
+        <div class="header-text">
+
+            <h1>Manage Tenant Products</h1>
+
+            <p>View, edit, or delete products for @tenantName.</p>
+
+        </div>
+
+        <div class="header-actions">
+            
+            <a class="dropdown-item dropdown-item-text icon-button"
+               asp-area="CompanyContent"
+               asp-controller="ManageProduct"
+               asp-action="NewProduct">
+                <i class="fa fa-fw fa-plus"></i>
+
+                <span>
+                         Add Product 
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card-form">
 
         <div class="gap"></div>
 
         <div class="gap"></div>
 
         <table class="table">
+
             <thead>
+
                 <tr>
+
                     <th>
+
+                        @Html.DisplayNameFor( model => model[0].TenantName )
+                    </th>
+
+                    <th>
+
                         @Html.DisplayNameFor( model => model[0].DisplayCategory )
+
                     </th>
 
                     <th>
-                        @Html.DisplayNameFor( model => model[0].DisplaySubCategory )
-                    </th>
 
-                    <th>
                         @Html.DisplayNameFor(model => model[0].ProductName)
+
                     </th>
                    
                     <th>
+
                         @Html.DisplayNameFor(model => model[0].UnitPrice)
+
                     </th>
            
                     <th></th>
+
                 </tr>
+
             </thead>
 
             <tbody>
 
                 @foreach (var item in Model.ToList()) {
+
                     <tr>
 
                         <td>
-                            @Html.DisplayFor( modelItem => item.DisplayCategory )
+                            @Html.DisplayFor( modelItem => item.TenantName )
                         </td>
 
                         <td>
-                            @Html.DisplayFor( modelItem => item.DisplaySubCategory )
+                            @Html.DisplayFor( modelItem => item.DisplayCategory )
                         </td>
 
                         <td>
@@ -66,25 +108,26 @@
                             <a title="View Product"
                                     class="icon-button flex"
                                     href="@Url.Action("Details", "ManageProduct", new { Area = "CompanyContent", id = item.ProductID })">
-                                <i class="fa fa-eye"></i>
+                                <i class="fa fa-eye"></i> View
                             </a>
 
                             <a title="Edit Product"
                                     class="icon-button flex"
                                     href="@Url.Action("Edit", "ManageProduct", new { Area = "CompanyContent", id = item.ProductID })">
-                                <i class="fa fa-edit"></i>
+                                <i class="fa fa-edit"></i> Edit
                             </a>
 
                             <a title="Remove Product"
                                     class="icon-button flex"
                                     href="@Url.Action("Delete", "ManageProduct", new { Area = "CompanyContent", id = item.ProductID })">
-                                <i class="fa fa-trash"></i>
+                                <i class="fa fa-trash"></i> Delete
                             </a>
 
                         </td>
 
                     </tr>
                 }
+
             </tbody>
 
         </table>
@@ -96,4 +139,3 @@
 @section scriptsapp {
 
 }
-

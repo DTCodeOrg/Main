@@ -40,6 +40,11 @@ public class ProductDisplayViewModel
     {
         get; set;
     }
+
+    public string TenantName
+    {
+        get; set;
+    }
 }
 
 

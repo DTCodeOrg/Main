@@ -33,7 +33,7 @@ public static class ProductServiceMapping
         productDisplayModel.SubCategoryID = productEntity.SubCategoryID;
         productDisplayModel.ProductName = productEntity.ProductName;
         productDisplayModel.UnitPrice = productEntity.Price;
-        productDisplayModel.Discount = productEntity.Discount;
+
     }
 
     public static Product MapSaveProductEntity (ProductDataModel productDataModel)
