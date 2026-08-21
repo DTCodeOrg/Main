@@ -10,7 +10,7 @@ public interface IStorageService
     Task<ImageFile> SaveSessionFileAsync
     (Guid tenantId,string userId,IFormFile file,bool isProduct);
 
-    Task<ImageFile> MoveFileToDestinationFolderAsync
+    Task<bool> MoveFileToDestinationFolderAsync
     (string fileName,bool product);
 }
 
@@ -97,7 +97,7 @@ public class LocalStorageService: IStorageService
                 SessionFilePath = $"/TenantFileSessionRoot/Products/{sessionProductFileName}",
                 FileName = sessionProductFileName,
                 PostType = EnumPostType.Product,
-                RelativeFilePath = $"/TenantFileSessionRoot/Products/{sessionProductFileName}"
+                RelativeFilePath = $"/TenantProducts/{sessionProductFileName}"
             };
             return imageFile;
         }
@@ -119,8 +119,9 @@ public class LocalStorageService: IStorageService
                 SessionFilePath = $"/TenantFileSessionRoot/AdminAds/{sessionAdminAdFileName}",
                 FileName = sessionAdminAdFileName,
                 PostType = EnumPostType.AdSpace,
-                RelativeFilePath = $"/TenantFileSessionRoot/AdminAds/{sessionAdminAdFileName}"
+                RelativeFilePath = $"/TenantAdminAds/{sessionAdminAdFileName}"
             };
+
             return imageFile;
         }
     }
@@ -153,7 +154,7 @@ public class LocalStorageService: IStorageService
         }
     }
 
-    public async Task<ImageFile> MoveFileToDestinationFolderAsync
+    public async Task<bool> MoveFileToDestinationFolderAsync
     (string fileName,bool product)
     {
         if ( product )
@@ -174,15 +175,7 @@ public class LocalStorageService: IStorageService
 
                 System.IO.File.Delete (sourceFolderFilePath);
 
-                ImageFile imageFile = new()
-                {
-                    FileName = fileName,
-                    PostType = EnumPostType.Product,
-                    RelativeFilePath = $"/TenantProducts/{fileName}",
-                    SessionFilePath = $"/TenantFileSessionRoot/Products/"
-                };
-
-                return imageFile;
+                return true;
             }
         }
         else
@@ -203,18 +196,10 @@ public class LocalStorageService: IStorageService
 
                 System.IO.File.Delete (sourceFolderFilePath);
 
-                ImageFile imageFile = new ()
-                {
-                    FileName = fileName,
-                    PostType = EnumPostType.AdSpace,
-                    RelativeFilePath = $"/TenantAdminAds/{fileName}",
-                    SessionFilePath = $"/TenantFileSessionRoot/AdminAds/"
-                };
-
-                return imageFile;
+                return true;
             }
         }
 
-        return new ImageFile ();
+        return false;
     }
 }

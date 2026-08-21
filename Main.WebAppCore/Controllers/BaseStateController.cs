@@ -55,14 +55,15 @@ public partial class BaseController
 
         if ( itemToRemove != null )
         {
-            _ = imageList.Remove (itemToRemove);
-            if ( imageList.Count != 0 )
+            bool result = imageList.Remove (itemToRemove);
+
+            if ( imageList.Count > 0 )
             {
                 tenantCacheService.Set (baseKey,imageList,cacheDuration);
             }
             else
             {
-                tenantCacheService.Clear (baseKey);
+                tenantCacheService.Set (baseKey,imageList,cacheDuration);
             }
 
             return true;
