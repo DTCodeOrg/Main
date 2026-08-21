@@ -1,21 +1,21 @@
 ﻿using Main.Common.Models;
+using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
 namespace Main.Common;
 
 public class TenantStores
 {
-    public static List<TenantVariableModel> ListTenantStoreMenu ()
+    public static List<TenantVariableModel> ListTenantStoreMenu (IStringLocalizer<SharedResource> localizer)
     {
         List<TenantVariableModel> listTenantStoreMenu
         = [];
-
 
         listTenantStoreMenu.Add (new TenantVariableModel ()
         {
             ValueID = ( int ) EnumStoreMenu.Beauty,
             ParentID = ( int ) EnumStoreMenu.Beauty,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Beauty"],
+            Text = localizer["Beauty"] ?? "Beauty",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -25,7 +25,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.Health,
             ParentID = ( int ) EnumStoreMenu.Health,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Health"],
+            Text = localizer["Health"] ?? "Health",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -35,7 +35,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.Fashion,
             ParentID = ( int ) EnumStoreMenu.Fashion,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Fashion"],
+            Text = localizer["Fashion"] ?? "Fashion",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -45,7 +45,8 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.Fitness,
             ParentID = ( int ) EnumStoreMenu.Fitness,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["FitnessAndLifeStyles"],
+            Text = localizer["FitnessAndLifeStyles"]
+            ?? "FitnessAndLifeStyles",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -55,7 +56,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.ARTS,
             ParentID = ( int ) EnumStoreMenu.ARTS,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["ARTS"],
+            Text = localizer["ARTS"] ?? "ARTS",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -65,7 +66,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.CRAFTS,
             ParentID = ( int ) EnumStoreMenu.CRAFTS,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["CRAFTS"],
+            Text = localizer["CRAFTS"] ?? "CRAFTS",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -75,7 +76,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.COLLECTIBLES,
             ParentID = ( int ) EnumStoreMenu.COLLECTIBLES,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["COLLECTIBLES"],
+            Text = localizer["COLLECTIBLES"] ?? "COLLECTIBLES",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -85,7 +86,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.Makeup,
             ParentID = ( int ) EnumStoreMenu.Makeup,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Makeup"],
+            Text = localizer["Makeup"] ?? "Makeup",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -95,7 +96,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.SkinCare,
             ParentID = ( int ) EnumStoreMenu.SkinCare,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["SkinCare"],
+            Text = localizer["SkinCare"] ?? "SkinCare",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -105,7 +106,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.BeautyTools,
             ParentID = ( int ) EnumStoreMenu.BeautyTools,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["BeautyTools"],
+            Text = localizer["BeautyTools"] ?? "BeautyTools",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -115,7 +116,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.Wellbeing,
             ParentID = ( int ) EnumStoreMenu.Wellbeing,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Wellbeings"],
+            Text = localizer["Wellbeings"] ?? "Wellbeings",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -125,7 +126,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.PharmacyProduct,
             ParentID = ( int ) EnumStoreMenu.PharmacyProduct,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Pharmacy"],
+            Text = localizer["Pharmacy"] ?? "Pharmacy",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -135,7 +136,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.MedicalSupplies,
             ParentID = ( int ) EnumStoreMenu.MedicalSupplies,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["MedicalSupplies"],
+            Text = localizer["MedicalSupplies"] ?? "MedicalSupplies",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -145,7 +146,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.Painting,
             ParentID = ( int ) EnumStoreMenu.Painting,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Painting"],
+            Text = localizer["Painting"] ?? "Painting",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -155,7 +156,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.Drawing,
             ParentID = ( int ) EnumStoreMenu.Drawing,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Drawing"],
+            Text = localizer["Drawing"] ?? "Drawing",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -165,7 +166,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.Sculpture,
             ParentID = ( int ) EnumStoreMenu.Sculpture,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Sculpture"],
+            Text = localizer["Sculpture"] ?? "Sculpture",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -175,7 +176,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.Photography,
             ParentID = ( int ) EnumStoreMenu.Photography,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["Photography"],
+            Text = localizer["Photography"] ?? "Photography",
             TenantStore = StoreType.Default,
             TenantId = ""
         });
@@ -185,7 +186,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.WaterColor,
             ParentID = ( int ) EnumStoreMenu.WaterColor,
             Variable = EnumTenantVariable.ProductCategory,
-            Text = GlobalResources.Localizer["WaterColor"],
+            Text = localizer["WaterColor"] ?? "WaterColor",
             TenantStore = StoreType.Default,
             TenantId = ""
         });

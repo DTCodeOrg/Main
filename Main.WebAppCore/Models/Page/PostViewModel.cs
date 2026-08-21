@@ -1,6 +1,8 @@
 ﻿using Main.Common;
 using Main.WebAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 
 namespace Main.WebAppCore.Models;
 
@@ -10,15 +12,15 @@ public class PostViewModel: BaseViewModel
     {
     }
 
-    public PostViewModel (StoreType shopType)
+    public PostViewModel (StoreType shopType,IStringLocalizer<SharedResource> localizer)
     {
-        AVCategory = DropDownListItems.GetCategoryList ();
+        AVCategory = DropDownListItems.GetCategoryList (localizer);
     }
 
 
-    public PostViewModel (StoreType shopType,EnumPostType enumPostType,int rootId,int imageId,int order)
+    public PostViewModel (StoreType shopType,EnumPostType enumPostType,int rootId,int imageId,int order,IStringLocalizer<SharedResource> localizer)
     {
-        AVCategory = DropDownListItems.GetCategoryList ();
+        AVCategory = DropDownListItems.GetCategoryList (localizer);
 
         EnumPostType = enumPostType;
         RootID = rootId;

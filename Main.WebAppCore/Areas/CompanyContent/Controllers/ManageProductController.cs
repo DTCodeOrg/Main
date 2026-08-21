@@ -9,6 +9,8 @@ using Main.WebAppCore.Models.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 
 namespace Main.WebAppCore.Controllers;
 
@@ -22,13 +24,15 @@ public class ManageProductController: BaseController
     private readonly ILogger<ManageProductController> _logger;
     private readonly ITenantSetter _tenantSetter;
     private readonly ITenantCacheService _tenantCacheService;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
     public ManageProductController (IProductService productService,
         ILogger<ManageProductController> logger,
         ITenantSetter tenantSetter,
         ITenantCacheService tenantCacheService,
         IWebHostEnvironment webHostEnvironment,
-        IStorageService storageService)
+        IStorageService storageService,
+        IStringLocalizer<SharedResource> localizer)
     {
         _productService = productService;
         _logger = logger;
@@ -36,6 +40,7 @@ public class ManageProductController: BaseController
         _tenantCacheService = tenantCacheService;
         _webHostEnvironment = webHostEnvironment;
         _storageService = storageService;
+        _localizer = localizer;
     }
 
 
@@ -94,8 +99,8 @@ public class ManageProductController: BaseController
 
         ProductViewModel objProductViewModel = new ()
         {
-            AVCategory = DropDownListItems.GetCategoryList (),
-            AVSubCategory = DropDownListItems.GetSubCategoryList (),
+            AVCategory = DropDownListItems.GetCategoryList (_localizer),
+            AVSubCategory = DropDownListItems.GetSubCategoryList (_localizer),
             PageName = "Product Page"
         };
 
@@ -298,7 +303,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            var listSubCategories = DropDownListItems.GetSubCategoryList();
+            var listSubCategories = DropDownListItems.GetSubCategoryList(_localizer);
 
             return Json (listSubCategories);
         }

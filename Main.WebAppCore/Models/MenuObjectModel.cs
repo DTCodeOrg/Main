@@ -2,25 +2,27 @@
 using Main.Common.Models;
 using Main.WebAppCore.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 
 namespace Main.WebAppCore.Models;
 
 public class MenuObjectModel
 {
 
-    public MenuObjectModel (bool isAdvancedSearch)
+    public MenuObjectModel (bool isAdvancedSearch,IStringLocalizer<SharedResource> localizer)
     {
-        AV_Category = DropDownListItems.GetCategoryList ();
+        AV_Category = DropDownListItems.GetCategoryList (localizer);
 
-        AV_SubCategory = DropDownListItems.GetSubCategoryList ();
+        AV_SubCategory = DropDownListItems.GetSubCategoryList (localizer);
     }
 
-    public MenuObjectModel ()
+    public MenuObjectModel (IStringLocalizer<SharedResource> localizer)
     {
         ListCategory = new List<TenantVariableModel> ();
         ListSubCategory = new List<TenantVariableModel> ();
-        ListCategory = TenantStoreHelper.GetCategoryList ();
-        ListSubCategory = TenantStoreHelper.GetSubCategoryList ();
+        ListCategory = TenantStoreHelper.GetCategoryList (localizer);
+        ListSubCategory = TenantStoreHelper.GetSubCategoryList (localizer);
     }
 
     public string TenantName

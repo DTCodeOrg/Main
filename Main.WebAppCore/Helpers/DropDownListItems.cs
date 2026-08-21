@@ -1,6 +1,8 @@
 ﻿using Main.Common;
 using Main.Common.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 
 namespace Main.WebAppCore.Helpers;
 
@@ -133,15 +135,15 @@ public class DropDownListItems
         return objCountryListItems.AsEnumerable ();
     }
 
-    public static IEnumerable<SelectListItem> GetSubCategoryList ()
+    public static IEnumerable<SelectListItem> GetSubCategoryList (IStringLocalizer<SharedResource> localizer)
     {
-        var listCategory = GetSelectList (TenantStoreHelper.GetSubCategoryList (), "");
+        var listCategory = GetSelectList (TenantStoreHelper.GetSubCategoryList (localizer), "");
         return listCategory;
     }
 
-    public static IEnumerable<SelectListItem> GetCategoryList ()
+    public static IEnumerable<SelectListItem> GetCategoryList (IStringLocalizer<SharedResource> localizer)
     {
-        var listCategory = GetSelectList (TenantStoreHelper.GetCategoryList (),"");
+        var listCategory = GetSelectList (TenantStoreHelper.GetCategoryList (localizer),"");
         return listCategory;
     }
 

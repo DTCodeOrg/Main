@@ -8,6 +8,8 @@ using Main.WebAppCore.Models;
 using Main.WebAppCore.Models.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 
 namespace Main.WebAppCore.Controllers;
 
@@ -18,16 +20,19 @@ public class PagesController: BaseController
     private readonly IPageService _pageService;
     private readonly ILogger<PagesController> _logger;
     private readonly ITenantSetter _tenantSetter;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
     public PagesController (
       IPageService pageDataService,
       ITenantSetter tenantSetter,
-      ILogger<PagesController> logger
+      ILogger<PagesController> logger,
+      IStringLocalizer<SharedResource> localizer
     )
     {
         _pageService = pageDataService;
         _logger = logger;
         _tenantSetter = tenantSetter;
+        _localizer = localizer;
     }
 
 
@@ -61,8 +66,8 @@ public class PagesController: BaseController
             await _pageService.GetSelectProducts();
 
         pagePanelViewModel.ListSelectPosts =
-            PageMapping.MapSelectPostViewModel (listSelectProductsDataModel
-                                                ,AppSettings.Current.EnumCurrency);
+            PageMapping.MapSelectPostViewModel (listSelectProductsDataModel,
+            AppSettings.Current.EnumCurrency,_localizer);
         pagePanelViewModel.PageID = id;
         pagePanelViewModel.PanelTitle = "";
         pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuard;
@@ -97,7 +102,7 @@ public class PagesController: BaseController
             List<PostDataModel> listReferencePosts
                 = await _pageService.GetSelectProducts( );
 
-            List<PostDataModel> listUserSelectedPosts = new();
+            List<PostDataModel> listUserSelectedPosts = [];
 
             listUserSelectedPosts = listReferencePosts.Where (obj =>
             {

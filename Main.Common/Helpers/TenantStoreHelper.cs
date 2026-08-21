@@ -1,21 +1,24 @@
 ﻿using Main.Common.Models;
+using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 
 namespace Main.Common;
 
 public class TenantStoreHelper
 {
+
     public TenantStoreHelper ()
     {
     }
 
-    public static List<TenantVariableModel> GetCategoryList ()
+    public static List<TenantVariableModel> GetCategoryList (IStringLocalizer<SharedResource> localizer)
     {
-        return TenantStores.ListTenantStoreMenu ();
+        return TenantStores.ListTenantStoreMenu (localizer);
     }
 
-    public static List<TenantVariableModel> GetSubCategoryList ()
+    public static List<TenantVariableModel> GetSubCategoryList (IStringLocalizer<SharedResource> localizer)
     {
-        return TenantStores.ListTenantStoreMenu ();
+        return TenantStores.ListTenantStoreMenu (localizer);
     }
 
 

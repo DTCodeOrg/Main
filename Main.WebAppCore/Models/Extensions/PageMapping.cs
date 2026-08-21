@@ -1,6 +1,8 @@
 ﻿using DataTransferModel;
 using Main.Common;
 using Main.WebAppCore.Helpers;
+using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 
 namespace Main.WebAppCore.Models.Extensions;
 
@@ -29,7 +31,7 @@ public static class PageMapping
         return listPageDisplayViewModels;
     }
 
-    public static List<PostSelectViewModel> MapSelectPostViewModel (List<PostDataModel> listSelectProductsDataModels,Currency currency)
+    public static List<PostSelectViewModel> MapSelectPostViewModel (List<PostDataModel> listSelectProductsDataModels,Currency currency,IStringLocalizer<SharedResource> localizer)
     {
         if ( listSelectProductsDataModels == null )
         {
@@ -47,7 +49,7 @@ public static class PageMapping
             {
                 ImageFileContent = dataModel.FileContent,
 
-                CategoryName = DropDownListItems.GetCategoryList ().ToList ()
+                CategoryName = DropDownListItems.GetCategoryList (localizer).ToList ()
                     .FirstOrDefault (a => a.Value == ( dataModel.CategoryID.HasValue
                     ? dataModel.CategoryID.Value.ToString () : "" ))!.Text,
 
