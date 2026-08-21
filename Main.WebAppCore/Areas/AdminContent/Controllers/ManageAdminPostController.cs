@@ -40,7 +40,7 @@ public class ManageAdminPostController: BaseController
         {
             listSessionImageFiles.ForEach (async sessionImageFile =>
             {
-                ImageFile imageFile =
+                bool result =
                     await _storageService.MoveFileToDestinationFolderAsync(
                     sessionImageFile.FileName!, false);
 
@@ -48,8 +48,8 @@ public class ManageAdminPostController: BaseController
                 {
                     AdminPostID = sessionImageFile.PostID ?? 0,
                     AdminImageFileID = 0,
-                    FileName = imageFile.FileName,
-                    FilePath = imageFile.RelativeFilePath
+                    FileName = sessionImageFile.FileName,
+                    FilePath = sessionImageFile.RelativeFilePath
                 };
 
                 listAdminPostDataModel.Add (adminImageFileDataModel);
@@ -57,7 +57,7 @@ public class ManageAdminPostController: BaseController
 
             adminPostDataModel.ListAdminPostFileImages = listAdminPostDataModel;
 
-            ClearImageFileListSession (_tenantCacheService);
+
         }
     }
 
@@ -116,15 +116,19 @@ public class ManageAdminPostController: BaseController
 
             bool result = await _adminPostService.SaveNewAdminPost( adminPostDataModel );
 
+            ClearImageFileListSession (_tenantCacheService);
+
             string? redirectUrl = Url.Action("Index", "ManageAdminPost", new
             {
                 Area = "AdminContent"
             });
 
             return Ok (new
+
             {
                 success = result,urlGo = redirectUrl
             });
+            ;
         }
         catch ( Exception ex )
         {
