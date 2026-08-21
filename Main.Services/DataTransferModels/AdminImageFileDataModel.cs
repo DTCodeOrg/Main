@@ -15,27 +15,27 @@ public class AdminImageFileDataModel: DataModel
         BaseDataModel = new BaseDataModel ();
     }
 
-    public int AdminImageFileID
+    public int? AdminImageFileID
     {
         get; set;
     }
 
-    public byte[] FileContent
+    public byte[]? FileContent
     {
         get; set;
     }
 
-    public string FilePath
+    public string? FilePath
     {
         get; set;
     }
 
-    public string FileName
+    public string? FileName
     {
         get; set;
     }
 
-    public int AdminPostID
+    public int? AdminPostID
     {
         get; set;
     }

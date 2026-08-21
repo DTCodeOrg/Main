@@ -72,24 +72,24 @@ public class ManageProductController: BaseController
 
     private void SetImageInDataModel (ProductDataModel productDataModel)
     {
-        List<ProductFileDataModel> listProductImageFileDataModels
-            = new();
+        List<ProductFileDataModel> listProductImageFileDataModels = [];
 
         ProductFileDataModel productImageFileDataModel;
 
-        List<ImageFile>? listSessionImageFiles = GetAllSessionImages(_tenantCacheService);
+        List<ImageFile>? listSessionImageFiles
+            = GetAllSessionImages(_tenantCacheService);
 
         listSessionImageFiles?.ForEach (async sessionImageFile =>
         {
             var fileRelativePath  =
-                    await _storageService.MoveFileToDestinationFolderAsync (
-                    sessionImageFile.FileName, true);
+                await _storageService.MoveFileToDestinationFolderAsync
+                (sessionImageFile.FileName!, true);
 
             productImageFileDataModel = new ProductFileDataModel ()
             {
                 ProductID = sessionImageFile.PostID ?? 0,
                 ProductImageFileID = 0,
-                FilePath = sessionImageFile.RelativeFilePath
+                FilePath = sessionImageFile.RelativeFilePath!
             };
 
             listProductImageFileDataModels.Add (productImageFileDataModel);
@@ -97,7 +97,7 @@ public class ManageProductController: BaseController
 
         productDataModel.ImageFiles = listProductImageFileDataModels;
 
-        ClearImageFileListSession (_tenantCacheService);
+
     }
 
     public IActionResult NewProduct ()
@@ -146,6 +146,7 @@ public class ManageProductController: BaseController
             var result = await _productService.SaveNewProduct(productDataModel);
 
             var actionContext = _actionContextAccessor.ActionContext;
+
             if ( actionContext == null )
             {
                 return BadRequest (new
@@ -160,6 +161,8 @@ public class ManageProductController: BaseController
             {
                 Area = "CompanyContent"
             });
+
+            ClearImageFileListSession (_tenantCacheService);
 
             return Ok (new
             {
@@ -179,22 +182,17 @@ public class ManageProductController: BaseController
     [HttpGet]
     public async Task<ActionResult> Edit (int id)
     {
-        try
-        {
-            ClearImageFileListSession (_tenantCacheService);
 
-            ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
+        ClearImageFileListSession (_tenantCacheService);
 
-            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
+        ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            productViewModel.PageName = "Edit Product";
+        ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
 
-            return View (productViewModel);
-        }
-        catch
-        {
-            return View (new ProductViewModel ());
-        }
+        productViewModel.PageName = "Edit Product";
+
+        return View (productViewModel);
+
     }
 
 

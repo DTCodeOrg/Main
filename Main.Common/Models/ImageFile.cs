@@ -24,27 +24,27 @@ public class ImageFile
         get; set;
     }
 
-    public byte[] FileContent
+    public byte[]? FileContent
     {
         get; set;
     }
 
-    public string SessionFilePath
+    public string? SessionFilePath
     {
         get; set;
     }
 
-    public string RelativeFilePath
+    public string? RelativeFilePath
     {
         get; set;
     }
 
-    public string FileName
+    public string? FileName
     {
         get; set;
     }
 
-    public IFormFile File
+    public IFormFile? File
     {
         get; set;
     }
@@ -54,7 +54,7 @@ public class ImageFile
         get; set;
     }
 
-    public EnumPostType PostType
+    public EnumPostType? PostType
     {
         get; set;
     }

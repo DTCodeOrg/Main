@@ -51,7 +51,7 @@ public static class AdminPostMapping
 
         adminFileViewModel.ListAdminPostFileImages.ForEach (fileViewModel =>
         {
-            listAdminImageFileDataModel.Add (new AdminImageFileDataModel (fileViewModel.FileContent));
+            listAdminImageFileDataModel.Add (new AdminImageFileDataModel ());
         });
 
         return listAdminImageFileDataModel;
@@ -91,18 +91,25 @@ public static class AdminPostMapping
 
     public static List<ImageFile> MapAdminImageFileViewModelList (List<AdminImageFileDataModel> adminImageFileList)
     {
-        var imageFileViewModels = new List<ImageFile>();
+        List<ImageFile> imageFileViewModels = [];
 
-        foreach ( var model in adminImageFileList )
+        System.Collections.IList list = adminImageFileList.ToList () ;
+
+        if ( list != null )
         {
-            imageFileViewModels.Add (new ImageFile
+            for ( int i = 0 ; i < list.Count ; i++ )
             {
-                FileContent = model.FileContent,
-                FileID = model.AdminImageFileID,
-                PostID = model.AdminPostID
-            });
-        }
+                AdminImageFileDataModel fileModel = (AdminImageFileDataModel) list[i]!;
 
-        return imageFileViewModels;
+                imageFileViewModels.Add (new ImageFile ()
+                {
+                    FileContent = fileModel.FileContent,
+                    FileID = ( int ) fileModel.AdminImageFileID!,
+                    PostID = fileModel.AdminPostID,
+                    RelativeFilePath = fileModel.FilePath
+                });
+            }
+        }
+        return imageFileViewModels.ToList ();
     }
 }

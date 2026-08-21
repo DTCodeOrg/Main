@@ -174,7 +174,7 @@ public class LocalStorageService: IStorageService
 
                 System.IO.File.Delete (sourceFolderFilePath);
 
-                ImageFile imageFile = new ()
+                ImageFile imageFile = new()
                 {
                     FileName = fileName,
                     PostType = EnumPostType.Product,
@@ -192,7 +192,6 @@ public class LocalStorageService: IStorageService
 
             if ( System.IO.File.Exists (sourceFolderFilePath) )
             {
-
                 string? destDirectory = Path.GetDirectoryName(destFolderFilePath);
 
                 if ( !Directory.Exists (destDirectory) )

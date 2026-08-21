@@ -3,7 +3,7 @@
 <div class="image-content">
     <div title="Product Image">
         <a class="thumbnail">
-            @if (Model != null && Model.RelativeFilePath.Length > 0)
+            @if (Model != null && Model.RelativeFilePath!.Length > 0)
             {
                 
                 <img src="@Model.RelativeFilePath"
@@ -24,12 +24,14 @@
         </a>
     </div>
 
-    
-    <button type="button"
-            class="light-button btn-remove-image"
-            data-fileName="@Model.FileName"
-            data-postid="@Model.PostID"
-            data-id="@Model.FileID">
-        REMOVE
-    </button>
+    @if ( Model != null )
+    {
+        <button type="button"
+        class="light-button btn-remove-image"
+        data-fileName="@Model.FileName"
+        data-postid="@Model.PostID"
+        data-id="@Model.FileID">
+            REMOVE
+        </button>
+    }
 </div>

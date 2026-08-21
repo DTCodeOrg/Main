@@ -160,16 +160,19 @@ public static class AdminPostServiceMappings
     {
         adminPostEntity.ModifyParameters (adminPostDataModel.BaseDataModel);
 
-        List<AdminImageFile> newListFileEntities = new();
+        List<AdminImageFile> newListFileEntities = [];
         newListFileEntities.AddRange (adminPostEntity.ListAdminImageFiles);
 
 
         adminPostDataModel.ListAdminPostFileImages.ForEach (fileDataModel =>
         {
-            AdminImageFile adminImageFile = new(fileDataModel.FileContent);
-            adminImageFile.AdminPostID = adminPostDataModel.AdminPostID;
-
-            adminImageFile.CreateParameters (fileDataModel.BaseDataModel);
+            AdminImageFile adminImageFile = new()
+            {
+                AdminPostID = adminPostDataModel.AdminPostID,
+                AdminImageFileID = ( int ) fileDataModel.AdminImageFileID!,
+                FilePath = fileDataModel.FilePath!,
+                ImageFileContent = fileDataModel.FileContent
+            };
 
             newListFileEntities.Add (adminImageFile);
         });
@@ -179,11 +182,11 @@ public static class AdminPostServiceMappings
 
         adminPostDataModel.ListAdminPostComments.ForEach (commentDataModel =>
         {
-            AdminPostComment adminPostComment = new();
-            adminPostComment.AdminPostID = adminPostDataModel.AdminPostID;
-            adminPostComment.Comment = commentDataModel.Comment;
-
-            adminPostComment.CreateParameters (commentDataModel.BaseDataModel);
+            AdminPostComment adminPostComment = new ()
+            {
+                AdminPostID = adminPostDataModel.AdminPostID,
+                Comment = commentDataModel.Comment
+            };
 
             newListcommentEntities.Add (adminPostComment);
 

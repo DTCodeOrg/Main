@@ -11,6 +11,7 @@ public class ProductViewModel: BaseViewModel
     {
         AVCategory = new List<SelectListItem> ();
         AVSubCategory = new List<SelectListItem> ();
+        ImageFiles = new List<ImageFile> ();
         PageName = "Product Page";
     }
 
@@ -74,18 +75,6 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    public bool? IsBrandNew
-    {
-        get; set;
-    }
-
-
-    public int? LikeCount
-    {
-        get; set;
-    }
-
-
     [Display (Name = "Search Tags (Comma Seoerated)")]
     public string? SearchTag
     {
@@ -123,7 +112,10 @@ public class ProductViewModel: BaseViewModel
         get; set;
     }
 
-    public List<ImageFile> ImageFiles { get; set; } = new List<ImageFile> ();
+    public List<ImageFile> ImageFiles
+    {
+        get; set;
+    }
 
 }
 

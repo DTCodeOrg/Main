@@ -48,15 +48,19 @@ public static class ProductMapping
         };
 
 
-        List <ImageFile> imageFiles = new();
+        List <ImageFile> imageFiles = [];
         ImageFile imageFile;
 
         productDataModel.ImageFiles.ForEach (file =>
         {
-            imageFile = new ImageFile (file.FileContent!,file.ProductID,file.ProductImageFileID)
+            imageFile = new ImageFile ()
             {
-                RelativeFilePath = file.FilePath
+                RelativeFilePath = file.FilePath,
+                FileContent = file.FileContent!,
+                PostID = file.ProductID,
+                PostType = EnumPostType.Product
             };
+
             imageFiles.Add (imageFile);
         });
 

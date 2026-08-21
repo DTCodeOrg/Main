@@ -42,7 +42,7 @@ public class ManageAdminPostController: BaseController
             {
                 ImageFile imageFile =
                     await _storageService.MoveFileToDestinationFolderAsync(
-                    sessionImageFile.FileName, false);
+                    sessionImageFile.FileName!, false);
 
                 AdminImageFileDataModel adminImageFileDataModel= new ()
                 {

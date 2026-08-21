@@ -93,28 +93,27 @@ public static class ProductServiceMapping
             return new ProductDataModel ();
         }
 
-        List<ProductFileDataModel> listProductFilesDataModel = new();
+        List<ProductFileDataModel> listProductFilesDataModel = [];
 
-        if ( productEntity.ListImageFiles != null && productEntity.ListImageFiles.Count > 0 )
+        if ( productEntity.ListImageFiles != null &&
+            productEntity.ListImageFiles.Count > 0 )
         {
-
             productEntity.ListImageFiles.ToList ().ForEach (fileEntity =>
+            {
+                ProductFileDataModel fileDataModel = new()
                 {
-                    ProductFileDataModel fileDataModel = new()
-                    {
-                        ProductImageFileID = fileEntity.ProductImageFileID,
-                        FileContent = fileEntity.FileContent!,
-                        FilePath = fileEntity.FiePath,
-                        ProductID = fileEntity.ProductID
-                    };
+                    ProductImageFileID = fileEntity.ProductImageFileID,
+                    FileContent = fileEntity.FileContent!,
+                    FilePath = fileEntity.FiePath,
+                    ProductID = fileEntity.ProductID
+                };
 
-                    listProductFilesDataModel.Add (fileDataModel);
+                listProductFilesDataModel.Add (fileDataModel);
 
-                });
+            });
         }
 
-        List<ProductCommentDataModel> listCommentsDataModel
-            = new();
+        List<ProductCommentDataModel> listCommentsDataModel = [];
 
         if ( productEntity.ListComments != null
              && productEntity.ListComments.Count > 0 )
