@@ -7,6 +7,7 @@ public class ProductDataModel: DataModel
 {
     public ProductDataModel ()
     {
+        BaseDataModel = new BaseDataModel ();
     }
 
     public int? ProductID

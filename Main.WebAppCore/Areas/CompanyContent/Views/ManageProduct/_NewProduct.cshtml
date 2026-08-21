@@ -1,4 +1,5 @@
-﻿@model ProductViewModel
+﻿@using Microsoft.AspNetCore.Html
+@model ProductViewModel
 
 <div id="newProductContainerPartial" class="row card-form">
 
@@ -17,14 +18,16 @@
             </div>
 
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
+
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
             <form id="myMainForm"
-                      method="post"
-                      action="@Url.Action( "SaveProduct","ManageProduct" )"
-                      novalidate>
-   
-   
+            asp-action="SaveProduct"
+            asp-controller="ManageProduct"
+            asp-area="CompanyContent"
+            method="post" >
+
+
                 @Html.HiddenFor(a => a.PageName)
 
 
@@ -40,38 +43,80 @@
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
-                    
+
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.CategoryID )
-                    @Html.DropDownListFor(a => a.CategoryID, Model.AVCategory, new { @class = "fff" })
+
+                    @Html.DropDownListFor(
+                        a => a.CategoryID,
+                        Model.AVCategory,
+                        new
+                        {
+                            @class = "fff"
+                        }
+
+                    )
+
                 </div>
 
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.SubCategoryID )
-                    @Html.DropDownListFor(a => a.SubCategoryID, Model.AVSubCategory, new { @class = "fff" })
+
+                    @Html.DropDownListFor(
+                                a => a.SubCategoryID,
+                                Model.AVSubCategory,
+                                new
+                                {
+                                    @class = "fff"
+                                }
+                            )
+
                 </div>
 
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.ProductName )
-                    @Html.EditorFor(a => a.ProductName, new { htmlAttributes = new { @class = "fff" } })
-                    @Html.ValidationMessageFor(m => m.ProductName, "", new { @class = "text-danger" })
+
+                    @Html.EditorFor(a => a.ProductName, 
+                                                    new { htmlAttributes = new { @class = "fff" } })
+
+                    @Html.ValidationMessageFor(
+                         m => m.ProductName,
+                         "",
+                         new
+                         {
+                             htmlAttributes = new
+                             {
+                                 @class = "text-danger"
+                             }
+                         } )
+
+
                 </div>
 
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.Description )
+
                     @Html.TextAreaFor(a => a.Description, new { @class = "fff" } )
+
                 </div>
 
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.SearchTag )
+
                     @Html.TextAreaFor(a => a.SearchTag, new { @class = "fff" })
+
                 </div>
- 
-           
+
+
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
@@ -88,19 +133,29 @@
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.UnitPrice )
+
                     @Html.EditorFor(a => a.UnitPrice, new { htmlAttributes = new { @class = "fff" } })
+
                     @Html.ValidationMessageFor(m => m.UnitPrice, "", new { @class = "text-danger" })
+
                 </div>
 
-                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.Discount )
+
                     @Html.EditorFor(a => a.Discount, new { htmlAttributes = new { @class = "fff" } })
+
                 </div>
 
-                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.SaleCommission )
-                    @Html.EditorFor(a => a.SaleCommission, new { htmlAttributes = new { @class = "fff" } })
+
+                   @Html.EditorFor(a => a.SaleCommission, new { htmlAttributes = new { @class = "fff" } })
+
                 </div>
 
             </form>
@@ -115,40 +170,40 @@
 
 
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-           
 
-                    <!-- YOUR HTML REMAINS THE SAME (with the typo fixed) -->
-        <div class="upload-container image-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
-             <form asp-action="UploadImage"
-                 asp-controller="ManageProduct"
-                 asp-area="CompanyContent"
-                 method="post" 
-                 enctype="multipart/form-data">
 
-                 <label>Select File:</label>
-                 <input class="form-control" type="file" id="fileInput" name="fileInput" />
-                 
-                 <button type="submit">Upload</button>
-             </form>
-         </div>
 
-         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
+            <div class="upload-container image-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-         <!-- The partial view HTML will land directly inside this div -->
-         <div id="imagePanelContainer" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12"></div>
+                <form asp-action="UploadImage"
+                    asp-controller="ManageProduct"
+                    asp-area="CompanyContent"
+                    method="post" 
+                    enctype="multipart/form-data">
 
-        <!-- PLACE THE SCRIPT RIGHT BELOW THE HTML OR IN YOUR SCRIPTS SECTION -->
+                    <label>Select File:</label>
 
-            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap">
+                    <input class="form-control" type="file" id="fileInput" name="fileInput" />
+
+                    <button type="submit">Upload</button>
+
+                </form>
 
             </div>
+
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
+
+
+            <div id="imagePanelContainer" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12"></div>
+
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
                 <button id="btnSubmit"
-                        class="primary-button max"
-                        type="submit"
-                        form="myMainForm">
+                    class="primary-button max"
+                    type="submit"
+                    form="myMainForm">
 
                     @SharedLocalizer["NewPostButtonSUBMITAD"]
 
@@ -163,5 +218,4 @@
     </div>
 
 </div>
-
 

@@ -9,6 +9,14 @@ using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+// Add this line to register the missing service:
+builder.Services.AddSingleton<Microsoft.AspNetCore.Mvc.Infrastructure.IActionContextAccessor,
+    Microsoft.AspNetCore.Mvc.Infrastructure.ActionContextAccessor> ();
+
+// Existing configuration...
+_ = builder.Services.AddControllersWithViews ();
+
+
 // Ensure Kestrel hooks into your appsettings.json "Kestrel" section
 _ = builder.WebHost.ConfigureKestrel ((context,options) =>
 {

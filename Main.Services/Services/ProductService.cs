@@ -31,8 +31,10 @@ public class ProductService: IProductService
         Product productEntity = ProductServiceMapping.MapSaveProductEntity ( productDataModel );
 
 
-        return await _ProductRepository
+        bool result = await _ProductRepository
                     .SaveNewProduct (productEntity);
+
+        return result;
     }
 
     public async Task<ProductDataModel> GetProductForEditProductID (int? productID)

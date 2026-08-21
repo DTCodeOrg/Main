@@ -8,7 +8,9 @@ using Main.WebAppCore.Models;
 using Main.WebAppCore.Models.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
 
@@ -25,6 +27,8 @@ public class ManageProductController: BaseController
     private readonly ITenantSetter _tenantSetter;
     private readonly ITenantCacheService _tenantCacheService;
     private readonly IStringLocalizer<SharedResource> _localizer;
+    private readonly IUrlHelperFactory _urlHelperFactory;
+    private readonly IActionContextAccessor _actionContextAccessor;
 
     public ManageProductController (IProductService productService,
         ILogger<ManageProductController> logger,
@@ -32,7 +36,9 @@ public class ManageProductController: BaseController
         ITenantCacheService tenantCacheService,
         IWebHostEnvironment webHostEnvironment,
         IStorageService storageService,
-        IStringLocalizer<SharedResource> localizer)
+        IStringLocalizer<SharedResource> localizer,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor)
     {
         _productService = productService;
         _logger = logger;
@@ -41,6 +47,8 @@ public class ManageProductController: BaseController
         _webHostEnvironment = webHostEnvironment;
         _storageService = storageService;
         _localizer = localizer;
+        _urlHelperFactory = urlHelperFactory;
+        _actionContextAccessor = actionContextAccessor;
     }
 
 
@@ -108,13 +116,26 @@ public class ManageProductController: BaseController
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    [Authorize (Policy = "TenantAdmin")]
+    [IgnoreAntiforgeryToken]
     public async Task<IActionResult> SaveProduct (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
         {
-            return BadRequest (ModelState);
+            Dictionary<string, string[]> validationErrors
+                = ModelState.Where
+                (ms => ms.Value!.Errors.Count > 0).ToDictionary
+                (kvp => kvp.Key,kvp => kvp.Value!.Errors.Select
+                (e => e.ErrorMessage).ToArray());
+
+            ViewBag.ValidationSummary = validationErrors;
+
+            return BadRequest (new
+            {
+                success = false,message = "Validation failed",validationErrors
+            });
         }
+
 
         try
         {
@@ -124,14 +145,26 @@ public class ManageProductController: BaseController
 
             var result = await _productService.SaveNewProduct(productDataModel);
 
-            string? redirectUrl = Url.Action("Index", "ManageProduct", new
+            var actionContext = _actionContextAccessor.ActionContext;
+            if ( actionContext == null )
+            {
+                return BadRequest (new
+                {
+                    success = false,message = "Validation failed"
+                });
+            }
+
+            IUrlHelper urlHelper = _urlHelperFactory.GetUrlHelper(actionContext);
+
+            var urlRedirectIndex = urlHelper.Action ("Index","ManageProduct",new
             {
                 Area = "CompanyContent"
             });
 
             return Ok (new
             {
-                success = result,urlGo = redirectUrl
+                success = result,
+                urlGo = urlRedirectIndex
             });
         }
         catch ( Exception ex )
@@ -258,20 +291,8 @@ public class ManageProductController: BaseController
     }
 
 
-    //[HttpGet]
-    //public IActionResult LoadImage ()
-    //{
-    //    List<ImageFile>? imageFileList = GetAllSessionImages(_tenantCacheService)!;
-
-    //    ImageFile imageFile = imageFileList?.LastOrDefault<ImageFile >()!;
-
-    //    return PartialView ("_Image",imageFile);
-
-    //}
-
-
     [HttpDelete]
-    public async Task<JsonResult> ImageRemove (string fileName,int id,int postId)
+    public async Task<JsonResult> ImageRemove (int id,int postId,string fileName)
     {
         try
         {

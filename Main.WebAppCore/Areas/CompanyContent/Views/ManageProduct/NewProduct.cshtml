@@ -25,9 +25,10 @@
 
 $(document).ready(function () {
 
+    $("#myMainForm").valid();
     
-    $('#btnLoadImage').on('click', function () {
-        $('#fileInput').click();
+    $("#btnLoadImage").on('click', function () {
+        $("#fileInput").click();
     });
 
     
@@ -71,6 +72,7 @@ $(document).ready(function () {
     
         fetch(this.action, {
             method: 'POST',
+            credentials: 'same-origin',
             body: formData
         })
         .then(response => {
@@ -102,13 +104,17 @@ $(document).ready(function () {
     $(document).on("click", ".btn-remove-image", function () {
 
             var that = this;
+
             var id = $(that).data("id");
+
+            var fileNmae = $(that).data("fileName");
+
             var rem = $(that).closest(".image-content");
 
             $(rem).remove();
 
             $.ajax({
-                url: removeProductImageURL + id,
+                url: removeProductImageURL + id  + "?fileName=" + fileName,
                 type: 'DELETE',
                 dataType: 'json',
                 processData: false,

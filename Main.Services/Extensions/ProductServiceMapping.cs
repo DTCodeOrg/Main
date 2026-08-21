@@ -40,8 +40,6 @@ public static class ProductServiceMapping
     {
         Product productEntity = CreateProductEntity(productDataModel);
 
-        productEntity.CreateParameters (productDataModel.BaseDataModel);
-
         List <ProductImageFile> objListFileEntity
             = MapProductFileEntity(productDataModel);
 
@@ -59,6 +57,10 @@ public static class ProductServiceMapping
         return new Product ()
         {
             ProductName = productDataModel.ProductName!.ToString (),
+            CategoryID = productDataModel.CategoryID,
+            SubCategoryID = productDataModel.SubCategoryID,
+            Price = productDataModel.UnitPrice,
+            Discount = productDataModel.Discount
         };
     }
 
@@ -71,12 +73,12 @@ public static class ProductServiceMapping
 
         productDataModel.ImageFiles.ForEach (fileDataModel =>
         {
-            productImageFile = new ProductImageFile (fileDataModel.FileContent)
+            productImageFile = new ProductImageFile ()
             {
-                ProductID = fileDataModel.ProductID
+                ProductID = fileDataModel.ProductID,
+                FiePath = fileDataModel.FilePath,
+                FileContent = fileDataModel.FileContent
             };
-
-            productImageFile.CreateParameters (fileDataModel.BaseDataModel);
 
             listProductFileEntity.Add (productImageFile);
         });

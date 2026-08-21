@@ -198,12 +198,6 @@ public class TenantDbContext: DbContext
     {
         Guid ResolvedTenantId = _tenantSetter.CurrentTenant.ResolvedTenantId;
 
-        Guid[] guidTenantArray = new []
-        {
-            new Guid(1, 0, 0, new byte[8]),
-            new Guid(2, 0, 0, new byte[8])
-        };
-
         BaseDataModel createDataModel = _tenantSetter.CreateMetaData;
         BaseDataModel updateDataModel = _tenantSetter.UpdateMetaData;
         BaseDataModel deleteDataModel = _tenantSetter.DeleteMetaData;
