@@ -1,11 +1,42 @@
 ﻿@model ProductViewModel
+
 @{
-    ViewBag.Title = "New Product";
+    var tenantName = TenantSetter.CurrentTenant.TenantName;
+    var title = $"{ tenantName } Products";
+    ViewData["Title"] = title;
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
 }
 
 <div id="newProductMainContainer" class="container">
+     <div class="page-header">
+
+    <div class="header-text">
+
+        <h1>Tenant Product</h1>
+            
+        <p>Add a new product for @tenantName.</p>
+
+    </div>
+
+    <div class="header-actions">
+            
+        <a class="dropdown-item dropdown-item-text icon-button"
+            asp-area="CompanyContent"
+            asp-controller="ManageProduct"
+            asp-action="NewProduct">
+
+            <i class="fa fa-fw fa-plus"></i>
+
+            <span class="action-text">
+                Add Product
+            </span>
+
+        </a>
+
+    </div>
+
+</div>
     @await Html.PartialAsync("~/Areas/CompanyContent/Views/ManageProduct/_NewProduct.cshtml", Model)
 </div>
 
@@ -103,30 +134,43 @@ $(document).ready(function () {
 
     $(document).on("click", ".btn-remove-image", function () {
 
-            var that = this;
+             var that = this;
 
-            var id = $(that).data("id");
-
-            var fileNmae = $(that).data("fileName");
-
-            var rem = $(that).closest(".image-content");
-
-            $(rem).remove();
-
-            $.ajax({
-                url: removeProductImageURL + id  + "?fileName=" + fileName,
-                type: 'DELETE',
-                dataType: 'json',
-                processData: false,
-                cache: false,
-                async: true,
-                success: function (response) {
-                    console.log(response);
-                },
-                error: function (error) {
-                    console.log(error);
+                // 1. Fixed camelCase data attribute reading
+                var id = $(that).data("id");
+                if (!id || String(id).trim() === "") {
+                    id = 0;
                 }
-            });
+
+                var postId = $(that).data("postid");
+                if (!postId || String(postId).trim() === "") {
+                    postId = 0;
+                }
+
+                // 2. Fixed camelCase data attribute reading to match standard HTML behavior
+                var fileName = $(that).data("filename"); 
+                if (!fileName || String(fileName).trim() === "") {
+                    fileName = "";
+                }
+
+                var rem = $(that).closest(".image-content");
+                $(rem).remove();
+
+                // 3. Fixed missing opening parenthesis for $.ajax and updated type
+                $.ajax({
+                    url: removeImageShortContentURL + "?id=" + id + "&postId=" + postId + "&fileName=" + fileName,
+                    type: 'POST', // Changed from DELETE to POST for standard ASP.NET model binding
+                    dataType: 'json',
+                    processData: false,
+                    cache: false,
+                    async: true,
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                }); // 4. Fixed missing closing bracket if this ends the click function
         });
 }); 
 </script>

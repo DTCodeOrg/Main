@@ -8,8 +8,7 @@ public static class ProductServiceMapping
 {
     public static List<ProductDisplayModel> GetProductDisplayModels (List<Product> listProducts)
     {
-        List<ProductDisplayModel> objListPostDisplayModel
-            = new();
+        List<ProductDisplayModel> objListPostDisplayModel = [];
 
         ProductDisplayModel objProductDisplayModel;
 
@@ -56,11 +55,14 @@ public static class ProductServiceMapping
     {
         return new Product ()
         {
-            ProductName = productDataModel.ProductName!.ToString (),
+            ProductName = productDataModel.ProductName,
             CategoryID = productDataModel.CategoryID,
-            SubCategoryID = productDataModel.SubCategoryID,
             Price = productDataModel.UnitPrice,
-            Discount = productDataModel.Discount
+            Discount = productDataModel.Discount,
+            SaleCommission = productDataModel.SaleCommission,
+            Description = productDataModel.Description,
+            SearchTag = productDataModel.SearchTag,
+            PostType = productDataModel.PostType
         };
     }
 
@@ -94,13 +96,13 @@ public static class ProductServiceMapping
         }
 
         List<ProductFileDataModel> listProductFilesDataModel = [];
-
+        ProductFileDataModel fileDataModel;
         if ( productEntity.ListImageFiles != null &&
             productEntity.ListImageFiles.Count > 0 )
         {
             productEntity.ListImageFiles.ToList ().ForEach (fileEntity =>
             {
-                ProductFileDataModel fileDataModel = new()
+                fileDataModel = new ProductFileDataModel ()
                 {
                     ProductImageFileID = fileEntity.ProductImageFileID,
                     FileContent = fileEntity.FileContent!,
@@ -121,7 +123,7 @@ public static class ProductServiceMapping
 
             productEntity.ListComments.ToList ().ForEach (commentEntity =>
             {
-                ProductCommentDataModel objCommentDataModel = new()
+                ProductCommentDataModel objCommentDataModel = new ()
                 {
                     ProductCommentID = commentEntity.ProductCommentID,
                     Comment = commentEntity.Comment,
@@ -143,7 +145,6 @@ public static class ProductServiceMapping
             PostType =   productEntity.PostType ,
             Description = productEntity.Description,
             CategoryID = productEntity.CategoryID,
-            SubCategoryID = productEntity.SubCategoryID,
             UnitPrice = productEntity.Price,
             ListComments = listCommentsDataModel,
             ImageFiles = listProductFilesDataModel
@@ -155,7 +156,7 @@ public static class ProductServiceMapping
     public static Product MapProductUpdateEntity (Product productEntity,ProductDataModel productDataModel)
     {
         List<ProductImageFile> listProductImageFileEntity
-            = new();
+            = [];
 
         listProductImageFileEntity.AddRange (productEntity.ListImageFiles);
 
@@ -163,28 +164,29 @@ public static class ProductServiceMapping
 
         productDataModel.ImageFiles.ForEach (fileDataModel =>
         {
-            fileEntity = new ProductImageFile (fileDataModel.FileContent);
-
-            fileEntity.CreateParameters (fileDataModel.BaseDataModel);
-
-            fileEntity.ProductID = productEntity.ProductID;
+            fileEntity = new ProductImageFile ()
+            {
+                ProductID = productEntity.ProductID,
+                FiePath = fileDataModel.FilePath
+            };
 
             listProductImageFileEntity.Add (fileEntity);
 
         });
 
         List<ProductComment> listProductCommentsEntity
-            = new();
+            = [];
 
         listProductCommentsEntity.AddRange (productEntity.ListComments);
 
 
         productDataModel.ListComments.ForEach (commentDataModel =>
         {
-            var commentEntity = new ProductComment
+            var commentEntity = new ProductComment ()
             {
                 ProductID = productEntity.ProductID
             };
+
             commentEntity.Comment = commentEntity.Comment;
 
             listProductCommentsEntity.Add (commentEntity);
@@ -197,13 +199,10 @@ public static class ProductServiceMapping
         productEntity.PostType = EnumPostType.Product;
         productEntity.Description = productDataModel.Description;
         productEntity.CategoryID = productDataModel.CategoryID;
-        productEntity.SubCategoryID = productDataModel.SubCategoryID;
         productEntity.Price = productDataModel.UnitPrice;
 
         productEntity.ListComments = listProductCommentsEntity;
         productEntity.ListImageFiles = listProductImageFileEntity;
-
-        productEntity.ModifyParameters (productDataModel.BaseDataModel);
 
         return productEntity;
     }

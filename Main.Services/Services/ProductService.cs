@@ -64,7 +64,7 @@ public class ProductService: IProductService
     }
 
 
-    public async Task<bool> DeleteProductImage (int id,int postId)
+    public async Task<string> DeleteProductImage (int id,int postId)
     {
         return await _ProductRepository.DeleteProductImage (id,postId);
     }

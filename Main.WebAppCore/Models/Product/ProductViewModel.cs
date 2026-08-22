@@ -10,26 +10,18 @@ public class ProductViewModel: BaseViewModel
     public ProductViewModel ()
     {
         AVCategory = new List<SelectListItem> ();
-        AVSubCategory = new List<SelectListItem> ();
         ImageFiles = new List<ImageFile> ();
         PageName = "Product Page";
     }
 
-    public int ProductID
+    public int? ProductID
     {
         get; set;
     }
 
 
     [Display (Name = "Product Category ")]
-    public string? CategoryID
-    {
-        get; set;
-    }
-
-
-    [Display (Name = "Product Sub Category")]
-    public string? SubCategoryID
+    public int? CategoryID
     {
         get; set;
     }
@@ -76,6 +68,7 @@ public class ProductViewModel: BaseViewModel
 
 
     [Display (Name = "Search Tags (Comma Seoerated)")]
+    [StringLength (4000)]
     public string? SearchTag
     {
         get; set;
@@ -95,19 +88,7 @@ public class ProductViewModel: BaseViewModel
         get; set;
     }
 
-    public void SetDisplaytext ()
-    {
-        CategoryText = "";//DropDownListItems.GetCategoryText (CategoryID);
-
-        SubCategoryText = "";//DropDownListItems.GetCategoryText (SubCategoryID);
-    }
-
     public IEnumerable<SelectListItem> AVCategory
-    {
-        get; set;
-    }
-
-    public IEnumerable<SelectListItem> AVSubCategory
     {
         get; set;
     }

@@ -2,21 +2,10 @@
 
 <div id="newProductContainerPartial" class="row card-form">
 
-    <div class="offset-2 col-8">
-
         <div class="row">
 
-            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-
-                <h4 class="card-title all-caps">
-
-                    EDIT PRODUCT
-
-                </h4>
-
-            </div>
-
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
+
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
             <form id="myMainFormEdit"
@@ -26,88 +15,102 @@
    
            
                 @Html.HiddenFor(a => a.PageName)
-                @Html.HiddenFor(a => a.ProductID)
 
+                @Html.HiddenFor(a => a.ProductID)
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-                    <h4 class="card-subtitle all-caps">
+                    <h5 class="card-subtitle all-caps">
 
                         Product Information
 
-                    </h4>
+                    </h5>
 
                 </div>
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-
                     
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.CategoryID )
+
+                   
                     @Html.DropDownListFor(a => a.CategoryID, Model.AVCategory, new { @class = "fff" })
+                   
                     @Html.ValidationMessageFor(m => m.CategoryID, "", new { @class = "text-danger" })
+               
                 </div>
 
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-                    @Html.LabelFor( a => a.SubCategoryID )
-                    @Html.DropDownListFor(a => a.SubCategoryID, Model.AVSubCategory, new { @class = "fff" } )
-                    @Html.ValidationMessageFor(m => m.SubCategoryID, "", new { @class = "text-danger" })
-                </div>
 
-
-                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
                     @Html.LabelFor( a => a.ProductName )
+
                     @Html.EditorFor(a => a.ProductName, new { htmlAttributes = new { @class = "fff" } })
+                    
                     @Html.ValidationMessageFor(m => m.ProductName, "", new { @class = "text-danger" })
+                
                 </div>
 
-
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    
                     @Html.LabelFor( a => a.Description )
+                    
                     @Html.TextAreaFor(a => a.Description, new { @class = "fff" })
+                
                 </div>
-
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    
                     @Html.LabelFor( a => a.SearchTag )
+                    
                     @Html.TextAreaFor(a => a.SearchTag, new { @class = "fff" })
+                
                 </div>
- 
-           
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-                    <h4 class="card-subtitle all-caps">
+                    <h5 class="card-subtitle all-caps">
 
                         Price Information
 
-                    </h4>
+                    </h5>
 
                 </div>
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
                     @Html.LabelFor( a => a.UnitPrice )
+
                     @Html.EditorFor(a => a.UnitPrice, new { htmlAttributes = new { @class = "fff" } })
+                   
                     @Html.ValidationMessageFor(m => m.UnitPrice, "", new { @class = "text-danger" })
+             
                 </div>
 
                  <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-                    @Html.LabelFor( a => a.Discount )
-                    @Html.EditorFor(a => a.Discount, new { htmlAttributes = new { @class = "fff" } })
-                    @Html.ValidationMessageFor(m => m.Discount, "", new { @class = "text-danger" })
-                </div>
-
+                    
+                     @Html.LabelFor( a => a.Discount )
+                    
+                     @Html.EditorFor(a => a.Discount, new { htmlAttributes = new { @class = "fff" } })
+                    
+                     @Html.ValidationMessageFor(m => m.Discount, "", new { @class = "text-danger" })
+               
+                 </div>
 
                  <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-                    @Html.LabelFor( a => a.SaleCommission )
-                    @Html.EditorFor(a => a.SaleCommission, new { htmlAttributes = new { @class = "fff" } })
-                    @Html.ValidationMessageFor(m => m.SaleCommission, "", new { @class = "text-danger" })
-                </div>
+                    
+                     @Html.LabelFor( a => a.SaleCommission )
+                    
+                     @Html.EditorFor(a => a.SaleCommission, new { htmlAttributes = new { @class = "fff" } })
+                  
+                     @Html.ValidationMessageFor(m => m.SaleCommission, "", new { @class = "text-danger" })
+               
+                 </div>
 
             </form>
 
@@ -115,7 +118,7 @@
 
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-                <h4 class="card-subtitle all-caps">Pictures</h4>
+                <h5 class="card-subtitle all-caps">Pictures</h5>
 
             </div>
 
@@ -123,17 +126,27 @@
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
            
 
-            <div class="upload-container image-field  col-sm-12 col-md-12 col-xs-12 col-lg-12">
+            <div class="upload-container image-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-                <input type="file" id="fileInput" class="light-button btn-sm" name="myFile" />
+                <form asp-action="UploadImage"
+                    asp-controller="ManageProduct"
+                    asp-area="CompanyContent"
+                    method="post" 
+                    enctype="multipart/form-data">
 
-                <button type="button" id="btnUpload" class="light-button btn-sm">Add New Picture</button>
+                    <label>Select File:</label>
+
+                    <input class="form-control" type="file" id="fileInput" name="fileInput" />
+
+                    <button type="submit">Upload</button>
+
+                </form>
 
             </div>
 
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
-            <div id="imageEditPanelContainer" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12">
+            <div id="imagePanelContainer" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12">
 
                 @{
                     foreach ( var imageFile in Model.ImageFiles.ToList( ) )
@@ -161,13 +174,4 @@
 
         </div>
 
-    </div>
-
 </div>
-
-
-
-
-
-
-

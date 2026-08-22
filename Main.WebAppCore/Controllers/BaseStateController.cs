@@ -44,6 +44,7 @@ public partial class BaseController
     protected bool DeleteSessionImage (string fileName,ITenantCacheService tenantCacheService)
     {
         const string baseKey = "UploadedSessionImages";
+
         TimeSpan cacheDuration = TimeSpan.FromMinutes(30);
 
         if ( !tenantCacheService.TryGet<List<ImageFile>> (baseKey,out var imageList) || imageList == null )

@@ -9,7 +9,7 @@ public interface IProductRepository
 
     Task<bool> DeleteProduct (int productId);
 
-    Task<bool> DeleteProductImage (int id,int productId);
+    Task<string> DeleteProductImage (int id,int productId);
 
     Task<Product> GetProductByProductID (int? productId);
 

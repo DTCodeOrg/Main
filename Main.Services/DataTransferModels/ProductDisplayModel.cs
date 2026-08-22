@@ -42,7 +42,7 @@ public class ProductDisplayModel
         get; set;
     }
 
-    public string? ProductName
+    public string ProductName
     {
         get; set;
     }

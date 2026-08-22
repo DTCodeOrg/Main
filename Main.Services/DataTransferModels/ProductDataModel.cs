@@ -20,14 +20,9 @@ public class ProductDataModel: DataModel
         get; set;
     }
 
-    public int? SubCategoryID
-    {
-        get; set;
-    }
-
     public EnumPostType PostType { get; set; } = EnumPostType.Product;
 
-    public string? ProductName
+    public string ProductName
     {
         get; set;
     }
@@ -52,16 +47,6 @@ public class ProductDataModel: DataModel
         get; set;
     }
 
-    public bool? IsBrandNew
-    {
-        get; set;
-    }
-
-    public int? LikeCount
-    {
-        get; set;
-    }
-
     public string? SearchTag
     {
         get; set;
@@ -73,11 +58,6 @@ public class ProductDataModel: DataModel
     }
 
     public string? CategoryText
-    {
-        get; set;
-    }
-
-    public string? SubCategoryText
     {
         get; set;
     }

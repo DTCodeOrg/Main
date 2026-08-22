@@ -8,7 +8,7 @@ public class ProductDisplayViewModel
     {
     }
 
-    public int ProductID
+    public int? ProductID
     {
         get; set;
     }

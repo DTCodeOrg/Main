@@ -8,7 +8,7 @@ public interface IProductService
 
     Task<bool> UpdateProduct (ProductDataModel productDataModel);
 
-    Task<bool> DeleteProductImage (int id,int productId);
+    Task<string> DeleteProductImage (int id,int postId);
 
     Task<bool> DeleteProduct (int productId);
 

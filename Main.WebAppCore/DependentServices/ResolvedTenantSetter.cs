@@ -85,7 +85,7 @@ public class ResolvedTenantSetter: ITenantSetter
                 DeletedDate = GetLocalNow ( ),
                 DeletedBy = HttpContextUserId.ToString(),
                 TenantCountry = AppSettings.Current.EnumCountry,
-                IsActive = false,
+                IsActive = true,
             };
 
             return baseDataModel;

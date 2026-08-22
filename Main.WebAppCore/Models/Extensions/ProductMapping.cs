@@ -2,6 +2,7 @@
 using Main.Common;
 using Main.Common.Models;
 using Main.Infrastructure;
+using Main.WebAppCore.Helpers;
 using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
 
@@ -18,26 +19,24 @@ public static class ProductMapping
             UnitPrice = productViewModel.UnitPrice,
             Discount = productViewModel.Discount,
             SaleCommission = productViewModel.SaleCommission,
-            CategoryID = int.Parse (productViewModel.CategoryID!),
-            SubCategoryID = int.Parse (productViewModel.SubCategoryID!),
+            CategoryID = productViewModel.CategoryID,
             Description = productViewModel.Description,
             PostType = EnumPostType.Product,
             ProductID = 0
         };
     }
 
-    public static ProductViewModel MapProductViewModel (ProductDataModel productDataModel)
+    public static ProductViewModel MapProductViewModel (ProductDataModel productDataModel,IStringLocalizer<SharedResource> localizer)
     {
         ProductViewModel productViewModel = new ()
         {
-            ProductID
-                = productDataModel.ProductID.HasValue ? productDataModel.ProductID.Value : 0,
+            ProductID = productDataModel.ProductID,
 
-            CategoryID = productDataModel.CategoryID.HasValue ? productDataModel.CategoryID.Value.ToString() : "",
+            CategoryID = productDataModel.CategoryID,
 
-            SubCategoryID = productDataModel.SubCategoryID.HasValue ? productDataModel.SubCategoryID.Value.ToString() : "",
+            CategoryText = DropDownListItems.GetTextForCategoryId (productDataModel.CategoryID, localizer),
 
-            ProductName = productDataModel.ProductName!,
+            ProductName = productDataModel.ProductName,
 
             UnitPrice = productDataModel.UnitPrice,
 
@@ -58,13 +57,16 @@ public static class ProductMapping
         {
             imageFile = new ImageFile ()
             {
+                SessionFilePath = file.FilePath,
                 RelativeFilePath = file.FilePath,
                 FileContent = file.FileContent!,
                 PostID = file.ProductID,
-                PostType = EnumPostType.Product
+                PostType = EnumPostType.Product,
+                FileID = file.ProductImageFileID
             };
 
             imageFiles.Add (imageFile);
+
         });
 
         productViewModel.ImageFiles = imageFiles;
@@ -80,13 +82,11 @@ public static class ProductMapping
             return new ProductDataModel ();
         }
 
-        ProductDataModel productDataModel = new ()
+        ProductDataModel productDataModel = new()
         {
             ProductID = productViewModel.ProductID,
 
-            CategoryID = int.Parse (productViewModel.CategoryID!),
-
-            SubCategoryID = int.Parse (productViewModel.SubCategoryID!),
+            CategoryID = productViewModel.CategoryID,
 
             ProductName = productViewModel.ProductName,
 
@@ -98,13 +98,16 @@ public static class ProductMapping
 
             Description = productViewModel.Description,
 
+            SearchTag = productViewModel.SearchTag,
+
             PostType = EnumPostType.Product
         };
 
         return productDataModel;
     }
 
-    public static List<ProductDisplayViewModel> MapDisplayProductViewModel (List<ProductDisplayModel> productDataModels,IStringLocalizer<SharedResource> localizer,ITenantSetter tenantSetter)
+    public static List<ProductDisplayViewModel> MapDisplayProductViewModel
+    (List<ProductDisplayModel> productDataModels,IStringLocalizer<SharedResource> localizer,ITenantSetter tenantSetter)
     {
         List<ProductDisplayViewModel> dispayProductViewModels = [];
 
@@ -114,13 +117,12 @@ public static class ProductMapping
         {
             productDisplayViewModel = new ProductDisplayViewModel ()
             {
-                ProductID = model.ProductID.HasValue ? model.ProductID.Value : 0,
+                ProductID = model.ProductID,
 
-                DisplayCategory = TenantStoreHelper.GetTextForCategoryId (model.CategoryID.ToString () ?? string.Empty,localizer),
+                DisplayCategory =
+                TenantStoreHelper.GetTextForCategoryId (model.CategoryID,localizer),
 
-                ProductName = model.ProductName!,
-
-                DisplaySubCategory = TenantStoreHelper.GetTextForCategoryId (model.SubCategoryID.ToString () ?? string.Empty,localizer),
+                ProductName = model.ProductName,
 
                 UnitPrice = model.UnitPrice,
 

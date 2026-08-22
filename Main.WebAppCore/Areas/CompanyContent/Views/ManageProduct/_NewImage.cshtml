@@ -3,10 +3,10 @@
 <div class="image-content">
     <div title="Product Image">
         <a class="thumbnail">
-            @if (Model != null && Model.RelativeFilePath!.Length > 0)
+            @if ( Model != null && Model.SessionFilePath!.Length > 0 )
             {
                 
-                <img src="@Model.RelativeFilePath"
+                <img src="@Model.SessionFilePath"
                      class="img-responsive new-post-mobile-image"
                      alt="Product image"
                      style="max-height:140px; max-width:100%;width:100%;" />
@@ -28,9 +28,9 @@
     {
         <button type="button"
         class="light-button btn-remove-image"
-        data-filename="@Model.FileName"
+        data-fileName="@Model.FileName"
         data-postid="@Model.PostID"
-        data-fileid="@Model.FileID">
+        data-id="@Model.FileID">
             REMOVE
         </button>
     }

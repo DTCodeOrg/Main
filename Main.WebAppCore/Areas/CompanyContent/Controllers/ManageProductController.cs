@@ -9,7 +9,6 @@ using Main.WebAppCore.Models.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
@@ -105,10 +104,9 @@ public class ManageProductController: BaseController
 
         ClearImageFileListSession (_tenantCacheService);
 
-        ProductViewModel objProductViewModel = new ()
+        ProductViewModel objProductViewModel = new()
         {
             AVCategory = DropDownListItems.GetCategoryList (_localizer),
-            AVSubCategory = DropDownListItems.GetSubCategoryList (_localizer),
             PageName = "Product Page"
         };
 
@@ -182,21 +180,23 @@ public class ManageProductController: BaseController
     [HttpGet]
     public async Task<ActionResult> Edit (int id)
     {
-
         ClearImageFileListSession (_tenantCacheService);
 
         ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-        ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
+        ProductViewModel objProductViewModel = ProductMapping.MapProductViewModel (productDataModel,_localizer);
 
-        productViewModel.PageName = "Edit Product";
+        objProductViewModel.PageName = "Edit Product";
 
-        return View (productViewModel);
+        objProductViewModel.AVCategory = DropDownListItems.GetCategoryList (_localizer);
 
+        return View (objProductViewModel);
     }
 
 
     [HttpPost]
+    [Authorize (Policy = "TenantAdmin")]
+    [IgnoreAntiforgeryToken]
     public async Task<IActionResult> Edit (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
@@ -237,9 +237,7 @@ public class ManageProductController: BaseController
         {
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
-
-            productViewModel.SetDisplaytext ();
+            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel, _localizer );
 
             productViewModel.PageName = "Product Details";
 
@@ -257,7 +255,6 @@ public class ManageProductController: BaseController
     {
         if ( !ReadImage (fileInput) )
         {
-            // Return the image URL to the frontend
             return PartialView ("_Image",new ImageFile ());
         }
 
@@ -266,10 +263,8 @@ public class ManageProductController: BaseController
 
         SetSessionImageFile (imageFile,_tenantCacheService);
 
-        // Return the image URL to the frontend
-        return PartialView ("_Image",imageFile);
+        return PartialView ("_NewImage",imageFile);
     }
-
 
     private bool ReadImage (IFormFile fileInput)
     {
@@ -289,48 +284,38 @@ public class ManageProductController: BaseController
     }
 
 
-    [HttpDelete]
-    public async Task<JsonResult> ImageRemove (int id,int postId,string fileName)
+    [HttpPost]
+    [Authorize (Policy = "TenantAdmin")]
+    [IgnoreAntiforgeryToken]
+    public async Task<JsonResult> ImageRemove (int id,int postId = 0,string? fileName = null)
     {
         try
         {
-            bool result;
-            if ( postId != 0 )
+            string fileNameDeleted = await _productService.DeleteProductImage(id, postId);
+
+            if ( string.IsNullOrEmpty (fileName) )
             {
-                result = await _productService.DeleteProductImage (id,postId);
+                fileName = fileNameDeleted;
             }
 
-            result = DeleteSessionImage (fileName,_tenantCacheService);
+            bool result = DeleteSessionImage(fileName, _tenantCacheService);
 
             return Json (new
             {
                 success = result
             });
         }
-        catch
+        catch ( Exception ex )
         {
+            // Log your exception here (e.g., _logger.LogError(ex, "Image removal failed"))
             return Json (new
             {
-                errors = false
+                success = false,message = ex.Message
             });
         }
-    }
+    } // Clear of trailing commas
 
 
-    [HttpGet]
-    public JsonResult GetSubCategories (int id)
-    {
-        try
-        {
-            var listSubCategories = DropDownListItems.GetSubCategoryList(_localizer);
-
-            return Json (listSubCategories);
-        }
-        catch
-        {
-            return Json (new List<SelectListItem> ());
-        }
-    }
 
     [HttpGet]
     public async Task<IActionResult> Delete (int id)

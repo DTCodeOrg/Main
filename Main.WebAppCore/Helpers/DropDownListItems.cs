@@ -197,7 +197,7 @@ public class DropDownListItems
         return objList.AsEnumerable<SelectListItem> ();
     }
 
-    public static string GetTextForCategoryId (string categoryId,IStringLocalizer<SharedResource> localizer)
+    public static string GetTextForCategoryId (int? categoryId,IStringLocalizer<SharedResource> localizer)
     {
         var resultText = TenantStoreHelper.GetTextForCategoryId (categoryId, localizer);
         return resultText;

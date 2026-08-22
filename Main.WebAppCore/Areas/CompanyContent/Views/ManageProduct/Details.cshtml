@@ -1,13 +1,46 @@
 ﻿@model ProductViewModel
 
 @{
-    ViewBag.Title = "Product Details";    
+    var tenantName = TenantSetter.CurrentTenant.TenantName;
+    var title = $"{ tenantName } Products";
+    ViewBag.Title = title;
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.ExcludeHeader = true;
+    ViewBag.ExcludeHeader = false;
 }
 
+
+
 <div id="detailsProductMainView" class="container">
+    <div class="page-header">
+
+    <div class="header-text">
+
+        <h1>Tenant Product</h1>
+            
+        <p>View, edit, or delete products for @tenantName.</p>
+
+    </div>
+
+    <div class="header-actions">
+            
+        <a class="dropdown-item dropdown-item-text icon-button"
+            asp-area="CompanyContent"
+            asp-controller="ManageProduct"
+            asp-action="NewProduct">
+
+            <i class="fa fa-fw fa-plus"></i>
+
+            <span class="action-text">
+                Add Product
+            </span>
+
+        </a>
+
+    </div>
+
+</div>
     @await Html.PartialAsync("~/Areas/CompanyContent/Views/ManageProduct/_DetailsProduct.cshtml", Model)
+
 </div>
 
 @section scriptsapp {

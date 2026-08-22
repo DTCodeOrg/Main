@@ -23,7 +23,7 @@ public class ProductRepository: IProductRepository
 
     public async Task<List<Product>> GetAllProducts ()
     {
-        return await _tenantContext.Products.ToListAsync ();
+        return await _tenantContext.Products.Where (a => a.IsActive == true).ToListAsync ();
     }
 
     public async Task<bool> DeleteProduct (int productId)
@@ -40,25 +40,30 @@ public class ProductRepository: IProductRepository
         return result > 0;
     }
 
-    public async Task<bool> DeleteProductImage (int id,int productId)
+    public async Task<string> DeleteProductImage (int id,int productId)
     {
         var image = await _tenantContext.ProductImageFiles.FirstOrDefaultAsync <ProductImageFile>
-                                   ( a => a.ProductImageFileID == id && a.ProductID == productId );
+                ( a => a.ProductImageFileID == id && a.ProductID == productId && a.IsActive ==  true );
 
         if ( image != null )
         {
             _ = _tenantContext.ProductImageFiles.Remove (image);
+            var result = await _tenantContext.SaveChangesAsync();
+
+            if ( result > 0 )
+            {
+                return image.FiePath;
+            }
         }
 
-        var result = await _tenantContext.SaveChangesAsync();
+        return string.Empty;
 
-        return result > 0;
     }
 
     public async Task<Product> GetProductByProductID (int? postId)
     {
-        Product? product = await _tenantContext.Products.FirstOrDefaultAsync<Product>
-                                                   (a => a.ProductID == postId);
+        Product? product = await _tenantContext.Products
+            .FirstOrDefaultAsync<Product> (a => a.ProductID == postId && a.IsActive == true);
 
         if ( product != null )
         {
@@ -88,8 +93,7 @@ public class ProductRepository: IProductRepository
 
     public async Task<List<Product>> GetSelectProducts ()
     {
-        return await _tenantContext.Products
-                .ToListAsync ();
+        return await _tenantContext.Products.Where (a => a.IsActive == true).ToListAsync ();
     }
 }
 

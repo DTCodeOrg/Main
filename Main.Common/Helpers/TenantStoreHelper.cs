@@ -21,17 +21,23 @@ public class TenantStoreHelper
         return TenantStores.ListTenantStoreMenu (localizer);
     }
 
-    public static string GetTextForCategoryId (string categoryId,IStringLocalizer<SharedResource> localizer)
+    public static string GetTextForCategoryId (int? categoryId,IStringLocalizer<SharedResource> localizer)
     {
         List<TenantVariableModel>? listCategory = TenantStores.ListTenantStoreMenu (localizer);
+        try
+        {
 
-        int.TryParse (categoryId,out var result);
-
-        TenantVariableModel? tenantVariableModel =
+            TenantVariableModel? tenantVariableModel =
                 listCategory?.FirstOrDefault<TenantVariableModel>
-                ( m =>  m.ValueID == result);
+                ( m =>  m.ValueID == categoryId);
 
-        return tenantVariableModel?.Text ?? string.Empty;
+            return tenantVariableModel?.Text ?? string.Empty;
+
+        }
+        catch
+        {
+            return string.Empty;
+        }
     }
 
 

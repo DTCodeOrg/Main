@@ -1,12 +1,43 @@
 ﻿@model ProductViewModel
 
 @{
-    ViewBag.Title = SharedLocalizer["ViewBagTitleEditPost"];
+    var tenantName = TenantSetter.CurrentTenant.TenantName;
+    var title = $"{ tenantName } Products";
+    ViewData["Title"] = title;
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
 }
 
 <div id="editAdminPostMainView" class="container">
+
+     <div class="page-header">
+
+    <div class="header-text">
+
+        <h1>Tenant Product</h1>
+            
+        <p>View, edit, or delete products for @tenantName.</p>
+
+    </div>
+
+    <div class="header-actions">
+            
+        <a class="dropdown-item dropdown-item-text icon-button"
+            asp-area="CompanyContent"
+            asp-controller="ManageProduct"
+            asp-action="NewProduct">
+
+            <i class="fa fa-fw fa-plus"></i>
+
+            <span class="action-text">
+                Add Product
+            </span>
+
+        </a>
+
+    </div>
+
+</div>
     @await Html.PartialAsync("~/Areas/CompanyContent/Views/ManageProduct/_EditProduct.cshtml", Model)
 </div>
 
@@ -29,128 +60,39 @@
         var IMAGE_LOAD_SUCCESSFUL = "Image load successful!";
 
         
-        function ResetSubCategory() {
-            $("#SubCategoryID").val("");
-
-            $("#spanCategoryDropdown").text("");
-
-            $('#SubCategoryID').empty();
-
-            return true;
-        }
-
-
-        function PopulateSubCategory(items) {
-
-            $('#SubCategoryID').empty();
-
-            $.each(items, function(i, item) {
-                if (item.text != null) 
-                {
-                    $('#SubCategoryID').append(
-                        "<option value='" + item.value + "'>" + item.text + "</option>"
-                    );
-                } 
-                else 
-                {
-                    $('#SubCategoryID').append(
-                        "<option value='" + item.value + "'>Select</option>"
-                    );
-                }
-            });
-        }
-
-
-        function LoadImageEditAdminContent() {
-
-            $.ajax({
-                type: "GET",
-                url: loadImageURL,
-                cache: false,
-                async: true,
-                success: function (result) {
-
-                    $("#imageEditPanelContainer").append(result);
-
-                    notify({
-                        type: 'success',
-                        message: '<strong><i class="fa fa-thumbs-up"></i>&nbsp;' + SUCCESS + '</strong> ' + IMAGE_LOAD_SUCCESSFUL,
-                        allow_dismiss: true,
-                        placement: {
-                            from: "top",
-                            align: "right"
-                        },
-                        delay: { show: 10, hide: 10 },
-                        template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                        '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
-                        '<span data-notify="icon"></span>' +
-                        '<span data-notify="title">{1}</span>' +
-                        '<span data-notify="message">{2}</span>' +
-                        '</div>'
-                    });
-                },
-                error: function (error) {
-                   console.log(error);
-                }
-            });
-        }
-
 
         $(document).ready(function () {
+            
 
-            $(document).on("change", "#CategoryID", function() {
+            $('.upload-container form').on('submit', function (e) {
 
-                var category = $(this).val();
+                e.preventDefault(); 
 
-                if (ResetSubCategory()) {
-                    $.ajax({
-                        url: getSubCategoryURL + category,
-                        type: 'GET',
-                        dataType: 'json',
-                        cache: true,
-                        success: function(items) {
-                            PopulateSubCategory(items);
-                        },
-                        error: function(error) {
-                            console.log(error);
-                        }
-                    });
-                }
-            });
+                var formData = new FormData(this);
 
-             
-            var btnUploadSelector = $("#editAdminPostMainView").find("#btnUpload");
-
-            btnUploadSelector.on("click", function () {
-                
-                var ERROR_MASSAGE = "Select a file!";
-
-                var fileElement = $('#fileInput') [0];
-                var files = fileElement.files;
-
-                if (files.length === 0) {
-                    return;
-                }
-
-                var formDataEdit = new FormData();
-                
-                formDataEdit.append("file", files[0]);
+                var $form = $(this);
 
                 $.ajax({
-                    url: uploadImageURL, 
-                    type: 'POST',
-                    data: formDataEdit,
-                    processData: false, 
+                    url: $form.attr('action'),
+                    type: $form.attr('method'),
+                    data: formData,
                     contentType: false, 
-                    success: function (response) {
-                        LoadImageEditAdminContent();
+                    processData: false, 
+                    success: function (responseHtml) {
+                        
+                        $('#imagePanelContainer').append(responseHtml);
+                        
+                        $('#fileInput').val('');
+
                     },
-                    error: function (error) {
-                        console.log(error);
+                    error: function (xhr) {
+
+                        alert("An error occurred during upload. Please ensure it is a valid image file.");
+            
                     }
                 });
             });
-
+           
 
             document.getElementById("myMainFormEdit").addEventListener("submit", function (e) {
                 
@@ -188,18 +130,26 @@
             });
            
 
+            // Ensure this code is placed inside an event handler, for example:
             $(document).on("click", ".btn-remove-image", function () {
 
                 var that = this;
-                var id = $(that).data("id");
-                var postId = $(that).data("postid");
-                var rem = $(that).closest(".image-content");
 
+                // 1. Fixed camelCase data attribute reading
+                var id = $(that).data("fileid");
+
+                var postId = $(that).data("postid");
+
+                // 2. Fixed camelCase data attribute reading to match standard HTML behavior
+                var fileName = $(that).data("filename"); 
+
+                var rem = $(that).closest(".image-content");
                 $(rem).remove();
 
+                // 3. Fixed missing opening parenthesis for $.ajax and updated type
                 $.ajax({
-                    url: removeImageShortContentURL + id + "&postId=" + postId,
-                    type: 'DELETE',
+                    url: removeImageShortContentURL + "?id=" + id + "&postId=" + postId + "&fileName=" + fileName,
+                    type: 'POST', // Changed from DELETE to POST for standard ASP.NET model binding
                     dataType: 'json',
                     processData: false,
                     cache: false,
@@ -210,8 +160,9 @@
                     error: function (error) {
                         console.log(error);
                     }
-               });
+                }); // 4. Fixed missing closing bracket if this ends the click function
             });
+
 
         });
     </script>
