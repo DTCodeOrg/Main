@@ -49,6 +49,7 @@ public static class PageMapping
             {
                 ImageFileContent = dataModel.FileContent,
 
+                FilePath = dataModel.FilePath,
 
                 CategoryName = DropDownListItems.GetCategoryList (localizer).ToList ()
                     .FirstOrDefault (a => a.Value == ( dataModel.CategoryID.HasValue
@@ -72,7 +73,7 @@ public static class PageMapping
 
     public static PageViewModel MapPageViewModel (PageDataModel pageDataModel)
     {
-        List<PanelViewModel>  listPanelViewModel = new();
+        List<PanelViewModel>  listPanelViewModel = [];
 
         PanelViewModel panelViewModel;
 

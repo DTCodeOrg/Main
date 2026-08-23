@@ -36,7 +36,7 @@ public class PagesController: BaseController
     }
 
 
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<IActionResult> Index ()
     {
         try
@@ -57,7 +57,7 @@ public class PagesController: BaseController
     }
 
 
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<IActionResult> NewProductPanel (int id)
     {
         PanelViewModel pagePanelViewModel = new();
@@ -72,14 +72,13 @@ public class PagesController: BaseController
         pagePanelViewModel.PanelTitle = "";
         pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuard;
 
-
         return View (pagePanelViewModel);
     }
 
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    [Authorize (Roles = "Admin")]
+    [IgnoreAntiforgeryToken]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<IActionResult> SaveNewProductPanel ([FromBody] LocalModel model)
     {
         if ( model == null )
@@ -93,14 +92,12 @@ public class PagesController: BaseController
 
         try
         {
-            PanelDataModel pagePanelDataModel
-            = new( ( EnumPanelTemplate ) model.TemplateTypeID,
-                                    model.PageID, model.PanelTitle  );
-
-            pagePanelDataModel.SetBaseDataModel (_tenantSetter.CreateMetaData);
+            PanelDataModel pagePanelDataModel =
+                new( ( EnumPanelTemplate ) model.TemplateTypeID,
+                model.PageID, model.PanelTitle  );
 
             List<PostDataModel> listReferencePosts
-                = await _pageService.GetSelectProducts( );
+                = await _pageService.GetSelectProducts ( );
 
             List<PostDataModel> listUserSelectedPosts = [];
 
@@ -111,7 +108,6 @@ public class PagesController: BaseController
 
             listUserSelectedPosts.ForEach (selectedPost =>
             {
-                selectedPost.SetBaseDataModel (_tenantSetter.CreateMetaData);
                 pagePanelDataModel.CreatePost (selectedPost);
             });
 

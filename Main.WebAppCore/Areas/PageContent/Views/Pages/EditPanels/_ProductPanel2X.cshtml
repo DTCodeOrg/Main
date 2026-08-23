@@ -5,76 +5,38 @@
      data-panel-id="@Model.PanelID" 
      draggable="true">
 
-  
+    <h4 class="sub-title" draggable="false">
+        @Model.PanelTitle
+    </h4>
 
-            <h4 class="sub-title" 
-                draggable="false">
-
-                @Model.PanelTitle
-
-            </h4>
-
- 
-        
-
-    <div class="row panel-content"
-         draggable="false">
-
-        @{
-            foreach ( var product in Model.ListPosts.ToList())
+    <div class="row panel-content" draggable="false">
+        @if (Model.ListPosts != null)
+        {
+            foreach (var product in Model.ListPosts)
             {
-                <div class="col-md-6 col-sm-6 col-lg-6 col-xs-6 card" 
-                     draggable="true">
-                           
+                <div class="col-6 card" draggable="true">
                     <a class="thumbnail only-image" draggable="false">
-
-                        @if ( product.ImageFileContent != null )
+                        @if (product != null)
                         {
-
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image2X.cshtml", product.ImageFileContent )
-                                
+                            @await Html.PartialAsync("~/Areas/PageContent/Views/Pages/Images/_Image2X.cshtml", product)
                         }
-                        else
-                        {
-
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image2X.cshtml", new byte[1] )
-                                    
-                        }
-
                     </a>
 
-
-                    <div class="caption card-body" 
-                         draggable="false">
-
-                        <h5 class="truncate text-bg-success card-title" 
-                            draggable="false">
-
+                    <div class="caption card-body" draggable="false">
+                        <h5 class="truncate text-bg-success card-title" draggable="false">
                             @product.PostTitle
-
                         </h5>
 
-                        <p class="fa-dollar text-info-emphasis card-text" 
-                           draggable="false">
-
-                            @product.Price Taka
-
+                        <p class="fa-dollar text-info-emphasis card-text" draggable="false">
+                            @(product.Price?.ToString("F2") ?? "0.00") Taka
                         </p>
 
-                        <span draggable="false">
-
-                            <i class="fa fa-plus fa-fw"></i> 
-
-                            ADD TO CART
-
+                        <span draggable="false" class="btn-add-cart">
+                            <i class="fa fa-plus fa-fw"></i> ADD TO CART
                         </span>
-
                     </div>
-                
                 </div>
             }
         }
-
-        </div>
-
+    </div>
 </div>

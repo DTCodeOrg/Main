@@ -93,7 +93,7 @@ public class ProductRepository: IProductRepository
 
     public async Task<List<Product>> GetSelectProducts ()
     {
-        return await _tenantContext.Products.Where (a => a.IsActive == true).ToListAsync ();
+        return await _tenantContext.Products.ToListAsync ();
     }
 }
 

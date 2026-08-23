@@ -30,13 +30,13 @@
                     <a class="thumbnail only-image card-img-top" 
                        draggable="false">
 
-                        @if ( product.ImageFileContent != null )
+                        @if ( product != null )
                         {
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image3X.cshtml", product.ImageFileContent )  
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image3X.cshtml", product )  
                         }
                         else
                         {
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image3X.cshtml", new byte[1] )  
+                            @await Html.PartialAsync("~/Areas/PageContent/Views/Pages/Images/_Image3X.cshtml",product)
                         }
 
                     </a>
@@ -58,7 +58,8 @@
                                style="text-align:center;"
                                draggable="false">
 
-                                    @product.Price Taka
+                            @(product.Price?.ToString("F2") ?? string.Empty) Taka
+
 
                             </p>
 

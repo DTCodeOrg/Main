@@ -17,16 +17,16 @@
                            
                     <a class="thumbnail only-image">
 
-                        @if ( product.ImageFileContent != null )
+                        @if ( product != null )
                         {
 
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image4X.cshtml", product.ImageFileContent )
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image4X.cshtml", product )
                                 
                         }
                         else
                         {
 
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image4X.cshtml", new byte[1] )
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image4X.cshtml", product)
                                     
                         }
 
@@ -36,11 +36,14 @@
                     <div class="caption card-body">
 
                         <h5 class="truncate text-bg-success card-title">
-                            @product.PostTitle
+                            @product PostTitle
                         </h5>
 
                         <p class="fa-dollar text-info-emphasis card-text">
-                            @product.Price Taka
+
+                            @(product.Price?.ToString("F2") ?? string.Empty) Taka
+
+
                         </p>
 
                         <span>

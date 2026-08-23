@@ -17,16 +17,16 @@
                            
                     <a class="thumbnail only-image">
 
-                        @if ( product.ImageFileContent != null )
+                        @if ( product != null )
                         {
 
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image2X.cshtml", product.ImageFileContent )
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image2X.cshtml", product )
                                 
                         }
                         else
                         {
 
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image2X.cshtml", new byte[1] )
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image2X.cshtml", product)
                                     
                         }
 

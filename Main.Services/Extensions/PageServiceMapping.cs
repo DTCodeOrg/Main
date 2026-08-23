@@ -1,5 +1,4 @@
 ﻿using DataTransferModel;
-
 using Main.Common;
 using Main.Model.Identity;
 using Main.Model.Tenant;
@@ -13,14 +12,12 @@ public static class PageServiceMapping
         Panel panelEntity = new( panelDataModel.PageID, panelDataModel.PanelTemplate,
             panelDataModel.PanelTitle );
 
-        panelEntity.CreateParameters (panelDataModel.BaseDataModel);
-
         return panelEntity;
     }
 
     public static List<Post> CreateListPostEntity (PanelDataModel panelDataModel)
     {
-        List<Post>  listPosts = new();
+        List<Post>  listPosts = [];
         Post post;
         int order = 1;
         panelDataModel.ListPosts.ForEach (postDataModel =>
@@ -30,11 +27,11 @@ public static class PageServiceMapping
             postDataModel.RootID)
             {
                 FileContent = postDataModel.FileContent,
+                FilePath = postDataModel.FilePath,
                 Title = postDataModel.PostTitle,
                 Order = order
             };
 
-            post.CreateParameters (panelDataModel.BaseDataModel);
             listPosts.Add (post);
 
             order += 1;
@@ -70,7 +67,7 @@ public static class PageServiceMapping
                     CategoryID = productEntity.CategoryID,
                     PanelPostID = id,
                     RootID = productEntity.ProductID,
-                    EnumPostType = productEntity.PostType,
+                    EnumPostType = EnumPostType.Product,
                     Price = productEntity.Price,
                     PostTitle = productEntity.ProductName,
                     FileContent = file.FileContent!,
@@ -91,12 +88,11 @@ public static class PageServiceMapping
     {
         if ( pageEntity != null )
         {
-            var listPanels = pageEntity.ListPanels;
+            List<Panel> listPanels = pageEntity.ListPanels.ToList ();
 
             PageDataModel pageDataModel = new( );
 
-            List<PanelDataModel> listPanelDataModel
-                = new();
+            List<PanelDataModel> listPanelDataModel  = [];
 
             PanelDataModel panelDataModel;
 
@@ -126,11 +122,10 @@ public static class PageServiceMapping
                         PageID = panelDataModel.PageID
                     };
 
-
                     panelDataModel.CreatePost (postDataModel);
                 });
 
-                int actualCount  = panelDataModel.ListPosts.Count;
+                int actualCount  = panelDataModel.ListPosts.ToList().Count;
 
                 EnumIsValidTemplate validTemplate =
                 ValidationRelated.IsValidTemplate ( actualCount, panelDataModel.PanelTemplate );
@@ -143,6 +138,7 @@ public static class PageServiceMapping
                 if ( validTemplate == EnumIsValidTemplate.GreaterMatchValid )
                 {
                     int count = ValidationRelated.GetPostCount(panelDataModel.PanelTemplate);
+
                     List<PostDataModel> listPosts =
                     panelDataModel.ListPosts.Take(count).ToList();
 

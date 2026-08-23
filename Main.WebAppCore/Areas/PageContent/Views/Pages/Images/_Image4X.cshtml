@@ -5,8 +5,7 @@
         <a class="thumbnail" draggable="false">
              @if (Model != null)
             {
-                string imageSrc = Model.FilePath;
-                <img src="@imageSrc"
+                <img src= "@Model.FilePath"
                      class="img-responsive new-post-mobile-image"
                      alt="Product image"
                      style="height:155px;width:100%;"

@@ -32,13 +32,13 @@
                         @if ( product.ImageFileContent != null )
                         {
 
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image6X.cshtml", product.ImageFileContent )
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image6X.cshtml", product )
                                 
                         }
                         else
                         {
 
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image6X.cshtml", new byte[1] )
+                            @await Html.PartialAsync("~/Areas/PageContent/Views/Pages/Images/_Image6X.cshtml",product)
                                     
                         }
 
@@ -61,7 +61,8 @@
                             style="text-align:center;"
                             draggable="false">
 
-                                @product.Price Taka
+                            @(product.Price?.ToString("F2") ?? string.Empty) Taka
+
 
                         </p>
 

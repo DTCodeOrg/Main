@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 namespace Main.WebAppCore.Models;
 
-public class PostSelectViewModel
+public class PostSelectViewModel: BaseViewModel
 {
     public PostSelectViewModel ()
     {
@@ -32,7 +32,7 @@ public class PostSelectViewModel
     public int RootID
     {
         get; set;
-    } // Admin or Company (Key) of EnumPostType
+    }
 
 
     public int ImageOrderID
@@ -53,6 +53,11 @@ public class PostSelectViewModel
 
 
     public byte[]? ImageFileContent
+    {
+        get; set;
+    }
+
+    public string FilePath
     {
         get; set;
     }

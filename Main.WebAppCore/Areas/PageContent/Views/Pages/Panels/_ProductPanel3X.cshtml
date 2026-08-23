@@ -17,11 +17,11 @@
 
                         @if ( product.ImageFileContent != null )
                         {
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image3X.cshtml", product.ImageFileContent )  
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image3X.cshtml", product )  
                         }
                         else
                         {
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image3X.cshtml", new byte[1] )  
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image3X.cshtml", product  )  
                         }
 
                     </a>
