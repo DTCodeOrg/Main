@@ -1,6 +1,10 @@
 # Latest Videos 🆕🎬
+
 **23 Aug 2026** 
-[Video - Tenant Product Module Full](https://1drv.ms/v/c/93d70fb51193cb6b/IQCiwVnAVKW4SpTsNHp_KRpnAUll_aWmsJVLTm5ICW5szCI?e=7ebxyv) **NEW!**
+
+[Video: Product UX, Page Setup (Panels, Drag & Drop](https://1drv.ms/v/c/93d70fb51193cb6b/IQDP8Vj1-bABR6M5FOHG1L3eAXVYFZk3p0-CCl2cSB2nAvc?e=d6g8c6) **NEW!**
+
+[Video - Tenant Product Module Full](https://1drv.ms/v/c/93d70fb51193cb6b/IQCiwVnAVKW4SpTsNHp_KRpnAUll_aWmsJVLTm5ICW5szCI?e=7ebxyv) 
 
 ____
 1. [Video Multi Tenant with Theme and Logo](https://1drv.ms/v/c/93d70fb51193cb6b/IQCbPoQogKj0Sp4JcSrTqlTdAaTPrdYOCt7i2xo-eiRa1Nk?e=zW63vs) 
