@@ -52,7 +52,7 @@ public static class PageServiceMapping
         }
 
         List<PostDataModel> listPanelPostDataModel
-        = new();
+        = [];
 
         PostDataModel panelPostDataModel;
 
@@ -121,7 +121,7 @@ public static class PageServiceMapping
                         PostTitle = panelPost.Title ?? "",
                         Price = panelPost.Price,
                         FileContent = panelPost.FileContent!,
-                        FilePath = panelPost.FilePath,
+                        FilePath = panelPost.FilePath! ?? string.Empty,
                         PostOrder = panelPost.Order,
                         PageID = panelDataModel.PageID
                     };

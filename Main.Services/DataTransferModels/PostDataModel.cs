@@ -50,7 +50,7 @@ public class PostDataModel: DataModel
         get; set;
     }
 
-    public string? FilePath
+    public string FilePath
     {
         get; set;
     }

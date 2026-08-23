@@ -49,6 +49,7 @@ public static class PageMapping
             {
                 ImageFileContent = dataModel.FileContent,
 
+
                 CategoryName = DropDownListItems.GetCategoryList (localizer).ToList ()
                     .FirstOrDefault (a => a.Value == ( dataModel.CategoryID.HasValue
                     ? dataModel.CategoryID.Value.ToString () : "" ))!.Text,
@@ -96,6 +97,8 @@ public static class PageMapping
                     PanelPostID = panelPostDataModel.PanelPostID,
 
                     ImageFileContent = panelPostDataModel.FileContent,
+
+                    FilePath = panelPostDataModel.FilePath,
 
                     ImageFileID = panelPostDataModel.ImageFileID,
 
