@@ -287,7 +287,7 @@ public class ManageProductController: BaseController
     [HttpPost]
     [Authorize (Policy = "TenantAdmin")]
     [IgnoreAntiforgeryToken]
-    public async Task<JsonResult> ImageRemove (int id,int postId = 0,string? fileName = null)
+    public async Task<JsonResult> ImageRemove (int id = 0,int postId = 0,string? fileName = null)
     {
         try
         {

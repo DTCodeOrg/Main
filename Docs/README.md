@@ -1,10 +1,6 @@
-# Latest Video (Tenant Product & Photos) 🆕🎬
-**22 Aug 2026** 
-[Video - Tenant Product & Photos](https://1drv.ms/v/c/93d70fb51193cb6b/IQDVNYSAQMf8Rb45NWgIdiaHAVuqanStaSjo0pe7yMQjdio?e=GJ37yG) **NEW!**
-
-**17 Aug 2026** 
-[Video - Refined Theme](https://1drv.ms/v/c/93d70fb51193cb6b/IQBmlArEE1UzTYF15imEdp-7AV6PBRUxTHaiPr0GXF_nPm4?e=0O69CQ)
-
+# Latest Videos 🆕🎬
+**23 Aug 2026** 
+[Video - Tenant Product Module Full](https://1drv.ms/v/c/93d70fb51193cb6b/IQCiwVnAVKW4SpTsNHp_KRpnAUll_aWmsJVLTm5ICW5szCI?e=7ebxyv) **NEW!**
 
 ____
 1. [Video Multi Tenant with Theme and Logo](https://1drv.ms/v/c/93d70fb51193cb6b/IQCbPoQogKj0Sp4JcSrTqlTdAaTPrdYOCt7i2xo-eiRa1Nk?e=zW63vs) 
@@ -17,6 +13,11 @@ ____
 
 [Theme Seed & Database SQL Script](https://1drv.ms/u/c/93d70fb51193cb6b/IQAUlLSDaKNySocpGhJc6rwRAZbMUTp5WKFcbGST3aEP4Ak?e=Kl0cxT)
 
+**22 Aug 2026** 
+[Video - Debugging of Tenant Product & Photos](https://1drv.ms/v/c/93d70fb51193cb6b/IQDVNYSAQMf8Rb45NWgIdiaHAVuqanStaSjo0pe7yMQjdio?e=GJ37yG) 
+
+**17 Aug 2026** 
+[Video - Refined Theme](https://1drv.ms/v/c/93d70fb51193cb6b/IQBmlArEE1UzTYF15imEdp-7AV6PBRUxTHaiPr0GXF_nPm4?e=0O69CQ)
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
 
