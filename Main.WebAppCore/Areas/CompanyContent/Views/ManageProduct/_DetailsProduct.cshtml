@@ -1,25 +1,47 @@
 ﻿@model ProductViewModel
-
 <div id="detailsAdminPostContainerPartial" class="card-form row">
+   <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
+        <h6 class="card-subtitle all-caps">
+
+            Product Information ( @Html.DisplayFor(a => a.CategoryText, new { @class = "fff" }) )
+          
+        </h6>
 
         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
+
+           <b class="text-success fw-bold">
+               Product Price: @Html.DisplayFor(a => a.UnitPrice, new { @class = "fff" }) Taka 
+            </b>
+
+            <br />
+
+            <p class="text-uppercase">
+                @Html.DisplayFor(a => a.ProductName, new { htmlAttributes = new { @class = "fff" } })
+            </p>
+
+            <br />
+
+            <p class="header-text">
+
+                @Html.DisplayFor(a => a.Description, new { htmlAttributes = new { @class = "fff" } })
+            
+            </p>
+           
+      
+            
+       <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
         
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-
-            <h5 class="card-subtitle all-caps">
+        <h6 class="card-subtitle all-caps">
 
                 Pictures
 
-            </h5>
+        </h6>
 
-        </div>
+    
+     
 
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-
-        <div class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12" id="imageEditPanelContainer">
-            
+        <div class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12" id="imageEditPanelContainer"> 
+           
             @{
                 foreach ( var postFile in Model.ImageFiles.ToList( ) )
                 {
@@ -29,86 +51,20 @@
 
         </div>
         
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-
-            <h5 class="card-subtitle all-caps">
-
-                Product Information
-
-            </h5>
-
-        </div>
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-
-            @Html.LabelFor( a => a.CategoryText )
-
-            <br />
-            
-            @Html.DisplayFor(a => a.CategoryText, new { @class = "fff" })
-
-        </div>
         
-        <br />
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-
-            @Html.LabelFor( a => a.ProductName )
-
-            <br />
-           
-            @Html.DisplayFor(a => a.ProductName, new { htmlAttributes = new { @class = "fff" } })
-
-        </div>
-
-        <br />
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-
-            @Html.LabelFor( a => a.Description )
-
-            <br />
-           
-            @Html.DisplayFor(a => a.Description, new { htmlAttributes = new { @class = "fff" } })
-
-        </div>
-
-        <br />
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-
-            @Html.LabelFor( a => a.SearchTag )
-            
-            <br />
-
-            @Html.DisplayFor(a => a.SearchTag, new { htmlAttributes = new { @class = "fff" } })
-
-        </div>
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-
-            <h5 class="card-subtitle all-caps">
+         <h6 class="card-subtitle all-caps">
 
                 Price Information
 
-            </h5>
-
-        </div>
-
-        <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-
+            </h6>
+       
+      <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-            @Html.LabelFor( a => a.UnitPrice )
+            <b>
+                @Html.LabelFor( a => a.UnitPrice )
+            </b>
 
             <br />
 
@@ -119,8 +75,9 @@
         <br />
 
         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-
-            @Html.LabelFor( a => a.Discount )
+            <b>
+                @Html.LabelFor( a => a.Discount )
+            </b>
 
             <br />
 
@@ -132,16 +89,29 @@
 
         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-            @Html.LabelFor( a => a.SaleCommission )
-
+            <b>
+                @Html.LabelFor( a => a.SaleCommission )
+            </b>
+          
             <br />
-            
+
             @Html.DisplayFor(a => a.SaleCommission, new { @class = "fff" })
 
         </div>
 
-
         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
+
+               <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
+            <b>
+                 @Html.LabelFor( a => a.SearchTag )
+            </b>
+
+            <p class="header-text">
+                @Html.DisplayFor(a => a.SearchTag, new { htmlAttributes = new { @class = "fff" } })
+            </p>
+
+        </div>
 
         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
@@ -168,6 +138,7 @@
                 <i class="fa fa-edit"></i>
 
                 <span class="action-text">Edit</span>
+
             </a>
 
             <a title="Remove Product"
@@ -179,9 +150,7 @@
                 <span class="action-text">Delete</span>
 
             </a>
-
         </div>
 
         <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
-  
 </div>

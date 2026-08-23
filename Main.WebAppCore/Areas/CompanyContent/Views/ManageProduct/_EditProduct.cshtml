@@ -10,21 +10,19 @@
 
             <form id="myMainFormEdit"
                       method="post"
-                      action="@Url.Action( "Edit","ManageProduct" )"
-                      novalidate>
-   
-           
+                      action="@Url.Action( "Edit","ManageProduct" )">
+  
                 @Html.HiddenFor(a => a.PageName)
 
                 @Html.HiddenFor(a => a.ProductID)
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-                    <h5 class="card-subtitle all-caps">
+                    <h6 class="card-subtitle all-caps">
 
                         Product Information
 
-                    </h5>
+                    </h6>
 
                 </div>
 
@@ -34,7 +32,6 @@
 
                     @Html.LabelFor( a => a.CategoryID )
 
-                   
                     @Html.DropDownListFor(a => a.CategoryID, Model.AVCategory, new { @class = "fff" })
                    
                     @Html.ValidationMessageFor(m => m.CategoryID, "", new { @class = "text-danger" })
@@ -72,11 +69,11 @@
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-                    <h5 class="card-subtitle all-caps">
+                    <h6 class="card-subtitle all-caps">
 
                         Price Information
 
-                    </h5>
+                    </h6>
 
                 </div>
 
@@ -118,7 +115,7 @@
 
             <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
-                <h5 class="card-subtitle all-caps">Pictures</h5>
+                <h6 class="card-subtitle all-caps">Pictures</h6>
 
             </div>
 

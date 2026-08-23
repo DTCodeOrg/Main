@@ -1280,8 +1280,8 @@ header .bottom-header {
 
     textarea {
         height: auto;
-        min-height: 80px;
-        max-height: 200px;
+        min-height: 300px;
+        max-height: 400px;
         overflow-y: auto;
         resize: none;
     }

@@ -67,7 +67,7 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    [Display (Name = "Search Tags (Comma Seoerated)")]
+    [Display (Name = "Search Tags (comma-separated)")]
     [StringLength (4000)]
     public string? SearchTag
     {
