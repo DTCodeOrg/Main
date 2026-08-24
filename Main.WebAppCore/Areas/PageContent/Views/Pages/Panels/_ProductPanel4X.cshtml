@@ -20,7 +20,7 @@
                         @if ( product != null )
                         {
 
-                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image4X.cshtml", product )
+                            @await Html.PartialAsync("~/Areas/PageContent/Views/Pages/Images/_Image4X.cshtml",product)
                                 
                         }
                         else
@@ -36,7 +36,7 @@
                     <div class="caption card-body">
 
                         <h5 class="truncate text-bg-success card-title">
-                            @product PostTitle
+                            @product.PostTitle
                         </h5>
 
                         <p class="fa-dollar text-info-emphasis card-text">

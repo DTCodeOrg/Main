@@ -1,7 +1,6 @@
-﻿@model List<PanelViewModel>
-
+﻿@model PageViewModel
 @{
-    foreach(var model in Model.ToList())
+    foreach(var model in Model.ListPagePanels.ToList())
     {
 
         if ( model.PanelTemplate == EnumPanelTemplate.ProductSixer)

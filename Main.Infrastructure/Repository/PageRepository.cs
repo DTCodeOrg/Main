@@ -25,7 +25,7 @@ public class PageRepository: IPageRepository
 
     public async Task<Page> GetSinglePage (EnumPublicPage publicPage)
     {
-        Page page = await _tenantContext.Pages.FirstOrDefaultAsync<Page> (m => m.EnumPublicPage == publicPage );
+        Page? page = await _tenantContext.Pages.FirstOrDefaultAsync<Page> (m => m.EnumPublicPage == publicPage );
 
         if ( page == null )
         {
