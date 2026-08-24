@@ -28,7 +28,6 @@
 		<Content Remove="Views\Home\Resource*.cshtml" />
 		<Content Remove="Views\Home\Terms*.cshtml" />
 		<Content Remove="Views\Shared\_ConfirmModal.cshtml" />
-		<Content Remove="Views\Shared\_PageContent.cshtml" />
 		<Content Remove="Views\Shared\_ShoppingCartNotification.cshtml" />
 		<Content Remove="Views\Shared\DesktopPostType\**" />
 		<Content Remove="Views\Shared\DisplayTemplates\**" />

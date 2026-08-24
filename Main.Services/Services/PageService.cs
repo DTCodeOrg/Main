@@ -1,4 +1,5 @@
 ﻿using DataTransferModel;
+using Main.Common;
 using Main.Common.Models;
 using Main.IRepository;
 using Main.Model.Identity;
@@ -61,6 +62,16 @@ public class PageService: IPageService
         PageDataModel pageDataModel =  PageServiceMapping.MapPageDataModel(pageEntity);
 
         return pageDataModel;
+    }
+
+    public async Task<PageDataModel> GetPageDataModel (EnumPublicPage page)
+    {
+        Page pageEntity =  await _pageRepository.GetSinglePage ( page);
+
+        PageDataModel pageDataModel =  PageServiceMapping.MapPageDataModel(pageEntity);
+
+        return pageDataModel;
+
     }
 
     public async Task<List<PageDisplayDataModel>> GetAllPages (string company)

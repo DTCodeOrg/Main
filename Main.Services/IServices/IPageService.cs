@@ -1,4 +1,5 @@
 ﻿using DataTransferModel;
+using Main.Common;
 using Main.Common.Models;
 namespace Main.Services;
 
@@ -11,6 +12,8 @@ public interface IPageService
     Task<List<PostDataModel>> GetSelectPosts ();
 
     Task<PageDataModel> GetPageDataModel (int pageID);
+
+    Task<PageDataModel> GetPageDataModel (EnumPublicPage page);
 
     Task<List<PageDisplayDataModel>> GetAllPages (string company);
 

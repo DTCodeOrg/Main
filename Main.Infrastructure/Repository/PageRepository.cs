@@ -1,4 +1,5 @@
-﻿using Main.Infrastructure.DatabaseContext;
+﻿using Main.Common;
+using Main.Infrastructure.DatabaseContext;
 using Main.IRepository;
 using Main.Model.Identity;
 using Main.Model.Tenant;
@@ -20,6 +21,18 @@ public class PageRepository: IPageRepository
         List<Page> listPages = await _tenantContext.Pages.ToListAsync();
 
         return listPages.ToList ();
+    }
+
+    public async Task<Page> GetSinglePage (EnumPublicPage publicPage)
+    {
+        Page page = await _tenantContext.Pages.FirstOrDefaultAsync<Page> (m => m.EnumPublicPage == publicPage );
+
+        if ( page == null )
+        {
+            return new Page ();
+        }
+
+        return page;
     }
 
     public async Task<Page> GetSinglePage (int id)

@@ -1,6 +1,9 @@
-﻿using Main.Infrastructure;
+﻿using DataTransferModel;
+using Main.Common;
+using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.Models;
+using Main.WebAppCore.Models.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
@@ -28,9 +31,14 @@ public class HomeController: BaseController
 
     public async Task<IActionResult> Index ()
     {
-        //var pageDataModel = await _pageService.GetPageDataModel((int)EnumPublicPage.Home);
+        PageDataModel pageDataModel = await _pageService.GetPageDataModel(EnumPublicPage.Home);
 
-        HomeViewModel homeViewModel = new ("Home Page");
+        PageViewModel pageViewModel = PageMapping.MapPageViewModel (pageDataModel: pageDataModel);
+
+        HomeViewModel homeViewModel = new("Home Page")
+        {
+            PageViewModel = pageViewModel
+        };
 
         return View (homeViewModel);
     }

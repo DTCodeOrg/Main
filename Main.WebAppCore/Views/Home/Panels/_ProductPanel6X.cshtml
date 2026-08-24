@@ -1,0 +1,57 @@
+﻿@model PanelViewModel
+
+<div class="container">
+    
+    <h4 class="sub-title">        
+        @Model.PanelTitle
+    </h4>
+
+    <div class="row">
+
+        @{
+            foreach ( var product in Model.ListPosts.ToList())
+            {
+                <div class="col-md-2 col-sm-2 col-lg-2 col-xs-2 card">
+                           
+                    <a class="thumbnail only-image card-img-top">
+
+                        @if ( product.ImageFileContent != null )
+                        {
+
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image6X.cshtml", product )
+                                
+                        }
+                        else
+                        {
+
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image6X.cshtml", product )
+                                    
+                        }
+
+                    </a>
+
+
+                    <div class="caption card-body">
+
+                        <h5 class="truncate text-bg-success card-title" >
+                            @product.PostTitle
+                        </h5>
+
+                        <p class="fa-dollar text-info-emphasis card-text" >
+                            @product.Price Taka
+                        </p>
+
+                        <span>
+                            <i class="fa fa-plus fa-fw"></i>
+
+                            ADD TO CART
+                        </span>
+                        
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+
+</div>

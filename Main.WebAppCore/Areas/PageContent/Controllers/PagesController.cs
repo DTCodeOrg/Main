@@ -45,6 +45,8 @@ public class PagesController: BaseController
 
             List<PageDisplayViewModel> listPageViewModel = PageMapping.PageDisplayMapping(listPageDataModel, _tenantSetter.CurrentTenant.TenantName);
 
+
+
             return View (listPageViewModel);
 
         }

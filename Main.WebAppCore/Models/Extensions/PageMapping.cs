@@ -110,7 +110,9 @@ public static class PageMapping
                     CategoryID
                         = panelPostDataModel.CategoryID.HasValue ? panelPostDataModel.CategoryID.Value : 0,
 
-                    PanelID = panelViewModel.PanelID
+                    PanelID = panelViewModel.PanelID,
+
+                    PostTitle = panelPostDataModel.PostTitle
                 };
 
                 panelViewModel.CreatePanelPost (postViewModel);
