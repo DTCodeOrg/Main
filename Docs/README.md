@@ -1,8 +1,10 @@
 # Latest Videos 🆕🎬
 
-**23 Aug 2026** 
+**25 Aug 2026** 
+[Video: Home Page: Setup (Panels: Add - Drag & Drop, Edit - Up & Down](https://1drv.ms/v/c/93d70fb51193cb6b/IQB4198G_WMSRpVZBD2l6J5DARgBU77fxnTsPz2KCSk37eE?e=ZBSUSb) **NEW!**
 
-[Video: Product UX, Page Setup (Panels, Drag & Drop](https://1drv.ms/v/c/93d70fb51193cb6b/IQDP8Vj1-bABR6M5FOHG1L3eAXVYFZk3p0-CCl2cSB2nAvc?e=d6g8c6) **NEW!**
+**24 Aug 2026** 
+[Video: Product UX, Page Setup (Panels, Drag & Drop](https://1drv.ms/v/c/93d70fb51193cb6b/IQDP8Vj1-bABR6M5FOHG1L3eAXVYFZk3p0-CCl2cSB2nAvc?e=d6g8c6) 
 
 [Video - Tenant Product Module Full](https://1drv.ms/v/c/93d70fb51193cb6b/IQCiwVnAVKW4SpTsNHp_KRpnAUll_aWmsJVLTm5ICW5szCI?e=7ebxyv) 
 
