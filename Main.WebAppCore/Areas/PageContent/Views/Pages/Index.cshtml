@@ -47,6 +47,7 @@
                @foreach (var item in Model.ToList()) {
                     <tr>
                         <td>
+                            <span class="pillar-square">T</span>
                             @Html.DisplayFor(modelItem => item.CompanyName)
                         </td>
 
@@ -97,6 +98,9 @@
 
 @section scriptsapp {
 
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/logo.css" />
 }
 
 
