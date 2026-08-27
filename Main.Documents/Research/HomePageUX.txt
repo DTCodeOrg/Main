@@ -1,0 +1,162 @@
+﻿# Arrange the homepage around discovery, not decoration:
+1. What is sold here? 
+2. What styles or categories exist? 
+3. Where do I start?
+
+If your catalog is broad, lead with art types, styles, or subjects; if it’s small and curated, lead with a representative sample of actual works. 
+
+For a fine art ecommerce homepage, don’t treat the homepage like a poster — treat it like a clear gallery entrance. 
+
+# Based on our research, you should use the homepage to quickly communicate:
+1. what kinds of art you sell, 
+2. how shoppers can browse it, and 
+3. where to go next, rather than filling it with abstract brand imagery or too few featured works.
+
+
+A strong homepage sequence
+A practical homepage order for a fine arts store is:
+
+> Header with clear main navigation and search
+> Hero area with one strong value proposition and a clear path into browsing
+> Featured categories or browsing paths
+> Representative artworks or collections
+> Thematic browsing / curated paths
+> Trust or orientation content if needed
+> Footer with support and secondary links
+> That sequence works because it balances brand expression with product findability
+
+# What the hero should do:
+Your hero should set context, not consume the whole page. For fine art, a large visual can work well, but only if users can immediately tell what action to take next and what the image leads to.
+
+# Use the hero to communicate one of these:
+
+1. a major browsing entry point, such as Shop Paintings, Browse by Artist, or Explore Abstract Art
+a seasonal or curated collection
+
+2. your site’s core positioning, if it truly helps users choose where to start. If the hero is clickable, make the destination obvious. Baymard’s research shows users struggle when visual elements have unclear hit areas or ambiguous destinations.
+
+# Make category access prominent
+For fine art, most users won’t want to begin from a random featured piece. They’ll usually want a way to scope the catalog first — by medium, style, subject, artist, price, size, or room.
+
+That means your homepage should provide prominent category-based browsing paths, not just editorial storytelling. Baymard specifically recommends featuring products and categories in ways that guide users without taking away their ability to browse on their own terms (Featuring Products and Categories).
+
+Good category groupings for fine art:
+Common homepage entry points could be:
+
+1. By medium: paintings, prints, photography, sculpture
+2. By style: abstract, contemporary, minimalist, landscape
+3. By subject: nature, portrait, cityscape, still life
+4. By artist
+6. By price
+7. By size / orientation
+8. The exact taxonomy depends on your catalog, but the principle is the same: give users multiple meaningful ways to narrow the scope early.
+
+# Feature a Broad Range of Product Types on the Homepage
+
+Use actual artworks if the catalog is small and curated
+If you sell a small, highly curated art catalog, don’t overbuild category navigation. In that case, it’s often better to show a representative sample of actual products directly on the homepage, because that gives users a faster understanding of what the store offers 
+#1708
+.
+
+This is especially relevant for fine art, where the products themselves carry much of the meaning. If there are only a limited number of artists, series, or mediums, showing the works themselves can outperform abstract category labels.
+
+In practice
+For a smaller catalog:
+
+Feature a broad spread of actual pieces near the top of the homepage
+Ensure the sample reflects the range of styles, subjects, and price points
+Avoid repeating too many visually similar works
+For a larger catalog:
+
+Lean more heavily on categories and guided browsing
+Use featured works to support discovery, not replace structure
+Consider curated and thematic browsing
+Fine art is a strong candidate for thematic browsing because many shoppers don’t arrive with a precise item in mind. They may browse by mood, room, style, or occasion rather than a strict product specification.
+
+That’s where curated paths can work very well:
+
+Art for Living Rooms
+Large-Scale Works
+Black-and-White Photography
+Emerging Artists
+Under $500
+Baymard recommends thematic or guided browsing when it helps users discover products in a way that matches how they think about the assortment (
+#249
+, Featuring Products and Categories).
+
+The important caveat: thematic content should supplement direct browsing, not replace it. Users still need straightforward access to the full catalog structure.
+
+Don’t send users into huge, undefined product lists
+If your catalog is large, don’t make homepage links dump people into an overly broad list of hundreds of artworks. That creates the classic browsing problem where users have not yet defined scope tightly enough.
+
+Baymard’s research consistently shows that intermediary category pages help users browse large catalogs more successfully by presenting subcategories first, rather than a giant product wall (Intermediary Category Page, 
+#307
+, 
+#308
+).
+
+For a fine art site, that means
+If someone clicks Paintings, the next page may work better as:
+
+Abstract
+Landscape
+Figurative
+Large paintings
+Small paintings
+New arrivals
+…instead of immediately showing 1,200 mixed paintings.
+
+Keep branding bespoke, but not at the expense of clarity
+For an art site, strong visual branding matters. In fact, bespoke imagery and design can play an important role in presenting the site’s brand well 
+#238
+.
+
+But branding should support comprehension, not compete with it. If the homepage is too editorial, too sparse, or too ambiguous, users can admire it without understanding how to shop.
+
+A good fine art homepage feels refined, but still makes these elements unmistakable:
+
+what is for sale
+what types of works exist
+how to browse
+where key links lead
+Specific layout recommendation
+If you want a concrete starting point, I’d recommend this homepage structure:
+
+
+1. Header
+Logo linked to homepage 
+#257
+Main navigation with your core art categories
+Search
+Cart / account
+
+2. Hero
+One strong image
+Short positioning statement
+One primary CTA and possibly one secondary CTA
+Example directions: Browse Paintings, Shop by Artist, Explore New Arrivals
+
+3. Primary browsing grid
+4–8 prominent category tiles
+Use representative thumbnails
+Make each tile’s destination explicit
+
+4. Featured works or collections
+Show a representative spread, not visually repetitive picks
+Prioritize breadth over just “best looking” sameness
+
+5. Thematic discovery
+Curated entry points by room, style, price, or collection
+
+6. Supporting trust/orientation content
+Only if it helps browsing or purchase confidence
+Keep it concise so it doesn’t push discovery content too far down
+
+7. Footer
+Help, shipping, returns, about, contact, artist info, policies
+
+One important caution for art sites
+Because art is so visual, it’s tempting to rely on imagery alone. That’s risky. Users need clear text labels alongside imagery so they can understand categories and destinations quickly, especially on mobile and especially when one visual style can resemble another.
+
+This is one of those cases where elegant UX is usually more explicit, not less explicit.
+
