@@ -1,4 +1,4 @@
-﻿USE [IdentityDatabase]
+﻿USE [CloneIdentityDatabase]
 
 INSERT [dbo].[TenantThemes] ([Id], [MenuItemHoverBGColor], [MenuItemHoverColor], [MenuBackgroundColor], [FontStack], [LogoRelativeFilePath], [TenantId], [CreatedBy], [ModifiedBy], [DeletedBy], [CreatedDate], [ModifiedDate], [DeletedDate], [IsActive], [TenantCountry], [TenantContinent], [BodyBackgroundColor], [BodyColor], [ButtonBGBorderColor], [HeaderColor], [LogoColor]) VALUES (N'00000011-0000-0000-0000-000000000000', N'white', N'darkgray', N'#240202', N'Garamond, Baskerville, ''Baskerville Old Face'', ''Hoefler Text'', Georgia, ''Times New Roman'', serif', N'', N'00000001-0000-0000-0000-000000000000', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, N' #494d52', N' #3b3c3d', N'', N' #3b3c3d', N'#3b3c3d')
 

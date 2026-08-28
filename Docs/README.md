@@ -1,4 +1,27 @@
 # Latest Videos 🆕🎬
+
+# 28 Aug 2026: One Hour Video for Kids to a Cook (kitchen) or a Computer User from any Discipline follow the steps; You can run the Application in your Laptop.
+
+## VIDEO 1 [Step 1: VS 2026 Download](https://1drv.ms/v/c/93d70fb51193cb6b/IQBPuCnZNZYvSrM6KyzEHLj_AR7li3IJKuE4Jx5dCSx9zYk?e=UZ2cq5) 
+
+## VIDEO 2 [Step 2.0 Download SQL Server Express](https://1drv.ms/v/c/93d70fb51193cb6b/IQDitAIgZh89T6XtjTnnFdb7ARO6jI6i3fCBX2uORdIabKc?e=DbFMe3)
+
+## VIDEO 3 [Step 2.1 SQL Server (For Exploration)](https://1drv.ms/v/c/93d70fb51193cb6b/IQCKWcGjPTMoTZ6I8NYcYTJEAcuZDCoiPcpZDsZjTXbsjUA?e=W6CdID)
+
+## VIDEO 4 [Step 3 Clone Git Hub Repository](https://1drv.ms/v/c/93d70fb51193cb6b/IQDI7gRXjoUwQKUdcw22TjD_Ac-p4oMAuV-roDcIuiN5n6E?e=q9WKsT)
+
+## VIDEO 5 [Step 4 Create Database (Add Migration & Update Database)](https://1drv.ms/v/c/93d70fb51193cb6b/IQDI7gRXjoUwQKUdcw22TjD_Ac-p4oMAuV-roDcIuiN5n6E?e=q9WKsT)
+
+## VIDEO 6 [Step 5 Copy and Paste Host File (Know the database)](https://1drv.ms/v/c/93d70fb51193cb6b/IQBjskyEhcplTZY5smFjgOQpAR4UESh5_MAIfOC6LQei6hc?e=TeOjxE)
+
+## VIDEO 7 [Step 6 - Download Nginx, Add Settings, Create Certificate](https://1drv.ms/v/c/93d70fb51193cb6b/IQAAcwExJ9goTI9PqOFSNudcARIW65oDMeyrIhrm17R8uYA?e=erERDO)
+
+## VIDEO 8 [Step 7 Run The Application and Nginx, Test in Browser](https://1drv.ms/v/c/93d70fb51193cb6b/IQDncVwUWAZQQqP-FNgAOJclAa1cP2CBHgt1EIUSumMQbGs?e=iETG20)
+
+
+
+
+
 **28 Aug 2026**
 [Video: Bottom Header - 1. Dynamic Product Category Menu, 2. Fixed Scroll-Menu (Home Page/All Pages)](https://1drv.ms/v/c/93d70fb51193cb6b/IQDIvxEUH5tcR5AofCnZmpZfAYgosaxW98BVEvhy8FOVbx0?e=1Zex41) **NEW!**
 
