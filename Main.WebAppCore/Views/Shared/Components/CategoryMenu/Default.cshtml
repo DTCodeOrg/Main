@@ -1,33 +1,112 @@
 ﻿@model MenuObjectModel
-
 @{
-
     var InitText = !String.IsNullOrEmpty(Model.CategoryText) ? Model.CategoryText : @SharedStringLocalizer["CateAccordionViewByMarkets"];
 }
 
-<ul class="side-menu">
-    @{
-        var counter = 1;
-        foreach (var category in Model.ListCategory.ToList())
-        {
-            <li class="category" data-category="@counter">
-                <i class=""></i>
-                <span class="custom-dropdown-category-text-spacing">
-                    @category.Text
+ <!-- Dropdown Component -->
+ <div class="dropdown-trigger">
+
+      <button class="nav-btn dropdown-btn">Categories ▼</button>
+        <!-- Level 1 Menu -->
+     
+          <ul class="dropdown-menu">
+              
+        
+              
+
+                @foreach (var category in Model.ListCategory.ToList())
+                {
+        
+                        <li class="category-item">
+
+                                 <a href="#" class="category-link"> @category.Text </a>
+                      
+                                  <!-- Level 2 Menu -->
+                                  <ul class="subcategory-menu">
+
+                                      <li class="fixed-submenu-title"> @category.Text </li>
+
+                                       @{
+
+                                            var itemList = 
+                                            Model.ListSubCategory.Where( a => a.ParentID == category.ValueID ).ToList( );
+
+                                            if ( itemList == null )
+                                            {
+                                                continue;
+                                            }
+
+                                        }
+
+                                         @foreach ( var subcategory in itemList.ToList() )
+                                         {
+
+                                                <li><a href="#" class="subcategory-link"> @subcategory.Text </a></li>
+                                      
+                                         }
+
+                                  </ul>
+
+                        </li>
+               }
+        </ul>
+    </div>   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <a class="side-menu">
+
+    <ul class="dropdown-menu">
+        @{
+            var counter = 1;
+            foreach (var category in Model.ListCategory.ToList())
+            {
+                <span class="btn btn-secondary dropdown-toggle" 
+                type="button" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false">
+                    <li class="category dropdown-item" data-category="@counter">
+                        <i class=""></i>
+                        <span class="custom-dropdown-category-text-spacing">
+                            @category.Text
+                        </span>
+                        <i class="fa fa-caret-right"></i>
+                    </li>
+                    counter++;
                 </span>
-                <i class="fa fa-caret-right"></i>
-            </li>
-            counter++;
+            }
         }
-    }
-</ul>
+    </ul>
+</a>
 @{
     var counter1 = 1;
     foreach (var category in Model.ListCategory.ToList())
     {
-        <div class="subcategory side-menu" data-subcategory="@counter1">
-            <h4 class="sub-category-title">@category.Text</h4>
-            <ul>
+        <span class="subcategory side-menu dropdown" data-subcategory="@counter1">
+
+         <a class="btn btn-secondary dropdown-toggle" 
+            type="button" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
+
+            <h6 class="sub-category-title">@category.Text</h6>
+
+        </a>
+              
+            <ul class="side-menu dropdown-menu">
                 @{
                     var itemList = Model.ListSubCategory.Where( a => a.ParentID == category.ValueID ).ToList( );
 
@@ -39,7 +118,7 @@
 
                 @foreach ( var subcategory in itemList.ToList() )
                 {
-                    <li class="sub-category">
+                    <li class="sub-category dropdown-item dropdown-item-text icon-button">
                         <a class="sub-category-li @subcategory.Text.Replace(" ", "")"
                                data-text="@subcategory.Text"
                                href="@Url.Action("Market", "CategoryMarket", new { subcategoryid = subcategory.ValueID, pageNumber = "1" })">
@@ -50,7 +129,11 @@
                     </li>
                 }
             </ul>
-        </div>
+        </span>
         counter1++;
     }
 }
+
+
+</a> *@
+

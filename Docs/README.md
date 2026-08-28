@@ -1,7 +1,9 @@
 # Latest Videos 🆕🎬
+**28 Aug 2026**
+[Video: Bottom Header - 1. Dynamic Product Category Menu, 2. Fixed Scroll-Menu (Home Page/All Pages)](https://1drv.ms/v/c/93d70fb51193cb6b/IQDIvxEUH5tcR5AofCnZmpZfAYgosaxW98BVEvhy8FOVbx0?e=1Zex41) **NEW!**
 
 **25 Aug 2026** 
-[Video: Home Page: Setup (Panels: Add - Drag & Drop, Edit - Up & Down](https://1drv.ms/v/c/93d70fb51193cb6b/IQB4198G_WMSRpVZBD2l6J5DARgBU77fxnTsPz2KCSk37eE?e=ZBSUSb) **NEW!**
+[Video: Home Page: Setup (Panels: Add - Drag & Drop, Edit - Up & Down](https://1drv.ms/v/c/93d70fb51193cb6b/IQB4198G_WMSRpVZBD2l6J5DARgBU77fxnTsPz2KCSk37eE?e=ZBSUSb) 
 
 **24 Aug 2026** 
 [Video: Product UX, Page Setup (Panels, Drag & Drop](https://1drv.ms/v/c/93d70fb51193cb6b/IQDP8Vj1-bABR6M5FOHG1L3eAXVYFZk3p0-CCl2cSB2nAvc?e=d6g8c6) 

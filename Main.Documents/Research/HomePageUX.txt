@@ -54,6 +54,7 @@ Common homepage entry points could be:
 # Feature a Broad Range of Product Types on the Homepage
 
 Use actual artworks if the catalog is small and curated
+
 If you sell a small, highly curated art catalog, don’t overbuild category navigation. In that case, it’s often better to show a representative sample of actual products directly on the homepage, because that gives users a faster understanding of what the store offers 
 #1708
 .
@@ -80,6 +81,7 @@ Large-Scale Works
 Black-and-White Photography
 Emerging Artists
 Under $500
+
 Baymard recommends thematic or guided browsing when it helps users discover products in a way that matches how they think about the assortment (
 #249
 , Featuring Products and Categories).
@@ -107,9 +109,7 @@ New arrivals
 …instead of immediately showing 1,200 mixed paintings.
 
 Keep branding bespoke, but not at the expense of clarity
-For an art site, strong visual branding matters. In fact, bespoke imagery and design can play an important role in presenting the site’s brand well 
-#238
-.
+For an art site, strong visual branding matters. In fact, bespoke imagery and design can play an important role in presenting the site’s brand well.
 
 But branding should support comprehension, not compete with it. If the homepage is too editorial, too sparse, or too ambiguous, users can admire it without understanding how to shop.
 

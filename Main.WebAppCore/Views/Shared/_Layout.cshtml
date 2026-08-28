@@ -67,6 +67,8 @@
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
+    <link rel="stylesheet" href="~/css/bottom-header-dropdown.css" asp-append-version="true" />
+
 
     <meta charset="utf-8" />
 
@@ -144,7 +146,8 @@
             @await Component.InvokeAsync("TopHeaderPanel")
             
             @await Component.InvokeAsync("MainHeaderPanel")
-        @*     @await Component.InvokeAsync( "BottomHeaderPanel",new MenuObjectModel(TenantSetter.TenantStore)) *@
+
+            @await Component.InvokeAsync("BottomHeaderPanel", new MenuObjectModel(SharedStringLocalizer))
 
         </header>
 

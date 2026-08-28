@@ -9,6 +9,7 @@ namespace Main.WebAppCore.Models;
 
 public class MenuObjectModel
 {
+    private IStringLocalizer<SharedResources> stringLocalizer;
 
     public MenuObjectModel (bool isAdvancedSearch,IStringLocalizer<SharedResource> localizer)
     {
@@ -21,8 +22,19 @@ public class MenuObjectModel
     {
         ListCategory = new List<TenantVariableModel> ();
         ListSubCategory = new List<TenantVariableModel> ();
-        ListCategory = TenantStoreHelper.GetCategoryList (localizer);
-        ListSubCategory = TenantStoreHelper.GetSubCategoryList (localizer);
+
+        ListCategory = TenantStoreHelper.GetCategoryList
+        (localizer).Where (a => a.Variable == EnumTenantVariable.ProductCategory).ToList ();
+
+        ListSubCategory = TenantStoreHelper.GetCategoryList
+        (localizer).Where (a => a.Variable == EnumTenantVariable.ProductSubCategory).ToList ();
+
+        CategoryText = "Browse by Categories";
+    }
+
+    public MenuObjectModel (IStringLocalizer<SharedResources> stringLocalizer)
+    {
+        this.stringLocalizer = stringLocalizer;
     }
 
     public string TenantName

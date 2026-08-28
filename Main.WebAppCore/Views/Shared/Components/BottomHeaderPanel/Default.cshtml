@@ -1,29 +1,72 @@
-﻿
-@model MenuObjectModel
+﻿@model MenuObjectModel
+<!-- Bottom Header Container -->
+  <div class="bottom-header">
+    
+    @await Component.InvokeAsync("CategoryMenu",Model)
 
-<div id="header-bottom" class="bottom-header">
+    <!-- Scrollable Links & Buttons -->
+    <div class="nav-links-scroll">
+      <a href="#" class="nav-link-item">Flash Deals</a>
+      <a href="#" class="nav-link-item">New Arrivals</a>
+      <a href="#" class="nav-link-item">Best Sellers</a>
+      <a href="#" class="nav-link-item">Brands</a>
+      <a href="#" class="nav-link-item">Clearance</a>
+      <a href="#" class="nav-link-item">Gift Cards</a>
+      <a href="#" class="nav-link-item">Customer Service</a>
+      <a href="#" class="nav-link-item">Blogs</a>
+      <a href="#" class="nav-link-item">Track Order</a>
+      <a href="#" class="nav-link-item">Store Finder</a>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div id="header-bottom" class="bottom-header">
+
     <div class="header-container">
-        <div id="headerCategoryDropdown" class="market-list-dropdown">
-            @await Component.InvokeAsync("CategoryMenu", Model)
-        </div>
+
+        <span id="headerCategoryDropdown" class="market-list-dropdown dropdown">
+
+            @await Component.InvokeAsync("CategoryMenu",Model)
+
+        </span>
+
         <ul class="header-menu-list">
+
             <li class="main-menu" id="btnMainMenu">
+
                 <span>
+
                     @SharedLocalizer["LabelViewByMarkets"]
+
                 </span>
+
                 <i class="fa fa-list"></i>
+
             </li>
+
             @* mock up only *@
-            <li>
+          @*   <li>
                 <span class="badge-button">
                     <a href="@Url.Action("Donate", "Donate")">
                         <i class="fa fa-anchor fa-1x"></i>
                         @SharedLocalizer["LinkDonate"]
                     </a>
                 </span>
-            </li>
+            </li> *@
                  
-            <li>
+          @*   <li>
                 <span class="badge-button">
                     <i class="fa fa-ad fa-1x"> </i>
                     <a href="@Url.Action("Market", "AllItemMarket", new { pageNumber = "1" })">
@@ -46,12 +89,12 @@
                 <span>@SharedLocalizer["LayoutFooterResource</span>
             </a>
         </span>*@
-            </li>
+            @* </li> *@
             @*  <li>
                     @*NOTICE: Post one free Ad before 28-Feb-2019 and enjoy 2500 BDT free credit when paid posting will start on 01-Mar-2019!
                 </li> *@
             @*<li>New Arrival</li>
                     <li>Year End Sale</li>*@
-        </ul>
-    </div>
-</div>
+      @*   </ul>
+    </div> *@
+ @* </div> *@  

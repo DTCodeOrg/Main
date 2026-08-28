@@ -5,8 +5,10 @@ namespace Main.WebAppCore.ViewComponents;
 
 public class CategoryMenuViewComponent: ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync ( MenuObjectModel model )
+
+
+    public async Task<IViewComponentResult> InvokeAsync (MenuObjectModel model)
     {
-        return View ( model );
+        return View (model);
     }
 }

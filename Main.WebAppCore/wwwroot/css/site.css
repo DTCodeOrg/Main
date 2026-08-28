@@ -2162,3 +2162,25 @@ header .bottom-header {
     .all-caps {
         text-transform: uppercase;
     }
+
+button.logout {
+    background-color: red;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+button.logout:hover {
+    color: white;
+    background-color:red
+    font-weight: 600;
+    font-size: 16px;
+    opacity:0.5;
+}
+
+h5.text-bg-success, h5.card-title {
+    background-color: rgb(8 29 157) !important;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+}
