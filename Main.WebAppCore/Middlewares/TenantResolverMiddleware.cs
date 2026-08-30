@@ -43,6 +43,7 @@ public class TenantResolverMiddleware
             tenantSetter.ResolvedTenantId = resolvedTenant.ResolvedTenantId;
             tenantSetter.CurrentTenant = resolvedTenant;
             tenantSetter.CurrentTenant.ResolvedTenantId = resolvedTenant.ResolvedTenantId;
+            tenantSetter.CurrentTenant.StoreType = resolvedTenant.StoreType;
             context.Items["TenantId"] = resolvedTenant.ResolvedTenantId;
 
             if ( tenantTheme != null )

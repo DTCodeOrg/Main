@@ -26,7 +26,7 @@ public static class ProductMapping
         };
     }
 
-    public static ProductViewModel MapProductViewModel (ProductDataModel productDataModel,IStringLocalizer<SharedResource> localizer)
+    public static ProductViewModel MapProductViewModel (ProductDataModel productDataModel,IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
         ProductViewModel productViewModel = new ()
         {
@@ -34,7 +34,7 @@ public static class ProductMapping
 
             CategoryID = productDataModel.CategoryID,
 
-            CategoryText = DropDownListItems.GetTextForCategoryId (productDataModel.CategoryID, localizer),
+            CategoryText = DropDownListItems.GetTextForCategoryId ( productDataModel.CategoryID, localizer, storeType ),
 
             ProductName = productDataModel.ProductName,
 
@@ -120,7 +120,7 @@ public static class ProductMapping
                 ProductID = model.ProductID,
 
                 DisplayCategory =
-                TenantStoreHelper.GetTextForCategoryId (model.CategoryID,localizer),
+                TenantStoreHelper.GetTextForCategoryId (model.CategoryID,localizer,tenantSetter.CurrentTenant.StoreType),
 
                 ProductName = model.ProductName,
 

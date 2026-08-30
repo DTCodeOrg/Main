@@ -11,23 +11,25 @@ public class MenuObjectModel
 {
     private IStringLocalizer<SharedResources> stringLocalizer;
 
-    public MenuObjectModel (bool isAdvancedSearch,IStringLocalizer<SharedResource> localizer)
+    public MenuObjectModel (bool isAdvancedSearch,IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
-        AV_Category = DropDownListItems.GetCategoryList (localizer);
+        AV_Category = DropDownListItems.GetCategoryList (localizer,storeType);
 
-        AV_SubCategory = DropDownListItems.GetSubCategoryList (localizer);
+        AV_SubCategory = DropDownListItems.GetSubCategoryList (localizer,storeType);
     }
 
-    public MenuObjectModel (IStringLocalizer<SharedResource> localizer)
+    public MenuObjectModel (IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
         ListCategory = new List<TenantVariableModel> ();
         ListSubCategory = new List<TenantVariableModel> ();
 
-        ListCategory = TenantStoreHelper.GetCategoryList
-        (localizer).Where (a => a.Variable == EnumTenantVariable.ProductCategory).ToList ();
+        ListCategory =
+        TenantStoreHelper.GetCategoryList (localizer,storeType)
+        .Where (a => a.Variable == EnumTenantVariable.ProductCategory).ToList ();
 
-        ListSubCategory = TenantStoreHelper.GetCategoryList
-        (localizer).Where (a => a.Variable == EnumTenantVariable.ProductSubCategory).ToList ();
+        ListSubCategory =
+        TenantStoreHelper.GetCategoryList (localizer,storeType).Where
+        (a => a.Variable == EnumTenantVariable.ProductSubCategory).ToList ();
 
         CategoryText = "Browse by Categories";
     }

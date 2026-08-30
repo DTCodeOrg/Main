@@ -31,7 +31,7 @@ public static class PageMapping
         return listPageDisplayViewModels;
     }
 
-    public static List<PostSelectViewModel> MapSelectPostViewModel (List<PostDataModel> listSelectProductsDataModels,Currency currency,IStringLocalizer<SharedResource> localizer)
+    public static List<PostSelectViewModel> MapSelectPostViewModel (List<PostDataModel> listSelectProductsDataModels,Currency currency,IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
         if ( listSelectProductsDataModels == null )
         {
@@ -51,7 +51,7 @@ public static class PageMapping
 
                 FilePath = dataModel.FilePath,
 
-                CategoryName = DropDownListItems.GetCategoryList (localizer).ToList ()
+                CategoryName = DropDownListItems.GetCategoryList (localizer,storeType).ToList ()
                     .FirstOrDefault (a => a.Value == ( dataModel.CategoryID.HasValue
                     ? dataModel.CategoryID.Value.ToString () : "" ))!.Text,
 

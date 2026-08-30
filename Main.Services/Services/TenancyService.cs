@@ -26,6 +26,7 @@ public class TenancyService: ITenancyService
         new (tenant.TenantId, tenant.TenantName, tenant.Host, tenant.SecretKey );
 
         tenantDataModel.ResolvedTenantId = tenant.TenantId;
+        tenantDataModel.StoreType = tenant.StoreType;
 
         return tenantDataModel;
     }

@@ -69,7 +69,8 @@ public class PagesController: BaseController
 
         pagePanelViewModel.ListSelectPosts =
             PageMapping.MapSelectPostViewModel (listSelectProductsDataModel,
-            AppSettings.Current.EnumCurrency,_localizer);
+            AppSettings.Current.EnumCurrency,_localizer,_tenantSetter.CurrentTenant.StoreType);
+
         pagePanelViewModel.PageID = id;
         pagePanelViewModel.PanelTitle = "";
         pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuard;

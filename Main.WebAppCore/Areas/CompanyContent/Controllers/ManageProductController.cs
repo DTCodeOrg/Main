@@ -29,7 +29,8 @@ public class ManageProductController: BaseController
     private readonly IUrlHelperFactory _urlHelperFactory;
     private readonly IActionContextAccessor _actionContextAccessor;
 
-    public ManageProductController (IProductService productService,
+    public ManageProductController
+    (IProductService productService,
         ILogger<ManageProductController> logger,
         ITenantSetter tenantSetter,
         ITenantCacheService tenantCacheService,
@@ -57,8 +58,8 @@ public class ManageProductController: BaseController
         {
             List<ProductDisplayModel> productDataModels = await _productService.GetAllProducts();
 
-            List<ProductDisplayViewModel> displayProductViewModels = ProductMapping.MapDisplayProductViewModel
-                ( productDataModels, _localizer, _tenantSetter );
+            List<ProductDisplayViewModel> displayProductViewModels =
+            ProductMapping.MapDisplayProductViewModel  ( productDataModels, _localizer, _tenantSetter );
 
             return View (displayProductViewModels);
         }
@@ -75,8 +76,7 @@ public class ManageProductController: BaseController
 
         ProductFileDataModel productImageFileDataModel;
 
-        List<ImageFile>? listSessionImageFiles
-            = GetAllSessionImages(_tenantCacheService);
+        List<ImageFile>? listSessionImageFiles  = GetAllSessionImages(_tenantCacheService);
 
         listSessionImageFiles?.ForEach (async sessionImageFile =>
         {
@@ -104,9 +104,9 @@ public class ManageProductController: BaseController
 
         ClearImageFileListSession (_tenantCacheService);
 
-        ProductViewModel objProductViewModel = new()
+        ProductViewModel objProductViewModel = new ()
         {
-            AVCategory = DropDownListItems.GetCategoryList (_localizer),
+            AVCategory = DropDownListItems.GetCategoryList (_localizer, _tenantSetter.CurrentTenant.StoreType),
             PageName = "Product Page"
         };
 
@@ -141,7 +141,7 @@ public class ManageProductController: BaseController
 
             SetImageInDataModel (productDataModel);
 
-            var result = await _productService.SaveNewProduct(productDataModel);
+            var result = await _productService.SaveNewProduct( productDataModel );
 
             var actionContext = _actionContextAccessor.ActionContext;
 
@@ -155,7 +155,7 @@ public class ManageProductController: BaseController
 
             IUrlHelper urlHelper = _urlHelperFactory.GetUrlHelper(actionContext);
 
-            var urlRedirectIndex = urlHelper.Action ("Index","ManageProduct",new
+            var urlRedirectIndex = urlHelper.Action ("Index","ManageProduct", new
             {
                 Area = "CompanyContent"
             });
@@ -182,13 +182,15 @@ public class ManageProductController: BaseController
     {
         ClearImageFileListSession (_tenantCacheService);
 
-        ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
+        ProductDataModel productDataModel = await _productService.GetProductForEditProductID (id);
 
-        ProductViewModel objProductViewModel = ProductMapping.MapProductViewModel (productDataModel,_localizer);
+        ProductViewModel objProductViewModel =
+        ProductMapping.MapProductViewModel (productDataModel, _localizer, _tenantSetter.CurrentTenant.StoreType);
 
         objProductViewModel.PageName = "Edit Product";
 
-        objProductViewModel.AVCategory = DropDownListItems.GetCategoryList (_localizer);
+        objProductViewModel.AVCategory = DropDownListItems.GetCategoryList
+        (_localizer,_tenantSetter.CurrentTenant.StoreType);
 
         return View (objProductViewModel);
     }
@@ -225,7 +227,8 @@ public class ManageProductController: BaseController
         {
             return BadRequest (new
             {
-                success = false,message = ex.Message
+                success = false,
+                message = ex.Message
             });
         }
     }
@@ -237,7 +240,9 @@ public class ManageProductController: BaseController
         {
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel, _localizer );
+            ProductViewModel productViewModel =
+            ProductMapping.MapProductViewModel
+            ( productDataModel, _localizer, _tenantSetter.CurrentTenant.StoreType );
 
             productViewModel.PageName = "Product Details";
 

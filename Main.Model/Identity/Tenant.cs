@@ -12,18 +12,14 @@ public class Tenant: RootBaseEntity
         CreatedBy = null;
         CreatedDate = null;
         ModifiedDate = null;
-        TenantCountry = null;
+        TenantCountry = Country.Bangladesh;
+        TenantContinent = "Asia"; //Un Numeric Code: 142
         IsActive = true;
     }
 
     public Tenant ()
     {
         TenantId = Guid.NewGuid ();
-    }
-
-    public Tenant (HostType hostType)
-    {
-        HostType = hostType;
     }
 
     [Key]
@@ -46,6 +42,12 @@ public class Tenant: RootBaseEntity
 
     [Required]
     public string Host
+    {
+        get; set;
+    }
+
+    [Required]
+    public StoreType StoreType
     {
         get; set;
     }

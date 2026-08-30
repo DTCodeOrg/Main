@@ -12,16 +12,16 @@ public class PostViewModel: BaseViewModel
     {
     }
 
-    public PostViewModel (StoreType shopType,IStringLocalizer<SharedResource> localizer)
+    public PostViewModel (StoreType storeType,IStringLocalizer<SharedResource> localizer)
     {
-        AVCategory = DropDownListItems.GetCategoryList (localizer);
+        AVCategory = DropDownListItems.GetCategoryList (localizer,storeType);
     }
 
 
-    public PostViewModel (StoreType shopType,EnumPostType enumPostType,int rootId,int imageId,int order,IStringLocalizer<SharedResource> localizer)
+    public PostViewModel (StoreType storeType,EnumPostType enumPostType,int rootId,int imageId,
+        int order,IStringLocalizer<SharedResource> localizer)
     {
-        AVCategory = DropDownListItems.GetCategoryList (localizer);
-
+        AVCategory = DropDownListItems.GetCategoryList (localizer,storeType);
         EnumPostType = enumPostType;
         RootID = rootId;
         ImageFileID = imageId;

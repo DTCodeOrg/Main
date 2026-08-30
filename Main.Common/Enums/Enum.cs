@@ -107,7 +107,9 @@ public enum StoreType
     LifeStyles = 1,
     FineArts = 2,
     Sports = 3,
-    Default = 4
+    Default = 4,
+    FineCrafts = 5,
+    FineCollections = 6
 }
 
 public enum EnumTenantVariable
@@ -173,7 +175,25 @@ public enum EnumStoreMenu
     Photography = 17,
 
     [Description("Painting")]
-    Painting = 18
+    Painting = 18,
+
+    [Description("Handicraft")]
+    Handicraft = 19,
+
+    [Description("Jute")]
+    Jute = 20,
+
+    [Description("Metal")]
+    Metal = 21,
+
+    [Description("Coins & Currency")]
+    CoinAndCurrency = 22,
+
+    [Description("Stamps")]
+    Stamps = 23,
+
+    [Description("Stationery")]
+    Stationery = 24
 }
 
 public enum EnumStoreSubMenu
