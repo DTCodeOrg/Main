@@ -65,6 +65,18 @@
 
                     <th>
 
+                        @Html.DisplayNameFor( model => model[0].DisplaySubCategory )
+
+                    </th>
+
+                     <th>
+
+                        @Html.DisplayNameFor(model => model[0].ProductOwner)
+
+                    </th>
+
+                    <th>
+
                         @Html.DisplayNameFor(model => model[0].ProductName)
 
                     </th>
@@ -93,6 +105,14 @@
 
                         <td>
                             @Html.DisplayFor( modelItem => item.DisplayCategory )
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor( modelItem => item.DisplaySubCategory )
+                        </td>
+
+                         <td>
+                            @Html.DisplayFor(modelItem => item.ProductOwner)
                         </td>
 
                         <td>

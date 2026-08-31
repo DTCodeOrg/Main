@@ -55,6 +55,7 @@ public static class ProductServiceMapping
         return new Product ()
         {
             ProductName = productDataModel.ProductName,
+            ProductOwner = productDataModel.ProductOwner,
             CategoryID = productDataModel.CategoryID,
             SubCategoryID = productDataModel.SubCategoryID,
             Price = productDataModel.UnitPrice,
@@ -97,6 +98,7 @@ public static class ProductServiceMapping
 
         List<ProductFileDataModel> listProductFilesDataModel = [];
         ProductFileDataModel fileDataModel;
+
         if ( productEntity.ListImageFiles != null &&
             productEntity.ListImageFiles.Count > 0 )
         {
@@ -135,18 +137,19 @@ public static class ProductServiceMapping
             });
         }
 
-        ProductDataModel productDataModel = new()
+        ProductDataModel productDataModel = new ()
         {
             ProductID = productEntity.ProductID,
+            CategoryID = productEntity.CategoryID,
+            SubCategoryID = productEntity.SubCategoryID,
             ProductName = productEntity.ProductName,
+            ProductOwner = productEntity.ProductOwner,
+            UnitPrice = productEntity.Price,
             Discount = productEntity.Discount,
             SaleCommission = productEntity.SaleCommission,
             SearchTag = productEntity.NameTag,
-            PostType =   productEntity.PostType ,
+            PostType =   productEntity.PostType,
             Description = productEntity.Description,
-            CategoryID = productEntity.CategoryID,
-            SubCategoryID = productEntity.SubCategoryID,
-            UnitPrice = productEntity.Price,
             ListComments = listCommentsDataModel,
             ImageFiles = listProductFilesDataModel
         };
@@ -190,16 +193,16 @@ public static class ProductServiceMapping
             listProductCommentsEntity.Add (commentEntity);
         });
 
-        productEntity.ProductName = productDataModel.ProductName!;
+        productEntity.CategoryID = productEntity.CategoryID;
+        productEntity.SubCategoryID = productEntity.SubCategoryID;
+        productEntity.ProductName = productEntity.ProductName;
+        productEntity.ProductOwner = productDataModel.ProductOwner;
+        productEntity.Price = productDataModel.UnitPrice;
         productEntity.Discount = productDataModel.Discount;
         productEntity.SaleCommission = productDataModel.SaleCommission;
         productEntity.NameTag = productDataModel.SearchTag;
         productEntity.PostType = EnumPostType.Product;
         productEntity.Description = productDataModel.Description;
-        productEntity.CategoryID = productDataModel.CategoryID;
-        productEntity.SubCategoryID = productDataModel.SubCategoryID;
-        productEntity.Price = productDataModel.UnitPrice;
-
         productEntity.ListComments = listProductCommentsEntity;
         productEntity.ListImageFiles = listProductImageFileEntity;
 
