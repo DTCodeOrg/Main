@@ -28,7 +28,7 @@ public class Product: BaseEntity
         get; set;
     }
 
-    public string ProductOwner
+    public string? ProductOwner
     {
         get; set;
     }

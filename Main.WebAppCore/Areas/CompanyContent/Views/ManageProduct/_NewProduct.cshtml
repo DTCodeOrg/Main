@@ -26,7 +26,6 @@
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 gap"></div>
 
-
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
 
                     @Html.LabelFor( a => a.CategoryID )
@@ -34,6 +33,23 @@
                     @Html.DropDownListFor(m => m.CategoryID, Model.AVCategory, new { @class = "fff" })
 
                 </div>
+
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
+                    @Html.LabelFor( a => a.SubCategoryID )
+
+                    @Html.DropDownListFor(m => m.SubCategoryID, Model.AVSubCategory, new { @class = "fff" })
+
+                </div>
+
+                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    
+                     @Html.LabelFor( a => a.ProductOwner )
+
+                    @Html.EditorFor(a => a.ProductOwner, 
+                        new { htmlAttributes = new { @class = "fff" } })
+
+                 </div>
 
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">

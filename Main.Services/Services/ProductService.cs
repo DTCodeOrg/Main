@@ -25,14 +25,11 @@ public class ProductService: IProductService
     }
 
 
-    public async Task<bool>
-        SaveNewProduct (ProductDataModel productDataModel)
+    public async Task<bool> SaveNewProduct (ProductDataModel productDataModel)
     {
         Product productEntity = ProductServiceMapping.MapSaveProductEntity ( productDataModel );
 
-
-        bool result = await _ProductRepository
-                    .SaveNewProduct (productEntity);
+        bool result = await _ProductRepository.SaveNewProduct (productEntity);
 
         return result;
     }

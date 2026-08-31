@@ -80,8 +80,7 @@ public class ManageProductController: BaseController
 
         listSessionImageFiles?.ForEach (async sessionImageFile =>
         {
-            var fileRelativePath  =
-                await _storageService.MoveFileToDestinationFolderAsync
+            var fileRelativePath = await _storageService.MoveFileToDestinationFolderAsync
                 (sessionImageFile.FileName!, true);
 
             productImageFileDataModel = new ProductFileDataModel ()
@@ -95,8 +94,6 @@ public class ManageProductController: BaseController
         });
 
         productDataModel.ImageFiles = listProductImageFileDataModels;
-
-
     }
 
     public IActionResult NewProduct ()
@@ -104,9 +101,14 @@ public class ManageProductController: BaseController
 
         ClearImageFileListSession (_tenantCacheService);
 
-        ProductViewModel objProductViewModel = new ()
+        ProductViewModel objProductViewModel = new()
         {
-            AVCategory = DropDownListItems.GetCategoryList (_localizer, _tenantSetter.CurrentTenant.StoreType),
+            AVSubCategory = DropDownListItems.GetSubCategoryList
+            (_localizer, _tenantSetter.CurrentTenant.StoreType),
+
+            AVCategory = DropDownListItems.GetCategoryList
+            (_localizer, _tenantSetter.CurrentTenant.StoreType),
+
             PageName = "Product Page"
         };
 
@@ -121,19 +123,21 @@ public class ManageProductController: BaseController
         if ( !ModelState.IsValid )
         {
             Dictionary<string, string[]> validationErrors
-                = ModelState.Where
+            = ModelState.Where
                 (ms => ms.Value!.Errors.Count > 0).ToDictionary
                 (kvp => kvp.Key,kvp => kvp.Value!.Errors.Select
                 (e => e.ErrorMessage).ToArray());
 
             ViewBag.ValidationSummary = validationErrors;
 
-            return BadRequest (new
+            return BadRequest (
+            new
             {
-                success = false,message = "Validation failed",validationErrors
+                success = false,
+                message = "Validation failed",
+                validationErrors
             });
         }
-
 
         try
         {
@@ -147,15 +151,17 @@ public class ManageProductController: BaseController
 
             if ( actionContext == null )
             {
-                return BadRequest (new
+                return BadRequest (
+                new
                 {
-                    success = false,message = "Validation failed"
+                    success = false,
+                    message = "Validation failed"
                 });
             }
 
             IUrlHelper urlHelper = _urlHelperFactory.GetUrlHelper(actionContext);
 
-            var urlRedirectIndex = urlHelper.Action ("Index","ManageProduct", new
+            var urlRedirectIndex = urlHelper.Action ("Index", "ManageProduct", new
             {
                 Area = "CompanyContent"
             });
@@ -184,8 +190,8 @@ public class ManageProductController: BaseController
 
         ProductDataModel productDataModel = await _productService.GetProductForEditProductID (id);
 
-        ProductViewModel objProductViewModel =
-        ProductMapping.MapProductViewModel (productDataModel, _localizer, _tenantSetter.CurrentTenant.StoreType);
+        ProductViewModel objProductViewModel = ProductMapping.MapProductViewModel
+        ( productDataModel, _localizer, _tenantSetter.CurrentTenant.StoreType );
 
         objProductViewModel.PageName = "Edit Product";
 
@@ -212,7 +218,7 @@ public class ManageProductController: BaseController
 
             SetImageInDataModel (productDataModel);
 
-            var result = await _productService.UpdateProduct(productDataModel);
+            var result = await _productService.UpdateProduct( productDataModel );
 
             return Ok (new
             {
@@ -240,8 +246,7 @@ public class ManageProductController: BaseController
         {
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            ProductViewModel productViewModel =
-            ProductMapping.MapProductViewModel
+            ProductViewModel productViewModel = ProductMapping.MapProductViewModel
             ( productDataModel, _localizer, _tenantSetter.CurrentTenant.StoreType );
 
             productViewModel.PageName = "Product Details";
@@ -264,7 +269,7 @@ public class ManageProductController: BaseController
         }
 
         ImageFile imageFile = await _storageService.SaveSessionFileAsync
-        (_tenantSetter.ResolvedTenantId, _tenantSetter.HttpContextUserId, fileInput, true);
+        ( _tenantSetter.ResolvedTenantId, _tenantSetter.HttpContextUserId, fileInput, true );
 
         SetSessionImageFile (imageFile,_tenantCacheService);
 
@@ -277,9 +282,8 @@ public class ManageProductController: BaseController
         {
             string extension = Path.GetExtension(fileInput.FileName).ToLower();
 
-            if ( extension.Equals (".jpg") || extension.Equals (".jpeg")
-
-                || extension.Equals (".png") || extension.Equals (".gif") )
+            if ( extension.Equals (".jpg") || extension.Equals (".jpeg") ||
+                extension.Equals (".png") || extension.Equals (".gif") )
             {
                 return true;
             }
@@ -312,13 +316,12 @@ public class ManageProductController: BaseController
         }
         catch ( Exception ex )
         {
-            // Log your exception here (e.g., _logger.LogError(ex, "Image removal failed"))
             return Json (new
             {
                 success = false,message = ex.Message
             });
         }
-    } // Clear of trailing commas
+    }
 
 
 
@@ -327,7 +330,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            ProductViewModel productViewModel = new();
+            ProductViewModel productViewModel = new ();
             productViewModel.ProductID = id;
 
             return View (productViewModel);

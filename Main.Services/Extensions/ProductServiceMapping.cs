@@ -32,7 +32,6 @@ public static class ProductServiceMapping
         productDisplayModel.SubCategoryID = productEntity.SubCategoryID;
         productDisplayModel.ProductName = productEntity.ProductName;
         productDisplayModel.UnitPrice = productEntity.Price;
-
     }
 
     public static Product MapSaveProductEntity (ProductDataModel productDataModel)
@@ -57,6 +56,7 @@ public static class ProductServiceMapping
         {
             ProductName = productDataModel.ProductName,
             CategoryID = productDataModel.CategoryID,
+            SubCategoryID = productDataModel.SubCategoryID,
             Price = productDataModel.UnitPrice,
             Discount = productDataModel.Discount,
             SaleCommission = productDataModel.SaleCommission,
@@ -145,6 +145,7 @@ public static class ProductServiceMapping
             PostType =   productEntity.PostType ,
             Description = productEntity.Description,
             CategoryID = productEntity.CategoryID,
+            SubCategoryID = productEntity.SubCategoryID,
             UnitPrice = productEntity.Price,
             ListComments = listCommentsDataModel,
             ImageFiles = listProductFilesDataModel
@@ -155,8 +156,7 @@ public static class ProductServiceMapping
 
     public static Product MapProductUpdateEntity (Product productEntity,ProductDataModel productDataModel)
     {
-        List<ProductImageFile> listProductImageFileEntity
-            = [];
+        List<ProductImageFile> listProductImageFileEntity = [];
 
         listProductImageFileEntity.AddRange (productEntity.ListImageFiles);
 
@@ -174,11 +174,9 @@ public static class ProductServiceMapping
 
         });
 
-        List<ProductComment> listProductCommentsEntity
-            = [];
+        List<ProductComment> listProductCommentsEntity = [];
 
         listProductCommentsEntity.AddRange (productEntity.ListComments);
-
 
         productDataModel.ListComments.ForEach (commentDataModel =>
         {
@@ -199,6 +197,7 @@ public static class ProductServiceMapping
         productEntity.PostType = EnumPostType.Product;
         productEntity.Description = productDataModel.Description;
         productEntity.CategoryID = productDataModel.CategoryID;
+        productEntity.SubCategoryID = productDataModel.SubCategoryID;
         productEntity.Price = productDataModel.UnitPrice;
 
         productEntity.ListComments = listProductCommentsEntity;

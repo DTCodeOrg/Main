@@ -10,6 +10,7 @@ public class ProductViewModel: BaseViewModel
     public ProductViewModel ()
     {
         AVCategory = new List<SelectListItem> ();
+        AVSubCategory = new List<SelectListItem> ();
         ImageFiles = new List<ImageFile> ();
         PageName = "Product Page";
     }
@@ -26,6 +27,12 @@ public class ProductViewModel: BaseViewModel
         get; set;
     }
 
+    [Display (Name = "Product Sub-Category ")]
+    public int? SubCategoryID
+    {
+        get; set;
+    }
+
 
     [Display (Name = "Product Name")]
     [Required (ErrorMessage = "Product Name is required!")]
@@ -34,6 +41,11 @@ public class ProductViewModel: BaseViewModel
         get; set;
     }
 
+    [Display (Name = "Product Name")]
+    public string? ProductOwner
+    {
+        get; set;
+    }
 
     [Display (Name = "Description")]
     [StringLength (4000)]
@@ -89,6 +101,11 @@ public class ProductViewModel: BaseViewModel
     }
 
     public IEnumerable<SelectListItem> AVCategory
+    {
+        get; set;
+    }
+
+    public IEnumerable<SelectListItem> AVSubCategory
     {
         get; set;
     }
