@@ -61,7 +61,7 @@ public static class ProductServiceMapping
             Discount = productDataModel.Discount,
             SaleCommission = productDataModel.SaleCommission,
             Description = productDataModel.Description,
-            SearchTag = productDataModel.SearchTag,
+            NameTag = productDataModel.SearchTag,
             PostType = productDataModel.PostType
         };
     }
@@ -141,7 +141,7 @@ public static class ProductServiceMapping
             ProductName = productEntity.ProductName,
             Discount = productEntity.Discount,
             SaleCommission = productEntity.SaleCommission,
-            SearchTag = productEntity.SearchTag,
+            SearchTag = productEntity.NameTag,
             PostType =   productEntity.PostType ,
             Description = productEntity.Description,
             CategoryID = productEntity.CategoryID,
@@ -195,7 +195,7 @@ public static class ProductServiceMapping
         productEntity.ProductName = productDataModel.ProductName!;
         productEntity.Discount = productDataModel.Discount;
         productEntity.SaleCommission = productDataModel.SaleCommission;
-        productEntity.SearchTag = productDataModel.SearchTag;
+        productEntity.NameTag = productDataModel.SearchTag;
         productEntity.PostType = EnumPostType.Product;
         productEntity.Description = productDataModel.Description;
         productEntity.CategoryID = productDataModel.CategoryID;

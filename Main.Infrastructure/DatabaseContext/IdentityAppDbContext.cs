@@ -367,7 +367,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         {
             TenantName = "Tenant 3 (Finearts: Arts)",
             HostType = HostType.Domain,
-            Host = "fiearts",
+            Host = "finearts",
             StoreType = StoreType.FineArts
         });
     }
