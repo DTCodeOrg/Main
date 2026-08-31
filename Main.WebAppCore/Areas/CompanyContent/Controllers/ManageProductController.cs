@@ -56,10 +56,12 @@ public class ManageProductController: BaseController
     {
         try
         {
-            List<ProductDisplayModel> productDataModels = await _productService.GetAllProducts();
+            List<ProductDisplayModel> productDataModels
+                = await _productService.GetAllProducts();
 
             List<ProductDisplayViewModel> displayProductViewModels =
-            ProductMapping.MapDisplayProductViewModel  ( productDataModels, _localizer, _tenantSetter );
+                ProductMapping.MapDisplayProductViewModel
+                ( productDataModels, _localizer, _tenantSetter );
 
             return View (displayProductViewModels);
         }
@@ -98,7 +100,6 @@ public class ManageProductController: BaseController
 
     public IActionResult NewProduct ()
     {
-
         ClearImageFileListSession (_tenantCacheService);
 
         ProductViewModel objProductViewModel = new()
@@ -141,7 +142,8 @@ public class ManageProductController: BaseController
 
         try
         {
-            ProductDataModel productDataModel = ProductMapping.NewProductDataModel ( collection );
+            ProductDataModel productDataModel
+            = ProductMapping.NewProductDataModel ( collection );
 
             SetImageInDataModel (productDataModel);
 
@@ -152,11 +154,11 @@ public class ManageProductController: BaseController
             if ( actionContext == null )
             {
                 return BadRequest (
-                new
-                {
-                    success = false,
-                    message = "Validation failed"
-                });
+                    new
+                    {
+                        success = false,
+                        message = "Validation failed"
+                    });
             }
 
             IUrlHelper urlHelper = _urlHelperFactory.GetUrlHelper(actionContext);
@@ -188,7 +190,8 @@ public class ManageProductController: BaseController
     {
         ClearImageFileListSession (_tenantCacheService);
 
-        ProductDataModel productDataModel = await _productService.GetProductForEditProductID (id);
+        ProductDataModel productDataModel
+        = await _productService.GetProductForEditProductID ( id );
 
         ProductViewModel objProductViewModel = ProductMapping.MapProductViewModel
         ( productDataModel, _localizer, _tenantSetter.CurrentTenant.StoreType );
@@ -196,6 +199,9 @@ public class ManageProductController: BaseController
         objProductViewModel.PageName = "Edit Product";
 
         objProductViewModel.AVCategory = DropDownListItems.GetCategoryList
+        (_localizer,_tenantSetter.CurrentTenant.StoreType);
+
+        objProductViewModel.AVSubCategory = DropDownListItems.GetSubCategoryList
         (_localizer,_tenantSetter.CurrentTenant.StoreType);
 
         return View (objProductViewModel);
@@ -214,7 +220,8 @@ public class ManageProductController: BaseController
 
         try
         {
-            ProductDataModel productDataModel = ProductMapping.MapProductDataModel ( collection );
+            ProductDataModel productDataModel
+            = ProductMapping.MapProductDataModel ( collection );
 
             SetImageInDataModel (productDataModel);
 
@@ -244,7 +251,8 @@ public class ManageProductController: BaseController
     {
         try
         {
-            ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
+            ProductDataModel productDataModel
+            = await _productService.GetProductForEditProductID(id);
 
             ProductViewModel productViewModel = ProductMapping.MapProductViewModel
             ( productDataModel, _localizer, _tenantSetter.CurrentTenant.StoreType );
@@ -280,10 +288,10 @@ public class ManageProductController: BaseController
     {
         if ( fileInput != null && fileInput.FileName != null )
         {
-            string extension = Path.GetExtension(fileInput.FileName).ToLower();
+            string extension = Path.GetExtension( fileInput.FileName ).ToLower();
 
             if ( extension.Equals (".jpg") || extension.Equals (".jpeg") ||
-                extension.Equals (".png") || extension.Equals (".gif") )
+            extension.Equals (".png") || extension.Equals (".gif") )
             {
                 return true;
             }
@@ -296,7 +304,8 @@ public class ManageProductController: BaseController
     [HttpPost]
     [Authorize (Policy = "TenantAdmin")]
     [IgnoreAntiforgeryToken]
-    public async Task<JsonResult> ImageRemove (int id = 0,int postId = 0,string? fileName = null)
+    public async Task<JsonResult> ImageRemove
+    (int id = 0,int postId = 0,string? fileName = null)
     {
         try
         {
@@ -324,13 +333,12 @@ public class ManageProductController: BaseController
     }
 
 
-
     [HttpGet]
     public async Task<IActionResult> Delete (int id)
     {
         try
         {
-            ProductViewModel productViewModel = new ();
+            ProductViewModel productViewModel = new();
             productViewModel.ProductID = id;
 
             return View (productViewModel);

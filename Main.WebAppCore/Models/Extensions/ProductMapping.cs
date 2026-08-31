@@ -15,11 +15,13 @@ public static class ProductMapping
         return new ProductDataModel ()
         {
             ProductName = productViewModel.ProductName,
+            ProductOwner = productViewModel.ProductOwner,
             SearchTag = productViewModel.SearchTag,
             UnitPrice = productViewModel.UnitPrice,
             Discount = productViewModel.Discount,
             SaleCommission = productViewModel.SaleCommission,
             CategoryID = productViewModel.CategoryID,
+            SubCategoryID = productViewModel.SubCategoryID,
             Description = productViewModel.Description,
             PostType = EnumPostType.Product,
             ProductID = 0
@@ -34,9 +36,15 @@ public static class ProductMapping
 
             CategoryID = productDataModel.CategoryID,
 
+            SubCategoryID = productDataModel.SubCategoryID,
+
             CategoryText = DropDownListItems.GetTextForCategoryId ( productDataModel.CategoryID, localizer, storeType ),
 
+            SubCategoryText = DropDownListItems.GetTextForCategoryId ( productDataModel.SubCategoryID, localizer, storeType ),
+
             ProductName = productDataModel.ProductName,
+
+            ProductOwner = productDataModel.ProductOwner,
 
             UnitPrice = productDataModel.UnitPrice,
 
@@ -88,7 +96,11 @@ public static class ProductMapping
 
             CategoryID = productViewModel.CategoryID,
 
+            SubCategoryID = productViewModel.SubCategoryID,
+
             ProductName = productViewModel.ProductName,
+
+            ProductOwner = productViewModel.ProductOwner,
 
             UnitPrice = productViewModel.UnitPrice,
 
@@ -122,7 +134,12 @@ public static class ProductMapping
                 DisplayCategory =
                 TenantStoreHelper.GetTextForCategoryId (model.CategoryID,localizer,tenantSetter.CurrentTenant.StoreType),
 
+                DisplaySubCategory =
+                TenantStoreHelper.GetTextForCategoryId (model.SubCategoryID,localizer,tenantSetter.CurrentTenant.StoreType),
+
                 ProductName = model.ProductName,
+
+                ProductOwner = model.ProductOwner,
 
                 UnitPrice = model.UnitPrice,
 

@@ -24,7 +24,6 @@ public class ProductService: IProductService
         return objListPostDisplayModel;
     }
 
-
     public async Task<bool> SaveNewProduct (ProductDataModel productDataModel)
     {
         Product productEntity = ProductServiceMapping.MapSaveProductEntity ( productDataModel );
@@ -37,35 +36,29 @@ public class ProductService: IProductService
     public async Task<ProductDataModel> GetProductForEditProductID (int? productID)
     {
         var productEntity
-            = await _ProductRepository
-            .GetProductByProductID(productID);
+        = await _ProductRepository.GetProductByProductID(productID);
 
-        ProductDataModel productDataModel =
-            ProductServiceMapping.MapSingleProductDataModel(productEntity);
+        ProductDataModel productDataModel
+        = ProductServiceMapping.MapSingleProductDataModel(productEntity);
 
         return productDataModel;
     }
 
-
     public async Task<bool> UpdateProduct (ProductDataModel productDataModel)
     {
-
         Product productEntity
-            = await _ProductRepository.GetProductByProductID(productDataModel.ProductID);
+        = await _ProductRepository.GetProductByProductID(productDataModel.ProductID);
 
         productEntity
-            = ProductServiceMapping.MapProductUpdateEntity
-            (productEntity,productDataModel);
+        = ProductServiceMapping.MapProductUpdateEntity (productEntity,productDataModel);
 
         return await _ProductRepository.UpdateProduct (productEntity);
     }
-
 
     public async Task<string> DeleteProductImage (int id,int postId)
     {
         return await _ProductRepository.DeleteProductImage (id,postId);
     }
-
 
     public async Task<bool> DeleteProduct (int postId)
     {

@@ -33,6 +33,12 @@ public class ProductDisplayViewModel
         get; set;
     }
 
+    [Display (Name = "Product Owner")]
+    public string? ProductOwner
+    {
+        get; set;
+    }
+
 
     [Display (Name = "Price (Taka)")]
     [DataType (DataType.Currency)]

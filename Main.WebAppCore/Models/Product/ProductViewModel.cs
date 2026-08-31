@@ -41,7 +41,7 @@ public class ProductViewModel: BaseViewModel
         get; set;
     }
 
-    [Display (Name = "Product Name")]
+    [Display (Name = "Product Owner")]
     public string? ProductOwner
     {
         get; set;
@@ -93,8 +93,7 @@ public class ProductViewModel: BaseViewModel
         get; set;
     }
 
-
-    [Display (Name = "Sub Category")]
+    [Display (Name = "Product Sub-Category")]
     public string? SubCategoryText
     {
         get; set;

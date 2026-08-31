@@ -32,7 +32,7 @@ public class ProductDataModel: DataModel
         get; set;
     }
 
-    public string ProductOwnerName
+    public string? ProductOwner
     {
         get; set;
     }

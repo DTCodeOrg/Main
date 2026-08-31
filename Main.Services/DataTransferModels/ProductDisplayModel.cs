@@ -47,6 +47,11 @@ public class ProductDisplayModel
         get; set;
     }
 
+    public string? ProductOwner
+    {
+        get; set;
+    }
+
     public decimal? UnitPrice
     {
         get; set;
