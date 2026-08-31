@@ -1,0 +1,375 @@
+﻿/* --- Base Styles & Variables --- */
+:root {
+    --color-primary: #1a1a1a; /* Sophisticated deep dark grey for premium arts */
+    --color-accent: #7d6853; /* Earthy, museum-like gold/brass accent */
+    --color-text-muted: #666666; /* Secondary information color */
+    --color-bg-light: #fbf9f6; /* Off-white, warm gallery background look */
+    --color-border: #e5e0da; /* Soft borders */
+    --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-stack);
+    background-color: var(--color-bg-light);
+    color: var(--color-primary);
+    line-height: 1.6;
+    padding: 2rem 1rem;
+}
+
+/* --- Layout Container --- */
+.product-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.product-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+/* Responsive Grid for Tablets and Desktops */
+@media (min-width: 768px) {
+    .product-layout {
+        grid-template-columns: 1.1fr 0.9fr;
+    }
+}
+
+/* --- Left Side: Gallery --- */
+.product-gallery .image-wrapper {
+    background-color: #f5f5f5;
+    border-radius: 2px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-gallery img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+}
+
+/* --- Right Side: Information Panel --- */
+.product-info-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Part 1: Typography & Hierarchy */
+.breadcrumb {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+    .breadcrumb .separator {
+        color: var(--color-text-muted);
+        margin: 0 0.4rem;
+    }
+
+.product-title {
+    font-size: 2.25rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.product-author {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+}
+
+    .product-author .author-name {
+        color: var(--color-primary);
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+.divider {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: 1.75rem 0;
+}
+
+/* Part 2: Pricing & Purchase Actions */
+.price-container {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+}
+
+    .price-container .currency {
+        color: var(--color-accent);
+    }
+
+    .price-container .price-currency-code {
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+        margin-left: 0.5rem;
+        font-weight: 400;
+    }
+
+.short-brief {
+    font-size: 1.05rem;
+    color: #4a4a4a;
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    padding: 1.1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+    .btn-primary:hover {
+        background-color: var(--color-accent);
+    }
+
+/* Part 3: Short Notes Section */
+.product-footer-notes {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.section-heading {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--color-primary);
+}
+
+.notes-content {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    max-width: 800px;
+}
+
+/* --- Enhanced Gallery Component --- */
+.product-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.main-display-wrapper {
+    background-color: #f5f5f5;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .main-display-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.2s ease;
+    }
+
+/* Thumbnail Horizontal Row */
+.thumbnail-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.thumb-btn {
+    background: none;
+    border: 2px solid transparent;
+    padding: 0;
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+    .thumb-btn img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .thumb-btn:hover {
+        opacity: 0.8;
+    }
+
+    /* Active Highlight Outline */
+    .thumb-btn.active {
+        border-color: var(--color-accent);
+    }
+
+    .thumb-btn:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+/* --- E-commerce Purchase Engine Utilities --- */
+.purchase-engine {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: #fdfdfd;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+.stock-status {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+    .stock-status.low-stock {
+        color: #c97d24; /* Distinct, soft luxury alert amber */
+    }
+
+.purchase-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Premium Fine Art Quantity Custom Picker */
+.quantity-picker-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-primary);
+    border-radius: 2px;
+    height: 52px; /* Perfectly aligns with primary button heights */
+    background: #ffffff;
+}
+
+.qty-adjust {
+    background: none;
+    border: none;
+    width: 40px;
+    height: 100%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s ease;
+}
+
+    .qty-adjust:hover {
+        background-color: var(--color-bg-light);
+    }
+
+.qty-input {
+    width: 45px;
+    border: none;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    -moz-appearance: textfield;
+}
+
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+.flex-btn {
+    flex: 1;
+    height: 52px;
+}
+
+/* --- Out of Stock Alert Forms --- */
+.stock-alert-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.alert-message {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+}
+
+.alert-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.alert-input {
+    flex: 1;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    font-size: 0.95rem;
+}
+
+    .alert-input:focus {
+        outline: 1px solid var(--color-accent);
+    }
+
+.btn-secondary {
+    background-color: var(--color-accent);
+    color: #ffffff;
+    border: none;
+    padding: 0 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+/* Accessibility / State Helper Classes */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
