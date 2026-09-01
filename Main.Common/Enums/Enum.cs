@@ -83,7 +83,10 @@ public enum EnumPanelTemplate
     AdminBannerCarousel = 7,
 
     [Description("Admin: (Fixed Banner: 1 Ad Spases)")]
-    AdminSingleBanner = 8
+    AdminSingleBanner = 8,
+
+    [Description("Single Product Panel (1 Product)")]
+    ProductSingle = 10
 }
 
 

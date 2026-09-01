@@ -1,0 +1,50 @@
+﻿@model PanelViewModel
+
+<div class="panel container"
+     data-page-id="@Model.PageID" 
+     data-panel-id="@Model.PanelID" 
+     draggable="true">
+
+    <h4 class="sub-title" draggable="false">
+        @Model.PanelTitle
+    </h4>
+
+    <div class="row panel-content" draggable="false">
+        @if (Model.ListPosts != null)
+        {
+            foreach (var product in Model.ListPosts)
+            {
+                <div class="col-6 card" draggable="true">
+                    <a class="thumbnail only-image" draggable="false">
+                        @if (product != null)
+                        {
+                            @await Html.PartialAsync("~/Areas/PageContent/Views/Pages/Images/_Image1X.cshtml", product)
+                        }
+                    </a>
+
+                    <div class="caption card-body" draggable="false">
+
+                        <h5 class="truncate text-bg-success card-title" draggable="false">
+
+                            @(product?.PostTitle ?? "No Title Available")
+                      
+                        </h5>
+
+                        <p class="fa-dollar text-info-emphasis card-text" draggable="false">
+
+                            @(product?.Price?.ToString("F2") ?? "0.00") Taka
+
+                        </p>
+
+                        <span draggable="false" class="btn-add-cart">
+
+                            <i class="fa fa-plus fa-fw"></i> 
+                            ADD TO CART
+
+                        </span>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

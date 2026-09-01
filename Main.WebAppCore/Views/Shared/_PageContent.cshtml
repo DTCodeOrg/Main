@@ -2,7 +2,6 @@
 @{
     foreach(var model in Model.ListPagePanels.ToList())
     {
-
         if ( model.PanelTemplate == EnumPanelTemplate.ProductSixer)
         {
             @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Panels/_ProductPanel6X.cshtml",model )
@@ -18,6 +17,10 @@
         else if ( model.PanelTemplate == EnumPanelTemplate.ProductDouble )
         {
             @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Panels/_ProductPanel2X.cshtml",model )
+        }
+        else if ( model.PanelTemplate == EnumPanelTemplate.ProductSingle )
+        {
+            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Panels/_ProductPanel1X.cshtml",model )
         }
     }
 }   

@@ -102,6 +102,10 @@ public static class ValidationRelated
         {
             return ( int ) EnumPostCount.PostCountOne;
         }
+        else if ( panelTemplate == EnumPanelTemplate.ProductSingle )
+        {
+            return ( int ) EnumPostCount.PostCountOne;
+        }
         else if ( panelTemplate == EnumPanelTemplate.AdminBannerCarousel )
         {
             return ( int ) EnumPostCount.PostCountFour;
@@ -123,6 +127,8 @@ public static class ValidationRelated
             return ( int ) EnumPostCount.PostCountSix;
         }
 
+
         return 0;
+
     }
 }

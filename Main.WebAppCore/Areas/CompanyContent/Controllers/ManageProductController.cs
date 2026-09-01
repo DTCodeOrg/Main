@@ -129,6 +129,7 @@ public class ManageProductController: BaseController
                 (kvp => kvp.Key,kvp => kvp.Value!.Errors.Select
                 (e => e.ErrorMessage).ToArray());
 
+
             ViewBag.ValidationSummary = validationErrors;
 
             return BadRequest (
