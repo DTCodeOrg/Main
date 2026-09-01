@@ -1,24 +1,35 @@
+# Multi-Tenant SAAS Stores 
+
+### [Videos](https://1drv.ms/v/c/93d70fb51193cb6b/IQBfJQMns98vRo8xccLLZUWFAWyI4iURrX5QWuM9g4Iia-Q?e=CXsNkt) *NEW VIDEO!*
+
 # Fostering Education: 
 I decided to contribute to the community; I have the experience. The experience is a journey with the communities I worked with in software and technology. I started in 2000. I learned from them; they are my work associates and affairs. I have learned from the academics; the journey of engineering started, the teachers. The actual area of technology and engineering is important for me to share and deliver in an impactful manner; it is resilient and sustainable. 
+
 To make it sustain; we do foster; that is education fostering.  Because knowledge and experience come with a price at that time. You can never buy the time (experience 26 years). Fostering the education & experience, transfer and adoption are very much required to deliver impactful results. Here is the plan I just prepared after researching and aligning with a plan of fostering education. I found that education fostering is very important. 
 
-## Code Fostering (GitHub Repository):  
+## 1. Code Fostering (GitHub Repository):  
 With the knowledge of technology-based work experiences; I can prepare a container (consider a GitHub repository). It is a part of the fostering education (knowledge and experience based, delivery of code). In the fostering process, code is a part (fostering education); I can deliver some engineers to read, learn, enrich and adopt. To make the code fostering more impactful; to make the code; into a software product which can be usable in a production environment, not just a prototype.  
-## Hardware Fostering:  
+
+## 2. Hardware Fostering:  
 To make the code fostering working and impactful, stacks technologies, domain, hardware, datacenter vendors host them; are all part of the ecosystem. 
-## Service Fostering:  
+
+## 3. Service Fostering:  
 Maintainers, the operation of the data related to the application, smooth maintenance for the users. 
-## Fostering the Business Knowledge: 
+
+## 4. Fostering the Business Knowledge: 
 Business Executives can use their business knowledge to bring them (stores) to a place, engage them, educate them, and get the most value from the code, hardware and the production ecosystem. 
-## Users Fostering (Small Businesses/Stores): 
+
+## 5. Users Fostering (Small Businesses/Stores): 
 These are the people who make the actual use of the working product or the software in the cheapest possible way that education fostering is impactful.  
 
-# At End of Everyone's Fostering: *NEW VIDEO!*
-[Something like this Video](https://1drv.ms/v/c/93d70fb51193cb6b/IQBfJQMns98vRo8xccLLZUWFAWyI4iURrX5QWuM9g4Iia-Q?e=CXsNkt)
 
-[Commands.zip](https://github.com/user-attachments/files/31552456/Commands.zip)
+# Multi-Tenant ASP.NET Core .NET 8.0 (Multi-Tenant SAAS)
 
-## 28 Aug 2026: One Hour Video for Kids to a Cook (kitchen) or a Computer User from any Discipline follow the steps; You can run the Application in your Laptop.
+## 🥃 Run Code in your Laptop (28 Aug 2026)
+
+### 1. One Hour Video for Kids to a Cook (kitchen) or a Computer User from any Discipline follow the steps; You can run the Application in your Laptop.
+### 2. It means, it is easy. Do not get scared to setup the code and tools in the laptop.
+### 3. Download the zip file for copy and paste in the required places shown in the video. [Commands.zip](https://github.com/user-attachments/files/31552456/Commands.zip)
 
 ## VIDEO 1 [Step 1: VS 2026 Download](https://1drv.ms/v/c/93d70fb51193cb6b/IQBPuCnZNZYvSrM6KyzEHLj_AR7li3IJKuE4Jx5dCSx9zYk?e=UZ2cq5) 
 
