@@ -50,23 +50,16 @@ These are the people who make the actual use of the working product or the softw
 
 # Latest Videos 🆕🎬
 
-1. **28 Aug 2026** [Video: Bottom Header - 1. Dynamic Product Category Menu, 2. Fixed Scroll-Menu (Home Page/All Pages)](https://1drv.ms/v/c/93d70fb51193cb6b/IQDIvxEUH5tcR5AofCnZmpZfAYgosaxW98BVEvhy8FOVbx0?e=1Zex41) **NEW!**
-2. **25 Aug 2026** [Video: Home Page: Setup (Panels: Add - Drag & Drop, Edit - Up & Down](https://1drv.ms/v/c/93d70fb51193cb6b/IQB4198G_WMSRpVZBD2l6J5DARgBU77fxnTsPz2KCSk37eE?e=ZBSUSb) 
-3. **24 Aug 2026** [Video: Product UX, Page Setup (Panels, Drag & Drop](https://1drv.ms/v/c/93d70fb51193cb6b/IQDP8Vj1-bABR6M5FOHG1L3eAXVYFZk3p0-CCl2cSB2nAvc?e=d6g8c6) 
+1. [Video: Bottom Header - 1. Dynamic Product Category Menu, 2. Fixed Scroll-Menu (Home Page/All Pages)](https://1drv.ms/v/c/93d70fb51193cb6b/IQDIvxEUH5tcR5AofCnZmpZfAYgosaxW98BVEvhy8FOVbx0?e=1Zex41) **NEW!**
+2. [Video: Home Page: Setup (Panels: Add - Drag & Drop, Edit - Up & Down](https://1drv.ms/v/c/93d70fb51193cb6b/IQB4198G_WMSRpVZBD2l6J5DARgBU77fxnTsPz2KCSk37eE?e=ZBSUSb) 
+3. [Video: Product UX, Page Setup (Panels, Drag & Drop](https://1drv.ms/v/c/93d70fb51193cb6b/IQDP8Vj1-bABR6M5FOHG1L3eAXVYFZk3p0-CCl2cSB2nAvc?e=d6g8c6) 
 4. [Video - Tenant Product Module Full](https://1drv.ms/v/c/93d70fb51193cb6b/IQCiwVnAVKW4SpTsNHp_KRpnAUll_aWmsJVLTm5ICW5szCI?e=7ebxyv) 
 5. [Video Multi Tenant with Theme and Logo](https://1drv.ms/v/c/93d70fb51193cb6b/IQCbPoQogKj0Sp4JcSrTqlTdAaTPrdYOCt7i2xo-eiRa1Nk?e=zW63vs) 
 6. [Latest video](https://1drv.ms/v/c/93d70fb51193cb6b/IQAdpVbw9SSUTIkiv8jbxnrzAWtZcojWwLbMsDhPbqOcFBc?e=bbNRme)
 7. [From VS and Nginx](https://1drv.ms/v/c/93d70fb51193cb6b/IQA-f-V2ZcA3RKPQmD1k3q_QAaFFDqIFFMMyGS7K9kcHEQ8?e=Z6BhbS)
-
-# Seed Database Script for Identity Database:
-
-[Theme Seed & Database SQL Script](https://1drv.ms/u/c/93d70fb51193cb6b/IQAUlLSDaKNySocpGhJc6rwRAZbMUTp5WKFcbGST3aEP4Ak?e=Kl0cxT)
-
-**22 Aug 2026** 
-[Video - Debugging of Tenant Product & Photos](https://1drv.ms/v/c/93d70fb51193cb6b/IQDVNYSAQMf8Rb45NWgIdiaHAVuqanStaSjo0pe7yMQjdio?e=GJ37yG) 
-
-**17 Aug 2026** 
-[Video - Refined Theme](https://1drv.ms/v/c/93d70fb51193cb6b/IQBmlArEE1UzTYF15imEdp-7AV6PBRUxTHaiPr0GXF_nPm4?e=0O69CQ)
+8. [Theme Seed & Database SQL Script](https://1drv.ms/u/c/93d70fb51193cb6b/IQAUlLSDaKNySocpGhJc6rwRAZbMUTp5WKFcbGST3aEP4Ak?e=Kl0cxT)
+9. [Video - Debugging of Tenant Product & Photos](https://1drv.ms/v/c/93d70fb51193cb6b/IQDVNYSAQMf8Rb45NWgIdiaHAVuqanStaSjo0pe7yMQjdio?e=GJ37yG)
+10. [Video - Refined Theme](https://1drv.ms/v/c/93d70fb51193cb6b/IQBmlArEE1UzTYF15imEdp-7AV6PBRUxTHaiPr0GXF_nPm4?e=0O69CQ)
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
 
