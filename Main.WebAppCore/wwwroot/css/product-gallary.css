@@ -19,7 +19,6 @@ body {
     background-color: var(--color-bg-light);
     color: var(--color-primary);
     line-height: 1.6;
-    padding: 2rem 1rem;
 }
 
 /* --- Layout Container --- */
@@ -66,7 +65,7 @@ body {
 .product-info-panel {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
 }
 
 /* Part 1: Typography & Hierarchy */

@@ -62,36 +62,25 @@
 
             <div class="main-display-wrapper">
 
-                <img id="main-featured-image" src="@Model.ImageFiles[0].RelativeFilePath" 
-                alt="Collectible Craft Artwork by @Model.ProductOwner - Main View" />
-            
+                <img id="main-featured-image" src=""
+                     alt="" />
+
             </div>
+           
+            <div class="thumbnail-strip">
 
-            <div class="thumbnail-strip" role="listbox" aria-label="Product image alternatives">
-               
-                <button class="thumb-btn active" role="option" aria-selected="true" data-full-img="@Model.ImageFiles[0].RelativeFilePath">
-                   
-                    <img src ="@Model.ImageFiles[0].RelativeFilePath" alt="View 1">
+                @foreach ( var image in Model.ImageFiles )
+                {
+                    <button class="thumb-btn"
+                            role="option"
+                            aria-selected="false"
+                            data-full-img="@image.RelativeFilePath">
 
-                </button>
+                        <img src="@image.RelativeFilePath" 
+                        alt="Collectible / Artwork by @Model.ProductOwner">
 
-                <button class="thumb-btn" role="option" aria-selected="false" data-full-img="@Model.ImageFiles[0].RelativeFilePath">
-                    
-                    <img src="@Model.ImageFiles[0].RelativeFilePath" alt="View 2">
-
-                </button>
-
-                <button class="thumb-btn" role="option" aria-selected="false" data-full-img="@Model.ImageFiles[0].RelativeFilePath">
-                    
-                    <img src="@Model.ImageFiles[0].RelativeFilePath" alt="View 3">
-
-                </button>
-               
-                <button class="thumb-btn" role="option" aria-selected="false" data-full-img="@Model.ImageFiles[0].RelativeFilePath">
-                   
-                    <img src="@Model.ImageFiles[0].RelativeFilePath" alt="View 4">
-
-                </button>
+                    </button>
+                }   
 
             </div>
 
