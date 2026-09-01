@@ -14,21 +14,27 @@ public class ProductDisplayViewModel
     }
 
 
-    [Display (Name = "Product Category")]
+    [Display (Name = "Type")]
     public string DisplayCategory
     {
         get; set;
     }
 
 
-    [Display (Name = "Sub Category")]
+    [Display (Name = "Sub-Type")]
     public string? DisplaySubCategory
     {
         get; set;
     }
 
-    [Display (Name = "Product Name")]
+    [Display (Name = "Product")]
     public string ProductName
+    {
+        get; set;
+    }
+
+    [Display (Name = "From")]
+    public string? ProductOwner
     {
         get; set;
     }

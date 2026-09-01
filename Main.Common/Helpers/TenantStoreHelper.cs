@@ -11,22 +11,24 @@ public class TenantStoreHelper
     {
     }
 
-    public static List<TenantVariableModel> GetCategoryList (IStringLocalizer<SharedResource> localizer)
+    public static List<TenantVariableModel> GetCategoryList (IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
-        return TenantStores.ListTenantStoreMenu (localizer);
+        return TenantStores.ListTenantStoreMenu (localizer,storeType);
     }
 
-    public static List<TenantVariableModel> GetSubCategoryList (IStringLocalizer<SharedResource> localizer)
+    public static List<TenantVariableModel> GetSubCategoryList (IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
-        return TenantStores.ListTenantStoreMenu (localizer);
+        return TenantStores.ListTenantStoreMenu (localizer,storeType);
     }
 
-    public static string GetTextForCategoryId (int? categoryId,IStringLocalizer<SharedResource> localizer)
+    public static string GetTextForCategoryId
+    (int? categoryId,IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
-        List<TenantVariableModel>? listCategory = TenantStores.ListTenantStoreMenu (localizer);
+        List<TenantVariableModel>? listCategory =  TenantStores.ListTenantStoreMenu
+        (localizer, storeType);
+
         try
         {
-
             TenantVariableModel? tenantVariableModel =
                 listCategory?.FirstOrDefault<TenantVariableModel>
                 ( m =>  m.ValueID == categoryId);

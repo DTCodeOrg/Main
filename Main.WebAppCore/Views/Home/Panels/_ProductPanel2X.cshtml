@@ -36,11 +36,15 @@
                     <div class="caption card-body">
 
                         <h5 class="truncate text-bg-success card-title">
-                            @product.PostTitle
+
+                            @(product?.PostTitle ?? "No Title Available")
+
                         </h5>
 
                         <p class="fa-dollar text-info-emphasis card-text">
-                            @product.Price Taka
+
+                            @(product.Price?.ToString("F2") ?? string.Empty) Taka
+
                         </p>
 
                         <span>

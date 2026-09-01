@@ -619,6 +619,9 @@ namespace Main.Infrastructure.Migrations.TenantDb
                     b.Property<Guid>("MyTenantId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("NameTag")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PostType")
                         .HasColumnType("int");
 
@@ -630,12 +633,12 @@ namespace Main.Infrastructure.Migrations.TenantDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProductOwner")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("SaleCommission")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("SearchTag")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SubCategoryID")
                         .HasColumnType("int");

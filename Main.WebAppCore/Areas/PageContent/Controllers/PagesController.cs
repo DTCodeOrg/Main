@@ -41,14 +41,13 @@ public class PagesController: BaseController
     {
         try
         {
-            List<PageDisplayDataModel> listPageDataModel = await _pageService.GetAllPages(_tenantSetter.CurrentTenant.TenantName);
+            List<PageDisplayDataModel> listPageDataModel
+            = await _pageService.GetAllPages(_tenantSetter.CurrentTenant.TenantName);
 
-            List<PageDisplayViewModel> listPageViewModel = PageMapping.PageDisplayMapping(listPageDataModel, _tenantSetter.CurrentTenant.TenantName);
-
-
+            List<PageDisplayViewModel> listPageViewModel
+            = PageMapping.PageDisplayMapping ( listPageDataModel, _tenantSetter.CurrentTenant.TenantName );
 
             return View (listPageViewModel);
-
         }
         catch ( Exception ex )
         {
@@ -65,11 +64,12 @@ public class PagesController: BaseController
         PanelViewModel pagePanelViewModel = new();
 
         List<PostDataModel> listSelectProductsDataModel =
-            await _pageService.GetSelectProducts();
+        await _pageService.GetSelectProducts ();
 
         pagePanelViewModel.ListSelectPosts =
-            PageMapping.MapSelectPostViewModel (listSelectProductsDataModel,
-            AppSettings.Current.EnumCurrency,_localizer);
+            PageMapping.MapSelectPostViewModel
+            (listSelectProductsDataModel,AppSettings.Current.EnumCurrency,_localizer,_tenantSetter.CurrentTenant.StoreType);
+
         pagePanelViewModel.PageID = id;
         pagePanelViewModel.PanelTitle = "";
         pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuard;

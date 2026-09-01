@@ -32,6 +32,11 @@ public class TenantDataModel
         get; set;
     }
 
+    public StoreType StoreType
+    {
+        get; set;
+    }
+
     public string? SecretKey
     {
         get; set;

@@ -24,15 +24,22 @@
 
                     <div class="caption card-body" draggable="false">
                         <h5 class="truncate text-bg-success card-title" draggable="false">
-                            @product.PostTitle
+
+                            @(product?.PostTitle ?? "No Title Available")
+                      
                         </h5>
 
                         <p class="fa-dollar text-info-emphasis card-text" draggable="false">
-                            @(product.Price?.ToString("F2") ?? "0.00") Taka
+
+                            @(product?.Price?.ToString("F2") ?? "0.00") Taka
+
                         </p>
 
                         <span draggable="false" class="btn-add-cart">
-                            <i class="fa fa-plus fa-fw"></i> ADD TO CART
+
+                            <i class="fa fa-plus fa-fw"></i> 
+                            ADD TO CART
+
                         </span>
                     </div>
                 </div>

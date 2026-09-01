@@ -1,6 +1,5 @@
 ﻿using Main.Common.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
 using System.ComponentModel.DataAnnotations;
 
 namespace Main.WebAppCore.Models;
@@ -10,6 +9,7 @@ public class ProductViewModel: BaseViewModel
     public ProductViewModel ()
     {
         AVCategory = new List<SelectListItem> ();
+        AVSubCategory = new List<SelectListItem> ();
         ImageFiles = new List<ImageFile> ();
         PageName = "Product Page";
     }
@@ -20,22 +20,33 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    [Display (Name = "Product Category ")]
+    [Display (Name = "Type")]
     public int? CategoryID
     {
         get; set;
     }
 
-
-    [Display (Name = "Product Name")]
-    [Required (ErrorMessage = "Product Name is required!")]
-    public string ProductName
+    [Display (Name = "Sub-Type")]
+    public int? SubCategoryID
     {
         get; set;
     }
 
 
-    [Display (Name = "Description")]
+    [Display (Name = "Product")]
+    [Required (ErrorMessage = "Product is required!")]
+    public string ProductName
+    {
+        get; set;
+    }
+
+    [Display (Name = "From (Individual/Team)")]
+    public string? ProductOwner
+    {
+        get; set;
+    }
+
+    [Display (Name = "Brief notes")]
     [StringLength (4000)]
     public string? Description
     {
@@ -43,7 +54,7 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    [Display (Name = "Price (Taka)")]
+    [Display (Name = "Price (taka)")]
     [DataType (DataType.Currency)]
     public decimal? UnitPrice
     {
@@ -51,7 +62,7 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    [Display (Name = "Discount")]
+    [Display (Name = "Discount (%)")]
     [DataType (DataType.Currency)]
     public decimal? Discount
     {
@@ -59,7 +70,7 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    [Display (Name = "Sales Commission")]
+    [Display (Name = "Sales Commission (%)")]
     [DataType (DataType.Currency)]
     public decimal? SaleCommission
     {
@@ -67,7 +78,7 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    [Display (Name = "Search Tags (comma-separated)")]
+    [Display (Name = "Name tags (comma-separated for search in web)")]
     [StringLength (4000)]
     public string? SearchTag
     {
@@ -75,14 +86,13 @@ public class ProductViewModel: BaseViewModel
     }
 
 
-    [Display (Name = "Product Category")]
+    [Display (Name = "Type")]
     public string? CategoryText
     {
         get; set;
     }
 
-
-    [Display (Name = "Sub Category")]
+    [Display (Name = "Sub-Type")]
     public string? SubCategoryText
     {
         get; set;
@@ -93,11 +103,15 @@ public class ProductViewModel: BaseViewModel
         get; set;
     }
 
-    public List<ImageFile> ImageFiles
+    public IEnumerable<SelectListItem> AVSubCategory
     {
         get; set;
     }
 
+    public List<ImageFile> ImageFiles
+    {
+        get; set;
+    }
 }
 
 

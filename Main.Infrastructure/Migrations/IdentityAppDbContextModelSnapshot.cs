@@ -92,101 +92,129 @@ namespace Main.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "00000005-0000-0000-0000-000000000000",
+                            Id = "00000003-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c651deaf-55fd-4180-a6ca-80a154b57c4c",
+                            ConcurrencyStamp = "7f40fea2-daa4-4a55-a269-cec7a7d4f053",
                             Email = "admin@system.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAELtZj4mnKOjYDyWc4DScBxI97m3PWelVIDLaJhJHWSpTlY82oU8iGrs4Yu1pPtSnww==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOVbZ+HaJLvMaPJ8sJXOMqxXcBAXnF03FlUzG4DrKgn10OQASYJatRTGI1Zw1xEftg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9ec808b2-1fe0-49cd-8325-7f14d1f38a20",
+                            SecurityStamp = "c425184d-049f-4a8c-9c59-a133e008c1aa",
                             TwoFactorEnabled = false,
                             UserName = "admin@system.com"
                         },
                         new
                         {
-                            Id = "00000006-0000-0000-0000-000000000000",
+                            Id = "00000004-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c7de4f6a-cd5c-49e9-88e8-d0be84260260",
+                            ConcurrencyStamp = "0b2bea56-c315-4d77-a926-93c01b57694f",
                             Email = "tenant1.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEPO/uirdrZqkwbcFbidbP0wXH8cFx0Sk5brCwweESR3S64dUA4FhdxRfqdd95DQrPQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFB72Rgyob/yltKyir9OF3YJHE1G3PLJsbq7qPAtS0A/IcvOlYGo9h/R2JG4YwHyXQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1ad289cb-8928-491e-bb89-a2a69138da79",
+                            SecurityStamp = "2ff56c5c-a243-4b45-9a35-883919082311",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.admin@test.com"
                         },
                         new
                         {
-                            Id = "00000007-0000-0000-0000-000000000000",
+                            Id = "00000005-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3e848d85-5f5d-4887-9e54-6e80a2d4ce83",
+                            ConcurrencyStamp = "04218617-4d25-4025-9532-15e3248a8c38",
                             Email = "tenant1.manager@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEDIftjWK6EoGvCLQxv7GhUc2bgnXn8mSmV2VeBCbO8sYdgIJwItWJpESqIpFc48yRg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPcFSsgrIrvD8HUaxya8xAOSMAiF17oKvu9eHGL8IYuFZ8NfF7Fo+F40fdvNmEtjZg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "663a7b86-fa79-450c-a961-84ac12ec93f3",
+                            SecurityStamp = "3b242e70-0599-4152-ac34-1463bf968bcc",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.manager@test.com"
                         },
                         new
                         {
-                            Id = "00000008-0000-0000-0000-000000000000",
+                            Id = "00000006-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "20fe587b-160d-4bd6-b77e-c4997e054d76",
+                            ConcurrencyStamp = "e1e32db8-427c-4e24-bf33-a8335cdeb797",
                             Email = "tenant1.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEKpZv3PTzpqGaV22XOWdB1ZyYOqSn5KS5idt49ol7MS5Id3/i1PyaSzrROUHYXFjww==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEdnGOvJqzDo5HQUaCOQpLusUjjODwPdqjP6rFHpvG+QKZdqaB4yOxxECWtDHDq8bg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b2104df7-2f64-42de-a70d-e16b6c94581f",
+                            SecurityStamp = "d9f11e2f-5ae4-4104-86c3-9ab80c69523e",
                             TwoFactorEnabled = false,
                             UserName = "tenant1.member@test.com"
                         },
                         new
                         {
-                            Id = "00000009-0000-0000-0000-000000000000",
+                            Id = "00000007-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "102876b7-a286-44ff-9ab7-b402f90499e6",
+                            ConcurrencyStamp = "60512359-4fdf-48b4-9b8a-6f8ed28cc6aa",
                             Email = "tenant2.admin@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEMYSzy5pwWfW56OUSvka26c9R/yRKmQYoltJ7xReZumlPbVepiqDcT17OehrM/KVMA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI00AT8c17hXSKl88jxkK8+KfSaQwjMbW9jVZcjGGfeWxLYMt2upSzLwBQESFfx11Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8109755a-d1b4-4403-ab1b-43c0d3dc711f",
+                            SecurityStamp = "03e9f377-ba9d-4422-9442-ef6d8f4e361f",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.admin@test.com"
                         },
                         new
                         {
-                            Id = "0000000a-0000-0000-0000-000000000000",
+                            Id = "00000008-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "eabbe2e9-a6ab-4541-bb8c-bc339796b575",
+                            ConcurrencyStamp = "f1288f31-0f0c-47e4-b127-dbc458a71ceb",
                             Email = "tenant2.manager@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEE+aG8Nloca4/uq4S/7UdIeSfG1e4NjdKgN/oj68DQ9Z5SG3Wldtrc1UDnR/nvNfJg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAV2Zagyj8YhvQnlTBJykRV/1cQSv13kDdSzfyGluII7OXnK3UWWVevfaVLkrXQ44A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bd47d479-87ef-4395-81d9-78fbd7809f9e",
+                            SecurityStamp = "0776df0b-3bbf-4bf9-b9be-4b087e7127d6",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.manager@test.com"
                         },
                         new
                         {
-                            Id = "0000000b-0000-0000-0000-000000000000",
+                            Id = "00000009-0000-0000-0000-000000000000",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b7931f45-1a6f-434b-96e8-34584e40ff19",
+                            ConcurrencyStamp = "081ca6c3-8ddd-4fc9-bacc-782b30476fc4",
                             Email = "tenant2.member@test.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEFV7DhRzSSouSCqLcS1hmcd0Zu53KizV5ViAVG6izFQrLGk2KyaCremg7dFek5iuGw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJsC7yJP90lJJkzeZd847tYJ+j42D4RwAHsdH4ZKyEHLav0kwPzDXwalOCTL3gqB0Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e642887e-20f0-414a-b12a-610aa4a6ffc8",
+                            SecurityStamp = "6d1102cf-c7fa-47a3-b231-f9cd3c79905e",
                             TwoFactorEnabled = false,
                             UserName = "tenant2.member@test.com"
+                        },
+                        new
+                        {
+                            Id = "0000000a-0000-0000-0000-000000000000",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3647ec87-e685-4859-ae27-ea153ab18441",
+                            Email = "finearts@test.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEIYOs8hopG5Tqx3tnClSJTrqxY8NwYe+5Kk+J5ttW9WngSTbmVUNVvLUO7q15VMpLA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "3c0aedbe-6cc2-4be1-b729-95e34610dcf8",
+                            TwoFactorEnabled = false,
+                            UserName = "finearts@test.com"
+                        },
+                        new
+                        {
+                            Id = "0000000b-0000-0000-0000-000000000000",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5970ca7f-8b3b-42b5-a7bd-d753c85779f8",
+                            Email = "lifestyles@test.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAEFhIsFszXNRPo46ktf1gdrqhoJkRMzqa+oFBfJ/uRpp2PMtGwuPGv3ANkum205kTdQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "3483be7d-0938-4e1d-a5f8-0a85e445e3f5",
+                            TwoFactorEnabled = false,
+                            UserName = "lifestyles@test.com"
                         });
                 });
 
@@ -298,6 +326,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<string>("SecretKey")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StoreType")
+                        .HasColumnType("int");
+
                     b.Property<string>("TenantContinent")
                         .HasColumnType("nvarchar(max)");
 
@@ -317,17 +348,45 @@ namespace Main.Infrastructure.Migrations
                         {
                             TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
                             Host = "tenant1",
-                            HostType = 0,
+                            HostType = 1,
                             IsActive = true,
-                            TenantName = "Tenant 1"
+                            StoreType = 6,
+                            TenantContinent = "Asia",
+                            TenantCountry = 1,
+                            TenantName = "Tenant 1 (Finearts: Collections)"
                         },
                         new
                         {
                             TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
                             Host = "tenant2",
-                            HostType = 0,
+                            HostType = 1,
                             IsActive = true,
-                            TenantName = "Tenant 2"
+                            StoreType = 5,
+                            TenantContinent = "Asia",
+                            TenantCountry = 1,
+                            TenantName = "Tenant 2 (Finearts: Crafts)"
+                        },
+                        new
+                        {
+                            TenantId = new Guid("00000011-0000-0000-0000-000000000000"),
+                            Host = "finearts",
+                            HostType = 1,
+                            IsActive = true,
+                            StoreType = 2,
+                            TenantContinent = "Asia",
+                            TenantCountry = 1,
+                            TenantName = "Tenant 3 (Finearts: Arts)"
+                        },
+                        new
+                        {
+                            TenantId = new Guid("00000012-0000-0000-0000-000000000000"),
+                            Host = "lifestyles",
+                            HostType = 1,
+                            IsActive = true,
+                            StoreType = 1,
+                            TenantContinent = "Asia",
+                            TenantCountry = 1,
+                            TenantName = "Tenant 4 (LifeStyles)"
                         });
                 });
 
@@ -597,7 +656,7 @@ namespace Main.Infrastructure.Migrations
                             TenantCountry = 1,
                             TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
                             TenantRole = "Admin",
-                            UserId = "00000006-0000-0000-0000-000000000000"
+                            UserId = "00000004-0000-0000-0000-000000000000"
                         },
                         new
                         {
@@ -606,7 +665,7 @@ namespace Main.Infrastructure.Migrations
                             TenantCountry = 1,
                             TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
                             TenantRole = "Manager",
-                            UserId = "00000007-0000-0000-0000-000000000000"
+                            UserId = "00000005-0000-0000-0000-000000000000"
                         },
                         new
                         {
@@ -615,7 +674,7 @@ namespace Main.Infrastructure.Migrations
                             TenantCountry = 1,
                             TenantId = new Guid("00000001-0000-0000-0000-000000000000"),
                             TenantRole = "Member",
-                            UserId = "00000008-0000-0000-0000-000000000000"
+                            UserId = "00000006-0000-0000-0000-000000000000"
                         },
                         new
                         {
@@ -624,7 +683,7 @@ namespace Main.Infrastructure.Migrations
                             TenantCountry = 1,
                             TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
                             TenantRole = "Admin",
-                            UserId = "00000009-0000-0000-0000-000000000000"
+                            UserId = "00000007-0000-0000-0000-000000000000"
                         },
                         new
                         {
@@ -633,7 +692,7 @@ namespace Main.Infrastructure.Migrations
                             TenantCountry = 1,
                             TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
                             TenantRole = "Manager",
-                            UserId = "0000000a-0000-0000-0000-000000000000"
+                            UserId = "00000008-0000-0000-0000-000000000000"
                         },
                         new
                         {
@@ -642,6 +701,24 @@ namespace Main.Infrastructure.Migrations
                             TenantCountry = 1,
                             TenantId = new Guid("00000002-0000-0000-0000-000000000000"),
                             TenantRole = "Member",
+                            UserId = "00000009-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            TenantUserRoleId = 8,
+                            IsActive = true,
+                            TenantCountry = 1,
+                            TenantId = new Guid("00000011-0000-0000-0000-000000000000"),
+                            TenantRole = "Admin",
+                            UserId = "0000000a-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            TenantUserRoleId = 9,
+                            IsActive = true,
+                            TenantCountry = 1,
+                            TenantId = new Guid("00000012-0000-0000-0000-000000000000"),
+                            TenantRole = "Admin",
                             UserId = "0000000b-0000-0000-0000-000000000000"
                         });
                 });
@@ -747,13 +824,13 @@ namespace Main.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "00000003-0000-0000-0000-000000000000",
+                            Id = "00000013-0000-0000-0000-000000000000",
                             Name = "GlobalAdmin",
                             NormalizedName = "GLOBALADMIN"
                         },
                         new
                         {
-                            Id = "00000004-0000-0000-0000-000000000000",
+                            Id = "00000014-0000-0000-0000-000000000000",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -848,38 +925,48 @@ namespace Main.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
+                            UserId = "00000003-0000-0000-0000-000000000000",
+                            RoleId = "00000013-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
+                            UserId = "00000004-0000-0000-0000-000000000000",
+                            RoleId = "00000014-0000-0000-0000-000000000000"
+                        },
+                        new
+                        {
                             UserId = "00000005-0000-0000-0000-000000000000",
-                            RoleId = "00000003-0000-0000-0000-000000000000"
+                            RoleId = "00000014-0000-0000-0000-000000000000"
                         },
                         new
                         {
                             UserId = "00000006-0000-0000-0000-000000000000",
-                            RoleId = "00000004-0000-0000-0000-000000000000"
+                            RoleId = "00000014-0000-0000-0000-000000000000"
                         },
                         new
                         {
                             UserId = "00000007-0000-0000-0000-000000000000",
-                            RoleId = "00000004-0000-0000-0000-000000000000"
+                            RoleId = "00000014-0000-0000-0000-000000000000"
                         },
                         new
                         {
                             UserId = "00000008-0000-0000-0000-000000000000",
-                            RoleId = "00000004-0000-0000-0000-000000000000"
+                            RoleId = "00000014-0000-0000-0000-000000000000"
                         },
                         new
                         {
                             UserId = "00000009-0000-0000-0000-000000000000",
-                            RoleId = "00000004-0000-0000-0000-000000000000"
+                            RoleId = "00000014-0000-0000-0000-000000000000"
                         },
                         new
                         {
                             UserId = "0000000a-0000-0000-0000-000000000000",
-                            RoleId = "00000004-0000-0000-0000-000000000000"
+                            RoleId = "00000014-0000-0000-0000-000000000000"
                         },
                         new
                         {
                             UserId = "0000000b-0000-0000-0000-000000000000",
-                            RoleId = "00000004-0000-0000-0000-000000000000"
+                            RoleId = "00000014-0000-0000-0000-000000000000"
                         });
                 });
 

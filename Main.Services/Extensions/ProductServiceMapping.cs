@@ -32,7 +32,6 @@ public static class ProductServiceMapping
         productDisplayModel.SubCategoryID = productEntity.SubCategoryID;
         productDisplayModel.ProductName = productEntity.ProductName;
         productDisplayModel.UnitPrice = productEntity.Price;
-
     }
 
     public static Product MapSaveProductEntity (ProductDataModel productDataModel)
@@ -56,12 +55,14 @@ public static class ProductServiceMapping
         return new Product ()
         {
             ProductName = productDataModel.ProductName,
+            ProductOwner = productDataModel.ProductOwner,
             CategoryID = productDataModel.CategoryID,
+            SubCategoryID = productDataModel.SubCategoryID,
             Price = productDataModel.UnitPrice,
             Discount = productDataModel.Discount,
             SaleCommission = productDataModel.SaleCommission,
             Description = productDataModel.Description,
-            SearchTag = productDataModel.SearchTag,
+            NameTag = productDataModel.SearchTag,
             PostType = productDataModel.PostType
         };
     }
@@ -97,6 +98,7 @@ public static class ProductServiceMapping
 
         List<ProductFileDataModel> listProductFilesDataModel = [];
         ProductFileDataModel fileDataModel;
+
         if ( productEntity.ListImageFiles != null &&
             productEntity.ListImageFiles.Count > 0 )
         {
@@ -135,17 +137,19 @@ public static class ProductServiceMapping
             });
         }
 
-        ProductDataModel productDataModel = new()
+        ProductDataModel productDataModel = new ()
         {
             ProductID = productEntity.ProductID,
+            CategoryID = productEntity.CategoryID,
+            SubCategoryID = productEntity.SubCategoryID,
             ProductName = productEntity.ProductName,
+            ProductOwner = productEntity.ProductOwner,
+            UnitPrice = productEntity.Price,
             Discount = productEntity.Discount,
             SaleCommission = productEntity.SaleCommission,
-            SearchTag = productEntity.SearchTag,
-            PostType =   productEntity.PostType ,
+            SearchTag = productEntity.NameTag,
+            PostType =   productEntity.PostType,
             Description = productEntity.Description,
-            CategoryID = productEntity.CategoryID,
-            UnitPrice = productEntity.Price,
             ListComments = listCommentsDataModel,
             ImageFiles = listProductFilesDataModel
         };
@@ -155,8 +159,7 @@ public static class ProductServiceMapping
 
     public static Product MapProductUpdateEntity (Product productEntity,ProductDataModel productDataModel)
     {
-        List<ProductImageFile> listProductImageFileEntity
-            = [];
+        List<ProductImageFile> listProductImageFileEntity = [];
 
         listProductImageFileEntity.AddRange (productEntity.ListImageFiles);
 
@@ -174,11 +177,9 @@ public static class ProductServiceMapping
 
         });
 
-        List<ProductComment> listProductCommentsEntity
-            = [];
+        List<ProductComment> listProductCommentsEntity = [];
 
         listProductCommentsEntity.AddRange (productEntity.ListComments);
-
 
         productDataModel.ListComments.ForEach (commentDataModel =>
         {
@@ -192,15 +193,16 @@ public static class ProductServiceMapping
             listProductCommentsEntity.Add (commentEntity);
         });
 
-        productEntity.ProductName = productDataModel.ProductName!;
+        productEntity.CategoryID = productEntity.CategoryID;
+        productEntity.SubCategoryID = productEntity.SubCategoryID;
+        productEntity.ProductName = productEntity.ProductName;
+        productEntity.ProductOwner = productDataModel.ProductOwner;
+        productEntity.Price = productDataModel.UnitPrice;
         productEntity.Discount = productDataModel.Discount;
         productEntity.SaleCommission = productDataModel.SaleCommission;
-        productEntity.SearchTag = productDataModel.SearchTag;
+        productEntity.NameTag = productDataModel.SearchTag;
         productEntity.PostType = EnumPostType.Product;
         productEntity.Description = productDataModel.Description;
-        productEntity.CategoryID = productDataModel.CategoryID;
-        productEntity.Price = productDataModel.UnitPrice;
-
         productEntity.ListComments = listProductCommentsEntity;
         productEntity.ListImageFiles = listProductImageFileEntity;
 

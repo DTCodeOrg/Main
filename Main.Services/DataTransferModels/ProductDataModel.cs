@@ -20,9 +20,19 @@ public class ProductDataModel: DataModel
         get; set;
     }
 
+    public int? SubCategoryID
+    {
+        get; set;
+    }
+
     public EnumPostType PostType { get; set; } = EnumPostType.Product;
 
     public string ProductName
+    {
+        get; set;
+    }
+
+    public string? ProductOwner
     {
         get; set;
     }

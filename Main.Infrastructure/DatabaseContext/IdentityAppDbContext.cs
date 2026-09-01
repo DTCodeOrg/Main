@@ -24,8 +24,11 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
 
     public static readonly Guid[] guidArray = new[]
     {
-        new Guid(1, 0, 0, new byte[8]),   // Tenant 1                              // index 0
-        new Guid(2, 0, 0, new byte[8]),   // Tenant 2                              // index 1
+        new Guid(1, 0, 0, new byte[8]),   // (Tenant 1)                            // index 0
+        new Guid(2, 0, 0, new byte[8]),   // (Tenant 2)                            // index 1
+        new Guid(19, 0, 0, new byte[8]),  // (Tenant 3)                            // index 18
+        new Guid(20, 0, 0, new byte[8]),  // (Tenant 4)                            // index 19
+
         new Guid(3, 0, 0, new byte[8]),   // IdentityRole (ID)                     // index 2
         new Guid(4, 0, 0, new byte[8]),   // IdentityRole (ID)                     // index 3
         new Guid(5, 0, 0, new byte[8]),   // Global Admin (ID of User)             // index 4
@@ -33,15 +36,16 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         new Guid(7, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 6
         new Guid(8, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 7
         new Guid(9, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 8
-        new Guid(10, 0, 0, new byte[8]),   // Tenant Users (Global Role: User)      // index 9
-        new Guid(11, 0, 0, new byte[8]),   //                                       // index 10
-        new Guid(12, 0, 0, new byte[8]),   //                                       // index 11
-        new Guid(13, 0, 0, new byte[8]),  //                                       // index 12
+        new Guid(10, 0, 0, new byte[8]),  // Tenant Users (Global Role: User)      // index 9
+        new Guid(11, 0, 0, new byte[8]),  //                                       // index 10
+        new Guid(12, 0, 0, new byte[8]),  //
+        new Guid(13, 0, 0, new byte[8]),  //     
         new Guid(14, 0, 0, new byte[8]),  //                                       // index 13
         new Guid(15, 0, 0, new byte[8]),  //                                       // index 14
         new Guid(16, 0, 0, new byte[8]),  //                                       // index 15
         new Guid(17, 0, 0, new byte[8]),  // (Tenant 1 Theme)                      // index 16
         new Guid(18, 0, 0, new byte[8]),  // (Tenant 2 Theme)                      // index 17
+        
     };
 
     public DbSet<UserRefreshToken> ApplicationUserRefreshTokens
@@ -150,8 +154,13 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
     {
         Guid TenantId1 = guidArray[0];
         Guid TenantId2 = guidArray[1];
+        Guid TenantId18 = guidArray[18];
+        Guid TenantId19 = guidArray[19];
+
         TenantSeed1 (builder,TenantId1);
         TenantSeed2 (builder,TenantId2);
+        TenantSeed3 (builder,TenantId18);
+        TenantSeed4 (builder,TenantId19);
 
         Guid IdentityRoleId1 = guidArray[2];
         Guid IdentityRoleId2 = guidArray[3];
@@ -176,8 +185,12 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         Guid UserId6 = guidArray[9];
         Guid UserId7 = guidArray[10];
 
+        Guid UserId10 = guidArray[11];    //fine arts admin user
+        Guid UserId11 = guidArray[12];    //life styles admin user
+
         TenantUserSeed (builder,IdentityRoleId2,UserId2,UserId3,UserId4,
-            UserId5,UserId6,UserId7,TenantId1,TenantId2);
+            UserId5,UserId6,UserId7,UserId10,UserId11,
+            TenantId1,TenantId2,TenantId18,TenantId19);
 
     }
 
@@ -185,8 +198,10 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         ModelBuilder builder,
         Guid IdentityRoleId,Guid userId2,
         Guid userId3,Guid userId4,Guid userId5,
-        Guid userId6,Guid userId7,Guid tenantId1,
-        Guid tenantId2)
+        Guid userId6,Guid userId7,
+        Guid UserId10,Guid UserId11,
+        Guid tenantId1,Guid tenantId2,
+        Guid tenantId3,Guid tenantId4)
     {
         var hasher = new PasswordHasher<ApplicationUser>();
 
@@ -245,6 +260,25 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
                 TenantId = tenantId2 ,
                 TenantRole = "Member",
                 TenantUserRoleId = 7,
+                EmailConfirmed = true
+            }    ,
+
+            new {
+                UserId = UserId10.ToString(),
+                RoleId = IdentityRoleId.ToString(),
+                Email = "finearts@test.com",
+                TenantId = tenantId3 ,
+                TenantRole = "Admin",
+                TenantUserRoleId = 8,
+                EmailConfirmed = true
+            } ,
+            new {
+                UserId = UserId11.ToString(),
+                RoleId = IdentityRoleId.ToString(),
+                Email = "lifestyles@test.com",
+                TenantId = tenantId4 ,
+                TenantRole = "Admin",
+                TenantUserRoleId = 9,
                 EmailConfirmed = true
             }
         };
@@ -309,8 +343,10 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
     {
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId1)
         {
-            TenantName = "Tenant 1",
-            Host = "tenant1"
+            TenantName = "Tenant 1 (Finearts: Collections)",
+            HostType = HostType.Domain,
+            Host = "tenant1",
+            StoreType = StoreType.FineCollections
         });
     }
 
@@ -318,8 +354,32 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
     {
         _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId2)
         {
-            TenantName = "Tenant 2",
-            Host = "tenant2"
+            TenantName = "Tenant 2 (Finearts: Crafts)",
+            HostType = HostType.Domain,
+            Host = "tenant2",
+            StoreType = StoreType.FineCrafts
+        });
+    }
+
+    private void TenantSeed3 (ModelBuilder builder,Guid tenantId2)
+    {
+        _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId2)
+        {
+            TenantName = "Tenant 3 (Finearts: Arts)",
+            HostType = HostType.Domain,
+            Host = "finearts",
+            StoreType = StoreType.FineArts
+        });
+    }
+
+    private void TenantSeed4 (ModelBuilder builder,Guid tenantId2)
+    {
+        _ = builder.Entity<Tenant> ().HasData (new Tenant (tenantId2)
+        {
+            TenantName = "Tenant 4 (LifeStyles)",
+            HostType = HostType.Domain,
+            Host = "lifestyles",
+            StoreType = StoreType.LifeStyles
         });
     }
 

@@ -28,6 +28,11 @@ public class Product: BaseEntity
         get; set;
     }
 
+    public string? ProductOwner
+    {
+        get; set;
+    }
+
     [MaxLength (4000)]
     public string? Description
     {
@@ -62,7 +67,7 @@ public class Product: BaseEntity
         get; set;
     }
 
-    public string? SearchTag
+    public string? NameTag
     {
         get; set;
     }

@@ -14,17 +14,18 @@ public class DropDownListItems
 
     public static IEnumerable<SelectListItem> GetPostTypeList ()
     {
-        var listCountries = ListEnum.GetPostTypeList().OrderBy(a => a.Text).ToList();
+        var listCountries = ListEnum.GetPostTypeList().OrderBy( a => a.Text ).ToList();
 
         List<SelectListItem> objOfferTypeListItems = new();
 
         foreach ( var item in listCountries.ToList () )
         {
-            SelectListItem objItem = new ()
+            SelectListItem objItem = new()
             {
                 Text = item.Text,
                 Value = item.ValueID.ToString ( )
             };
+
             objOfferTypeListItems.Add (objItem);
         }
 
@@ -36,15 +37,17 @@ public class DropDownListItems
         var listCountries = ListEnum.GetAdminPostTypeList().ToList();
 
         List<SelectListItem> objOfferTypeListItems = new();
+
         SelectListItem objItem;
 
         foreach ( var item in listCountries.ToList () )
         {
-            objItem = new SelectListItem
+            objItem = new SelectListItem ()
             {
                 Text = item.Text,
                 Value = item.ValueID.ToString ()
             };
+
             objOfferTypeListItems.Add (objItem);
         }
 
@@ -54,16 +57,20 @@ public class DropDownListItems
     public static IEnumerable<SelectListItem> GetPageList ()
     {
         var listCountries = ListEnum.GetPublicPages().OrderBy(a => a.Text).ToList();
+
         List<SelectListItem> objCoutryListItems = new();
+
         foreach ( var item in listCountries )
         {
-            SelectListItem objItem = new ()
+            SelectListItem objItem = new()
             {
                 Text = item.Text,
-                Value = item.ValueID.ToString ( )
+                Value = item.ValueID.ToString ()
             };
+
             objCoutryListItems.Add (objItem);
         }
+
         return objCoutryListItems.AsEnumerable ();
     }
 
@@ -75,15 +82,17 @@ public class DropDownListItems
 
         foreach ( var item in listColumns )
         {
-            SelectListItem objItem = new ()
+            SelectListItem objItem = new()
             {
                 Text = item.Text,
-                Value = item.ValueID.ToString()
+                Value = item.ValueID.ToString ()
             };
+
             objCurrencyListItems.Add (objItem);
+
         }
 
-        SelectListItem objItem1 = new ()
+        SelectListItem objItem1 = new()
         {
             Text = "",
             Value = ""
@@ -96,22 +105,25 @@ public class DropDownListItems
 
     public static IEnumerable<SelectListItem> GetCurrencyList ()
     {
-        var listCurrency = ListEnum.GetCurrencyList().OrderBy(a => a.Text).ToList();
+        var listCurrency
+        = ListEnum.GetCurrencyList().OrderBy(a => a.Text).ToList();
 
-        List<SelectListItem> objCurrencyListItems = [new SelectListItem ( ) { Value = null,Text = "" }];
+        List<SelectListItem> objCurrencyListItems =
+        [ new SelectListItem ( ) { Value = null,Text = "" } ];
 
         foreach ( TenantVariableModel? item in listCurrency )
         {
             SelectListItem objItem = new()
             {
                 Text = item.Text,
-                Value = item.ValueID.ToString ( )
+                Value = item.ValueID.ToString ()
             };
 
             objCurrencyListItems.Add (objItem);
         }
 
         return objCurrencyListItems.AsEnumerable ();
+
     }
 
 
@@ -135,15 +147,20 @@ public class DropDownListItems
         return objCountryListItems.AsEnumerable ();
     }
 
-    public static IEnumerable<SelectListItem> GetSubCategoryList (IStringLocalizer<SharedResource> localizer)
+    public static IEnumerable<SelectListItem> GetSubCategoryList (IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
-        var listCategory = GetSelectList (TenantStoreHelper.GetSubCategoryList (localizer), "");
+        var listCategory
+        = GetSelectList (TenantStoreHelper.GetSubCategoryList ( localizer, storeType ), "");
+
         return listCategory;
     }
 
-    public static IEnumerable<SelectListItem> GetCategoryList (IStringLocalizer<SharedResource> localizer)
+    public static IEnumerable<SelectListItem> GetCategoryList
+    (IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
-        var listCategory = GetSelectList (TenantStoreHelper.GetCategoryList (localizer),"");
+        var listCategory
+        = GetSelectList (TenantStoreHelper.GetCategoryList (localizer, storeType), "");
+
         return listCategory;
     }
 
@@ -155,20 +172,21 @@ public class DropDownListItems
 
         listShowHideList.ForEach (a =>
         {
-            SelectListItem objItem = new ()
+            SelectListItem objItem = new()
             {
                 Text = a.Text.Trim(),
                 Value = a.ValueID.ToString().Trim()
             };
 
             objListItems.Add (objItem);
+
         });
 
         return objListItems.ToList ();
     }
 
     private static IEnumerable<SelectListItem>
-        GetSelectList (List<TenantVariableModel> listTenantVariableModel,string selectText)
+    GetSelectList (List<TenantVariableModel> listTenantVariableModel,string selectText)
     {
         List<SelectListItem> objList = [];
 
@@ -183,6 +201,7 @@ public class DropDownListItems
             };
 
             objList.Add (objItem);
+
         });
 
         objItem = new SelectListItem ()
@@ -195,11 +214,17 @@ public class DropDownListItems
         objList.Add (objItem);
 
         return objList.AsEnumerable<SelectListItem> ();
+
     }
 
-    public static string GetTextForCategoryId (int? categoryId,IStringLocalizer<SharedResource> localizer)
+    public static string GetTextForCategoryId
+    (int? categoryId,IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
-        var resultText = TenantStoreHelper.GetTextForCategoryId (categoryId, localizer);
+        var resultText
+        = TenantStoreHelper.GetTextForCategoryId ( categoryId, localizer, storeType );
+
         return resultText;
     }
+
+
 }

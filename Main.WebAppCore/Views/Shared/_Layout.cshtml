@@ -1,5 +1,6 @@
 ﻿@{
     var theme = TenantSetter.CurrentTenant.TenantThemeModel;
+    var store = TenantSetter.CurrentTenant.StoreType;
 }
 
 <!doctype html>
@@ -110,7 +111,8 @@
 
     <meta name="xsrf-token" content="@tokens.RequestToken" />
    
-    @RenderSection( "Styles",required: false )
+   @await RenderSectionAsync("Styles", required: false)
+
 </head>
 
 <body>
@@ -130,9 +132,11 @@
                 @RenderBody()
 
                 <div class="fixed-action-btn">
+
                     <a class="btn-floating" href="#pick" role="link">
                         <i class="glyphicon glyphicon-menu-up"></i>
                     </a>
+
                 </div>
 
             </main>
@@ -147,7 +151,7 @@
             
             @await Component.InvokeAsync("MainHeaderPanel")
 
-            @await Component.InvokeAsync("BottomHeaderPanel", new MenuObjectModel(SharedStringLocalizer))
+            @await Component.InvokeAsync("BottomHeaderPanel", new MenuObjectModel(SharedStringLocalizer,store))
 
         </header>
 
