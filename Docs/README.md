@@ -1,4 +1,4 @@
-# Fostering Education: (New Thoughts!)
+# Fostering Education: 
 I decided to contribute to the community; I have the experience. The experience is a journey with the communities I worked with in software and technology. I started in 2000. I learned from them; they are my work associates and affairs. I have learned from the academics; the journey of engineering started, the teachers. The actual area of technology and engineering is important for me to share and deliver in an impactful manner; it is resilient and sustainable. 
 To make it sustain; we do foster; that is education fostering.  Because knowledge and experience come with a price at that time. You can never buy the time (experience 26 years). Fostering the education & experience, transfer and adoption are very much required to deliver impactful results. Here is the plan I just prepared after researching and aligning with a plan of fostering education. I found that education fostering is very important. 
 
