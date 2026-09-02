@@ -28,7 +28,12 @@ public static class PageServiceMapping
                 FileContent = postDataModel.FileContent,
                 FilePath = postDataModel.FilePath,
                 Title = postDataModel.PostTitle,
-                Order = order
+                Order = order,
+                CategoryID = postDataModel.CategoryID,
+                SubCategoryID = postDataModel.SubCategoryID,
+                ProductOwner = postDataModel.ProductOwner,
+                WebsiteUrl = postDataModel.WebsiteUrl,
+                PanelID = panelDataModel.PanelID
             };
 
             listPosts.Add (post);

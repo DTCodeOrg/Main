@@ -38,7 +38,7 @@ public class PanelViewModel: BaseViewModel
         get; set;
     }
 
-    public int PanelPosition
+    public int? PanelPosition
     {
         get; set;
     }

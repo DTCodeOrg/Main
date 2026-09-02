@@ -26,14 +26,12 @@ public class Panel: BaseEntity
         get; set;
     }
 
-    [Required]
-    public int PanelPosition
+    public int? PanelPosition
     {
         get; set;
     }
 
-    [Required]
-    public string PanelTitle
+    public string? PanelTitle
     {
         get; set;
     }

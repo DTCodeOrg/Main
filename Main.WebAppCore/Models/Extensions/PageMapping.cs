@@ -85,7 +85,7 @@ public static class PageMapping
                 PanelID = pagePanelDataModel.PanelID,
                 PanelTitle = pagePanelDataModel.PanelTitle,
                 PanelTemplate = pagePanelDataModel.PanelTemplate,
-                PageName = ListEnum.GetPageDescription (pageDataModel.EnumPublicPage),
+                PageName = EnumDescription.GetDescription (pageDataModel.EnumPublicPage),
                 PanelPosition = pagePanelDataModel.PanelPosition
             };
 

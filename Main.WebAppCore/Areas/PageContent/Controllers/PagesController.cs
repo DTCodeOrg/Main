@@ -121,7 +121,6 @@ public class PagesController: BaseController
                     Area = "PageContent"
                 })
             });
-
         }
         catch ( Exception ex )
         {

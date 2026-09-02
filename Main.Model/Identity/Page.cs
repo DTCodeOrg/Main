@@ -60,13 +60,16 @@ public class Page: RootBaseEntity
         {
             if ( ListPanels.Any<Panel> () )
             {
-                int position = ListPanels.OrderBy ( a => a.PanelPosition ).Last().PanelPosition;
+                int? position = ListPanels.OrderBy ( a => a.PanelPosition ).Last().PanelPosition;
+
                 panel.PanelPosition = position + 1;
+
                 panel.PageID = PageID;
             }
             else
             {
                 panel.PanelPosition = 1;
+
                 panel.PageID = PageID;
             }
 

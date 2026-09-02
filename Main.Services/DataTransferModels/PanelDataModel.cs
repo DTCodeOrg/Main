@@ -32,12 +32,12 @@ public class PanelDataModel: DataModel
         get; set;
     }
 
-    public int PanelPosition
+    public int? PanelPosition
     {
         get; set;
     }
 
-    public string PanelTitle
+    public string? PanelTitle
     {
         get; set;
     }
