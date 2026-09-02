@@ -15,6 +15,7 @@ public class PostViewModel: BaseViewModel
     public PostViewModel (StoreType storeType,IStringLocalizer<SharedResource> localizer)
     {
         AVCategory = DropDownListItems.GetCategoryList (localizer,storeType);
+        AVSubCategory = DropDownListItems.GetSubCategoryList (localizer,storeType);
     }
 
 
@@ -22,6 +23,7 @@ public class PostViewModel: BaseViewModel
         int order,IStringLocalizer<SharedResource> localizer)
     {
         AVCategory = DropDownListItems.GetCategoryList (localizer,storeType);
+        AVSubCategory = DropDownListItems.GetSubCategoryList (localizer,storeType);
         EnumPostType = enumPostType;
         RootID = rootId;
         ImageFileID = imageId;
@@ -63,6 +65,11 @@ public class PostViewModel: BaseViewModel
         get; set;
     }
 
+    public int SubCategoryID
+    {
+        get; set;
+    }
+
 
     public string GetTextCategory ()
     {
@@ -79,8 +86,28 @@ public class PostViewModel: BaseViewModel
         return CategoryText;
     }
 
+    public string GetTextSubCategory ()
+    {
+        var CategoryText = string.Empty;
+
+        AVSubCategory.ToList ().ForEach (x =>
+        {
+            if ( x.Value == SubCategoryID.ToString () )
+            {
+                CategoryText = x.Text;
+            }
+        });
+
+        return CategoryText;
+    }
+
 
     public IEnumerable<SelectListItem> AVCategory
+    {
+        get; set;
+    }
+
+    public IEnumerable<SelectListItem> AVSubCategory
     {
         get; set;
     }
@@ -94,18 +121,26 @@ public class PostViewModel: BaseViewModel
         }
     }
 
+    public string SubCategoryName
+    {
+        get
+        {
+            return GetTextSubCategory ();
+        }
+    }
+
 
     public byte[]? ImageFileContent
     {
         get; set;
     }
 
-    public string FilePath
+    public string? FilePath
     {
         get; set;
     }
 
-    public string PostTitle
+    public string? PostTitle
     {
         get; set;
     }

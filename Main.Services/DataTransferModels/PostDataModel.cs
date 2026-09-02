@@ -45,22 +45,33 @@ public class PostDataModel: DataModel
         get; set;
     }
 
+    public int? SubCategoryID
+    {
+        get; set;
+    }
+
     public byte[]? FileContent
     {
         get; set;
     }
 
-    public string FilePath
+    public string? FilePath
     {
         get; set;
     }
 
-    public string PostTitle
+    public string? ProductOwner
     {
         get; set;
     }
 
-    public string PostDescription
+
+    public string? PostTitle
+    {
+        get; set;
+    }
+
+    public string? PostDescription
     {
         get; set;
     }

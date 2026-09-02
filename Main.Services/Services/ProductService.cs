@@ -55,7 +55,7 @@ public class ProductService: IProductService
         return await _ProductRepository.UpdateProduct (productEntity);
     }
 
-    public async Task<string> DeleteProductImage (int id,int postId)
+    public async Task<string?> DeleteProductImage (int id,int postId)
     {
         return await _ProductRepository.DeleteProductImage (id,postId);
     }

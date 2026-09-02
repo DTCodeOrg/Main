@@ -39,8 +39,7 @@ public class PanelViewModel: BaseViewModel
 
 
     [Display (Name = "Panel Title")]
-    [Required (ErrorMessage = "Panel title is required!")]
-    public string PanelTitle
+    public string? PanelTitle
     {
         get; set;
     }

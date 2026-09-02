@@ -1,13 +1,11 @@
-﻿@model System.Byte[]
+﻿@model string?
 
 <div class="image-content" style="text-align:center;" draggable="false">
     <div title="Product Image" draggable="false">
         <a class="thumbnail">
             @if (Model != null && Model.Length > 1)
             {
-                string imageBase64 = Convert.ToBase64String(Model);
-                string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);
-                <img src="@imageSrc"
+                <img src="@Model"
                      class="img-responsive new-post-mobile-image"
                      alt="Product image"
                      style="max-height:84px;height:84px;max-width:140px;width:140px;"

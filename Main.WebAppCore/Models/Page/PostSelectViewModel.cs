@@ -8,13 +8,21 @@ public class PostSelectViewModel: BaseViewModel
     {
     }
 
-
     public PostSelectViewModel (EnumPostType enumPostType,int rootId,int imageId,int order)
     {
         EnumPostType = enumPostType;
         RootID = rootId;
         ImageFileID = imageId;
         ImageOrderID = order;
+
+        if ( EnumPostType == EnumPostType.Product )
+        {
+            EnumPostTypeName = "Product";
+        }
+        else if ( EnumPostType == EnumPostType.AdSpace )
+        {
+            EnumPostTypeName = "Ad Post";
+        }
     }
 
     public int PanelPostID
@@ -22,8 +30,12 @@ public class PostSelectViewModel: BaseViewModel
         get; set;
     }
 
-
     public EnumPostType EnumPostType
+    {
+        get; set;
+    }
+
+    public string EnumPostTypeName
     {
         get; set;
     }
@@ -34,36 +46,38 @@ public class PostSelectViewModel: BaseViewModel
         get; set;
     }
 
-
     public int ImageOrderID
     {
         get; set;
     }
-
 
     public int ImageFileID
     {
         get; set;
     }
 
-    public string CategoryName
+    public string? CategoryName
     {
         get; set;
     }
 
+    public string? SubCategoryName
+    {
+        get; set;
+    }
 
     public byte[]? ImageFileContent
     {
         get; set;
     }
 
-    public string FilePath
+    public string? FilePath
     {
         get; set;
     }
 
 
-    public string PostTitle
+    public string? PostTitle
     {
         get; set;
     }
@@ -74,17 +88,15 @@ public class PostSelectViewModel: BaseViewModel
         get; set;
     }
 
-    public string Currency
+    public string? Currency
     {
         get; set;
     }
-
 
     public int PanelID
     {
         get; set;
     }
-
 
     public int PageID
     {

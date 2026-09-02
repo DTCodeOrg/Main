@@ -76,31 +76,32 @@ public class DropDownListItems
 
     public static IEnumerable<SelectListItem> GetPanelTempletList ()
     {
-        var listColumns = ListEnum.GetPanelTempletList().OrderBy(a => a.Text).ToList();
+        var listColumns = ListEnum.GetPanelTempletList().OrderBy(a => a.ValueID).ToList();
 
-        List<SelectListItem> objCurrencyListItems = new();
+        List<SelectListItem> objPanelTempletListItems = new();
+
+        var objItem = new SelectListItem ()
+        {
+            Text = "",
+            Value = "",
+            Selected = true
+        };
+
+        objPanelTempletListItems.Add (objItem);
 
         foreach ( var item in listColumns )
         {
-            SelectListItem objItem = new()
+            objItem = new SelectListItem ()
             {
                 Text = item.Text,
                 Value = item.ValueID.ToString ()
             };
 
-            objCurrencyListItems.Add (objItem);
+            objPanelTempletListItems.Add (objItem);
 
         }
 
-        SelectListItem objItem1 = new()
-        {
-            Text = "",
-            Value = ""
-        };
-
-        objCurrencyListItems.Add (objItem1);
-
-        return objCurrencyListItems.AsEnumerable ();
+        return objPanelTempletListItems.AsEnumerable ();
     }
 
     public static IEnumerable<SelectListItem> GetCurrencyList ()

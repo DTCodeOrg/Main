@@ -26,8 +26,8 @@ public class ProductImageFile: BaseEntity
         get; set;
     }
 
-    [Required]
-    public string FiePath
+
+    public string? FilePath
     {
         get; set;
     }

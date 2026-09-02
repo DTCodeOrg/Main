@@ -40,7 +40,7 @@ public class ProductRepository: IProductRepository
         return result > 0;
     }
 
-    public async Task<string> DeleteProductImage (int id,int productId)
+    public async Task<string?> DeleteProductImage (int id,int productId)
     {
         var image = await _tenantContext.ProductImageFiles.FirstOrDefaultAsync <ProductImageFile>
                 ( a => a.ProductImageFileID == id && a.ProductID == productId && a.IsActive ==  true );
@@ -52,7 +52,7 @@ public class ProductRepository: IProductRepository
 
             if ( result > 0 )
             {
-                return image.FiePath;
+                return image.FilePath;
             }
         }
 

@@ -36,6 +36,8 @@ public static class RegisterRepositoryExtensions
 
         _ = services.AddScoped<IThemeRepository,ThemeRepository> ();
 
+        _ = services.AddScoped<IPagePanelSettingsRepository,PagePanelSettingsRepository> ();
+
         return services;
 
     }

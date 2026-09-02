@@ -9,8 +9,8 @@ public static class PageServiceMapping
 {
     public static Panel CreatePanelEntity (PanelDataModel panelDataModel)
     {
-        Panel panelEntity = new( panelDataModel.PageID, panelDataModel.PanelTemplate,
-            panelDataModel.PanelTitle );
+        Panel panelEntity =
+        new ( panelDataModel.PageID, panelDataModel.PanelTemplate, panelDataModel.PanelTitle );
 
         return panelEntity;
     }
@@ -20,11 +20,10 @@ public static class PageServiceMapping
         List<Post>  listPosts = [];
         Post post;
         int order = 1;
+
         panelDataModel.ListPosts.ForEach (postDataModel =>
         {
-            post = new Post (postDataModel.EnumPostType,
-            postDataModel.Price!,
-            postDataModel.RootID)
+            post = new Post (postDataModel.EnumPostType,postDataModel.Price!,postDataModel.RootID)
             {
                 FileContent = postDataModel.FileContent,
                 FilePath = postDataModel.FilePath,
@@ -48,8 +47,7 @@ public static class PageServiceMapping
             return new List<PostDataModel> ();
         }
 
-        List<PostDataModel> listPanelPostDataModel
-        = [];
+        List<PostDataModel> listPanelPostDataModel = [];
 
         PostDataModel panelPostDataModel;
 
@@ -57,22 +55,21 @@ public static class PageServiceMapping
 
         listProducts.ForEach (productEntity =>
         {
-            productEntity
-            .ListImageFiles
-            .ToList ()
-            .ForEach (file =>
+            productEntity.ListImageFiles.ToList ().ForEach (file =>
             {
                 panelPostDataModel = new PostDataModel
                 {
-                    CategoryID = productEntity.CategoryID,
                     PanelPostID = id,
-                    RootID = productEntity.ProductID,
                     EnumPostType = EnumPostType.Product,
+                    RootID = productEntity.ProductID,
+                    CategoryID = productEntity.CategoryID,
+                    SubCategoryID = productEntity.SubCategoryID,
                     Price = productEntity.Price,
                     PostTitle = productEntity.ProductName,
+                    ProductOwner = productEntity.ProductOwner,
                     FileContent = file.FileContent!,
                     ImageFileID = file.ProductImageFileID,
-                    FilePath = file.FiePath
+                    FilePath = file.FilePath
                 };
 
                 id += 1;
@@ -102,24 +99,27 @@ public static class PageServiceMapping
             {
                 panelDataModel = new PanelDataModel
                 {
+                    PageID = panel.PageID,
                     PanelID = panel.PanelID,
                     PanelTemplate = panel.PanelTemplate,
                     PanelTitle = panel.PanelTitle,
-                    PageID = panel.PageID,
                     PanelPosition = panel.PanelPosition
                 };
 
                 panel.ListPosts.ToList ().ForEach (panelPost =>
                 {
-                    postDataModel = new PostDataModel
+                    postDataModel = new PostDataModel ()
                     {
                         PanelPostID = panelPost.PostID,
-                        PostTitle = panelPost.Title ?? "",
+                        PostTitle = panelPost.Title,
+                        ProductOwner = panelPost.ProductOwner,
                         Price = panelPost.Price,
-                        FileContent = panelPost.FileContent!,
-                        FilePath = panelPost.FilePath! ?? string.Empty,
+                        FileContent = panelPost.FileContent,
+                        FilePath = panelPost.FilePath,
                         PostOrder = panelPost.Order,
-                        PageID = panelDataModel.PageID
+                        PageID = panelDataModel.PageID,
+                        CategoryID = panelPost.CategoryID,
+                        SubCategoryID = panelPost.SubCategoryID
                     };
 
                     panelDataModel.CreatePost (postDataModel);

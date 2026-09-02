@@ -79,7 +79,7 @@ public static class ProductServiceMapping
             productImageFile = new ProductImageFile ()
             {
                 ProductID = fileDataModel.ProductID,
-                FiePath = fileDataModel.FilePath,
+                FilePath = fileDataModel.FilePath,
                 FileContent = fileDataModel.FileContent
             };
 
@@ -108,7 +108,7 @@ public static class ProductServiceMapping
                 {
                     ProductImageFileID = fileEntity.ProductImageFileID,
                     FileContent = fileEntity.FileContent!,
-                    FilePath = fileEntity.FiePath,
+                    FilePath = fileEntity.FilePath,
                     ProductID = fileEntity.ProductID
                 };
 
@@ -170,7 +170,7 @@ public static class ProductServiceMapping
             fileEntity = new ProductImageFile ()
             {
                 ProductID = productEntity.ProductID,
-                FiePath = fileDataModel.FilePath
+                FilePath = fileDataModel.FilePath
             };
 
             listProductImageFileEntity.Add (fileEntity);

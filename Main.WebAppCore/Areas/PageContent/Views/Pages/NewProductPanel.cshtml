@@ -14,13 +14,13 @@
     <h4 class="card-title">NEW PANEL (PRODUCTS)</h4>
 
     <form id ="frmMain">
-        <div class="gap"></div>
 
-   
+        <div class="gap"></div>
   
         @Html.HiddenFor( a => a.PageID )
 
         <div class="row">
+
             <div class="input-field col-md-8">
 
                 @Html.LabelFor( a => a.PanelTemplate )
@@ -44,9 +44,7 @@
 
                 @Html.EditorFor(a => a.PanelTitle, 
                                 new { htmlAttributes = new { @class = "fff" } })
-
-                @Html.ValidationMessageFor(m => m.PanelTitle,
-                                "", new { @class = "text-danger" })
+              
             </div>
 
         </div>
@@ -73,13 +71,13 @@
             DROP YOUR PRODUCTS HERE:
         </span>
 
-        <div id="dropHereContainer" class="col-md-2 card-form">
+        <div id="dropHereContainer" class="col-md-4 card-form">
            
         </div>
 
 
         <!-- Right Column -->
-        <div id="dropFromContainer" class="col-md-10 card-form">
+        <div id="dropFromContainer" class="col-md-8 card-form">
     @{
 
         foreach (var postViewModel in Model.ListSelectPosts)
@@ -91,9 +89,13 @@
                         margin-bottom:15px;">
 
                 @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/_SelectImage.cshtml",postViewModel )
-                            
+                  
                 <div class="text-bg-info" draggable="false"> 
-                        @postViewModel.CategoryName
+                        @postViewModel.EnumPostTypeName
+                </div>
+
+                <div class="text-bg-info" draggable="false"> 
+                        @postViewModel.CategoryName | @postViewModel.SubCategoryName
                 </div>
 
                 <div draggable="false">

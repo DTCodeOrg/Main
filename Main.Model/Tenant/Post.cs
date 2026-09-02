@@ -48,6 +48,15 @@ public class Post: BaseEntity
         get; set;
     }
 
+    public int? CategoryID
+    {
+        get; set;
+    }
+
+    public int? SubCategoryID
+    {
+        get; set;
+    }
 
     public byte[]? FileContent
     {
@@ -60,8 +69,12 @@ public class Post: BaseEntity
         get; set;
     }
 
-    [Required]
-    public string Title
+    public string? Title
+    {
+        get; set;
+    }
+
+    public string? ProductOwner
     {
         get; set;
     }

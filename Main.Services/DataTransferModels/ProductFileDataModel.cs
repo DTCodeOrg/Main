@@ -20,7 +20,7 @@ public class ProductFileDataModel: DataModel
         get; set;
     }
 
-    public string FilePath
+    public string? FilePath
     {
         get; set;
     }
