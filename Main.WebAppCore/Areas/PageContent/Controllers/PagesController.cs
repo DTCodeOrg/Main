@@ -61,18 +61,15 @@ public class PagesController: BaseController
     [Authorize (Policy = "TenantAdmin")]
     public async Task<IActionResult> NewProductPanel (int id)
     {
-        PanelViewModel pagePanelViewModel = new();
+        PanelViewModel pagePanelViewModel = new ();
 
         List<PostDataModel> listSelectProductsDataModel =
         await _pageService.GetSelectProducts ();
 
-        pagePanelViewModel.ListSelectPosts =
-            PageMapping.MapSelectPostViewModel
-            (listSelectProductsDataModel,AppSettings.Current.EnumCurrency,_localizer,_tenantSetter.CurrentTenant.StoreType);
+        pagePanelViewModel.ListSelectPosts = PageMapping.MapSelectPostViewModel (listSelectProductsDataModel,AppSettings.Current.EnumCurrency,_localizer,_tenantSetter.CurrentTenant.StoreType);
 
         pagePanelViewModel.PageID = id;
         pagePanelViewModel.PanelTitle = "";
-        pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuadruple;
 
         return View (pagePanelViewModel);
     }

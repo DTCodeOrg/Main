@@ -11,14 +11,20 @@ public class PanelViewModel: BaseViewModel
     public PanelViewModel ()
     {
         ListSelectPosts = new List<PostSelectViewModel> ();
+
         ListPosts = new List<PostViewModel> ();
+
         AVPanelTemplate = DropDownListItems.GetPanelTempletList ();
     }
 
     public PanelViewModel (EnumPanelTemplate enumPanelTemplate)
     {
         ListPosts = new List<PostViewModel> ();
+
+        ListSelectPosts = new List<PostSelectViewModel> ();
+
         AVPanelTemplate = DropDownListItems.GetPanelTempletList ();
+
         PanelTemplate = enumPanelTemplate;
     }
 

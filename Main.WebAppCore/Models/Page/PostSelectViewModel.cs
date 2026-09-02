@@ -6,6 +6,14 @@ public class PostSelectViewModel: BaseViewModel
 {
     public PostSelectViewModel ()
     {
+        if ( EnumPostType == EnumPostType.Product )
+        {
+            EnumPostTypeName = "Product";
+        }
+        else if ( EnumPostType == EnumPostType.AdSpace )
+        {
+            EnumPostTypeName = "Ad Post";
+        }
     }
 
     public PostSelectViewModel (EnumPostType enumPostType,int rootId,int imageId,int order)
@@ -35,7 +43,7 @@ public class PostSelectViewModel: BaseViewModel
         get; set;
     }
 
-    public string EnumPostTypeName
+    public string? EnumPostTypeName
     {
         get; set;
     }
@@ -78,6 +86,11 @@ public class PostSelectViewModel: BaseViewModel
 
 
     public string? PostTitle
+    {
+        get; set;
+    }
+
+    public string? ProductOwner
     {
         get; set;
     }

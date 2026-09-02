@@ -13,17 +13,20 @@ public class PageService: IPageService
     public readonly IAdminPostRepository _adminPostRepository;
     public readonly IPageRepository _pageRepository;
     public readonly IPanelRepository _panelRepository;
+    public readonly IPagePanelSettingsRepository _pagePanelSettingsRepository;
 
     public PageService (
         IProductRepository productRepository,
         IAdminPostRepository adminPostRepository,
         IPageRepository pageRepository,
-        IPanelRepository panelRepository)
+        IPanelRepository panelRepository,
+        IPagePanelSettingsRepository pagePanelSettingsRepository)
     {
         _productRepository = productRepository;
         _pageRepository = pageRepository;
         _adminPostRepository = adminPostRepository;
         _panelRepository = panelRepository;
+        _pagePanelSettingsRepository = pagePanelSettingsRepository;
     }
 
     public async Task<bool> CreateNewPanel (PanelDataModel pagePanelDataModel)
@@ -39,7 +42,9 @@ public class PageService: IPageService
 
     public async Task<List<PostDataModel>> GetSelectProducts ()
     {
-        List<Product> listProducts = await _productRepository.GetSelectProducts (  );
+        List<Product> listProducts
+        = await _pagePanelSettingsRepository.GetSelectProducts ();
+
         List<PostDataModel> listPanelPostDataModel = PageServiceMapping.GetPostDataModels( listProducts );
 
         return listPanelPostDataModel;

@@ -60,12 +60,12 @@ public class PostViewModel: BaseViewModel
     }
 
 
-    public int CategoryID
+    public int? CategoryID
     {
         get; set;
     }
 
-    public int SubCategoryID
+    public int? SubCategoryID
     {
         get; set;
     }

@@ -31,7 +31,8 @@ public static class PageMapping
         return listPageDisplayViewModels;
     }
 
-    public static List<PostSelectViewModel> MapSelectPostViewModel (List<PostDataModel> listSelectProductsDataModels,Currency currency,IStringLocalizer<SharedResource> localizer,StoreType storeType)
+    public static List<PostSelectViewModel> MapSelectPostViewModel
+    (List<PostDataModel> listSelectProductsDataModels,Currency currency,IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
         if ( listSelectProductsDataModels == null )
         {
@@ -49,10 +50,22 @@ public static class PageMapping
             dataModel.ImageOrderID)
             {
                 ImageFileContent = dataModel.FileContent,
+
                 FilePath = dataModel.FilePath,
-                CategoryName = DropDownListItems.GetTextForCategoryId
-                (dataModel.CategoryID,localizer,storeType)
+
+                CategoryName = DropDownListItems.GetTextForCategoryId (dataModel.CategoryID,localizer,storeType),
+
+                SubCategoryName
+                = DropDownListItems.GetTextForCategoryId (dataModel.SubCategoryID,localizer,storeType),
+
+                EnumPostTypeName = EnumDescription.GetDescription (dataModel.EnumPostType),
+
+                PostTitle = dataModel.PostTitle,
+
+                Price = dataModel.Price
             };
+
+            listPostSelectViewModels.Add (postSelectViewModel);
         });
 
         return listPostSelectViewModels;
@@ -70,7 +83,7 @@ public static class PageMapping
             {
                 PageID = pagePanelDataModel.PageID,
                 PanelID = pagePanelDataModel.PanelID,
-                PanelTitle = pagePanelDataModel.PanelTitle ?? "",
+                PanelTitle = pagePanelDataModel.PanelTitle,
                 PanelTemplate = pagePanelDataModel.PanelTemplate,
                 PageName = ListEnum.GetPageDescription (pageDataModel.EnumPublicPage),
                 PanelPosition = pagePanelDataModel.PanelPosition
@@ -94,12 +107,21 @@ public static class PageMapping
 
                     PageID = panelViewModel.PageID,
 
-                    CategoryID
-                        = panelPostDataModel.CategoryID.HasValue ? panelPostDataModel.CategoryID.Value : 0,
+                    CategoryID = panelPostDataModel.CategoryID,
+
+                    SubCategoryID = panelPostDataModel.SubCategoryID,
 
                     PanelID = panelViewModel.PanelID,
 
-                    PostTitle = panelPostDataModel.PostTitle
+                    PostTitle = panelPostDataModel.PostTitle,
+
+                    PostDescription = panelPostDataModel.PostDescription,
+
+                    EnumPostType = panelPostDataModel.EnumPostType,
+
+                    RootID = panelPostDataModel.RootID,
+
+                    ImageOrderID = panelPostDataModel.ImageOrderID
                 };
 
                 panelViewModel.CreatePanelPost (postViewModel);
