@@ -20,16 +20,17 @@ public class PanelRepository: IPanelRepository
 
     public async Task<bool> DeletePanelAsync (int panelId)
     {
-        Panel? panel = await _tenantContext.Panels.FindAsync ( panelId );
+        Panel? panel = _tenantContext.Panels.ToList().FirstOrDefault(p => p.PanelID == panelId);
 
+        int result = 0;
         if ( panel != null )
         {
             _ = _tenantContext.Panels.Remove (panel);
-            int result = await _tenantContext.SaveChangesAsync();
-            return result > 0;
+            result = await _tenantContext.SaveChangesAsync ();
+
         }
 
-        return false;
+        return result > 0;
     }
 }
 

@@ -35,58 +35,58 @@ public enum EnumPublicPage
     AdsDetail = 3,
 
     [Description("Category Button Page")]
-    CategoryButtonMarket = 6,
+    CategoryButtonMarket = 4,
 
     [Description("Category Dropdown Page")]
-    SubCategoryDropdownMarket = 7,
+    SubCategoryDropdownMarket = 5,
 
     [Description("Special Button Page")]
-    SpecialMarketButton = 8,
+    SpecialMarketButton = 6,
 
     [Description("News/Notice Page")]
-    NoticeAndNews = 9,
+    NoticeAndNews = 7,
 
     [Description("Resource Page")]
-    Resources = 10,
+    Resources = 8,
 
     [Description("Login Page")]
-    Login = 11,
+    Login = 9,
 
     [Description("Register Page")]
-    Signup = 12
+    Signup = 10
 }
 
 public enum EnumPanelTemplate
 {
-    [Description("Product: (Double 2 Products)")]
-    ProductDouble = 9,
+    [Description("Single Panel (1 Product)")]
+    ProductSingle = 1,
 
-    [Description("Product: (Quard 4 Products)")]
-    ProductQuard = 1,
+    [Description("Double Panel (2 Products)")]
+    ProductDouble = 2,
 
-    [Description("Product: (Triangle 3 Products)")]
-    ProductTriangle = 2,
+    [Description("Triangle Panel (3 Products)")]
+    ProductTriangle = 3,
 
-    [Description("Product: (Sixer 6 Products)")]
-    ProductSixer = 3,
+    [Description("Quadruple Panel (4 Products)")]
+    ProductQuadruple = 4,
 
-    [Description("Product: (Popular Products)")]
-    ProductMostPopular = 4,
+    [Description("Sixer Panel (6 Products)")]
+    ProductSixer = 5,
 
-    [Description("Product: (Market Page)")]
-    MarketPanel = 5,
+    [Description("Panel (Popular Products)")]
+    ProductMostPopular = 6,
+
+    [Description("Panel (Product Market)")]
+    MarketPanel = 7,
 
     [Description("Product: (Similar Products Panel)")]
-    SimilarItemsMarketPanel = 6,
+    SimilarItemsMarketPanel = 8,
 
-    [Description("Admin: (Banner Carousel: 4 Ad Spases)")]
-    AdminBannerCarousel = 7,
+    [Description("Fixed Banner (1 Ad Spases)")]
+    AdminSingleBanner = 9,
 
-    [Description("Admin: (Fixed Banner: 1 Ad Spases)")]
-    AdminSingleBanner = 8,
-
-    [Description("Single Product Panel (1 Product)")]
-    ProductSingle = 10
+    [Description("Fixed Banner (4 Ad Spases)")]
+    AdminBannerCarousel = 10
 }
 
 
@@ -199,10 +199,6 @@ public enum EnumStoreMenu
     Stationery = 24
 }
 
-public enum EnumStoreSubMenu
-{
-}
-
 public enum EnumPostCount
 {
     [Description("1")]
@@ -226,16 +222,20 @@ public enum EnumIsValidTemplate
     [Description("Template can display in panel")]
     ExactMatchValid = 1,
 
-    [Description("Template has more posts than required. Template needs moderating!")]
+    [Description("Template has more posts than required.")]
     GreaterMatchValid = 2,
 
+    [Description("Template has less posts than required.")]
+    LesserMatchValid = 3,
+
     [Description("Template has wrong configuration!")]
-    Invalid = 3
+    Invalid = 4
 }
 
 public enum Country
 {
-    Bangladesh = 1
+    Bangladesh = 1,
+    USA = 2
 }
 
 public enum EnumSpecialMarket

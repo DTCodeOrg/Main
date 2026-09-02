@@ -44,28 +44,15 @@ public static class PageMapping
 
         listSelectProductsDataModels.ForEach (dataModel =>
         {
-            postSelectViewModel = new PostSelectViewModel (dataModel.EnumPostType,
-                dataModel.RootID,dataModel.ImageFileID,dataModel.ImageOrderID)
+            postSelectViewModel =
+            new PostSelectViewModel (dataModel.EnumPostType,dataModel.RootID,dataModel.ImageFileID,
+            dataModel.ImageOrderID)
             {
                 ImageFileContent = dataModel.FileContent,
-
                 FilePath = dataModel.FilePath,
-
-                CategoryName = DropDownListItems.GetCategoryList (localizer,storeType).ToList ()
-                    .FirstOrDefault (a => a.Value == ( dataModel.CategoryID.HasValue
-                    ? dataModel.CategoryID.Value.ToString () : "" ))!.Text,
-
-                PostTitle = dataModel.PostTitle,
-
-                Price = dataModel.Price,
-
-                Currency = ListEnum.GetCurrencyDescription (currency),
-
-                PanelPostID = dataModel.PanelPostID
+                CategoryName = DropDownListItems.GetTextForCategoryId
+                (dataModel.CategoryID,localizer,storeType)
             };
-
-            listPostSelectViewModels.Add (postSelectViewModel);
-
         });
 
         return listPostSelectViewModels;

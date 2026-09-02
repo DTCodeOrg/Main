@@ -72,7 +72,7 @@ public class PagesController: BaseController
 
         pagePanelViewModel.PageID = id;
         pagePanelViewModel.PanelTitle = "";
-        pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuard;
+        pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuadruple;
 
         return View (pagePanelViewModel);
     }

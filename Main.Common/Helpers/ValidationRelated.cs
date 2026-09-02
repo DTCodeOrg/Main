@@ -69,7 +69,7 @@ public static class ValidationRelated
                     return EnumIsValidTemplate.GreaterMatchValid;
                 }
                 break;
-            case EnumPanelTemplate.ProductQuard:
+            case EnumPanelTemplate.ProductQuadruple:
                 if ( ( int ) enumPostCount == countActual )
                 {
                     return EnumIsValidTemplate.ExactMatchValid;
@@ -89,6 +89,16 @@ public static class ValidationRelated
                     return EnumIsValidTemplate.GreaterMatchValid;
                 }
                 break;
+            case EnumPanelTemplate.ProductSingle:
+                if ( ( int ) enumPostCount == countActual )
+                {
+                    return EnumIsValidTemplate.ExactMatchValid;
+                }
+                else if ( ( int ) enumPostCount > countActual )
+                {
+                    return EnumIsValidTemplate.GreaterMatchValid;
+                }
+                break;
             default:
                 return EnumIsValidTemplate.Invalid;
         }
@@ -98,11 +108,7 @@ public static class ValidationRelated
 
     public static int GetPostCount (EnumPanelTemplate panelTemplate)
     {
-        if ( panelTemplate == EnumPanelTemplate.AdminSingleBanner )
-        {
-            return ( int ) EnumPostCount.PostCountOne;
-        }
-        else if ( panelTemplate == EnumPanelTemplate.ProductSingle )
+        if ( panelTemplate == EnumPanelTemplate.AdminSingleBanner || panelTemplate == EnumPanelTemplate.ProductSingle )
         {
             return ( int ) EnumPostCount.PostCountOne;
         }
@@ -118,7 +124,7 @@ public static class ValidationRelated
         {
             return ( int ) EnumPostCount.PostCountThree;
         }
-        else if ( panelTemplate == EnumPanelTemplate.ProductQuard )
+        else if ( panelTemplate == EnumPanelTemplate.ProductQuadruple )
         {
             return ( int ) EnumPostCount.PostCountFour;
         }
