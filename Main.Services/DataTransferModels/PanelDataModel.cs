@@ -54,11 +54,13 @@ public class PanelDataModel: DataModel
 
     public void CreatePost (PostDataModel panelPost)
     {
+        if ( panelPost == null )
+        {
+            return;
+        }
+
         ListPosts ??= new List<PostDataModel> ();
 
-        if ( panelPost != null )
-        {
-            ListPosts.Add (panelPost);
-        }
+        ListPosts.Add (panelPost);
     }
 }

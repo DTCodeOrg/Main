@@ -4,7 +4,6 @@
     ViewData["Title"] = "Add Product Template";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
-    
 }
 
 <div class="container">
@@ -14,13 +13,13 @@
     <h4 class="card-title">NEW PANEL (PRODUCTS)</h4>
 
     <form id ="frmMain">
-
         <div class="gap"></div>
+
+   
   
         @Html.HiddenFor( a => a.PageID )
 
         <div class="row">
-
             <div class="input-field col-md-8">
 
                 @Html.LabelFor( a => a.PanelTemplate )
@@ -44,7 +43,9 @@
 
                 @Html.EditorFor(a => a.PanelTitle, 
                                 new { htmlAttributes = new { @class = "fff" } })
-              
+
+                @Html.ValidationMessageFor(m => m.PanelTitle,
+                                "", new { @class = "text-danger" })
             </div>
 
         </div>
@@ -71,13 +72,13 @@
             DROP YOUR PRODUCTS HERE:
         </span>
 
-        <div id="dropHereContainer" class="col-md-4 card-form">
+        <div id="dropHereContainer" class="col-md-2 card-form">
            
         </div>
 
 
         <!-- Right Column -->
-        <div id="dropFromContainer" class="col-md-8 card-form">
+        <div id="dropFromContainer" class="col-md-10 card-form">
     @{
 
         foreach (var postViewModel in Model.ListSelectPosts)
@@ -89,13 +90,9 @@
                         margin-bottom:15px;">
 
                 @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/_SelectImage.cshtml",postViewModel )
-                  
+                            
                 <div class="text-bg-info" draggable="false"> 
-                        @postViewModel.EnumPostTypeName
-                </div>
-
-                <div class="text-bg-info" draggable="false"> 
-                        @postViewModel.CategoryName | @postViewModel.SubCategoryName
+                        @postViewModel.SubCategoryName
                 </div>
 
                 <div draggable="false">
@@ -131,7 +128,7 @@
 
     <script>
     (function () {
-        'use strict';
+         'use strict';
 
         const notify = $.notify;
         const savePanelsurl = '@Url.Action("SaveNewProductPanel", "Pages", new { Area = "PageContent" })';
@@ -143,8 +140,9 @@
         function getAntiForgeryToken() {
             return $('input[name="__RequestVerificationToken"]').val() || '';
         }
-
+       
         function getData() {
+
             const panelTitle = document.getElementById("PanelTitle")?.value || '';
             const pageId = parseInt (document.getElementById("PageID")?.value, 0) || 0;
             const panelTemplateId = parseInt (document.getElementById("PanelTemplate")?.value, 0) || 0;
@@ -207,15 +205,6 @@
             e.dataTransfer.dropEffect = 'move';
         }
 
-        
-        function appendCloneToTarget(target, sourceElement, originalId) {
-            const clone = sourceElement.cloneNode(true);
-            clone.removeAttribute('id');
-            clone.setAttribute('data-original-id', originalId);
-            target.appendChild(clone);
-            numbers.push(originalId);
-        }
-
         function arrayPush(event, element, id) {
             const moved = element;
             moved.removeAttribute('id');
@@ -241,33 +230,30 @@
             const isCopy = (event.dataTransfer.dropEffect === 'copy') || event.ctrlKey;
 
             if (isCopy) {
-                appendCloneToTarget(event.currentTarget, element, id);
                 return;
             }
-            
-            const elementDdl = document.getElementById("PanelTemplate");
-
-            arrayPush(event, element, id);
-
+            else 
+            {
+                 arrayPush(event, element,  id);
+            }
         }
 
         
         $(function () {
 
-                if (btnSave) {
-                    btnSave.removeEventListener('click', savePanels);
-                    btnSave.addEventListener('click', savePanels);
-                }
+            if (btnSave) {
+                btnSave.removeEventListener('click', savePanels);
+                btnSave.addEventListener('click', savePanels);
+            }
 
-                if (copyZone) {
-                    copyZone.removeEventListener('dragover', onDragOver);
-                    copyZone.addEventListener('dragover', onDragOver);
+            if (copyZone) {
+                copyZone.removeEventListener('dragover', onDragOver);
+                copyZone.addEventListener('dragover', onDragOver);
 
-                    copyZone.removeEventListener('drop', handleDrop);
-                    copyZone.addEventListener('drop', handleDrop);
-                }
-         });
+                copyZone.removeEventListener('drop', handleDrop);
+                copyZone.addEventListener('drop', handleDrop);
+            }
+        });
     })();
-
     </script>
 }

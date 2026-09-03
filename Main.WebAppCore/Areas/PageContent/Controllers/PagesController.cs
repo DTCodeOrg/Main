@@ -42,7 +42,7 @@ public class PagesController: BaseController
         try
         {
             List<PageDisplayDataModel> listPageDataModel
-            = await _pageService.GetAllPages(_tenantSetter.CurrentTenant.TenantName);
+            = await _pageService.GetAllPages ( _tenantSetter.CurrentTenant.TenantName );
 
             List<PageDisplayViewModel> listPageViewModel
             = PageMapping.PageDisplayMapping ( listPageDataModel, _tenantSetter.CurrentTenant.TenantName );
@@ -51,9 +51,8 @@ public class PagesController: BaseController
         }
         catch ( Exception ex )
         {
-            {
-                return BadRequest (ex.Message);
-            }
+            _logger.LogError (ex,"Error occurred while fetching pages.");
+            return BadRequest (ex.Message);
         }
     }
 

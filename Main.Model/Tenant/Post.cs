@@ -9,6 +9,7 @@ public class Post: BaseEntity
 {
     public Post ()
     {
+        WebsiteUrl = "www.dummy.com";
     }
 
     public Post (
@@ -86,7 +87,6 @@ public class Post: BaseEntity
         get; set;
     }
 
-    [Required, DataType (DataType.Url)]
     public string? WebsiteUrl
     {
         get; set;

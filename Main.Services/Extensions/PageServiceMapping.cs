@@ -43,7 +43,6 @@ public static class PageServiceMapping
         return listPosts;
     }
 
-
     public static List<PostDataModel> GetPostDataModels (List<Product> listProducts)
     {
         if ( listProducts == null )
@@ -52,9 +51,7 @@ public static class PageServiceMapping
         }
 
         List<PostDataModel> listPanelPostDataModel = [];
-
         PostDataModel panelPostDataModel;
-
         int id = 1;
 
         listProducts.ForEach (productEntity =>
@@ -63,7 +60,7 @@ public static class PageServiceMapping
             {
                 panelPostDataModel = new PostDataModel
                 {
-                    PanelPostID = id,
+                    PanelPostID = id++,
                     EnumPostType = EnumPostType.Product,
                     RootID = productEntity.ProductID,
                     CategoryID = productEntity.CategoryID,
@@ -75,8 +72,6 @@ public static class PageServiceMapping
                     ImageFileID = file.ProductImageFileID,
                     FilePath = file.FilePath
                 };
-
-                id += 1;
 
                 listPanelPostDataModel.Add (panelPostDataModel);
             });
@@ -90,25 +85,23 @@ public static class PageServiceMapping
         if ( pageEntity != null )
         {
             List<Panel> listPanels = pageEntity.ListPanels.ToList ();
-
-            PageDataModel pageDataModel = new( );
-
             List<PanelDataModel> listPanelDataModel  = [];
-
             PanelDataModel panelDataModel;
-
             PostDataModel postDataModel;
 
-            listPanels.ToList<Panel> ().OrderBy (a => a.PanelPosition).ToList ().ForEach (panel =>
+            listPanels.ToList<Panel> ()
+                .OrderBy (a => a.PanelPosition)
+                .ToList ()
+                .ForEach (panel =>
             {
-                panelDataModel = new PanelDataModel
+                panelDataModel = new PanelDataModel ()
                 {
                     PageID = panel.PageID,
                     PanelID = panel.PanelID,
                     PanelTemplate = panel.PanelTemplate,
                     PanelTitle = panel.PanelTitle,
-                    PanelPosition = panel.PanelPosition
-
+                    PanelPosition = panel.PanelPosition,
+                    ListPosts = new List<PostDataModel> ()
                 };
 
                 panel.ListPosts.ToList ().ForEach (panelPost =>
@@ -128,8 +121,15 @@ public static class PageServiceMapping
                     };
 
                     panelDataModel.CreatePost (postDataModel);
+
                 });
+
+                listPanelDataModel.Add (panelDataModel);
             });
+
+            PageDataModel pageDataModel = new ( );
+            pageDataModel.ListPanels = listPanelDataModel;
+
             return pageDataModel;
         }
 
@@ -144,18 +144,16 @@ public static class PageServiceMapping
         }
 
         List<PostDataModel> listPostDataModels = new();
-
         PostDataModel postDataModel;
-
         int id = 1;
 
         listAdminPosts.ForEach (adminPostEntity =>
         {
             adminPostEntity.ListAdminImageFiles.ToList ().ForEach (fileEntity =>
             {
-                postDataModel = new PostDataModel
+                postDataModel = new PostDataModel ()
                 {
-                    PanelPostID = id,
+                    PanelPostID = id++,
                     RootID = adminPostEntity.AdminPostID,
                     EnumPostType = adminPostEntity.PostType,
                     PostTitle = adminPostEntity.Title,
@@ -165,8 +163,6 @@ public static class PageServiceMapping
                 };
 
                 listPostDataModels.Add (postDataModel);
-
-                id += 1;
             });
         });
 

@@ -43,6 +43,7 @@ public static class PageMapping
 
         PostSelectViewModel postSelectViewModel;
 
+        int id = 1;
         listSelectProductsDataModels.ForEach (dataModel =>
         {
             postSelectViewModel =
@@ -62,7 +63,9 @@ public static class PageMapping
 
                 PostTitle = dataModel.PostTitle,
 
-                Price = dataModel.Price
+                Price = dataModel.Price,
+
+                PanelPostID = id++
             };
 
             listPostSelectViewModels.Add (postSelectViewModel);
