@@ -21,120 +21,118 @@ public static class ValidationRelated
         return true;
     }
 
-    public static EnumIsValidTemplate IsValidTemplate (int countActual,EnumPanelTemplate enumPanelTemplate)
-    {
-        int enumPostCount = (int) GetPostCount (enumPanelTemplate);
+    //public static EnumIsValidTemplate IsValidTemplate (int countActual,EnumPanelTemplate enumPanelTemplate)
+    //{
+    //    int enumPostCount = (int) GetPostCount (enumPanelTemplate);
 
-        switch ( enumPanelTemplate )
-        {
+    //    switch ( enumPanelTemplate )
+    //    {
 
-            case EnumPanelTemplate.AdminSingleBanner:
-                if ( ( int ) enumPostCount == countActual )
-                {
-                    return EnumIsValidTemplate.ExactMatchValid;
-                }
-                else if ( ( int ) enumPostCount > countActual )
-                {
-                    return EnumIsValidTemplate.GreaterMatchValid;
-                }
-                break;
-            case EnumPanelTemplate.AdminBannerCarousel:
-                if ( ( int ) enumPostCount == countActual )
-                {
-                    return EnumIsValidTemplate.ExactMatchValid;
-                }
-                else if ( ( int ) enumPostCount > countActual )
-                {
-                    return EnumIsValidTemplate.GreaterMatchValid;
-                }
-                break;
-            case EnumPanelTemplate.ProductDouble:
-                if ( ( int ) enumPostCount == countActual )
-                {
-                    return EnumIsValidTemplate.ExactMatchValid;
-                }
-                else if ( ( int ) enumPostCount > countActual )
-                {
-                    return EnumIsValidTemplate.GreaterMatchValid;
-                }
-                break;
+    //        case EnumPanelTemplate.AdminSingleBanner:
+    //            if ( ( int ) enumPostCount == countActual )
+    //            {
+    //                return EnumIsValidTemplate.ExactMatchValid;
+    //            }
+    //            else if ( ( int ) enumPostCount > countActual )
+    //            {
+    //                return EnumIsValidTemplate.GreaterMatchValid;
+    //            }
+    //            break;
+    //        case EnumPanelTemplate.AdminBannerCarousel:
+    //            if ( ( int ) enumPostCount == countActual )
+    //            {
+    //                return EnumIsValidTemplate.ExactMatchValid;
+    //            }
+    //            else if ( ( int ) enumPostCount > countActual )
+    //            {
+    //                return EnumIsValidTemplate.GreaterMatchValid;
+    //            }
+    //            break;
+    //        case EnumPanelTemplate.ProductDouble:
+    //            if ( ( int ) enumPostCount == countActual )
+    //            {
+    //                return EnumIsValidTemplate.ExactMatchValid;
+    //            }
+    //            else if ( ( int ) enumPostCount > countActual )
+    //            {
+    //                return EnumIsValidTemplate.GreaterMatchValid;
+    //            }
+    //            break;
 
-            case EnumPanelTemplate.ProductTriangle:
-                if ( ( int ) enumPostCount == countActual )
-                {
-                    return EnumIsValidTemplate.ExactMatchValid;
-                }
-                else if ( ( int ) enumPostCount > countActual )
-                {
-                    return EnumIsValidTemplate.GreaterMatchValid;
-                }
-                break;
-            case EnumPanelTemplate.ProductQuadruple:
-                if ( ( int ) enumPostCount == countActual )
-                {
-                    return EnumIsValidTemplate.ExactMatchValid;
-                }
-                else if ( ( int ) enumPostCount > countActual )
-                {
-                    return EnumIsValidTemplate.GreaterMatchValid;
-                }
-                break;
-            case EnumPanelTemplate.ProductSixer:
-                if ( ( int ) enumPostCount == countActual )
-                {
-                    return EnumIsValidTemplate.ExactMatchValid;
-                }
-                else if ( ( int ) enumPostCount > countActual )
-                {
-                    return EnumIsValidTemplate.GreaterMatchValid;
-                }
-                break;
-            case EnumPanelTemplate.ProductSingle:
-                if ( ( int ) enumPostCount == countActual )
-                {
-                    return EnumIsValidTemplate.ExactMatchValid;
-                }
-                else if ( ( int ) enumPostCount > countActual )
-                {
-                    return EnumIsValidTemplate.GreaterMatchValid;
-                }
-                break;
-            default:
-                return EnumIsValidTemplate.Invalid;
-        }
+    //        case EnumPanelTemplate.ProductTriangle:
+    //            if ( ( int ) enumPostCount == countActual )
+    //            {
+    //                return EnumIsValidTemplate.ExactMatchValid;
+    //            }
+    //            else if ( ( int ) enumPostCount > countActual )
+    //            {
+    //                return EnumIsValidTemplate.GreaterMatchValid;
+    //            }
+    //            break;
+    //        case EnumPanelTemplate.ProductQuadruple:
+    //            if ( ( int ) enumPostCount == countActual )
+    //            {
+    //                return EnumIsValidTemplate.ExactMatchValid;
+    //            }
+    //            else if ( ( int ) enumPostCount > countActual )
+    //            {
+    //                return EnumIsValidTemplate.GreaterMatchValid;
+    //            }
+    //            break;
+    //        case EnumPanelTemplate.ProductSixer:
+    //            if ( ( int ) enumPostCount == countActual )
+    //            {
+    //                return EnumIsValidTemplate.ExactMatchValid;
+    //            }
+    //            else if ( ( int ) enumPostCount > countActual )
+    //            {
+    //                return EnumIsValidTemplate.GreaterMatchValid;
+    //            }
+    //            break;
+    //        case EnumPanelTemplate.ProductSingle:
+    //            if ( ( int ) enumPostCount == countActual )
+    //            {
+    //                return EnumIsValidTemplate.ExactMatchValid;
+    //            }
+    //            else if ( ( int ) enumPostCount > countActual )
+    //            {
+    //                return EnumIsValidTemplate.GreaterMatchValid;
+    //            }
+    //            break;
+    //        default:
+    //            return EnumIsValidTemplate.Invalid;
+    //    }
+    //}
 
-        return EnumIsValidTemplate.Invalid;
-    }
-
-    public static int GetPostCount (EnumPanelTemplate panelTemplate)
-    {
-        if ( panelTemplate == EnumPanelTemplate.AdminSingleBanner || panelTemplate == EnumPanelTemplate.ProductSingle )
-        {
-            return ( int ) EnumPostCount.PostCountOne;
-        }
-        else if ( panelTemplate == EnumPanelTemplate.AdminBannerCarousel )
-        {
-            return ( int ) EnumPostCount.PostCountFour;
-        }
-        else if ( panelTemplate == EnumPanelTemplate.ProductDouble )
-        {
-            return ( int ) EnumPostCount.PostCountTwo;
-        }
-        else if ( panelTemplate == EnumPanelTemplate.ProductTriangle )
-        {
-            return ( int ) EnumPostCount.PostCountThree;
-        }
-        else if ( panelTemplate == EnumPanelTemplate.ProductQuadruple )
-        {
-            return ( int ) EnumPostCount.PostCountFour;
-        }
-        else if ( panelTemplate == EnumPanelTemplate.ProductSixer )
-        {
-            return ( int ) EnumPostCount.PostCountSix;
-        }
+    //public static int GetPostCount (EnumPanelTemplate panelTemplate)
+    //{
+    //    if ( panelTemplate == EnumPanelTemplate.AdminSingleBanner || panelTemplate == EnumPanelTemplate.ProductSingle )
+    //    {
+    //        return ( int ) EnumPostCount.PostCountOne;
+    //    }
+    //    else if ( panelTemplate == EnumPanelTemplate.AdminBannerCarousel )
+    //    {
+    //        return ( int ) EnumPostCount.PostCountFour;
+    //    }
+    //    else if ( panelTemplate == EnumPanelTemplate.ProductDouble )
+    //    {
+    //        return ( int ) EnumPostCount.PostCountTwo;
+    //    }
+    //    else if ( panelTemplate == EnumPanelTemplate.ProductTriangle )
+    //    {
+    //        return ( int ) EnumPostCount.PostCountThree;
+    //    }
+    //    else if ( panelTemplate == EnumPanelTemplate.ProductQuadruple )
+    //    {
+    //        return ( int ) EnumPostCount.PostCountFour;
+    //    }
+    //    else if ( panelTemplate == EnumPanelTemplate.ProductSixer )
+    //    {
+    //        return ( int ) EnumPostCount.PostCountSix;
+    //    }
 
 
-        return 0;
+    //    return 0;
 
-    }
+    //}
 }

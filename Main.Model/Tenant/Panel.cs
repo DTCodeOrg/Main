@@ -12,7 +12,7 @@ public class Panel: BaseEntity
     {
     }
 
-    public Panel (int pageId,EnumPanelTemplate panelTemplate,string panelTitle)
+    public Panel (int pageId,EnumPanelTemplate panelTemplate,string? panelTitle)
     {
         PageID = pageId;
         PanelTemplate = panelTemplate;

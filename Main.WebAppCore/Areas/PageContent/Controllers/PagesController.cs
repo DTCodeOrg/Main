@@ -92,8 +92,8 @@ public class PagesController: BaseController
         try
         {
             PanelDataModel pagePanelDataModel =
-                new( ( EnumPanelTemplate ) model.TemplateTypeID,
-                model.PageID, model.PanelTitle  );
+                new ( ( EnumPanelTemplate ) model.TemplateTypeID,
+                model.PageID, model.PanelTitle );
 
             List<PostDataModel> listReferencePosts
                 = await _pageService.GetSelectProducts ( );
@@ -110,8 +110,7 @@ public class PagesController: BaseController
                 pagePanelDataModel.CreatePost (selectedPost);
             });
 
-            bool result  = await _pageService.CreateNewPanel ( pagePanelDataModel );
-
+            bool result = await _pageService.CreateNewPanel ( pagePanelDataModel );
 
             return Json (new
             {

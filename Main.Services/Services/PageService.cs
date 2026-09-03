@@ -55,7 +55,7 @@ public class PageService: IPageService
         List<AdminPost> listAdminPosts = await _adminPostRepository.GetSelectAdminPosts(  );
 
         List<PostDataModel> listPanelPostDataModel
-                                            = PageServiceMapping.GetPostDataModels   ( listAdminPosts );
+         = PageServiceMapping.GetPostDataModels   ( listAdminPosts );
 
         return listPanelPostDataModel;
     }
@@ -71,17 +71,16 @@ public class PageService: IPageService
 
     public async Task<PageDataModel> GetPageDataModel (EnumPublicPage page)
     {
-        Page pageEntity =  await _pageRepository.GetSinglePage ( page);
+        Page pageEntity =  await _pageRepository.GetSinglePage ( page );
 
-        PageDataModel pageDataModel =  PageServiceMapping.MapPageDataModel(pageEntity);
+        PageDataModel pageDataModel = PageServiceMapping.MapPageDataModel ( pageEntity );
 
         return pageDataModel;
-
     }
 
     public async Task<List<PageDisplayDataModel>> GetAllPages (string company)
     {
-        List<Page> listPageEntity = await _pageRepository.GetAllPages (  );
+        List<Page> listPageEntity = await _pageRepository.GetAllPages ( );
 
         List<PageDisplayDataModel> listPageDisplayDataModel = [];
 
@@ -101,8 +100,8 @@ public class PageService: IPageService
     {
         ArgumentNullException.ThrowIfNull (listPanelPositionDataModel);
 
-        List<int> listPanelIds = listPanelPositionDataModel.Select(x => x.PanelID)
-            .ToList();
+        List<int> listPanelIds =
+        listPanelPositionDataModel.Select(x => x.PanelID).ToList();
 
         Page page = await _pageRepository.GetSinglePage ( pageId );
 
@@ -111,21 +110,27 @@ public class PageService: IPageService
         listPanels.Where (panel =>
         {
             return listPanelIds.Contains (panel.PanelID);
+
         }).ToList ().ForEach (updatePanel =>
         {
             updatePanel.ModifyParameters (baseDataModel);
-            updatePanel.PanelPosition = listPanelPositionDataModel.First (a => a.PanelID == updatePanel.PanelID).PanelPosition;
+
+            updatePanel.PanelPosition =
+            listPanelPositionDataModel.First (a => a.PanelID == updatePanel.PanelID).PanelPosition;
 
         });
 
         page.ModifyParameters (baseDataModel);
+
         bool result = await _pageRepository.UpdatePage ( page, listPanels );
+
         return result;
     }
 
     public async Task<bool> DeletePanelAsync (int panelId)
     {
         bool result = await _panelRepository.DeletePanelAsync ( panelId );
+
         return result;
     }
 }

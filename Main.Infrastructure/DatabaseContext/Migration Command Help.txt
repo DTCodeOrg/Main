@@ -1,9 +1,9 @@
 
-Add-Migration InitialCreateIdentity23 -Context Main.Infrastructure.DatabaseContext.IdentityAppDbContext
+Add-Migration InitialCreateIdentity26 -Context Main.Infrastructure.DatabaseContext.IdentityAppDbContext
 
-Add-Migration InitialCreateTenant25 -Context Main.Infrastructure.DatabaseContext.TenantDbContext
+Add-Migration InitialCreateTenant26 -Context Main.Infrastructure.DatabaseContext.TenantDbContext
 
-Add-Migration InitialCreateLog1 -Context Main.Infrastructure.DatabaseContext.LogDbContext
+Add-Migration InitialCreateLog26 -Context Main.Infrastructure.DatabaseContext.LogDbContext
 
 Update-Database -Context Main.Infrastructure.DatabaseContext.IdentityAppDbContext
 

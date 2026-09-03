@@ -23,7 +23,7 @@ public static class PageServiceMapping
 
         panelDataModel.ListPosts.ForEach (postDataModel =>
         {
-            post = new Post (postDataModel.EnumPostType,postDataModel.Price!,postDataModel.RootID)
+            post = new Post (postDataModel.EnumPostType,postDataModel.Price,postDataModel.RootID)
             {
                 FileContent = postDataModel.FileContent,
                 FilePath = postDataModel.FilePath,
@@ -32,8 +32,7 @@ public static class PageServiceMapping
                 CategoryID = postDataModel.CategoryID,
                 SubCategoryID = postDataModel.SubCategoryID,
                 ProductOwner = postDataModel.ProductOwner,
-                WebsiteUrl = postDataModel.WebsiteUrl,
-                PanelID = panelDataModel.PanelID
+                WebsiteUrl = postDataModel.WebsiteUrl
             };
 
             listPosts.Add (post);
@@ -109,6 +108,7 @@ public static class PageServiceMapping
                     PanelTemplate = panel.PanelTemplate,
                     PanelTitle = panel.PanelTitle,
                     PanelPosition = panel.PanelPosition
+
                 };
 
                 panel.ListPosts.ToList ().ForEach (panelPost =>
@@ -129,30 +129,7 @@ public static class PageServiceMapping
 
                     panelDataModel.CreatePost (postDataModel);
                 });
-
-                int actualCount  = panelDataModel.ListPosts.ToList().Count;
-
-                EnumIsValidTemplate validTemplate =
-                ValidationRelated.IsValidTemplate ( actualCount, panelDataModel.PanelTemplate );
-
-                if ( validTemplate == EnumIsValidTemplate.ExactMatchValid )
-                {
-                    pageDataModel.CreatePanel (panelDataModel);
-                }
-
-                if ( validTemplate == EnumIsValidTemplate.GreaterMatchValid )
-                {
-                    int count = ValidationRelated.GetPostCount(panelDataModel.PanelTemplate);
-
-                    List<PostDataModel> listPosts =
-                    panelDataModel.ListPosts.Take(count).ToList();
-
-                    panelDataModel.ListPosts = listPosts;
-
-                    pageDataModel.CreatePanel (panelDataModel);
-                }
             });
-
             return pageDataModel;
         }
 
@@ -182,7 +159,7 @@ public static class PageServiceMapping
                     RootID = adminPostEntity.AdminPostID,
                     EnumPostType = adminPostEntity.PostType,
                     PostTitle = adminPostEntity.Title,
-                    FileContent = fileEntity.ImageFileContent!,
+                    FileContent = fileEntity.ImageFileContent,
                     WebsiteUrl = adminPostEntity.WebsiteUrl,
                     FilePath = fileEntity.FilePath
                 };

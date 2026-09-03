@@ -310,14 +310,15 @@ public class ManageProductController: BaseController
     {
         try
         {
-            string fileNameDeleted = await _productService.DeleteProductImage(id, postId);
+            string? fileNameDeleted = await _productService.DeleteProductImage(id, postId);
 
             if ( string.IsNullOrEmpty (fileName) )
             {
                 fileName = fileNameDeleted;
             }
 
-            bool result = DeleteSessionImage(fileName, _tenantCacheService);
+            bool result = DeleteSessionImage
+            (fileName, _tenantCacheService);
 
             return Json (new
             {
