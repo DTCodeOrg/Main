@@ -40,9 +40,9 @@
             {
                 @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/EditPanels/_ProductPanel3X.cshtml",model )
             }
-            else if ( model.PanelTemplate == EnumPanelTemplate.ProductDouble )
+            else if ( model.PanelTemplate == EnumPanelTemplate.ProductSingle )
             {
-                @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/EditPanels/_ProductPanel2X.cshtml",model )
+                @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/EditPanels/_ProductPanel1X.cshtml",model )
             }
         }
     }

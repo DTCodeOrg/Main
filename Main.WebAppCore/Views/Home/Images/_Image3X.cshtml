@@ -1,6 +1,6 @@
 ﻿@model PostViewModel
 
-<div class="image-content" draggable="false">
+<div class="image-content" draggable="false"  style="height:217px;width:100%;overflow: hidden;">
     <div title="Product Image" draggable="false">
         <a class="thumbnail" draggable="false">
             @if (Model != null)
@@ -8,7 +8,7 @@
                <img src= "@Model.FilePath"
                      class="img-responsive new-post-mobile-image"
                      alt="Product image"
-                     style="height:217px;width:100%;"
+                     style="height:100%;width:100%; object-fit: cover; object-position: center;"
                      draggable ="false" />
             }
             else
@@ -16,7 +16,7 @@
                 <img src="~/lib/Images/Home/camera.png"
                      class="img-responsive new-post-mobile-image"
                      alt="Product image is not available"
-                     style="height:217px;width:100%;"
+                     style="height:100%;width:100%; object-fit: cover; object-position: center;"
                      draggable="false" />
             }
         </a>

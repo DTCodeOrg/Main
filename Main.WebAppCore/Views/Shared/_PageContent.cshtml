@@ -4,23 +4,43 @@
     {
         if ( model.PanelTemplate == EnumPanelTemplate.ProductSixer)
         {
+            <div class="gap"></div>
+
             @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Panels/_ProductPanel6X.cshtml",model )
+            
+            <div class="gap"></div>
         }
         else if ( model.PanelTemplate == EnumPanelTemplate.ProductQuadruple )
         {
+             <div class="gap"></div>
+
             @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Panels/_ProductPanel4X.cshtml",model )
+        
+            <div class="gap"></div>
         }
         else if ( model.PanelTemplate == EnumPanelTemplate.ProductTriangle )
         {
+            <div class="gap"></div>
+
             @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Panels/_ProductPanel3X.cshtml",model )
+        
+            <div class="gap"></div>
         }
         else if ( model.PanelTemplate == EnumPanelTemplate.ProductDouble )
         {
+            <div class="gap"></div>
+
             @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Panels/_ProductPanel2X.cshtml",model )
+       
+            <div class="gap"></div>
         }
         else if ( model.PanelTemplate == EnumPanelTemplate.ProductSingle )
         {
+            <div class="gap"></div>
+
             @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Panels/_ProductPanel1X.cshtml",model )
+        
+            <div class="gap"></div>
         }
     }
 }   

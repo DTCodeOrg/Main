@@ -2172,7 +2172,7 @@ button.logout {
 
 button.logout:hover {
     color: white;
-    background-color:red
+    background-color:red;
     font-weight: 600;
     font-size: 16px;
     opacity:0.5;
@@ -2183,4 +2183,17 @@ h5.text-bg-success, h5.card-title {
     color: white;
     font-size: 20px;
     font-weight: 600;
+    /* Forces the text to stay on one straight line */
+    white-space: nowrap;
+    /* Hides any text that spills out of the container */
+    overflow: hidden;
+    /* Adds the '...' ellipsis at the point of truncation */
+    text-overflow: ellipsis;
+    /* Required: The container must have a defined width or max-width */
+    width: 100%;
+}
+
+h4.sub-title {
+    line-height: 1.6 !important;
+    text-align:justify !important;
 }
