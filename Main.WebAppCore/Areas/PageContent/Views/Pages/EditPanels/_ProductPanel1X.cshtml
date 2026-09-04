@@ -6,7 +6,9 @@
      draggable="true">
 
     <h4 class="sub-title" draggable="false">
-        @Model.PanelTitle
+
+         @Html.TextAreaFor(a => a.PanelTitle, new { @class = "fff" })
+       
     </h4>
 
     <div class="row panel-content" draggable="false">
