@@ -317,8 +317,7 @@ public class ManageProductController: BaseController
                 fileName = fileNameDeleted;
             }
 
-            bool result = DeleteSessionImage
-            (fileName, _tenantCacheService);
+            bool result = DeleteSessionImage (fileName, _tenantCacheService);
 
             return Json (new
             {

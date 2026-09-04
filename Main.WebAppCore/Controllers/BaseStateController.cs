@@ -41,7 +41,7 @@ public partial class BaseController
         return finalImages;
     }
 
-    protected bool DeleteSessionImage (string fileName,ITenantCacheService tenantCacheService)
+    protected bool DeleteSessionImage (string? fileName,ITenantCacheService tenantCacheService)
     {
         const string baseKey = "UploadedSessionImages";
 

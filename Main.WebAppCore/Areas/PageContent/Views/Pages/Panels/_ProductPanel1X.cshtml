@@ -36,12 +36,18 @@
                     <div class="caption card-body">
 
                         <h5 class="truncate text-bg-success card-title">
-                            @product.PostTitle
+                            @(product?.PostTitle ?? "Untitled Post")
                         </h5>
 
-                        <p class="fa-dollar text-info-emphasis card-text">
-                            @product.Price Taka
-                        </p>
+
+                            @if ( product is not null )
+                            {
+                                <span>@(product.Price?.ToString("F2") ?? "0.00") Taka</span>
+                            }
+                            else
+                            {
+                                <span>Price unavailable</span>
+                            }
 
                         <span>
 

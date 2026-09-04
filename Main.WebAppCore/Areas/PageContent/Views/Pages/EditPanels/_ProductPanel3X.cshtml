@@ -58,9 +58,14 @@
                                style="text-align:center;"
                                draggable="false">
 
-                            @(product.Price?.ToString("F2") ?? string.Empty) Taka
-
-
+                                @if ( product is not null )
+                                {
+                                    <span>@(product.Price?.ToString("F2") ?? "0.00") Taka</span>
+                                }
+                                else
+                                {
+                                    <span>Price unavailable</span>
+                                }
                             </p>
 
                         <span style="vertical-align:middle;text-align:center;" 

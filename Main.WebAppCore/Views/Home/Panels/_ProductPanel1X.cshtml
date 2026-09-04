@@ -42,9 +42,14 @@
                         </h5>
 
                         <p class="fa-dollar text-info-emphasis card-text">
-
-                            @(product.Price?.ToString("F2") ?? string.Empty) Taka
-
+                            @if ( product is not null )
+                            {
+                                <span>@(product.Price?.ToString("F2") ?? "0.00") Taka</span>
+                            }
+                            else
+                            {
+                                <span>Price unavailable</span>
+                            }
                         </p>
 
                         <span>
