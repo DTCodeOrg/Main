@@ -4,9 +4,9 @@ namespace DataTransferModel;
 
 public class PageDataModel
 {
-    public PageDataModel ( )
+    public PageDataModel ()
     {
-        ListPanels = new List<PanelDataModel> ( );
+        ListPanels = new List<PanelDataModel> ();
     }
 
     public int PageID
@@ -19,21 +19,23 @@ public class PageDataModel
         get; set;
     }
 
+    public string? PageName
+    {
+        get; set;
+    }
+
     public List<PanelDataModel> ListPanels
     {
         get; set;
     }
 
-    public void CreatePanel ( PanelDataModel pageDataModel )
+    public void CreatePanel (PanelDataModel pageDataModel)
     {
-        if ( ListPanels == null )
-        {
-            ListPanels = new List<PanelDataModel> ( );
-        }
+        ListPanels ??= new List<PanelDataModel> ();
 
         if ( pageDataModel != null )
         {
-            ListPanels.Add ( pageDataModel );
+            ListPanels.Add (pageDataModel);
         }
     }
 }

@@ -128,6 +128,10 @@ public static class PageServiceMapping
             });
 
             PageDataModel pageDataModel = new ( );
+
+            pageDataModel.PageName =
+            EnumDescription.GetDescription (pageEntity.EnumPublicPage);
+
             pageDataModel.ListPanels = listPanelDataModel;
 
             return pageDataModel;

@@ -45,7 +45,7 @@ public class PageService: IPageService
         List<Product> listProducts
         = await _pagePanelSettingsRepository.GetSelectProducts ();
 
-        List<PostDataModel> listPanelPostDataModel = PageServiceMapping.GetPostDataModels( listProducts );
+        List<PostDataModel> listPanelPostDataModel = PageServiceMapping.GetPostDataModels ( listProducts );
 
         return listPanelPostDataModel;
     }
@@ -63,29 +63,33 @@ public class PageService: IPageService
     public async Task<PageDataModel> GetPageDataModel (int pageID)
     {
         Page pageEntity =  await _pageRepository.GetSinglePage ( pageID );
-        PageDataModel pageDataModel =  PageServiceMapping.MapPageDataModel(pageEntity);
+
+        PageDataModel pageDataModel
+        =  PageServiceMapping.MapPageDataModel(pageEntity);
+
         return pageDataModel;
     }
 
     public async Task<PageDataModel> GetPageDataModel (EnumPublicPage page)
     {
         Page pageEntity =  await _pageRepository.GetSinglePage ( page );
-        PageDataModel pageDataModel = PageServiceMapping.MapPageDataModel ( pageEntity );
+
+        PageDataModel pageDataModel
+        = PageServiceMapping.MapPageDataModel ( pageEntity );
+
         return pageDataModel;
     }
 
     public async Task<List<PageDisplayDataModel>> GetAllPages (string company)
     {
         List<Page> listPageEntity = await _pageRepository.GetAllPages ( );
+
         List<PageDisplayDataModel> listPageDisplayDataModel = [];
 
         listPageEntity.ForEach (pageEntity =>
         {
             listPageDisplayDataModel.Add (new PageDisplayDataModel
-                        (pageEntity.PageID,
-                        pageEntity.EnumPublicPage,
-                        company));
-
+            (pageEntity.PageID,pageEntity.EnumPublicPage,company));
         });
 
         return listPageDisplayDataModel.ToList ();

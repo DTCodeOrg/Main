@@ -8,9 +8,24 @@
 
 <div class="container">
 
+   <div data-label="Action" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12">
+
+        <a title="List of Pages"
+                class="icon-button btn-lg flex"
+                href="@Url.Action("Index", "Pages", new { Area = "PageContent" })">
+            <i class="fa fa-list"></i>
+            <span class="action-text">List Pages</span>
+        </a>
+
+    </div>
+
+    <div class="gap"></div>
     <div class="gap"></div>
 
-    <h4 class="card-title">NEW PANEL (PRODUCTS)</h4>
+    <h4 class="card-title">NEW PANEL - (@Model.PageName)</h4>
+
+    <div class="gap"></div>
+    <div class="gap"></div>
 
     <form id ="frmMain">
         <div class="gap"></div>
@@ -18,7 +33,7 @@
         @Html.HiddenFor( a => a.PageID )
 
         <div class="row">
-            <div class="input-field col-md-8">
+            <div class="input-field col-md-12">
 
                 @Html.LabelFor( a => a.PanelTemplate )
 
@@ -35,12 +50,11 @@
 
         <div class="row">
 
-            <div class="input-field  col-md-8">
+            <div class="input-field  col-md-12">
 
                 @Html.LabelFor( a => a.PanelTitle )
 
-                @Html.TextAreaFor(a => a.PanelTitle, 
-                                new { htmlAttributes = new { @class = "fff" } })
+                @Html.TextAreaFor(a => a.PanelTitle, new { @class = "fff" })
 
                 @Html.ValidationMessageFor(m => m.PanelTitle,
                                 "", new { @class = "text-danger" })

@@ -38,6 +38,11 @@ public class PanelViewModel: BaseViewModel
         get; set;
     }
 
+    public new string? PageName
+    {
+        get; set;
+    }
+
     public int? PanelPosition
     {
         get; set;

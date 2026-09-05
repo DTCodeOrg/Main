@@ -1,4 +1,4 @@
-﻿@model List<PanelViewModel>
+﻿@model PageViewModel
 
 @{
     ViewData["Title"] = "Preview Contents";
@@ -8,14 +8,42 @@
 
 <div class="container"> 
 
-    <h4 class="card-title">PREVIEW CONTENT</h4>
+    <div data-label="Action" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12">
+
+        <a title="List of Pages"
+                class="icon-button btn-lg flex"
+                href="@Url.Action("Index", "Pages", new { Area = "PageContent" })">
+            <i class="fa fa-list"></i>
+            <span class="action-text">List Pages</span>
+        </a>
+
+        <a title="Edit Page"
+            class="icon-button btn-lg flex"
+                href="@Url.Action("EditPageContent", "Pages", new { Area = "PageContent", id = Model.PageID })">
+            <i class="fa fa-edit"></i>
+            <span class="action-text">Edit Page</span>
+        </a>
+
+        <a title="New Panel"
+            class="icon-button btn-lg flex"
+                href="@Url.Action("NewProductPanel", "Pages", new { Area = "PageContent", id = Model.PageID })">
+            <i class="fa fa-plus"></i>
+            <span class="action-text">New Panel</span>
+        </a>
+
+    </div>
+
+    <div class="gap"></div>
+    <div class="gap"></div>
+
+    <h4 class="card-title">VIEW PAGE CONTENTS - (@Model.PageName)</h4>
 
     <div class="gap"></div>
 
 </div>
 
 @{
-    foreach(var model in Model.ToList())
+    foreach(var model in Model.ListPagePanels.ToList())
     {
 
         if ( model.PanelTemplate == EnumPanelTemplate.ProductSixer)

@@ -65,10 +65,17 @@ public class PagesController: BaseController
         List<PostDataModel> listSelectProductsDataModel =
         await _pageService.GetSelectProducts ();
 
-        pagePanelViewModel.ListSelectPosts = PageMapping.MapSelectPostViewModel (listSelectProductsDataModel,AppSettings.Current.EnumCurrency,_localizer,_tenantSetter.CurrentTenant.StoreType);
+        pagePanelViewModel.ListSelectPosts
+        = PageMapping.MapSelectPostViewModel (listSelectProductsDataModel,AppSettings.Current.EnumCurrency,
+        _localizer,_tenantSetter.CurrentTenant.StoreType);
+
+        PageDataModel pagePanelDataModel = await _pageService.GetPageDataModel(id);
 
         pagePanelViewModel.PageID = id;
+
         pagePanelViewModel.PanelTitle = "";
+
+        pagePanelViewModel.PageName = pagePanelDataModel.PageName;
 
         return View (pagePanelViewModel);
     }
@@ -133,11 +140,17 @@ public class PagesController: BaseController
 
     public async Task<IActionResult> PreviewPageContent (int id)
     {
-        PageDataModel pagePanelDataModel = await _pageService.GetPageDataModel(id);
+        PageDataModel pagePanelDataModel = await _pageService.GetPageDataModel( id );
 
         PageViewModel pageViewModel = PageMapping.MapPageViewModel ( pageDataModel: pagePanelDataModel );
 
-        return View (pageViewModel.ListPagePanels.ToList ());
+        pageViewModel.CompanyName = _tenantSetter.CurrentTenant.TenantName;
+
+        pageViewModel.PageName = pagePanelDataModel.PageName;
+
+        pageViewModel.PageID = id;
+
+        return View (pageViewModel);
     }
 
 
@@ -147,7 +160,11 @@ public class PagesController: BaseController
 
         PageViewModel pageViewModel = PageMapping.MapPageViewModel ( pagePanelDataModel );
 
-        return View (pageViewModel.ListPagePanels.ToList ());
+        pageViewModel.CompanyName = _tenantSetter.CurrentTenant.TenantName;
+        pageViewModel.PageName = pagePanelDataModel.PageName;
+        pageViewModel.PageID = id;
+
+        return View (pageViewModel);
     }
 
     [HttpPost]
