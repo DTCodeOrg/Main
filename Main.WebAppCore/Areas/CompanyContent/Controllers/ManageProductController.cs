@@ -16,7 +16,6 @@ using ResourceLibrary.Resources;
 namespace Main.WebAppCore.Controllers;
 
 [Area ("CompanyContent")]
-[Authorize (Policy = "TenantAdmin")]
 public class ManageProductController: BaseController
 {
     private readonly IStorageService _storageService;
@@ -52,6 +51,7 @@ public class ManageProductController: BaseController
     }
 
 
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<IActionResult> Index ()
     {
         try
@@ -97,7 +97,7 @@ public class ManageProductController: BaseController
 
         productDataModel.ImageFiles = listProductImageFileDataModels;
     }
-
+    [Authorize (Policy = "TenantAdmin")]
     public IActionResult NewProduct ()
     {
         ClearImageFileListSession (_tenantCacheService);
@@ -187,6 +187,7 @@ public class ManageProductController: BaseController
     }
 
     [HttpGet]
+    [Authorize (Policy = "TenantAdmin")]
     public async Task<ActionResult> Edit (int id)
     {
         ClearImageFileListSession (_tenantCacheService);
@@ -247,7 +248,7 @@ public class ManageProductController: BaseController
         }
     }
 
-
+    [AllowAnonymous]
     public async Task<IActionResult> Details (int id)
     {
         try

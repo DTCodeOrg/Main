@@ -2,7 +2,11 @@
 
 <div class="image-content" draggable="false">
     <div title="Product Image" draggable="false">
-        <a class="thumbnail" draggable="false">
+        <a class="thumbnail" 
+            draggable="false"  
+            href = "@Url.Action("Details", "ManageProduct", new { area = "CompanyContent", id = Model.RootID })"
+            target = "_blank" 
+            rel = "noopener noreferrer">
              @if (Model != null)
             {
                 <img src= "@Model.FilePath"

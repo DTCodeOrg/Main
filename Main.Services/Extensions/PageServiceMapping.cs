@@ -117,7 +117,8 @@ public static class PageServiceMapping
                         PostOrder = panelPost.Order,
                         PageID = panelDataModel.PageID,
                         CategoryID = panelPost.CategoryID,
-                        SubCategoryID = panelPost.SubCategoryID
+                        SubCategoryID = panelPost.SubCategoryID,
+                        RootID = panelPost.RootID
                     };
 
                     panelDataModel.CreatePost (postDataModel);
