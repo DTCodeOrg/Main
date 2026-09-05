@@ -13,12 +13,12 @@ public class TenantStoreHelper
 
     public static List<TenantVariableModel> GetCategoryList (IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
-        return TenantStores.ListTenantStoreMenu (localizer,storeType);
+        return TenantStores.ListTenantStoreMenu (localizer,storeType).Where (x => x.Variable == EnumTenantVariable.ProductCategory).ToList ();
     }
 
     public static List<TenantVariableModel> GetSubCategoryList (IStringLocalizer<SharedResource> localizer,StoreType storeType)
     {
-        return TenantStores.ListTenantStoreMenu (localizer,storeType);
+        return TenantStores.ListTenantStoreMenu (localizer,storeType).Where (x => x.Variable == EnumTenantVariable.ProductSubCategory).ToList ();
     }
 
     public static string GetTextForCategoryId

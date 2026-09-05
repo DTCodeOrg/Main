@@ -1,4 +1,5 @@
 ﻿using DataTransferModel;
+using Main.Common;
 using Main.Common.Models;
 using Main.Infrastructure;
 using Main.Services;
@@ -113,6 +114,9 @@ public class ManageProductController: BaseController
             PageName = "Product Page"
         };
 
+        ViewBag.AllCategories = TenantStores.ListTenantStoreMenu
+         (_localizer,_tenantSetter.CurrentTenant.StoreType).ToList ();
+
         return View (objProductViewModel);
     }
 
@@ -205,6 +209,9 @@ public class ManageProductController: BaseController
 
         objProductViewModel.AVSubCategory = DropDownListItems.GetSubCategoryList
         (_localizer,_tenantSetter.CurrentTenant.StoreType);
+
+        ViewBag.AllCategories = TenantStores.ListTenantStoreMenu
+         (_localizer,_tenantSetter.CurrentTenant.StoreType).ToList ();
 
         return View (objProductViewModel);
     }

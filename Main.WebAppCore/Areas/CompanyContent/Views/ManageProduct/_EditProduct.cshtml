@@ -32,7 +32,7 @@
 
                     @Html.LabelFor( a => a.CategoryID )
 
-                    @Html.DropDownListFor(a => a.CategoryID, Model.AVCategory, new { @class = "fff" })
+                    @Html.DropDownListFor(a => a.CategoryID, Model.AVCategory, new { @id = "categoryDropdown", @class = "fff" })
                    
                     @Html.ValidationMessageFor(m => m.CategoryID, "", new { @class = "text-danger" })
                
@@ -42,13 +42,13 @@
 
                     @Html.LabelFor( a => a.SubCategoryID )
 
-                    @Html.DropDownListFor(a => a.SubCategoryID, Model.AVSubCategory, new { @class = "fff" })
+                    @Html.DropDownListFor(a => a.SubCategoryID, Model.AVSubCategory, new { @id = "subcategoryDropdown", @class = "fff" })
 
                 </div>
 
                  <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
                     
-                     @Html.LabelFor( a => a.ProductOwner )
+                    @Html.LabelFor( a => a.ProductOwner )
 
                     @Html.EditorFor(a => a.ProductOwner, 
                         new { htmlAttributes = new { @class = "fff" } })

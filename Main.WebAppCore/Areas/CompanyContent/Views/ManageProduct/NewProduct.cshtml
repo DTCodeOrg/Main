@@ -42,10 +42,49 @@
 
 @section scriptsapp { 
 
+
 @await Html.PartialAsync("~/Views/Shared/_ValidationScriptsPartial.cshtml")
 
 <script>
+     // 1. Serialize the full server-side list into JavaScript
+    const allVariables = @Html.Raw(Json.Serialize(ViewBag.AllCategories));
 
+    console.log(allVariables); // Debugging line to check the data
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const categorySelect = document.getElementById("categoryDropdown");
+        const subcategorySelect = document.getElementById("subcategoryDropdown");
+
+        // 2. Listen for changes on the Category dropdown
+        categorySelect.addEventListener("change", function () {
+            // Get the selected Parent ID (convert string to integer)
+            const selectedParentId = parseInt(this.value);
+
+            alert(selectedParentId);
+
+            // 3. Clear existing options in the SubCategory dropdown
+            subcategorySelect.innerHTML = '<option value="">-- Select Sub Type --</option>';
+
+            // If no category is selected, stop here
+            if (isNaN(selectedParentId)) return;
+
+            // 4. Filter and loop through matching subcategories
+            allVariables.forEach(item => {
+                // Adjust property casing (e.g., item.ParentID) if your JSON isn't camelCase
+                if (item.parentId === selectedParentId) {
+                    
+                    // 5. Create and append a new option element
+                    const option = document.createElement("option");
+                    option.value = item.valueId; // Sets <option value="X">
+                    option.textContent = item.text; // Sets the visible text
+                    
+                    subcategorySelect.appendChild(option);
+                }
+            });
+        });
+</script>
+
+<script>
     var PAGE_NAME = '@Model.PageName';
     var getSubCategoryURL = '@Url.Action("GetSubCategories", "ManageProduct")';
     var uploadImageURL = '@Url.Action("UploadImage", "ManageProduct")';
@@ -55,13 +94,11 @@
 
 
 $(document).ready(function () {
-
     $("#myMainForm").valid();
     
     $("#btnLoadImage").on('click', function () {
         $("#fileInput").click();
     });
-
     
     $('.upload-container form').on('submit', function (e) {
 

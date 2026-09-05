@@ -30,7 +30,7 @@
 
                     @Html.LabelFor( a => a.CategoryID )
 
-                    @Html.DropDownListFor(m => m.CategoryID, Model.AVCategory, new { @class = "fff" })
+                    @Html.DropDownListFor(a => a.CategoryID, Model.AVCategory, new { @id = "categoryDropdown", @class = "fff" })
 
                 </div>
 
@@ -38,7 +38,7 @@
 
                     @Html.LabelFor( a => a.SubCategoryID )
 
-                    @Html.DropDownListFor(m => m.SubCategoryID, Model.AVSubCategory, new { @class = "fff" })
+                    @Html.DropDownListFor(a => a.SubCategoryID, Model.AVSubCategory, new { @id = "subcategoryDropdown", @class = "fff" })
 
                 </div>
 
