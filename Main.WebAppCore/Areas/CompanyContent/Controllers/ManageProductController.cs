@@ -379,4 +379,25 @@ public class ManageProductController: BaseController
             });
         }
     }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> PostProductDetails (int id)
+    {
+        try
+        {
+            ProductDataModel productDataModel
+            = await _productService.GetProductForEditProductID(id);
+
+            ProductViewModel productViewModel = ProductMapping.MapProductViewModel
+            ( productDataModel, _localizer, _tenantSetter.CurrentTenant.StoreType );
+
+            productViewModel.PageName = "Product Details";
+
+            return View (productViewModel);
+        }
+        catch
+        {
+            return View (new ProductViewModel ());
+        }
+    }
 }

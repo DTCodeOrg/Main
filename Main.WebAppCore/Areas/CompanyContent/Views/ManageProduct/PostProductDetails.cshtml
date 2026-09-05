@@ -1,0 +1,327 @@
+﻿@model ProductViewModel
+
+@{
+    var tenantName = TenantSetter.CurrentTenant.TenantName;
+    var title = $"{ tenantName } Product Detail Page";
+    ViewBag.Title = title;
+    ViewBag.ExcludeHeader = false;
+}
+
+@section Styles {
+
+    <link rel="stylesheet" href="~/css/product-gallary.css" />
+
+    <style>
+        /* Area specific micro-overrides */
+        .admin-badge {
+            background-color: var(--color-accent);
+            color: #fff;
+        }
+    </style>
+}
+
+<div class="gap"></div>
+
+<div id="detailsProductMainView" class="container">
+
+    <div class="header-text">
+
+        <h1>Product from @tenantName.</h1>
+
+        <h5>
+            @Model.ProductName - by @Model.ProductOwner
+        </h5>
+
+    </div>
+
+</div>
+
+<div class="gap"></div>
+
+<main class="product-container">
+
+    <div class="product-layout">
+
+        <!-- Left Side: Interactive Product Gallery -->
+        <div class="product-gallery">
+
+            <div class="main-display-wrapper">
+
+                <img id="main-featured-image" src=""
+                     alt="" />
+
+            </div>
+           
+            <div class="thumbnail-strip">
+
+                @foreach ( var image in Model.ImageFiles )
+                {
+                    <button class="thumb-btn"
+                            role="option"
+                            aria-selected="false"
+                            data-full-img="@image.RelativeFilePath">
+
+                        <img src="@image.RelativeFilePath" 
+                        alt="Collectible / Artwork by @Model.ProductOwner">
+
+                    </button>
+                }   
+
+            </div>
+
+        </div>
+
+
+        <!-- Right Side: Information & Dynamic Purchase Panel -->
+
+        <div class="product-info-panel">
+
+            <header class="product-header">
+
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+
+                    <span class="category-tag">@Model.CategoryText</span>
+
+                    <span class="separator">/</span>
+
+                    <span class="category-tag">@Model.SubCategoryText</span>
+
+                </nav>
+
+                <h1 class="product-title">@Model.ProductName</h1>
+
+                <p class="product-author">
+
+                    By <span class="author-name">@Model.ProductOwner</span>
+
+                </p>
+
+            </header>
+
+            <hr class="divider">
+
+            <section class="product-pricing-brief">
+
+                <div class="price-container">
+
+                    <span class="currency">$</span>
+
+                    <span class="price-amount">Price is: @Model.UnitPrice</span>
+                    
+                    <span class="price-currency-code">taka</span>
+
+                </div>
+
+                <div class="price-container">
+
+                    <span class="currency">$</span>
+
+                    <span class="price-amount"> Discount: @Model.Discount (%) </span>
+
+                    <span class="price-currency-code"> taka </span>
+
+                </div>
+
+                <div class="price-container">
+
+                    <span class="currency">$</span>
+
+                    <span class="price-amount">Sales commmission: @Model.SaleCommission (%)</span>
+
+                    <span class="price-currency-code">taka</span>
+
+                </div>
+
+                <div class="short-brief">
+                    <p>
+                        
+                        @Model.Description
+
+                    </p>
+
+                    <p>
+
+                        @Model.SearchTag
+
+                    </p>
+
+                </div>
+
+                <!-- E-COMMERCE ENGINE REGION -->
+                <div class="purchase-engine">
+
+                    <!-- Dynamic Stock Status Indicator -->
+                    <p class="stock-status low-stock" id="stock-badge">
+
+                        ⚠️ Only 3 remaining in studio
+
+                    </p>
+
+                    <!-- State A: Action Area when item is In Stock -->
+                    <div id="in-stock-actions" class="purchase-actions">
+
+                        <div class="quantity-picker-wrapper">
+
+                            <label for="prod-qty" class="visually-hidden">
+                                
+                                Quantity
+                                
+                            </label>
+
+                            <button type="button" class="qty-adjust" id="qty-minus" aria-label="Decrease quantity">−</button>
+                            
+                            <input type="number" id="prod-qty" class="qty-input" value="1" min="1" max="3" readonly>
+                            
+                            <button type="button" class="qty-adjust" id="qty-plus" aria-label="Increase quantity">+</button>
+                       
+                        </div>
+
+                        <button class="btn-primary flex-btn">
+
+                            Acquire Artwork
+
+                        </button>
+
+                    </div>
+
+                    
+                    <div id="out-of-stock-actions" class="stock-alert-panel hidden">
+
+                        <p class="alert-message">
+
+                            This unique craft piece is currently unavailable. 
+                            Register below to be notified immediately if @Model.ProductOwner 
+                            releases a sibling piece or if this acquisition falls through.
+                       
+                        </p>
+
+                        <form  class="alert-form" 
+                            onsubmit="event.preventDefault(); alert('Successfully registered for notifications!');">
+
+                            <input type="email" placeholder="Enter your email address" class="alert-input" required>
+
+                            <button type="submit" class="btn-secondary">
+
+                                Notify Me
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <!-- END E-COMMERCE ENGINE REGION -->
+
+            </section>
+
+        </div>
+
+    </div>
+
+    <footer class="product-footer-notes">
+
+        <h2 class="section-heading">Collector's Note</h2>
+
+        <div class="notes-content">
+
+            <p>
+
+                This exclusive craft piece ships directly from the artist's studio. Includes 
+                a physical Certificate of Authenticity signed by 
+
+                <strong>@Model.ProductOwner</strong>. 
+
+                Due to the delicate nature of fine art collectibles, specialized premium 
+                packaging and insured white-glove delivery are applied to ensure immaculate 
+                arrival.
+
+            </p>
+
+        </div>
+
+    </footer>
+
+</main>
+
+@section scriptsapp {
+    
+    <script>
+
+        PAGE_NAME = '@Model.PageName';
+      
+        document.querySelectorAll('.thumb-btn').forEach(button => {
+
+            button.addEventListener('click', function() {
+
+                const mainImg = document.getElementById('main-featured-image');
+
+                mainImg.setAttribute('src', this.getAttribute('data-full-img'));
+
+                document.querySelectorAll('.thumb-btn').forEach(btn => {
+
+                    btn.classList.remove('active');
+
+                    btn.setAttribute('aria-selected', 'false');
+
+                });
+
+                this.classList.add('active');
+
+                this.setAttribute('aria-selected', 'true');
+
+            });
+
+        });
+
+      
+        const minusBtn = document.getElementById('qty-minus');
+
+        const plusBtn = document.getElementById('qty-plus');
+
+        const qtyInput = document.getElementById('prod-qty');
+
+        const maxInventory = parseInt(qtyInput.getAttribute('max')) || 1;
+
+        minusBtn.addEventListener('click', () => {
+
+            let current = parseInt(qtyInput.value);
+
+            if (current > 1) qtyInput.value = current - 1;
+
+        });
+
+        plusBtn.addEventListener('click', () => {
+
+            let current = parseInt(qtyInput.value);
+
+            if (current < maxInventory) qtyInput.value = current + 1;
+
+        });
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

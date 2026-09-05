@@ -4,11 +4,7 @@
     <div title="Product Image" draggable="false">
         <a class="thumbnail" 
             draggable="false"  
-            href = "@Url.Action("Details", "ManageProduct", new { area = "CompanyContent", id = Model.RootID })"
-            target = "_blank" 
-            rel = "noopener noreferrer"class="thumbnail" 
-            draggable="false"  
-            href = "@Url.Action("Details", "ManageProduct", new { area = "CompanyContent", id = Model.RootID })"
+            href = "@Url.Action("PostProductDetails", "ManageProduct", new { area = "CompanyContent", id = Model.RootID })"
             target = "_blank" 
             rel = "noopener noreferrer">
             @if (Model != null)

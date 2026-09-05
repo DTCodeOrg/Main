@@ -18,14 +18,14 @@ public class PageRepository: IPageRepository
 
     public async Task<List<Page>> GetAllPages ()
     {
-        List<Page> listPages = await _tenantContext.Pages.ToListAsync();
+        List<Page> listPages = await _tenantContext.Pages.Where(p => p.MyTenantId == _tenantContext.CurrentTenantId).ToListAsync();
 
         return listPages.ToList ();
     }
 
     public async Task<Page> GetSinglePage (EnumPublicPage publicPage)
     {
-        Page? page = await _tenantContext.Pages.FirstOrDefaultAsync<Page> (m => m.EnumPublicPage == publicPage );
+        Page? page = await _tenantContext.Pages.FirstOrDefaultAsync<Page> (m => m.EnumPublicPage == publicPage && m.MyTenantId == _tenantContext.CurrentTenantId);
 
         if ( page == null )
         {
@@ -37,7 +37,7 @@ public class PageRepository: IPageRepository
 
     public async Task<Page> GetSinglePage (int id)
     {
-        var page = await _tenantContext.Pages.FirstOrDefaultAsync<Page> (m => m.PageID == id);
+        var page = await _tenantContext.Pages.FirstOrDefaultAsync<Page> (m => m.PageID == id && m.MyTenantId == _tenantContext.CurrentTenantId);
 
         if ( page == null )
         {
@@ -52,7 +52,7 @@ public class PageRepository: IPageRepository
         panel.ListPosts = listPosts;
 
         Page? page = await _tenantContext.Pages.FirstOrDefaultAsync<Page>
-                                  ( m => m.PageID == panel.PageID );
+                                  ( m => m.PageID == panel.PageID && m.MyTenantId == _tenantContext.CurrentTenantId );
 
         if ( page == null )
         {
@@ -81,7 +81,7 @@ public class PageRepository: IPageRepository
 
     public async Task<bool> PageExists (int id)
     {
-        return await _tenantContext.Pages.AnyAsync (e => e.PageID == id);
+        return await _tenantContext.Pages.AnyAsync (e => e.PageID == id && e.MyTenantId == _tenantContext.CurrentTenantId);
     }
 }
 
