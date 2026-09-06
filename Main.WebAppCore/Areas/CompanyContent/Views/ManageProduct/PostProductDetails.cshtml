@@ -47,7 +47,7 @@
 
             <div class="main-display-wrapper">
 
-                <img id="main-featured-image" src=""
+                <img id="main-featured-image" src="@Model.ImageFiles[0].RelativeFilePath"
                      alt="" />
 
             </div>
@@ -98,6 +98,21 @@
 
             </header>
 
+             <div class="short-brief">
+                    <p>
+                        
+                        @Model.Description
+
+                    </p>
+
+                    <p>
+
+                        @Model.SearchTag
+
+                    </p>
+
+                </div>
+
             <hr class="divider">
 
             <section class="product-pricing-brief">
@@ -132,20 +147,7 @@
 
                 </div>
 
-                <div class="short-brief">
-                    <p>
-                        
-                        @Model.Description
-
-                    </p>
-
-                    <p>
-
-                        @Model.SearchTag
-
-                    </p>
-
-                </div>
+               
 
                 <!-- E-COMMERCE ENGINE REGION -->
                 <div class="purchase-engine">

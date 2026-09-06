@@ -16,11 +16,11 @@
         {
             foreach (var product in Model.ListPosts)
             {
-                <div class="col-6 card" draggable="true">
+                <div class="col-12 card" draggable="true">
                     <a class="thumbnail only-image" draggable="false">
                         @if (product != null)
                         {
-                            @await Html.PartialAsync("~/Areas/PageContent/Views/Pages/Images/_Image1X.cshtml", product)
+                            @await Html.PartialAsync("~/Areas/PageContent/Views/Pages/EditImages/_Image1X.cshtml", product)
                         }
                     </a>
 
