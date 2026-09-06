@@ -20,21 +20,14 @@
     </style>
 }
 
-<div id="detailsProductMainView" class="container">
+ <div class="gap"></div>
 
-    <div class="header-text">
+<div class="container" >
 
-        <h1>Tenant Product</h1>
+    <div data-label="Action" class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12">
+         <div class="header-actions">
 
-        <p>View, edit, or delete products for @tenantName.</p>
-
-    </div>
-
-   <div class="page-header">
-
-       <div class="header-actions">
-
-            <a class="dropdown-item dropdown-item-text icon-button"
+            <a class="icon-button btn-lg flex"
                asp-area="CompanyContent"
                asp-controller="ManageProduct"
                asp-action="NewProduct">
@@ -47,13 +40,46 @@
 
             </a>
 
+            <a class="icon-button btn-lg flex"
+               href="@Url.Action("Edit", "ManageProduct", new { Area = "CompanyContent", id = Model.ProductID })">
+
+                <i class="fa fa-fw fa-edit"></i>
+
+                <span class="action-text">
+                    Edit Product
+                </span>
+
+            </a>
+
+
+             <a class="icon-button btn-lg flex"
+               asp-area="CompanyContent"
+               asp-controller="ManageProduct"
+               asp-action="Index">
+
+                <i class="fa fa-fw fa-list"></i>
+
+                <span class="action-text">
+                    List Products
+                </span>
+
+            </a>
+
         </div>
 
-    </div>   
+        <div class="gap"></div>
+
+        <h1>@tenantName  Product:</h1>
+
+        <h5>@Model.ProductName - @Model.ProductOwner (View, edit, or delete products) </h5>
+
+    </div>
 
 </div>
 
-<main class="product-container">
+<div class="gap"></div>
+
+<main id="detailsProductMainView" class="product-container" class="container">
 
     <div class="product-layout">
 

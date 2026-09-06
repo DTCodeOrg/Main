@@ -165,6 +165,24 @@ public class DropDownListItems
         return listCategory;
     }
 
+    public static IEnumerable<SelectListItem> GetCategoryList
+    (IStringLocalizer<SharedResource> localizer,StoreType storeType,bool full)
+    {
+        var listCategory
+        = GetSelectList (TenantStoreHelper.GetFullCategoryList (localizer, storeType), "");
+
+        return listCategory;
+    }
+
+    public static IEnumerable<SelectListItem> GetSubCategoryList
+    (IStringLocalizer<SharedResource> localizer,StoreType storeType,bool full)
+    {
+        var listCategory
+        = GetSelectList (TenantStoreHelper.GetFullSubCategoryList (localizer, storeType), "");
+
+        return listCategory;
+    }
+
     public static IEnumerable<SelectListItem> GetShowHideList ()
     {
         var listShowHideList = ListEnum.GetShowHideList();

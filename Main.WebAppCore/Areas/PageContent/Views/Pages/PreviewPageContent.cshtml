@@ -13,22 +13,32 @@
         <a title="List of Pages"
                 class="icon-button btn-lg flex"
                 href="@Url.Action("Index", "Pages", new { Area = "PageContent" })">
+
             <i class="fa fa-list"></i>
+
             <span class="action-text">List Pages</span>
+
         </a>
 
         <a title="Edit Page"
+
             class="icon-button btn-lg flex"
                 href="@Url.Action("EditPageContent", "Pages", new { Area = "PageContent", id = Model.PageID })">
+           
             <i class="fa fa-edit"></i>
+
             <span class="action-text">Edit Page</span>
+
         </a>
 
         <a title="New Panel"
             class="icon-button btn-lg flex"
                 href="@Url.Action("NewProductPanel", "Pages", new { Area = "PageContent", id = Model.PageID })">
-            <i class="fa fa-plus"></i>
-            <span class="action-text">New Panel</span>
+           
+                <i class="fa fa-plus"></i>
+
+               <span class="action-text">New Panel</span>
+
         </a>
 
     </div>

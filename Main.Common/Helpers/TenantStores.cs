@@ -130,7 +130,7 @@ public class TenantStores
             ValueID = ( int ) EnumStoreMenu.CoinAndCurrency,
             ParentID = ( int ) EnumStoreMenu.COLLECTIBLES,
             Variable = EnumTenantVariable.ProductSubCategory,
-            Text = localizer["Handicraft"] ?? "Handicraft",
+            Text = localizer["CoinAndCurrency"] ?? "Coin And Currency",
             TenantStore = StoreType.FineArts,
             TenantId = ""
         });

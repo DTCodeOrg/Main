@@ -8,6 +8,7 @@
     ViewBag.ExcludeHeader = true;
 }
 
+<div class="gap"></div>
 <div id="newProductMainContainer" class="container">
      <div class="page-header">
 
@@ -45,44 +46,45 @@
 
 @await Html.PartialAsync("~/Views/Shared/_ValidationScriptsPartial.cshtml")
 
+@await Html.PartialAsync("~/Views/Shared/_ValidationScriptsPartial.cshtml")
+
 <script>
-     // 1. Serialize the full server-side list into JavaScript
-    const allVariables = @Html.Raw(Json.Serialize(ViewBag.AllCategories));
-
-    console.log(allVariables); // Debugging line to check the data
-
     document.addEventListener("DOMContentLoaded", function () {
-        const categorySelect = document.getElementById("categoryDropdown");
-        const subcategorySelect = document.getElementById("subcategoryDropdown");
+        // 1. Serialize server data safely inside the DOM wrapper
+        const allVariables = @Json.Serialize(ViewBag.AllCategories);
+
+        const categoryMenu = document.getElementById("categoryDropdown");
+        const subcategoryMenu = document.getElementById("subcategoryDropdown");
+
+        // Guard clause: Ensure elements actually exist in the DOM before adding listeners
+        if (!categoryMenu || !subcategoryMenu) return;
 
         // 2. Listen for changes on the Category dropdown
-        categorySelect.addEventListener("change", function () {
-            // Get the selected Parent ID (convert string to integer)
-            const selectedParentId = parseInt(this.value);
+        categoryMenu.addEventListener("change", function () {
 
-            alert(selectedParentId);
+            // Clear existing options in the SubCategory dropdown immediately
+            subcategoryMenu.innerHTML = '<option value="">-- Select Sub Type --</option>';
 
-            // 3. Clear existing options in the SubCategory dropdown
-            subcategorySelect.innerHTML = '<option value="">-- Select Sub Type --</option>';
+            // If no category is selected (empty string), stop here early
+            if (!this.value) return;
 
-            // If no category is selected, stop here
-            if (isNaN(selectedParentId)) return;
+            // Convert string to integer safely
+            const selectedParentId = parseInt(this.value, 10);
 
-            // 4. Filter and loop through matching subcategories
+            // Filter and loop through matching subcategories
             allVariables.forEach(item => {
-                // Adjust property casing (e.g., item.ParentID) if your JSON isn't camelCase
-                if (item.parentId === selectedParentId) {
-                    
-                    // 5. Create and append a new option element
+                // IMPORTANT: Casing matters! Ensure your C# model properties match here
+                if (item.parentID === selectedParentId || item.ParentID === selectedParentId) {
                     const option = document.createElement("option");
-                    option.value = item.valueId; // Sets <option value="X">
-                    option.textContent = item.text; // Sets the visible text
-                    
-                    subcategorySelect.appendChild(option);
+                    option.value = item.valueID || item.ValueID; 
+                    option.textContent = item.text || item.Text; 
+                    subcategoryMenu.appendChild(option);
                 }
             });
-        });
+        }); // <-- Fixed missing closing bracket/parenthesis for addEventListener
+    }); // <-- Closes DOMContentLoaded
 </script>
+
 
 <script>
     var PAGE_NAME = '@Model.PageName';

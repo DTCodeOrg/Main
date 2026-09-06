@@ -42,6 +42,16 @@ public class TenantStoreHelper
         }
     }
 
+    public static List<TenantVariableModel> GetFullCategoryList (IStringLocalizer<SharedResource> localizer,StoreType storeType)
+    {
+        return TenantStores.ListTenantStoreMenu (localizer,storeType).ToList ();
+    }
+
+    public static List<TenantVariableModel> GetFullSubCategoryList (IStringLocalizer<SharedResource> localizer,StoreType storeType)
+    {
+        return TenantStores.ListTenantStoreMenu (localizer,storeType).ToList ();
+    }
+
 
     //public static List<TenantVariableModel>? GetSubCategoryListByID (int categoryId)
     //{

@@ -24,11 +24,11 @@ public class MenuObjectModel
         ListSubCategory = new List<TenantVariableModel> ();
 
         ListCategory =
-        TenantStoreHelper.GetCategoryList (localizer,storeType)
+        TenantStoreHelper.GetFullCategoryList (localizer,storeType)
         .Where (a => a.Variable == EnumTenantVariable.ProductCategory).ToList ();
 
         ListSubCategory =
-        TenantStoreHelper.GetCategoryList (localizer,storeType).Where
+        TenantStoreHelper.GetFullSubCategoryList (localizer,storeType).Where
         (a => a.Variable == EnumTenantVariable.ProductSubCategory).ToList ();
 
         CategoryText = "Browse by Categories";
