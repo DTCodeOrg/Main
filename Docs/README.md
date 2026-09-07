@@ -1,5 +1,5 @@
-# Multi-Tenant SAAS Stores 
-### 6th Sep 2026: VIDEO [Home Page, Menus, Menu Type, SubType, Product Details](https://1drv.ms/v/c/93d70fb51193cb6b/IQBNefqwFvPLR4EQH-iAaH8dAXEvuoWP7pDzVvotBTowS9Q?e=D8LL2u) *NEW VIDEO!*
+# [YouTube: Multi-Tenant SAAS Stores (Asp.Net Core Mvc .Net 8.0)](https://www.youtube.com/playlist?list=PLIK1B9HNGKX8)
+ 
 
 # Fostering Education: 
 I decided to contribute to the community; I have the experience. The experience is a journey with the communities I worked with in software and technology. I started in 2000. I learned from them; they are my work associates and affairs. I have learned from the academics; the journey of engineering started, the teachers. The actual area of technology and engineering is important for me to share and deliver in an impactful manner; it is resilient and sustainable. 
@@ -60,7 +60,8 @@ These are the people who make the actual use of the working product or the softw
 9. [Video - Debugging of Tenant Product & Photos](https://1drv.ms/v/c/93d70fb51193cb6b/IQDVNYSAQMf8Rb45NWgIdiaHAVuqanStaSjo0pe7yMQjdio?e=GJ37yG)
 10. [Video - Refined Theme](https://1drv.ms/v/c/93d70fb51193cb6b/IQBmlArEE1UzTYF15imEdp-7AV6PBRUxTHaiPr0GXF_nPm4?e=0O69CQ)
 11. [Videos - ](https://1drv.ms/v/c/93d70fb51193cb6b/IQBfJQMns98vRo8xccLLZUWFAWyI4iURrX5QWuM9g4Iia-Q?e=CXsNkt) 
-12.  [VIDEO 4th Sep 2026: Home Page, Configuration](https://1drv.ms/v/c/93d70fb51193cb6b/IQCijybVm3feT5cbg_rdlmLSAXTbDHlti52qHOttcTj-bTI?e=KXbDRM) 
+12.  [VIDEO 4th Sep 2026: Home Page, Configuration](https://1drv.ms/v/c/93d70fb51193cb6b/IQCijybVm3feT5cbg_rdlmLSAXTbDHlti52qHOttcTj-bTI?e=KXbDRM)
+13.  6th Sep 2026: VIDEO [Home Page, Menus, Menu Type, SubType, Product Details](https://1drv.ms/v/c/93d70fb51193cb6b/IQBNefqwFvPLR4EQH-iAaH8dAXEvuoWP7pDzVvotBTowS9Q?e=D8LL2u) *NEW VIDEO!*
 
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
