@@ -5,7 +5,7 @@
 
         <a class="logo" 
            id="ancor_Index_Home"
-           href="@Url.Action("Index", "Home")">
+           href="@Url.Action("Index", "Home", new { area = "" })">
 
                <img src="@TenantSetter.CurrentTenant.TenantThemeModel.LogoRelativeFilePath" />
 
@@ -18,7 +18,7 @@
         <a id="ancor_NewPost_Post"
             type="button"
             class="header-action"
-            href="@Url.Action("NewPost", "Post")">
+            href="@Url.Action("NewPost", "Post", new { area = "" })">
 
             <i class="fa fa-plus fa-fw"></i>
 

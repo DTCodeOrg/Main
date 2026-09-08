@@ -43,7 +43,6 @@ button.icon-button {
     font-weight: 500;
     text-decoration: none;
     color: var(--bs-gray-dark);
-    padding: 10px !important;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 

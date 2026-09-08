@@ -47,6 +47,7 @@ public class ProductDisplayViewModel
         get; set;
     }
 
+    [Display (Name = "Tenant Name")]
     public string TenantName
     {
         get; set;

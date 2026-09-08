@@ -33,7 +33,7 @@ public class ThemeController: Controller
         {
             CurrentLogoFileName = themeDataModel?.LogoRelativeFilePath
         };
-
+        ViewData["LogoPath"] = "";
         return View (logoViewModel);
     }
 
@@ -58,9 +58,9 @@ public class ThemeController: Controller
             await _themeService.UpdateTenantThemeAsync (themeDataModel);
         }
 
-        return RedirectToAction ("Index","Home",new
-        {
-            area = ""
-        });
+        ViewData["LogoPath"] = logoRelativeFilePath;
+
+        return View ();
+
     }
 }

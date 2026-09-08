@@ -4,19 +4,45 @@
     ViewData["Title"] = "Page Settings";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
+    var tenantName = TenantSetter.CurrentTenant.TenantName;
 }
+
+ <div class="gap"></div>
 
 <div id="pageListContainer" class="container">
 
-    <div class="card-form">
+    
+   <div class="page-header">
 
-        <div class="gap"></div>
+        <div class="header-text">
 
-        <h4 class="card-title">MANAGE PAGE CONTENTS</h4>
+            <h1>Manage Tenant Pages</h1>
 
-        <div class="gap"></div>
+            <p>View, edit, or delete panels for @tenantName.</p>
 
-        <div class="gap"></div>
+        </div>
+
+        <div class="header-actions">
+           
+            <a class="dropdown-item dropdown-item-text icon-button"
+               asp-area="PageContent"
+               asp-controller="Pages"
+               asp-action="NewProductPanel">
+                <i class="fa fa-fw fa-plus"></i>
+
+                <span>
+                         Add Panel
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        
 
         <table class="table">
             <thead>

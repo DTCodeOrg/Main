@@ -5,6 +5,12 @@
     ViewData["Title"] = title;
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
+    var path = ViewData["LogoPath"] as string;
+
+    if (string.IsNullOrEmpty(path))
+    {
+        path = Model.CurrentLogoFileName;
+    }
 }
 
 
@@ -24,77 +30,68 @@
 
     </div>
 
-    <div class="row">
+    <div class="card" style="padding: 20px;">
 
-        <div class="col-md-3">
-        </div>
-
-        <div class="col-md-6">
-
-            <h5>Update Logo</h2>
+            <h4>Update Logo</h4>
 
             <div class="gap">
             </div>
                
-            <p>Current Logo:</p>
+            <p class="form-label">
+                Current Logo:
+            </p>
                    
-            <img src="@Model.CurrentLogoFileName" 
-                alt="Current Logo" 
-                style="max-height: 100px; display: block;" />
+            <img src="@path" 
+                alt="Current Logo" class ="img-thumbnail"
+                style="height: 100px;width: 100px;max-width: 100px;max-height: 100px; display: block;" />
 
             <div class="gap"></div>
             <div class="gap"></div>
             
             <div class="form-group">
-                
+                <br />
                 <label for="logoFile" class="form-label">
-                    Select New Logo Image:
+              Select New Logo Image:
                 </label>
 
-                <br />
-                <br />
+              
 
-                <form asp-action="UpdateLogo"
+                <form   asp-action="UpdateLogo"
                         asp-controller="Theme"
                         asp-area=""
+                        class="icon-button"
                         method="post"
-                        enctype="multipart/form-data">
+                        enctype="multipart/form-data"
+                        type="submit">
 
                    
 
-                    <input class="form-control" type="file" id="logoFile" name="logoFile" />
+                    <input type="file" id="logoFile" name="logoFile" />
 
-                    <br />
-                    
-
-                    <button type="submit">
-
-                        <a class="dropdown-item dropdown-item-text icon-button" >
+                     <button class="icon-button" type="submit">
+                       
 
                             <span>
                                 Upload
                             </span>
 
-                        </a>
+                        </button>
+                 </form>
 
-                    </button>
+                   <br />
+                    
+
+                 
+
+                       
+
                    
-                    <a class="dropdown-item dropdown-item-text icon-button"
-                        asp-action="Index" 
-                        asp-controller="Home" 
-                        asp-area="" >
+                   
 
-                        <span>
-                            Cancel
-                        </span>
-
-                    </a>
-
-                </form>
-
+              
             </div>
 
-        </div>
+       
 
     </div>
 

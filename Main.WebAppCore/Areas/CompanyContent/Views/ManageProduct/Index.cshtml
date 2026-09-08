@@ -9,9 +9,8 @@
 }
 
  <div class="gap"></div>
-<div id="manageAdminProduct" class="container">
 
-   
+<div id="manageAdminProduct" class="container">
 
     <div class="page-header">
 
@@ -41,7 +40,7 @@
 
     </div>
 
-    <div class="card-form">
+    <div class="card">
 
         <div class="gap"></div>
 
@@ -70,11 +69,7 @@
 
                     </th>
 
-                     <th>
-
-                        @Html.DisplayNameFor(model => model[0].ProductOwner)
-
-                    </th>
+                    
 
                     <th>
 
@@ -112,11 +107,9 @@
                             @Html.DisplayFor( modelItem => item.DisplaySubCategory )
                         </td>
 
-                         <td>
-                            @Html.DisplayFor(modelItem => item.ProductOwner)
-                        </td>
+                      
 
-                        <td>
+                        <td class="text-truncate" style="max-width: 170px;">
                             @Html.DisplayFor(modelItem => item.ProductName)
                         </td>
 
@@ -129,19 +122,19 @@
                             <a title="View Product"
                                     class="icon-button flex"
                                     href="@Url.Action("Details", "ManageProduct", new { Area = "CompanyContent", id = item.ProductID })">
-                                <i class="fa fa-eye"></i> View
+                                <i class="fa fa-eye"></i> 
                             </a>
 
                             <a title="Edit Product"
                                     class="icon-button flex"
                                     href="@Url.Action("Edit", "ManageProduct", new { Area = "CompanyContent", id = item.ProductID })">
-                                <i class="fa fa-edit"></i> Edit
+                                <i class="fa fa-edit"></i> 
                             </a>
 
                             <a title="Remove Product"
                                     class="icon-button flex"
                                     href="@Url.Action("Delete", "ManageProduct", new { Area = "CompanyContent", id = item.ProductID })">
-                                <i class="fa fa-trash"></i> Delete
+                                <i class="fa fa-trash"></i> 
                             </a>
 
                         </td>
