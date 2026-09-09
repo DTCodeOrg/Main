@@ -1,5 +1,43 @@
 # [YouTube: Multi-Tenant SAAS Stores (Asp.Net Core Mvc .Net 8.0)](https://www.youtube.com/playlist?list=PLIK1B9HNGKX8)
  
+## The Project Progress:
+[GitHub - nayeeem81/Main: Multi-Tenant Store Shared Database [Asp. Net Core MVC (.NET 8.0)] · GitHub](https://www.linkedin.com/pulse/one-paper-which-fostered-progress-naim-ul-islam-prodhan-vrtuc/)
+
+**May 2026:**
+Solution Design (Monolithic and Clean Structure): I had a solution developed with .NET framework 4.6. I opened the solution and did some research on the security features of the previous solution (asp.net mvc web application). The .NET Framework 4.6 has serious security-related vulnerability and Microsoft stopped the support for the framework. It is obsolete. After that, the next Microsoft Standard (which is for cross platform) and has support to deploy in Linux environments has options for me to migrate the solution. I found that earlier .NET Core (.NET Standard) passed for quiet long years. Now, Microsoft finally put the full focus to keep them all in the one name (.NET) with long term support with cross platform support and deployment flexibility. It has already been introduced in the Identity Membership (which is more reliable and a lot of the code ad tables (entities); the flow of Sign in, sign up and related security concerts are taken care of by Microsoft Identity. 
+
+I just started with the .NET Standard 2.0 (ASP.NET Core Web App) and started migration. At some point, my plan was not to start with .NET 8.0. GitHub Copilot forced me to move to .NET 8.0. Previously, I used TFS in very professional workplaces. This work was personal and I planned to create the solution as a template and keep it in the GitHub public repository. I was working for me to migrate the existing solution to deliver to my friend for their store. It was voluntary work. I was sick and recovered from the mild stroke. I wanted to volunteer for the work open and useable for all.  
+
+**June 2026:**
+I was almost migrated to the .NET Standard 2.0; I asked the GitHub Copilot to modernize the entire solution. I did that just after I got the latest update from Visual Studio Community Edition. Suddenly, the solution stopped building, and all of the NuGet Packages had support after Modernize, but one package (most probably image related); didn't get support. Removing that; it has other built errors. It was not building with .NET 10.0. After troubleshooting the build errors; I reached to .NET 8.0 the solution had has zero build errors and warnings. 
+
+In the meantime, I integrated the Identity membership in two dB contexts classes (identity & business entities) but kept the same connection string. So, I had one database. I was required to write an entire new code for the flow (sign in, sign up) and the product (save, update, delete) codes. I reused some of the past codes but not the entire files. It was a new design (with less properties) and only the necessities were there. 
+
+**July, Aug, Sep 2026:** 
+I had a plan that I will use the code for multiple stores. A link in google search moved to know more about the Multi-Tenant, Tenancy, and examples. 
+
+I have already created the monolithic and clean architecture; I had plan to make the code following the best practices (solution architecture): separation of concerns, keep the data infrastructure separate from service, data transfer objects just go to controllers (web project / Api project). Views will have their View Model (only needed properties) and will have the mapping. I didn't use any auto mappers or similar mappings packages (since the scope was small and it is robust & reliable). After following the best practices, I completed the store with Identity Membership. 
+
+The GitHub Copilot Modernizations; stopped the tested solution (new but with the required modules already done. Some bug fixing was pending. CMS logic was in my brain (planned). I will do the same but with less steps to configure the pages. I researched the best practices (how to add a panel, drag/drop, up/down). I tried to use them as suggested in the links from Google AI. 
+
+At his point; I started to move the architecture into the multi-tenant architecture. I started with hope and never even thought that it had a lot of challenges and architecture must meet some of the context specific isolations. I got a research paper and the paper stated all of SaaS related architectural issues which must be met for isolation, few for Tenant specific roles, an email should be able to use for different tenants, there are audits for such multi-tenant web applications, how to run the .NET application behind the reverse proxy and do the SSL termination, code for the Nginx config (cookie pass through, etc.), start static files sending before the remaining processing is completed (stop race conditions)  in the middleware pipeline. I needed to decide on the tenant resolution: for (domain/sub domain/sub directory) all or one or two and researched to get an idea to work on which. Over time, I decided to keep each of the options open. At some point, I decided to keep only domains.  
+
+When the anti-forgery (global: submit, fetch, jQuery ajax), cross tenant bleeding (cookies with tenant suffixed, using Jwt - tenant specific, rotating refresh token (with state, long lived) and access token, middleware for JWT based authentication, middleware to check the tenant context, the middleware for (tenant role and policy based authorization), query filters to keep tenant database isolated, keep the logo (separate for each), theme based on global variables tenant suffixed (site.css). Using relative path for accessing the dynamic URLS, it took quite a few months to meet the goals which the paper states mandatory architectural design goals.  
+
+Still working on the theme issues (changing) and with only domain-based tenant resolution tested locally. 
+
+Thanks
+N ai m - OG      [Short Key]
+08 Sep 2026
+
+
+
+
+This is the paper which gives me the most insights and advice on completing the multi-tenant architecture: 
+___
+Multi-Tenant SaaS Architectures: Design Principles and Security Considerations Ritesh Kumar Independent Researcher Pennsylvania, USA,  
+ritesh2901@gmail.com  
+06052841.pdf 
 
 # Fostering Education: 
 I decided to contribute to the community; I have the experience. The experience is a journey with the communities I worked with in software and technology. I started in 2000. I learned from them; they are my work associates and affairs. I have learned from the academics; the journey of engineering started, the teachers. The actual area of technology and engineering is important for me to share and deliver in an impactful manner; it is resilient and sustainable. 
